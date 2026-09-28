@@ -94,29 +94,41 @@
             }
         }
 
-        // Google Sheet Integration Template Script
+        // Updated Google Sheet Integration Script
         function submitFeedback(e) {
             e.preventDefault();
             let name = document.getElementById('userName').value;
             let contact = document.getElementById('userContact').value;
             let msg = document.getElementById('userMsg').value;
             let status = document.getElementById('formStatus');
+            let btn = e.target.querySelector('button');
 
-            // NOTE: Yahan aap apni Google Apps Script ka Web App URL dalenge
-            let googleScriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+            // LIVE GOOGLE SCRIPT URL
+            let googleScriptURL = "https://script.google.com/macros/s/AKfycbwMQQ3Ov1bCppXANcXgcLCI2_8PTpzEbXsj1E4AEM2dO0u5US45C9gT38Dkqu2rg8R6Bg/exec";
 
             status.style.color = "#3b82f6";
             status.innerText = "Sending feedback...";
+            btn.disabled = true;
 
-            /* 
-               Aap Google Sheets ke sath connect karne ke liye Google Apps Script ka use kar sakte hain.
-               Ek baar Apps Script deploy karke yahan fetch(googleScriptURL, {method: 'POST', body: ...}) likhna hota hai.
-            */
-            setTimeout(() => {
-                status.style.color = "#10b981";
-                status.innerText = "✅ Thank you! Your feedback has been recorded successfully.";
-                document.getElementById('feedbackForm').reset();
-            }, 1000);
+            // Form data prepare karna
+            let formData = new FormData();
+            formData.append('name', name);
+            formData.append('contact', contact);
+            formData.append('message', msg);
+
+            // Google Sheet par data bhejna
+            fetch(googleScriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    status.style.color = "#10b981";
+                    status.innerText = "✅ Thank you! Your feedback has been sent to our database.";
+                    document.getElementById('feedbackForm').reset();
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    status.style.color = "#ff4d4d";
+                    status.innerText = "❌ Error sending feedback. Please try again.";
+                    btn.disabled = false;
+                });
         }
     </script>
 </body>
