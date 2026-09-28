@@ -2,37 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Age Calculator</title>
+    <title>Age Calculator - Omni Convertors</title>
     <link rel="stylesheet" href="style.css">
     <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
 </head>
 <body>
     <div class="tool-container">
+        <a href="index.html" class="back-link" style="display:inline-block; margin-bottom:15px; color:var(--primary); text-decoration:none;">← Back to Dashboard</a>
         <h2 style="color: var(--primary-blue);">⏳ Age Calculator</h2>
+        
         <label>Date of Birth:</label>
-        <input type="date" id="dobInput" value="1998-11-28">
+        <input type="date" id="dobInput">
+        
         <label>Age at the Date of:</label>
         <input type="date" id="targetDateInput">
         
         <button onclick="calculateAge()">Calculate Age</button>
         
-        <div class="result-box" id="ageResult">Result will appear here...</div>
+        <div class="result-box" id="ageResult" style="margin-top: 20px;">Result will appear here...</div>
     </div>
 
     <script>
-        window.onload = () => document.getElementById("targetDateInput").value = new Date().toISOString().split('T')[0];
+        // Page load hote hi dono inputs mein default date set karke age calculate kar dega
+        window.onload = () => {
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById("targetDateInput").value = today;
+            // Default DOB set to a standard past date (e.g., 2000-01-01) or today
+            document.getElementById("dobInput").value = "2000-01-01";
+            calculateAge();
+        };
 
         function calculateAge() {
-            let dob = new Date(document.getElementById("dobInput").value);
-            let target = new Date(document.getElementById("targetDateInput").value);
+            let dobVal = document.getElementById("dobInput").value;
+            let targetVal = document.getElementById("targetDateInput").value;
+            if(!dobVal || !targetVal) return;
+
+            let dob = new Date(dobVal);
+            let target = new Date(targetVal);
             if(isNaN(dob) || isNaN(target)) return;
 
             let years = target.getFullYear() - dob.getFullYear();
             let months = target.getMonth() - dob.getMonth();
             let days = target.getDate() - dob.getDate();
 
-            if (days < 0) { months--; days += new Date(target.getFullYear(), target.getMonth(), 0).getDate(); }
-            if (months < 0) { years--; months += 12; }
+            if (days < 0) { 
+                months--; 
+                days += new Date(target.getFullYear(), target.getMonth(), 0).getDate(); 
+            }
+            if (months < 0) { 
+                years--; 
+                months += 12; 
+            }
 
             let timeDiff = target.getTime() - dob.getTime();
             let totalDays = Math.floor(timeDiff / (1000 * 3600 * 24));
@@ -41,7 +61,7 @@
             
             let html = `
                 <p><strong>${years} years ${months} months ${days} days</strong></p>
-                <hr style="border:1px solid var(--border-color);">
+                <hr style="border:1px solid var(--border); margin: 10px 0;">
                 <p>or ${totalMonths} months ${days} days</p>
                 <p>or ${totalWeeks} weeks ${totalDays % 7} days</p>
                 <p>or ${totalDays.toLocaleString()} days</p>
