@@ -23,13 +23,11 @@
     </div>
 
     <script>
-        // Page load hote hi dono inputs mein default date set karke age calculate kar dega
+        // Page load hote hi dono boxes mein aaj ki date set kar dega (lekin calculate nahi karega)
         window.onload = () => {
             let today = new Date().toISOString().split('T')[0];
+            document.getElementById("dobInput").value = today;
             document.getElementById("targetDateInput").value = today;
-            // Default DOB set to a standard past date (e.g., 2000-01-01) or today
-            document.getElementById("dobInput").value = "2000-01-01";
-            calculateAge();
         };
 
         function calculateAge() {
@@ -40,6 +38,11 @@
             let dob = new Date(dobVal);
             let target = new Date(targetVal);
             if(isNaN(dob) || isNaN(target)) return;
+
+            if (dob > target) {
+                document.getElementById("ageResult").innerHTML = `<p style="color:#ef4444;">Date of Birth cannot be after Target Date!</p>`;
+                return;
+            }
 
             let years = target.getFullYear() - dob.getFullYear();
             let months = target.getMonth() - dob.getMonth();
