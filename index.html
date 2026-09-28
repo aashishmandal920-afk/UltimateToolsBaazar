@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omni Convertors - Free Online Utility Tools</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+        function toggleTheme() {
+            let t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', t);
+            localStorage.setItem('theme', t);
+        }
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Omni Convertors</h1>
+        <p>100% Free Online Tools Suite | Fast, Secure & Easy to Use</p>
+        <button class="theme-btn" onclick="toggleTheme()">🌗 Dark/Light Mode</button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search any tool (e.g., Age, Word, Speed, Image)..." onkeyup="searchTools()">
+    </div>
+
+    <div class="dashboard-grid" id="toolsGrid">
+        <!-- ================= TOOL 1 ================= -->
+        <a href="age-calculator.html" class="tool-card" data-name="age calculator date">
+            <div class="tool-icon">⏳</div>
+            <h3>Age Calculator</h3>
+            <p>Calculate precise years, months, and days from birth date.</p>
+        </a>
+
+        <!-- ================= TOOL 2 ================= -->
+        <a href="image-compressor.html" class="tool-card" data-name="image file size reducer compressor">
+            <div class="tool-icon">🗜️</div>
+            <h3>Image File Size Reducer</h3>
+            <p>Compress JPG/PNG photos instantly in browser.</p>
+        </a>
+
+        <!-- ================= TOOL 3 ================= -->
+        <a href="number-converter.html" class="tool-card" data-name="number to word convertor indian currency">
+            <div class="tool-icon">🔢</div>
+            <h3>Number to Word Convertor</h3>
+            <p>Convert numbers to Indian/International words & Rupees.</p>
+        </a>
+
+        <!-- ================= TOOL 4 ================= -->
+        <a href="word-counter.html" class="tool-card" data-name="word counter character counter text">
+            <div class="tool-icon">📝</div>
+            <h3>Word Counter</h3>
+            <p>Count words, characters, and reading time instantly.</p>
+        </a>
+
+        <!-- ================= TOOL 5 ================= -->
+        <a href="speed-test.html" class="tool-card" data-name="internet speed test download upload">
+            <div class="tool-icon">🚀</div>
+            <h3>Internet Speed Test</h3>
+            <p>Test real-time download and upload network speed.</p>
+        </a>
+    </div>
+
+    <!-- ================= COMMENT & FEEDBACK SECTION ================= -->
+    <div class="feedback-section">
+        <h3>💬 Send Feedback or Contact Us</h3>
+        <p>Apna sujhav ya contact number ke sath message bhejein, ye seedha hamare database/sheet mein save hoga.</p>
+        <form id="feedbackForm" onsubmit="submitFeedback(event)">
+            <input type="text" id="userName" placeholder="Your Name" required>
+            <input type="text" id="userContact" placeholder="Contact Number / Email" required>
+            <textarea id="userMsg" rows="3" placeholder="Your message or tool request..." required></textarea>
+            <button type="submit" class="action-btn">Submit Feedback</button>
+        </form>
+        <p id="formStatus" style="margin-top: 10px; font-size: 13px;"></p>
+    </div>
+
+    <footer style="text-align:center; padding: 30px; color: var(--text-muted); font-size: 13px;">
+        &copy; 2026 Omni Convertors. All tools are 100% Free.
+    </footer>
+
+    <script>
+        // Search Filter Logic
+        function searchTools() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('tool-card');
+            for (let i = 0; i < cards.length; i++) {
+                let name = cards[i].getAttribute('data-name');
+                if (name.includes(input)) {
+                    cards[i].style.display = "block";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // Google Sheet Integration Template Script
+        function submitFeedback(e) {
+            e.preventDefault();
+            let name = document.getElementById('userName').value;
+            let contact = document.getElementById('userContact').value;
+            let msg = document.getElementById('userMsg').value;
+            let status = document.getElementById('formStatus');
+
+            // NOTE: Yahan aap apni Google Apps Script ka Web App URL dalenge
+            let googleScriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+            status.style.color = "#3b82f6";
+            status.innerText = "Sending feedback...";
+
+            /* 
+               Aap Google Sheets ke sath connect karne ke liye Google Apps Script ka use kar sakte hain.
+               Ek baar Apps Script deploy karke yahan fetch(googleScriptURL, {method: 'POST', body: ...}) likhna hota hai.
+            */
+            setTimeout(() => {
+                status.style.color = "#10b981";
+                status.innerText = "✅ Thank you! Your feedback has been recorded successfully.";
+                document.getElementById('feedbackForm').reset();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

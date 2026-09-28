@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Number to Words Converter</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Dark/Light theme index se link karne ke liye
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+    </script>
+    <style>
+        .currency-box { background-color: var(--bg-color); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-top: 30px; }
+        .currency-row { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .currency-row select { flex: 1; min-width: 200px; margin-bottom: 0; cursor: pointer; }
+        .currency-row input { flex: 1; min-width: 150px; margin-bottom: 0; }
+        .small-text { font-size: 13px; color: #888; margin-top: -10px; margin-bottom: 15px; display: block; }
+        .format-title { margin: 20px 0 5px 0; font-size: 15px; font-weight: bold; color: var(--primary-blue); }
+    </style>
+</head>
+<body>
+    <div class="tool-container" style="max-width: 900px;">
+        <h2 style="color: var(--primary-blue); margin-bottom: 5px;">🔢 Number to Words Converter - Indian Rupees</h2>
+        <span class="small-text">(Enter Number between 1 to 999,999,999,999,999 with or without comma)</span>
+        
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="numInput" placeholder="Enter Number or Amount..." min="0" style="flex: 1;">
+            <button onclick="convertAll()" style="white-space: nowrap;">Convert In Words</button>
+        </div>
+
+        <!-- 5 Result Boxes -->
+        <div class="format-title">In Words (International Format)</div>
+        <div class="result-box" id="resIntl">--</div>
+
+        <div class="format-title">In Words (Indian Format)</div>
+        <div class="result-box" id="resInd">--</div>
+
+        <div class="format-title">In Rupees English</div>
+        <div class="result-box" id="resRupeeEng">₹ --</div>
+
+        <div class="format-title">In Words Hindi</div>
+        <div class="result-box" id="resHindi">--</div>
+
+        <div class="format-title">In Rupees Hindi</div>
+        <div class="result-box" id="resRupeeHindi">₹ --</div>
+
+        <!-- Currency Converter Section -->
+        <div class="currency-box">
+            <h3 style="margin-top: 0; color: var(--primary-blue);">Enter Amount to Convert : Currency Converter</h3>
+            <div class="currency-row">
+                <span style="font-weight: bold;">FROM</span>
+                <select id="currFrom">
+                    <!-- Saari currencies jo aapne list ki thi -->
+                    <option value="INR" selected>INR (Indian Rupee)</option>
+                    <option value="USD">USD (United States dollar)</option>
+                    <option value="AED">AED (United Arab Emirates dirham)</option>
+                    <option value="ARS">ARS (Argentine peso)</option>
+                    <option value="AUD">AUD (Australian dollar)</option>
+                    <option value="BGN">BGN (Bulgarian lev)</option>
+                    <option value="BRL">BRL (Brazilian real)</option>
+                    <option value="BSD">BSD (Bahamian dollar)</option>
+                    <option value="CAD">CAD (Canadian dollar)</option>
+                    <option value="CHF">CHF (Swiss franc)</option>
+                    <option value="CLP">CLP (Chilean Peso)</option>
+                    <option value="CNY">CNY (Chinese yuan)</option>
+                    <option value="COP">COP (Colombian Peso)</option>
+                    <option value="CZK">CZK (Czech koruna)</option>
+                    <option value="DKK">DKK (Danish krone)</option>
+                    <option value="DOP">DOP (Dominican peso)</option>
+                    <option value="EGP">EGP (Egyptian Pound)</option>
+                    <option value="EUR">EUR (Euro - European Union)</option>
+                    <option value="FJD">FJD (Fijian Dollar)</option>
+                    <option value="GBP">GBP (British pound sterling)</option>
+                    <option value="GTQ">GTQ (Guatemalan quetzal)</option>
+                    <option value="HKD">HKD (Hong Kong Dollar)</option>
+                    <option value="HRK">HRK (Croatian Kuna)</option>
+                    <option value="HUF">HUF (Hungarian forint)</option>
+                    <option value="IDR">IDR (Indonesian rupiah)</option>
+                    <option value="ILS">ILS (Israeli new shekel)</option>
+                    <option value="ISK">ISK (Icelandic króna)</option>
+                    <option value="JPY">JPY (Japanese yen)</option>
+                    <option value="KRW">KRW (Korean won)</option>
+                    <option value="KZT">KZT (Kazakhstani Tenge)</option>
+                    <option value="MVR">MVR (Maldivian rufiyaa)</option>
+                    <option value="MXN">MXN (Mexican peso)</option>
+                    <option value="MYR">MYR (Malaysian Ringgit)</option>
+                    <option value="NOK">NOK (Norwegian Krone)</option>
+                    <option value="NZD">NZD (New Zealand dollar)</option>
+                    <option value="PAB">PAB (Panamanian Balboa)</option>
+                    <option value="PEN">PEN (Peruvian Nuevo Sol)</option>
+                    <option value="PHP">PHP (Philippine Peso)</option>
+                    <option value="PKR">PKR (Pakistani rupee)</option>
+                    <option value="PLN">PLN (Polish zloty)</option>
+                    <option value="PYG">PYG (Paraguay guarani)</option>
+                    <option value="RON">RON (Romanian Leu)</option>
+                    <option value="RUB">RUB (Russian Ruble)</option>
+                    <option value="SAR">SAR (Saudi Riyal)</option>
+                    <option value="SEK">SEK (Swedish krona)</option>
+                    <option value="SGD">SGD (Singapore dollar)</option>
+                    <option value="THB">THB (Thai bahts)</option>
+                    <option value="TRY">TRY (Turkish lira)</option>
+                    <option value="TWD">TWD (New Taiwan dollar)</option>
+                    <option value="UAH">UAH (Ukraine hryvnia)</option>
+                    <option value="UYU">UYU (Uruguayan Peso)</option>
+                    <option value="ZAR">ZAR (South African rand)</option>
+                </select>
+                
+                <span style="font-weight: bold; font-size: 20px;">→</span>
+                <span style="font-weight: bold;">TO</span>
+                
+                <select id="currTo">
+                    <!-- Target currencies -->
+                    <option value="USD" selected>USD (United States dollar)</option>
+                    <option value="INR">INR (Indian Rupee)</option>
+                    <option value="AED">AED (United Arab Emirates dirham)</option>
+                    <option value="ARS">ARS (Argentine peso)</option>
+                    <option value="AUD">AUD (Australian dollar)</option>
+                    <option value="BGN">BGN (Bulgarian lev)</option>
+                    <option value="BRL">BRL (Brazilian real)</option>
+                    <option value="BSD">BSD (Bahamian dollar)</option>
+                    <option value="CAD">CAD (Canadian dollar)</option>
+                    <option value="CHF">CHF (Swiss franc)</option>
+                    <option value="CLP">CLP (Chilean Peso)</option>
+                    <option value="CNY">CNY (Chinese yuan)</option>
+                    <option value="COP">COP (Colombian Peso)</option>
+                    <option value="CZK">CZK (Czech koruna)</option>
+                    <option value="DKK">DKK (Danish krone)</option>
+                    <option value="DOP">DOP (Dominican peso)</option>
+                    <option value="EGP">EGP (Egyptian Pound)</option>
+                    <option value="EUR">EUR (Euro - European Union)</option>
+                    <option value="FJD">FJD (Fijian Dollar)</option>
+                    <option value="GBP">GBP (British pound sterling)</option>
+                    <option value="GTQ">GTQ (Guatemalan quetzal)</option>
+                    <option value="HKD">HKD (Hong Kong Dollar)</option>
+                    <option value="HRK">HRK (Croatian Kuna)</option>
+                    <option value="HUF">HUF (Hungarian forint)</option>
+                    <option value="IDR">IDR (Indonesian rupiah)</option>
+                    <option value="ILS">ILS (Israeli new shekel)</option>
+                    <option value="ISK">ISK (Icelandic króna)</option>
+                    <option value="JPY">JPY (Japanese yen)</option>
+                    <option value="KRW">KRW (Korean won)</option>
+                    <option value="KZT">KZT (Kazakhstani Tenge)</option>
+                    <option value="MVR">MVR (Maldivian rufiyaa)</option>
+                    <option value="MXN">MXN (Mexican peso)</option>
+                    <option value="MYR">MYR (Malaysian Ringgit)</option>
+                    <option value="NOK">NOK (Norwegian Krone)</option>
+                    <option value="NZD">NZD (New Zealand dollar)</option>
+                    <option value="PAB">PAB (Panamanian Balboa)</option>
+                    <option value="PEN">PEN (Peruvian Nuevo Sol)</option>
+                    <option value="PHP">PHP (Philippine Peso)</option>
+                    <option value="PKR">PKR (Pakistani rupee)</option>
+                    <option value="PLN">PLN (Polish zloty)</option>
+                    <option value="PYG">PYG (Paraguay guarani)</option>
+                    <option value="RON">RON (Romanian Leu)</option>
+                    <option value="RUB">RUB (Russian Ruble)</option>
+                    <option value="SAR">SAR (Saudi Riyal)</option>
+                    <option value="SEK">SEK (Swedish krona)</option>
+                    <option value="SGD">SGD (Singapore dollar)</option>
+                    <option value="THB">THB (Thai bahts)</option>
+                    <option value="TRY">TRY (Turkish lira)</option>
+                    <option value="TWD">TWD (New Taiwan dollar)</option>
+                    <option value="UAH">UAH (Ukraine hryvnia)</option>
+                    <option value="UYU">UYU (Uruguayan Peso)</option>
+                    <option value="ZAR">ZAR (South African rand)</option>
+                </select>
+            </div>
+            <div class="currency-row">
+                <input type="number" id="currInput" placeholder="Amount" value="1">
+                <span style="font-weight: bold; font-size: 24px;">↔</span>
+                <input type="text" id="currOutput" placeholder="Converted Amount" readonly>
+            </div>
+            <button onclick="convertCurrency()" style="width: 100%; margin-top: 10px;">Convert Currency</button>
+            <p style="font-size: 11px; color: #888; text-align: center; margin-bottom: 0;">*Note: Basic demo calculation logic applied. Connect to a live Exchange Rate API (like ExchangeRate-API) for real-time values.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // NUMBER TO WORDS LOGIC (ALL 5 FORMATS)
+        // ==========================================
+        const engOnes = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+        const engTens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+        
+        const hindiWords = ["शून्य", "एक", "दो", "तीन", "चार", "पांच", "छह", "सात", "आठ", "नौ", "दस", 
+            "ग्यारह", "बारह", "तेरह", "चौदह", "पन्द्रह", "सोलह", "सत्रह", "अठारह", "उन्नीस", "बीस", 
+            "इक्कीस", "बाईस", "तेईस", "चौबीस", "पच्चीस", "छब्बीस", "सत्ताईस", "अट्ठाईस", "उनतीस", "तीस", 
+            "इकतीस", "बत्तीस", "तैंतीस", "चौंतीस", "पैंतीस", "छत्तीस", "सैंतीस", "अड़तीस", "उनतालीस", "चालीस", 
+            "इकतालीस", "बयालीस", "तैंतालीस", "चौवालीस", "पैंतालीस", "छियालीस", "सैंतालीस", "अड़तालीस", "उनचास", "पचास", 
+            "इक्यावन", "बावन", "तिरेपन", "चौवन", "पचपन", "छप्पन", "सत्तावन", "अट्ठावन", "उनसठ", "साठ", 
+            "इकसठ", "बासठ", "तिरेसठ", "चौंसठ", "पैंसठ", "छियासठ", "सड़सठ", "अड़सठ", "उनहत्तर", "सत्तर", 
+            "इकहत्तर", "बहत्तर", "तिहत्तर", "चौहत्तर", "पचहत्तर", "छिहत्तर", "सतहत्तर", "अठहत्तर", "उनासी", "अस्सी", 
+            "इक्यासी", "बयासी", "तिरासी", "चौरासी", "पचासी", "छियासी", "सत्तासी", "अट्ठासी", "नवासी", "नब्बे", 
+            "इक्यानवे", "बानवे", "तिरानवे", "चौरानवे", "पचानवे", "छियानवे", "सत्तानवे", "अट्ठानवे", "निन्यानवे"];
+
+        function getEngUnder1000(n) {
+            if (n === 0) return "";
+            if (n < 20) return engOnes[n];
+            let s = "";
+            if (n >= 100) { s += engOnes[Math.floor(n / 100)] + " Hundred "; n %= 100; }
+            if (n >= 20) { s += engTens[Math.floor(n / 10)] + " "; n %= 10; }
+            if (n > 0) { s += engOnes[n] + " "; }
+            return s.trim();
+        }
+
+        function convertAll() {
+            let numStr = document.getElementById("numInput").value;
+            if(!numStr || isNaN(numStr) || numStr < 0) return;
+            
+            let num = parseInt(numStr, 10);
+            
+            if(num === 0) {
+                document.getElementById("resIntl").innerText = "Zero";
+                document.getElementById("resInd").innerText = "Zero";
+                document.getElementById("resRupeeEng").innerText = "Zero rupees and zero paisa only.";
+                document.getElementById("resHindi").innerText = "शून्य";
+                document.getElementById("resRupeeHindi").innerText = "शून्य रुपये एवं शून्य पैसे";
+                return;
+            }
+
+            // 1. International Format
+            let intl = "";
+            let b = Math.floor(num / 1000000000), m = Math.floor((num % 1000000000) / 1000000);
+            let t = Math.floor((num % 1000000) / 1000), r = num % 1000;
+            if(b) intl += getEngUnder1000(b) + " Billion, ";
+            if(m) intl += getEngUnder1000(m) + " Million, ";
+            if(t) intl += getEngUnder1000(t) + " Thousand, ";
+            if(r) intl += getEngUnder1000(r);
+            document.getElementById("resIntl").innerText = intl.trim().replace(/,$/, "");
+
+            // 2 & 3. Indian Format & English Rupee
+            let ind = "";
+            let arab = Math.floor(num / 1000000000), cr = Math.floor((num % 1000000000) / 10000000);
+            let lk = Math.floor((num % 10000000) / 100000), th = Math.floor((num % 100000) / 1000);
+            if(arab) ind += getEngUnder1000(arab) + " Arab ";
+            if(cr) ind += getEngUnder1000(cr) + " Crore ";
+            if(lk) ind += getEngUnder1000(lk) + " Lakh ";
+            if(th) ind += getEngUnder1000(th) + " Thousand ";
+            if(r) ind += getEngUnder1000(r);
+            document.getElementById("resInd").innerText = ind.trim();
+            document.getElementById("resRupeeEng").innerText = ind.trim() + " rupees and zero paisa only.";
+
+            // 4 & 5. Hindi Logic & Hindi Rupee
+            let hin = "";
+            let hund = Math.floor(r / 100), remLast2 = r % 100;
+            if(arab > 0) hin += hindiWords[arab] + " अरब ";
+            if(cr > 0) hin += hindiWords[cr] + " करोड़ ";
+            if(lk > 0) hin += hindiWords[lk] + " लाख ";
+            if(th > 0) hin += hindiWords[th] + " हजार ";
+            if(hund > 0) hin += hindiWords[hund] + " सौ ";
+            if(remLast2 > 0) hin += hindiWords[remLast2];
+            document.getElementById("resHindi").innerText = hin.trim();
+            document.getElementById("resRupeeHindi").innerText = hin.trim() + " रुपये एवं शून्य पैसे";
+        }
+
+        // ==========================================
+        // CURRENCY CONVERTER LOGIC (Demo)
+        // ==========================================
+        function convertCurrency() {
+            let from = document.getElementById("currFrom").value;
+            let to = document.getElementById("currTo").value;
+            let amount = parseFloat(document.getElementById("currInput").value);
+            
+            if(isNaN(amount)) return;
+            
+            // Note: HTML file me live rate ke bina exact convert karna namumkin hai.
+            // Ye ek basic logic hai jo INR aur USD ke beech calculate karega (aapke reference 1 INR = 0.012 USD ke anusar)
+            // Asli app mein yahan API call hoti hai.
+            let rate = 1; 
+            if(from === "INR" && to === "USD") rate = 0.012;
+            else if(from === "USD" && to === "INR") rate = 83.50;
+            
+            if(from === to) rate = 1;
+            
+            document.getElementById("currOutput").value = (amount * rate).toFixed(4) + " " + to;
+        }
+    </script>
+</body>
+</html>

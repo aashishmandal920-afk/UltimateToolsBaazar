@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Age Calculator</title>
+    <link rel="stylesheet" href="style.css">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+</head>
+<body>
+    <div class="tool-container">
+        <h2 style="color: var(--primary-blue);">⏳ Age Calculator</h2>
+        <label>Date of Birth:</label>
+        <input type="date" id="dobInput" value="1998-11-28">
+        <label>Age at the Date of:</label>
+        <input type="date" id="targetDateInput">
+        
+        <button onclick="calculateAge()">Calculate Age</button>
+        
+        <div class="result-box" id="ageResult">Result will appear here...</div>
+    </div>
+
+    <script>
+        window.onload = () => document.getElementById("targetDateInput").value = new Date().toISOString().split('T')[0];
+
+        function calculateAge() {
+            let dob = new Date(document.getElementById("dobInput").value);
+            let target = new Date(document.getElementById("targetDateInput").value);
+            if(isNaN(dob) || isNaN(target)) return;
+
+            let years = target.getFullYear() - dob.getFullYear();
+            let months = target.getMonth() - dob.getMonth();
+            let days = target.getDate() - dob.getDate();
+
+            if (days < 0) { months--; days += new Date(target.getFullYear(), target.getMonth(), 0).getDate(); }
+            if (months < 0) { years--; months += 12; }
+
+            let timeDiff = target.getTime() - dob.getTime();
+            let totalDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+            let totalMonths = (years * 12) + months;
+            let totalWeeks = Math.floor(totalDays / 7);
+            
+            let html = `
+                <p><strong>${years} years ${months} months ${days} days</strong></p>
+                <hr style="border:1px solid var(--border-color);">
+                <p>or ${totalMonths} months ${days} days</p>
+                <p>or ${totalWeeks} weeks ${totalDays % 7} days</p>
+                <p>or ${totalDays.toLocaleString()} days</p>
+                <p>or ${(totalDays * 24).toLocaleString()} hours</p>
+                <p>or ${(totalDays * 24 * 60).toLocaleString()} minutes</p>
+                <p>or ${(totalDays * 24 * 60 * 60).toLocaleString()} seconds</p>
+            `;
+            document.getElementById("ageResult").innerHTML = html;
+        }
+    </script>
+</body>
+</html>

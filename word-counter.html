@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Counter</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+    </script>
+</head>
+<body>
+    <div class="tool-container">
+        <h2 style="color: var(--primary-blue);">📝 Word Counter</h2>
+        <textarea id="userInput" placeholder="Yahan apna text paste karein..." style="height: 150px;"></textarea>
+        <button onclick="countWords()">Count Words</button>
+        <div class="result-box" id="wordResult">Total Words: 0</div>
+    </div>
+
+    <script>
+        function countWords() {
+            let text = document.getElementById("userInput").value;
+            let words = text.trim().split(/\s+/);
+            let count = text.trim() === "" ? 0 : words.length;
+            document.getElementById("wordResult").innerText = "Total Words: " + count;
+        }
+    </script>
+</body>
+</html>

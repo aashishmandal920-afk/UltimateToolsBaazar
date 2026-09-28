@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image File Size Reducer - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+</head>
+<body>
+    <div class="tool-container">
+        <a href="index.html" class="back-link">← Back to Dashboard</a>
+        <h2>🗜️ Image File Size Reducer</h2>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:15px;">Upload any image and compress size locally.</p>
+
+        <input type="file" id="imageInput" accept="image/*" style="cursor:pointer;">
+        
+        <label style="font-size:13px; font-weight:600;">Compression Level:</label>
+        <select id="qualitySelect">
+            <option value="0.8">Low Compression (High Quality)</option>
+            <option value="0.5" selected>Medium Compression (Balanced)</option>
+            <option value="0.2">High Compression (Small Size)</option>
+        </select>
+
+        <button class="action-btn" onclick="compressImage()">Compress Image</button>
+        <div class="result-box" id="resultBox" style="display:none;"></div>
+    </div>
+    <script>
+        function compressImage() {
+            let fileInput = document.getElementById('imageInput');
+            let quality = parseFloat(document.getElementById('qualitySelect').value);
+            let box = document.getElementById('resultBox');
+            box.style.display = "block";
+
+            if(!fileInput.files || fileInput.files.length === 0) {
+                box.innerHTML = "⚠️ Please select an image first.";
+                return;
+            }
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                let img = new Image();
+                img.src = e.target.result;
+                img.onload = function() {
+                    let canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    let ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    let newDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    let newSizeKB = Math.round((newDataUrl.length * 0.75) / 1024);
+                    
+                    box.innerHTML = `
+                        <p style="color:#10b981; font-weight:600; margin-bottom:8px;">✅ Compressed Successfully!</p>
+                        <p>New Size: ~${newSizeKB} KB</p>
+                        <a href="${newDataUrl}" download="compressed_${file.name}" style="display:block; margin-top:10px; background:var(--primary); color:white; padding:8px; text-align:center; text-decoration:none; border-radius:4px;">Download Image</a>
+                    `;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

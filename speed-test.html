@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ultimate Speed Test - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <style>
+        .speed-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 20px 0; text-align: center; }
+        .speed-box { background: var(--bg); padding: 20px; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .speed-title { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .speed-main { font-size: 36px; font-weight: bold; color: var(--primary); }
+        .speed-sub { font-size: 14px; color: var(--text-muted); margin-top: 5px; }
+        .info-bar { display: flex; justify-content: space-between; background: var(--surface-hover); padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; border: 1px solid var(--border); }
+        .info-item span { color: var(--text-muted); display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; }
+        .info-item strong { color: var(--text); font-size: 14px; }
+        @media(max-width: 600px) { .speed-grid { grid-template-columns: 1fr; } .info-bar { flex-direction: column; gap: 10px; text-align: center; } }
+    </style>
+</head>
+<body>
+    <div class="tool-container" style="max-width: 800px;">
+        <a href="index.html" class="back-link">← Back to Dashboard</a>
+        <h2 style="text-align: center;">🚀 Ultimate Speed Test</h2>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px; text-align: center;">Sequence: Ping ➔ Download ➔ Upload ➔ Final Download</p>
+        
+        <div class="info-bar">
+            <div class="info-item"><span>Connection</span><strong>Multi (3 Threads)</strong></div>
+            <div class="info-item"><span>Your IP / ISP</span><strong id="isp-name">Detecting...</strong></div>
+            <div class="info-item"><span>Test Server</span><strong>Cloudflare Edge</strong></div>
+        </div>
+
+        <div class="speed-grid">
+            <div class="speed-box">
+                <div class="speed-title">Ping</div>
+                <div class="speed-main" id="ping-ms">--</div>
+                <div style="font-size:14px; font-weight:bold;">ms</div>
+            </div>
+            <div class="speed-box">
+                <div class="speed-title">⬇️ Download</div>
+                <div class="speed-main" id="dl-mbps">0.00</div>
+                <div style="font-size:14px; font-weight:bold;">Mbps</div>
+                <div class="speed-sub" id="dl-MBps">0.00 MB/s</div>
+            </div>
+            <div class="speed-box">
+                <div class="speed-title">⬆️ Upload</div>
+                <div class="speed-main" id="ul-mbps">0.00</div>
+                <div style="font-size:14px; font-weight:bold;">Mbps</div>
+                <div class="speed-sub" id="ul-MBps">0.00 MB/s</div>
+            </div>
+        </div>
+
+        <p id="statusText" style="font-size: 14px; color: var(--primary); margin-bottom: 20px; text-align: center; font-weight: 600;">Ready to test</p>
+
+        <button class="action-btn" id="testBtn" onclick="startUltimateTest()">Start Speed Test</button>
+    </div>
+
+    <script>
+        let isTesting = false;
+
+        // Fetch ISP info on page load
+        window.onload = async function() {
+            try {
+                let res = await fetch('https://ipwho.is/');
+                let data = await res.json();
+                document.getElementById('isp-name').innerText = `${data.connection.isp} (${data.ip})`;
+            } catch(e) {
+                document.getElementById('isp-name').innerText = "Unknown ISP";
+            }
+        }
+
+        // Delay helper for network cooldown
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        async function runDownloadTest(statusMessage, isPhase3 = false) {
+            document.getElementById('statusText').innerText = statusMessage;
+            
+            if(!isPhase3) {
+                document.getElementById('dl-mbps').innerText = "0.00";
+                document.getElementById('dl-MBps').innerText = "0.00 MB/s";
+            }
+
+            return new Promise((resolve) => {
+                let totalLoaded = 0;
+                let startTime = performance.now();
+                let xhrList = [];
+                let isAborted = false;
+
+                for(let i=0; i<3; i++) {
+                    let xhr = new XMLHttpRequest();
+                    xhrList.push(xhr);
+                    // Add index 'i' to cacheBust to force separate parallel connections
+                    xhr.open("GET", "https://speed.cloudflare.com/__down?bytes=25000000&cacheBust=" + Date.now() + "-" + i, true);
+                    
+                    let lastLoaded = 0;
+                    xhr.onprogress = function(e) {
+                        if (isAborted) return;
+                        let chunk = e.loaded - lastLoaded;
+                        totalLoaded += chunk;
+                        lastLoaded = e.loaded;
+                        
+                        if (totalLoaded > 0) {
+                            let duration = (performance.now() - startTime) / 1000;
+                            if(duration > 0.5) {
+                                let mbps = ((totalLoaded * 8) / duration / (1024 * 1024)).toFixed(2);
+                                let mBps = (mbps / 8).toFixed(2);
+
+                                // In Phase 3, hold the Phase 1 speed for the first 2 seconds so UI doesn't drop to zero
+                                if (isPhase3 && duration < 2) {
+                                    let currentVal = parseFloat(document.getElementById('dl-mbps').innerText) || 0;
+                                    if (currentVal > parseFloat(mbps)) return; 
+                                }
+                                
+                                document.getElementById('dl-mbps').innerText = mbps;
+                                document.getElementById('dl-MBps').innerText = `${mBps} MB/s`;
+                            }
+                        }
+                    };
+                    xhr.send();
+                }
+
+                // Strictly abort and clean up after 8 seconds
+                setTimeout(() => {
+                    isAborted = true;
+                    xhrList.forEach(x => {
+                        x.onprogress = null; // Detach listener
+                        x.abort(); 
+                    });
+                    resolve();
+                }, 8000); 
+            });
+        }
+
+        async function runUploadTest() {
+            document.getElementById('statusText').innerText = "Testing Upload Speed... ⬆️";
+            document.getElementById('ul-mbps').innerText = "0.00";
+            document.getElementById('ul-MBps').innerText = "0.00 MB/s";
+
+            return new Promise((resolve) => {
+                let totalUploaded = 0;
+                let startTime = performance.now();
+                let xhrList = [];
+                let isAborted = false;
+                
+                // Use Int8Array for better cross-browser safe payload (5MB)
+                let dummyData = new Int8Array(5 * 1024 * 1024);
+
+                for(let i=0; i<3; i++) {
+                    let xhr = new XMLHttpRequest();
+                    xhrList.push(xhr);
+                    xhr.open("POST", "https://speed.cloudflare.com/__up?cacheBust=" + Date.now() + "-" + i, true);
+                    
+                    let lastUploaded = 0;
+                    xhr.upload.onprogress = function(e) {
+                        if (isAborted) return;
+                        let chunk = e.loaded - lastUploaded;
+                        totalUploaded += chunk;
+                        lastUploaded = e.loaded;
+                        
+                        if(totalUploaded > 0) {
+                            let duration = (performance.now() - startTime) / 1000;
+                            if(duration > 0.5) {
+                                let mbps = ((totalUploaded * 8) / duration / (1024 * 1024)).toFixed(2);
+                                let mBps = (mbps / 8).toFixed(2);
+                                document.getElementById('ul-mbps').innerText = mbps;
+                                document.getElementById('ul-MBps').innerText = `${mBps} MB/s`;
+                            }
+                        }
+                    };
+                    
+                    try { xhr.send(dummyData); } catch(e) {}
+                }
+
+                // Strictly abort and clean up after 8 seconds
+                setTimeout(() => {
+                    isAborted = true;
+                    xhrList.forEach(x => {
+                        x.upload.onprogress = null; // Detach listener
+                        x.abort(); 
+                    });
+                    resolve();
+                }, 8000); 
+            });
+        }
+
+        async function startUltimateTest() {
+            if(isTesting) return;
+            isTesting = true;
+            
+            let btn = document.getElementById('testBtn');
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+
+            // Reset Initial UI
+            document.getElementById('ping-ms').innerText = "--";
+            document.getElementById('dl-mbps').innerText = "0.00";
+            document.getElementById('dl-MBps').innerText = "0.00 MB/s";
+            document.getElementById('ul-mbps').innerText = "0.00";
+            document.getElementById('ul-MBps').innerText = "0.00 MB/s";
+
+            // Phase 0: Ping Test
+            document.getElementById('statusText').innerText = "Testing Ping... 🏓";
+            try {
+                let pingStart = performance.now();
+                await fetch("https://1.1.1.1/cdn-cgi/trace", { mode: 'no-cors', cache: 'no-store' }); 
+                document.getElementById('ping-ms').innerText = Math.round(performance.now() - pingStart);
+            } catch(e) { 
+                document.getElementById('ping-ms').innerText = "Err"; 
+            }
+            await delay(1000); // 1-second gap after Ping
+
+            // Phase 1: First Download Check
+            await runDownloadTest("Testing Download Speed (Phase 1)... ⬇️", false);
+
+            // Cooldown 1: Network Reset
+            document.getElementById('statusText').innerText = "Optimizing Network... ⏳";
+            await delay(2000);
+
+            // Phase 2: Upload Check
+            await runUploadTest();
+
+            // Cooldown 2: Network Reset
+            document.getElementById('statusText').innerText = "Optimizing Network... ⏳";
+            await delay(2000);
+
+            // Phase 3: Final Download Check
+            await runDownloadTest("Testing Final Download Speed (Phase 2)... ⬇️", true);
+
+            document.getElementById('statusText').innerText = "✅ Speed Test Complete!";
+            document.getElementById('statusText').style.color = "#10b981";
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            isTesting = false;
+        }
+    </script>
+</body>
+</html>
