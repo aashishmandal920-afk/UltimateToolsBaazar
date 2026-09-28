@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIP Calculator - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <style>
+        .sip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        @media(max-width: 768px) {
+            .sip-grid { grid-template-columns: 1fr; }
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-with-slider {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color, #ccc);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg-input, #fff);
+        }
+        .input-with-slider span, .input-with-slider input[type="text"] {
+            padding: 10px 15px;
+            border: none;
+            background: transparent;
+            color: inherit;
+            font-size: 16px;
+            outline: none;
+        }
+        .input-with-slider input[type="text"] {
+            width: 100%;
+            text-align: right;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin-top: 8px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+        .result-summary {
+            background: var(--bg-card, #f8fafc);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+        .result-row span:last-child {
+            font-weight: bold;
+        }
+        /* Visual Bars */
+        .bar-container {
+            margin-top: 20px;
+        }
+        .bar-label {
+            font-size: 13px;
+            color: var(--text-muted, #64748b);
+            margin-bottom: 4px;
+        }
+        .bar-track {
+            background: var(--border-color, #e2e8f0);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .bar-fill-invested {
+            background: #ca8a04;
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .bar-fill-returns {
+            background: #10b981;
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-container" style="max-width: 900px; margin: 30px auto; padding: 30px;">
+        <a href="index.html" class="back-link" style="display:inline-block; margin-bottom:15px; color:var(--primary); text-decoration:none;">← Back to Dashboard</a>
+        <h2 style="color: var(--primary-blue); margin-bottom: 5px;">📈 SIP Calculator</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Find the future value of your monthly SIP investment with estimated returns.</p>
+        
+        <div class="sip-grid">
+            <!-- Left Column: Inputs -->
+            <div>
+                <!-- SIP Amount -->
+                <div class="input-group">
+                    <label>Monthly Investment (SIP Amount)</label>
+                    <div class="input-with-slider">
+                        <span>₹</span>
+                        <input type="text" id="sipAmountText" value="5,000" oninput="updateFromText('amount')">
+                    </div>
+                    <input type="range" id="sipAmountRange" min="500" max="100000" step="500" value="5000" oninput="updateFromRange('amount')">
+                </div>
+
+                <!-- Expected Rate of Return -->
+                <div class="input-group">
+                    <label>Expected Rate of Return (p.a.)</label>
+                    <div class="input-with-slider">
+                        <input type="text" id="sipRateText" value="12" oninput="updateFromText('rate')">
+                        <span>%</span>
+                    </div>
+                    <input type="range" id="sipRateRange" min="1" max="30" step="0.5" value="12" oninput="updateFromRange('rate')">
+                </div>
+
+                <!-- Investment Duration -->
+                <div class="input-group">
+                    <label>Investment Duration (Years)</label>
+                    <div class="input-with-slider">
+                        <input type="text" id="sipYearsText" value="15" oninput="updateFromText('years')">
+                        <span>Y</span>
+                    </div>
+                    <input type="range" id="sipYearsRange" min="1" max="40" step="1" value="15" oninput="updateFromRange('years')">
+                </div>
+            </div>
+
+            <!-- Right Column: Results & Graphs -->
+            <div>
+                <div class="result-summary">
+                    <div class="result-row">
+                        <span>Total Investment:</span>
+                        <span id="resInvested" style="color: #ca8a04;">₹ 9,00,000</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Est. Wealth Gained:</span>
+                        <span id="resReturns" style="color: #10b981;">₹ 15,98,421</span>
+                    </div>
+                    <div class="result-row" style="border-top: 1px solid var(--border-color); padding-top: 10px; font-size: 17px;">
+                        <span>Future Value:</span>
+                        <span id="resTotal" style="color: var(--primary-blue);">₹ 24,98,421</span>
+                    </div>
+
+                    <!-- Visual Progress Bars -->
+                    <div class="bar-container">
+                        <div class="bar-label">Your Investments</div>
+                        <div class="bar-track">
+                            <div class="bar-fill-invested" id="barInvested"></div>
+                        </div>
+
+                        <div class="bar-label">Total Value of Investments</div>
+                        <div class="bar-track">
+                            <div class="bar-fill-returns" id="barTotal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 15px;">
+            <strong>Disclaimer:</strong> This calculator is for illustration purposes only and does not represent actual returns. Mutual fund investments are subject to market risks.
+        </div>
+    </div>
+
+    <script>
+        function formatINR(num) {
+            return '₹ ' + Number(num.toFixed(0)).toLocaleString('en-IN');
+        }
+
+        function calculateSIP() {
+            let p = parseFloat(document.getElementById('sipAmountRange').value) || 0;
+            let annualRate = parseFloat(document.getElementById('sipRateRange').value) || 0;
+            let years = parseFloat(document.getElementById('sipYearsRange').value) || 0;
+
+            let i = annualRate / 12 / 100;
+            let n = years * 12;
+
+            let investedAmount = p * n;
+            let futureValue = p * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
+            if (annualRate === 0) futureValue = investedAmount;
+            let estReturns = futureValue - investedAmount;
+
+            // Display Results
+            document.getElementById('resInvested').innerText = formatINR(investedAmount);
+            document.getElementById('resReturns').innerText = formatINR(estReturns);
+            document.getElementById('resTotal').innerText = formatINR(futureValue);
+
+            // Bar widths percentage calculation
+            let maxVal = futureValue > 0 ? futureValue : 1;
+            let invPercent = (investedAmount / maxVal) * 100;
+            document.getElementById('barInvested').style.width = invPercent + '%';
+            document.getElementById('barTotal').style.width = '100%';
+        }
+
+        function updateFromRange(type) {
+            if (type === 'amount') {
+                let val = document.getElementById('sipAmountRange').value;
+                document.getElementById('sipAmountText5') // handled below
+                document.getElementById('sipAmountText').value = Number(val).toLocaleString('en-IN');
+            } else if (type === 'rate') {
+                document.getElementById('sipRateText').value = document.getElementById('sipRateRange').value;
+            } else if (type === 'years') {
+                document.getElementById('sipYearsText').value = document.getElementById('sipYearsRange').value;
+            }
+            calculateSIP();
+        }
+
+        function updateFromText(type) {
+            if (type === 'amount') {
+                let raw = document.getElementById('sipAmountText').value.replace(/,/g, '');
+                let val = parseFloat(raw) || 0;
+                document.getElementById('sipAmountRange').value = val;
+            } else if (type === 'rate') {
+                let val = parseFloat(document.getElementById('sipRateText').value) || 0;
+                document.getElementById('sipRateRange').value = val;
+            } else if (type === 'years') {
+                let val = parseFloat(document.getElementById('sipYearsText').value) || 0;
+                document.getElementById('sipYearsRange').value = val;
+            }
+            calculateSIP();
+        }
+
+        // Run on load
+        window.onload = function() {
+            calculateSIP();
+        };
+    </script>
+</body>
+</html>
