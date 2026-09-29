@@ -144,12 +144,25 @@
     <div class="feedback-section">
         <h3>💬 Send Feedback or Contact Us</h3>
         <p>Drop your feedback or a message with your contact details. Your response will be recorded directly in our system.</p>
+        
         <form id="feedbackForm" onsubmit="submitFeedback(event)">
-            <input type="text" id="userName" placeholder="Your Name" required>
-            <input type="text" id="userContact" placeholder="Contact Number" required>
-            <input type="text" id="userEmail" placeholder="Email" required>
-            <input type="text" id="userPurpose" placeholder="Purpose" required>
-            <textarea id="userMsg" rows="3" placeholder="Your message or tool request..." required></textarea>
+            <input type="text" id="userName" name="name" placeholder="Your Name" required>
+            <input type="text" id="userContact" name="contact" placeholder="Contact Number" required>
+            <input type="email" id="userEmail" name="email" placeholder="Email" required>
+            
+            <!-- Naya Dropdown Field -->
+            <select id="userPurpose" name="purpose" required style="width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; font-size: 15px; background: var(--bg-input, #fff); color: inherit; appearance: none; cursor: pointer;">
+                <option value="" disabled selected>Select Purpose</option>
+                <option value="General Inquiry">General Inquiry</option>
+                <option value="Tool/Feature Request">Tool/Feature Request</option>
+                <option value="Website Issue/Bug Report">Website Issue / Bug Report</option>
+                <option value="Business/Partnership">Business / Partnership</option>
+                <option value="Feedback/Suggestion">Feedback / Suggestion</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <textarea id="userMsg" name="message" rows="3" placeholder="Your message or tool request..." required></textarea>
+            
             <button type="submit" class="action-btn">Submit Feedback</button>
         </form>
         <p id="formStatus" style="margin-top: 10px; font-size: 13px;"></p>
