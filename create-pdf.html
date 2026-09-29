@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create PDF - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+    </script>
+    <style>
+        .pdf-builder { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
+        .input-group { display: flex; gap: 10px; align-items: center; }
+        .input-group input[type="text"] { flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--bg-color); color: var(--text-color); }
+        .input-group input[type="file"] { display: none; }
+        .preview-area { min-height: 200px; border: 2px dashed var(--border-color); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .preview-item { background: var(--bg-color); border: 1px solid var(--border-color); padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .preview-item img { max-height: 50px; border-radius: 3px; }
+        .action-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .action-btns button { flex: 1; }
+    </style>
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+    <div class="tool-container" style="max-width: 800px;">
+        <h2 style="color: var(--primary-blue);">📄 Create a PDF from Text & Images</h2>
+        <p class="small-text">Add text or upload images to generate a new PDF document.</p>
+        
+        <div class="pdf-builder">
+            <div class="input-group">
+                <input type="text" id="textInput" placeholder="Enter text for PDF...">
+                <button onclick="addTextToPreview()" class="action-btn" style="width: auto;">➕ Add Text</button>
+            </div>
+            <div class="input-group">
+                <input type="file" id="imageInput" accept="image/*" multiple>
+                <button onclick="document.getElementById('imageInput').click()" class="action-btn" style="width: auto;">🖼️ Upload Images</button>
+            </div>
+
+            <div class="preview-area" id="previewArea">
+                <p style="color: #888; text-align: center; margin-top: 50px;">Your content preview will appear here...</p>
+            </div>
+
+            <div class="action-btns">
+                <button onclick="generatePDF()" class="action-btn" style="background: #10b981;">🚀 Generate & Download PDF</button>
+                <button onclick="clearBuilder()" class="action-btn" style="background: #ef4444;">🗑️ Clear All</button>
+            </div>
+            <p id="statusMsg" style="text-align: center; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <script>
+        let pdfContent = []; // Array to store text and images
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    pdfContent.push({ type: 'image', data: event.target.result, name: file.name });
+                    renderPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+            this.value = ''; // Reset input
+        });
+
+        function addTextToPreview() {
+            const text = document.getElementById('textInput').value.trim();
+            if(!text) return;
+            pdfContent.push({ type: 'text', content: text });
+            document.getElementById('textInput').value = '';
+            renderPreview();
+        }
+
+        function renderPreview() {
+            const previewArea = document.getElementById('previewArea');
+            previewArea.innerHTML = '';
+            
+            if(pdfContent.length === 0) {
+                previewArea.innerHTML = '<p style="color: #888; text-align: center; margin-top: 50px;">Your content preview will appear here...</p>';
+                return;
+            }
+
+            pdfContent.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                if(item.type === 'text') {
+                    div.innerHTML = `<span>📝 ${item.content}</span> <span style="color: #ef4444; cursor: pointer;" onclick="removeItem(${index})">❌</span>`;
+                } else {
+                    div.innerHTML = `<span>🖼️ <img src="${item.data}" alt="preview"> ${item.name}</span> <span style="color: #ef4444; cursor: pointer;" onclick="removeItem(${index})">❌</span>`;
+                }
+                previewArea.appendChild(div);
+            });
+        }
+
+        function removeItem(index) {
+            pdfContent.splice(index, 1);
+            renderPreview();
+        }
+
+        function clearBuilder() {
+            pdfContent = [];
+            renderPreview();
+            document.getElementById('statusMsg').innerText = '';
+        }
+
+        async function generatePDF() {
+            if(pdfContent.length === 0) {
+                alert("Please add some text or images first.");
+                return;
+            }
+
+            const status = document.getElementById('statusMsg');
+            status.style.color = "#3b82f6";
+            status.innerText = "⏳ Generating PDF...";
+
+            try {
+                const pdfDoc = await PDFLib.PDFDocument.create();
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+                
+                let page = pdfDoc.addPage([595.28, 841.89]); // A4 Size
+                let y = 800; // Start from top
+                const margin = 50;
+                const maxWidth = 595.28 - (margin * 2);
+
+                for (let item of pdfContent) {
+                    if (item.type === 'text') {
+                        const lines = wrapText(item.content, font, 12, maxWidth);
+                        for (let line of lines) {
+                            if (y < 50) { // Add new page if bottom reached
+                                page = pdfDoc.addPage([595.28, 841.89]);
+                                y = 800;
+                            }
+                            page.drawText(line, { x: margin, y: y, size: 12, font: font, color: PDFLib.rgb(0, 0, 0) });
+                            y -= 20;
+                        }
+                        y -= 10; // Extra space after text block
+                    } else if (item.type === 'image') {
+                        const imageBytes = await fetch(item.data).then(res => res.arrayBuffer());
+                        let image;
+                        if (item.data.includes('png')) {
+                            image = await pdfDoc.embedPng(imageBytes);
+                        } else {
+                            image = await pdfDoc.embedJpg(imageBytes);
+                        }
+                        
+                        // Scale image to fit page width
+                        const scale = Math.min(1, maxWidth / image.width);
+                        const imgWidth = image.width * scale;
+                        const imgHeight = image.height * scale;
+
+                        if (y - imgHeight < 50) { // New page if image doesn't fit
+                            page = pdfDoc.addPage([595.28, 841.89]);
+                            y = 800;
+                        }
+
+                        page.drawImage(image, { x: margin, y: y - imgHeight, width: imgWidth, height: imgHeight });
+                        y -= (imgHeight + 20);
+                    }
+                }
+
+                const pdfBytes = await pdfDoc.save();
+                saveAs(new Blob([pdfBytes], { type: 'application/pdf' }), 'Created_Document.pdf');
+                
+                status.style.color = "#10b981";
+                status.innerText = "✅ PDF Generated Successfully!";
+            } catch (error) {
+                console.error(error);
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error generating PDF.";
+            }
+        }
+
+        // Helper to wrap text
+        function wrapText(text, font, fontSize, maxWidth) {
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+            
+            for (let word of words) {
+                const testLine = currentLine ? currentLine + ' ' + word : word;
+                const width = font.widthOfTextAtSize(testLine, fontSize);
+                if (width > maxWidth) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = testLine;
+                }
+            }
+            if (currentLine) lines.push(currentLine);
+            return lines;
+        }
+    </script>
+</body>
+</html>
