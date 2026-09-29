@@ -3,17 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate QR & Barcode Suite — Generate, Scan, Customize</title>
+<title>Ultimate QR Code Suite — Generate & Scan</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
-<!-- ✅ FIXED Libraries -->
+<!-- Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-<script src="https://unpkg.com/@zxing/library@0.20.0/umd/index.min.js"></script>
 
 <script>
   document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
@@ -58,13 +56,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .theme-toggle:hover{background:rgba(255,255,255,0.35);transform:rotate(20deg)}
 
 .tabs-wrapper{display:flex;justify-content:center;margin:-22px auto 0;position:relative;z-index:5;padding:0 20px}
-.tabs{display:flex;background:var(--card);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;gap:4px;flex-wrap:wrap;justify-content:center;max-width:1000px}
+.tabs{display:flex;background:var(--card);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;gap:4px;flex-wrap:wrap;justify-content:center;max-width:600px}
 .tab-btn{padding:12px 22px;border:none;background:transparent;color:var(--text-muted);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border-radius:10px;transition:0.25s;display:flex;align-items:center;gap:8px;white-space:nowrap}
 .tab-btn:hover{color:var(--text);background:rgba(99,102,241,0.08)}
 .tab-btn.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
 .tab-btn i{font-size:14px}
 
-.panels{max-width:1400px;margin:30px auto;padding:0 20px}
+.panels{max-width:1200px;margin:30px auto;padding:0 20px}
 .panel{display:none;animation:fadeIn 0.4s ease}
 .panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -101,16 +99,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn{padding:12px 20px;border:none;border-radius:10px;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;transition:0.25s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 14px rgba(99,102,241,0.4)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.5)}
-.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:white;box-shadow:0 4px 14px rgba(16,185,129,0.4)}
-.btn-success:hover{transform:translateY(-2px)}
 .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;box-shadow:0 4px 14px rgba(239,68,68,0.4)}
 .btn-danger:hover{transform:translateY(-2px)}
 .btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
 .btn-outline:hover{border-color:var(--primary);color:var(--primary)}
 .btn-block{width:100%}
-.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
 .btn-sm{padding:8px 14px;font-size:12px}
-
 .btn-group{display:flex;gap:10px;flex-wrap:wrap}
 
 .preview-area{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;min-height:520px;
@@ -121,9 +115,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   background-size:20px 20px;background-position:0 0,10px 10px;background-color:#0f172a}
 .preview-empty{color:var(--text-muted);text-align:center;font-size:13px;font-weight:500}
 .preview-empty i{font-size:52px;opacity:0.3;margin-bottom:14px;display:block}
-#qrPreviewCanvas,#barcodePreviewCanvas{max-width:100%;height:auto;display:block;text-align:center}
+#qrPreviewCanvas{max-width:100%;height:auto;display:block;text-align:center}
 #qrPreviewCanvas canvas{display:inline-block;box-shadow:0 8px 30px rgba(0,0,0,0.15);border-radius:6px}
-#barcodePreviewCanvas svg{box-shadow:0 8px 30px rgba(0,0,0,0.15);border-radius:6px;max-width:100%;height:auto}
+#qrPreviewCanvas img{display:inline-block;box-shadow:0 8px 30px rgba(0,0,0,0.15);border-radius:6px}
 
 .result-box{padding:16px;background:var(--bg);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;word-break:break-all;border:1px dashed var(--border);margin-top:14px;display:none;position:relative}
 .result-box.show{display:block}
@@ -133,11 +127,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .result-label{font-size:10px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
 .result-content{padding-right:80px;line-height:1.5}
 
-#qr-reader-container,#barcode-reader-container{width:100%;max-width:500px;margin:0 auto;border-radius:12px;overflow:hidden;background:black;position:relative}
-#qr-reader,#barcode-reader{width:100%!important}
-#qr-reader video,#barcode-reader video{width:100%!important;border-radius:12px}
-#qr-reader__dashboard_section_csr button,#barcode-reader__dashboard_section_csr button{background:var(--primary)!important;color:white!important;border:none!important;padding:10px 18px!important;border-radius:8px!important;font-family:inherit!important;font-weight:600!important;cursor:pointer!important;margin:5px!important}
-#qr-reader__header_message,#barcode-reader__header_message{background:var(--card)!important;color:var(--text)!important;font-family:inherit!important;font-size:12px!important}
+#qr-reader-container{width:100%;max-width:500px;margin:0 auto;border-radius:12px;overflow:hidden;background:black;position:relative}
+#qr-reader{width:100%!important}
+#qr-reader video{width:100%!important;border-radius:12px}
+#qr-reader__dashboard_section_csr button{background:var(--primary)!important;color:white!important;border:none!important;padding:10px 18px!important;border-radius:8px!important;font-family:inherit!important;font-weight:600!important;cursor:pointer!important;margin:5px!important}
+#qr-reader__header_message{background:var(--card)!important;color:var(--text)!important;font-family:inherit!important;font-size:12px!important}
 
 .dropzone{border:2px dashed var(--border);border-radius:12px;padding:30px 20px;text-align:center;cursor:pointer;transition:0.25s;background:var(--bg)}
 .dropzone:hover,.dropzone.dragover{border-color:var(--primary);background:rgba(99,102,241,0.05)}
@@ -170,8 +164,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   .top-header h1{font-size:22px}
   .top-header p{font-size:12px}
   .tab-btn{padding:9px 14px;font-size:12px}
-  .tab-btn span{display:none}
-  .tab-btn i{font-size:16px}
   .card-body{padding:16px}
   .download-grid{grid-template-columns:1fr}
   .preview-area{min-height:380px;padding:16px}
@@ -184,8 +176,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
     <i class="fas fa-moon"></i>
   </button>
-  <h1>⚡ Ultimate QR & Barcode Suite</h1>
-  <p>Generate, customize, scan QR codes & barcodes — 100% free, no server, works offline in your browser.</p>
+  <h1>🔳 Ultimate QR Code Suite</h1>
+  <p>Generate & scan QR codes — 12+ types, custom colors, logo upload. 100% free, no server.</p>
 </header>
 
 <div class="tabs-wrapper">
@@ -195,12 +187,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </button>
     <button class="tab-btn" onclick="switchTab('qr-read',this)">
       <i class="fas fa-camera"></i><span>QR Scanner</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('bar-gen',this)">
-      <i class="fas fa-barcode"></i><span>Barcode Generator</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('bar-read',this)">
-      <i class="fas fa-expand"></i><span>Barcode Scanner</span>
     </button>
   </div>
 </div>
@@ -230,7 +216,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
               <button class="pill-btn" onclick="setQRType('crypto',this)"><i class="fab fa-bitcoin"></i> Crypto</button>
             </div>
           </div>
+
           <div id="qrDynamicFields"></div>
+
           <div class="form-group">
             <label>Size: <span id="qrSizeVal">300</span>px</label>
             <input type="range" id="qrSize" min="100" max="1000" value="300" step="50" oninput="document.getElementById('qrSizeVal').textContent=this.value;generateQR()">
@@ -260,15 +248,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           <button class="btn btn-outline btn-sm btn-block" onclick="removeLogo()" id="qrRemoveLogoBtn" style="display:none;margin-bottom:10px">
             <i class="fas fa-times"></i> Remove Logo
           </button>
+
           <button class="btn btn-primary btn-block" onclick="generateQR()">
             <i class="fas fa-magic"></i> Generate QR Code
           </button>
         </div>
       </div>
+
       <div class="card">
         <div class="card-header"><h3><i class="fas fa-eye"></i> Preview</h3></div>
         <div class="card-body">
-          <div class="preview-area">
+          <div class="preview-area" id="qrPreviewArea">
             <div class="preview-empty" id="qrEmptyState">
               <i class="fas fa-qrcode"></i>
               <p>Your QR code will appear here</p>
@@ -277,13 +267,21 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
               <div id="qrPreviewCanvas"></div>
             </div>
           </div>
+
           <div id="qrDownloadArea" class="hidden">
             <div class="download-grid">
-              <button class="download-btn" onclick="downloadQR('png')"><i class="fas fa-image"></i> PNG</button>
-              <button class="download-btn" onclick="downloadQR('jpeg')"><i class="fas fa-file-image"></i> JPG</button>
-              <button class="download-btn" onclick="downloadQR('svg')"><i class="fas fa-code"></i> SVG</button>
+              <button class="download-btn" onclick="downloadQR('png')">
+                <i class="fas fa-image"></i> PNG
+              </button>
+              <button class="download-btn" onclick="downloadQR('jpeg')">
+                <i class="fas fa-file-image"></i> JPG
+              </button>
+              <button class="download-btn" onclick="copyQRToClipboard()">
+                <i class="fas fa-copy"></i> Copy
+              </button>
             </div>
           </div>
+
           <div class="stats-row" id="qrStats" style="display:none">
             <div class="stat-item"><strong id="statSize">0</strong><span>Size</span></div>
             <div class="stat-item"><strong id="statType">-</strong><span>Type</span></div>
@@ -294,7 +292,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- ==================== QR READER ==================== -->
+  <!-- ==================== QR SCANNER ==================== -->
   <div id="qr-read" class="panel">
     <div class="panel-grid">
       <div class="card">
@@ -302,18 +300,27 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <div class="card-body">
           <div class="form-group">
             <label>Select Camera</label>
-            <select id="qrCameraSelect" onchange="startQRCamera()">
+            <select id="qrCameraSelect">
               <option>Click Start to load cameras</option>
             </select>
           </div>
           <div class="btn-group" style="margin-bottom:14px">
-            <button class="btn btn-primary" onclick="startQRCamera()" style="flex:1"><i class="fas fa-play"></i> Start</button>
-            <button class="btn btn-danger" onclick="stopQRCamera()" style="flex:1"><i class="fas fa-stop"></i> Stop</button>
+            <button class="btn btn-primary" onclick="startQRCamera()" style="flex:1">
+              <i class="fas fa-play"></i> Start
+            </button>
+            <button class="btn btn-danger" onclick="stopQRCamera()" style="flex:1">
+              <i class="fas fa-stop"></i> Stop
+            </button>
           </div>
-          <div id="qr-reader-container" style="display:none"><div id="qr-reader"></div></div>
-          <div class="wifi-note"><i class="fas fa-shield-alt"></i> All processing happens locally. Nothing is uploaded.</div>
+          <div id="qr-reader-container" style="display:none">
+            <div id="qr-reader"></div>
+          </div>
+          <div class="wifi-note">
+            <i class="fas fa-shield-alt"></i> All processing happens locally. Nothing is uploaded.
+          </div>
         </div>
       </div>
+
       <div class="card">
         <div class="card-header"><h3><i class="fas fa-image"></i> Upload Image</h3></div>
         <div class="card-body">
@@ -323,6 +330,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <span>Supports PNG, JPG, JPEG, WEBP</span>
           </div>
           <input type="file" id="qrImageInput" accept="image/*" style="display:none" onchange="handleQRImageUpload(event)">
+
           <div class="result-box" id="qrResultBox">
             <div class="result-actions">
               <button onclick="copyQRResult()" title="Copy"><i class="fas fa-copy"></i></button>
@@ -336,148 +344,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- ==================== BARCODE GENERATOR ==================== -->
-  <div id="bar-gen" class="panel">
-    <div class="panel-grid">
-      <div class="card">
-        <div class="card-header"><h3><i class="fas fa-cog"></i> Barcode Options</h3></div>
-        <div class="card-body">
-          <div class="form-group">
-            <label>Format</label>
-            <select id="barcodeFormat" onchange="generateBarcode()">
-              <optgroup label="Common Retail">
-                <option value="EAN13">EAN-13 (Retail Products)</option>
-                <option value="EAN8">EAN-8</option>
-                <option value="UPC">UPC-A</option>
-                <option value="UPCE">UPC-E</option>
-                <option value="ITF14">ITF-14 (Shipping)</option>
-              </optgroup>
-              <optgroup label="Logistics & Inventory">
-                <option value="CODE128" selected>CODE 128 (General)</option>
-                <option value="CODE128A">CODE 128 A</option>
-                <option value="CODE128B">CODE 128 B</option>
-                <option value="CODE128C">CODE 128 C</option>
-                <option value="CODE39">CODE 39</option>
-                <option value="CODE93">CODE 93</option>
-                <option value="codabar">Codabar</option>
-              </optgroup>
-              <optgroup label="Special">
-                <option value="ITF">ITF</option>
-                <option value="MSI">MSI</option>
-                <option value="MSI10">MSI 10</option>
-                <option value="MSI11">MSI 11</option>
-                <option value="MSI1010">MSI 1010</option>
-                <option value="MSI1110">MSI 1110</option>
-                <option value="pharmacode">Pharmacode</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Value / Data</label>
-            <input type="text" id="barcodeValue" value="123456789012" oninput="generateBarcode()" placeholder="Enter barcode value...">
-            <small style="font-size:11px;color:var(--text-muted);display:block;margin-top:6px" id="barcodeHint">
-              EAN-13 needs 12-13 digits. CODE128 accepts any text.
-            </small>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Width: <span id="barcodeWidthVal">2</span></label>
-              <input type="range" id="barcodeWidth" min="1" max="4" value="2" step="0.5" oninput="document.getElementById('barcodeWidthVal').textContent=this.value;generateBarcode()">
-            </div>
-            <div class="form-group">
-              <label>Height: <span id="barcodeHeightVal">80</span>px</label>
-              <input type="range" id="barcodeHeight" min="30" max="200" value="80" step="10" oninput="document.getElementById('barcodeHeightVal').textContent=this.value;generateBarcode()">
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Bar Color</label><input type="color" id="barcodeLineColor" value="#111827" oninput="generateBarcode()"></div>
-            <div class="form-group"><label>Background</label><input type="color" id="barcodeBgColor" value="#ffffff" oninput="generateBarcode()"></div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Display Text</label>
-              <select id="barcodeDisplayValue" onchange="generateBarcode()">
-                <option value="true" selected>Show</option>
-                <option value="false">Hide</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Text Size: <span id="barcodeFontSizeVal">14</span>px</label>
-              <input type="range" id="barcodeFontSize" min="8" max="24" value="14" oninput="document.getElementById('barcodeFontSizeVal').textContent=this.value;generateBarcode()">
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Text Color</label>
-            <input type="color" id="barcodeTextColor" value="#111827" oninput="generateBarcode()">
-          </div>
-          <button class="btn btn-primary btn-block" onclick="generateBarcode()">
-            <i class="fas fa-barcode"></i> Generate Barcode
-          </button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><h3><i class="fas fa-eye"></i> Preview</h3></div>
-        <div class="card-body">
-          <div class="preview-area">
-            <div class="preview-empty" id="barcodeEmptyState">
-              <i class="fas fa-barcode"></i>
-              <p>Your barcode will appear here</p>
-            </div>
-            <div id="barcodePreviewCanvas" class="hidden" style="text-align:center"></div>
-          </div>
-          <div id="barcodeDownloadArea" class="hidden">
-            <div class="download-grid">
-              <button class="download-btn" onclick="downloadBarcode('png')"><i class="fas fa-image"></i> PNG</button>
-              <button class="download-btn" onclick="downloadBarcode('jpeg')"><i class="fas fa-file-image"></i> JPG</button>
-              <button class="download-btn" onclick="downloadBarcode('svg')"><i class="fas fa-code"></i> SVG</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== BARCODE READER ==================== -->
-  <div id="bar-read" class="panel">
-    <div class="panel-grid">
-      <div class="card">
-        <div class="card-header"><h3><i class="fas fa-video"></i> Camera Scanner</h3></div>
-        <div class="card-body">
-          <div class="form-group">
-            <label>Select Camera</label>
-            <select id="barcodeCameraSelect" onchange="startBarcodeCamera()">
-              <option>Click Start to load cameras</option>
-            </select>
-          </div>
-          <div class="btn-group" style="margin-bottom:14px">
-            <button class="btn btn-primary" onclick="startBarcodeCamera()" style="flex:1"><i class="fas fa-play"></i> Start</button>
-            <button class="btn btn-danger" onclick="stopBarcodeCamera()" style="flex:1"><i class="fas fa-stop"></i> Stop</button>
-          </div>
-          <div id="barcode-reader-container" style="display:none"><div id="barcode-reader"></div></div>
-          <div class="wifi-note"><i class="fas fa-barcode"></i> Supports CODE128, EAN, UPC, CODE39, CODE93, ITF, Codabar & more.</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><h3><i class="fas fa-image"></i> Upload Image</h3></div>
-        <div class="card-body">
-          <div class="dropzone" id="barcodeDropzone" onclick="document.getElementById('barcodeImageInput').click()">
-            <i class="fas fa-cloud-upload-alt"></i>
-            <p>Drop barcode image here or click to browse</p>
-            <span>Supports PNG, JPG, JPEG, WEBP</span>
-          </div>
-          <input type="file" id="barcodeImageInput" accept="image/*" style="display:none" onchange="handleBarcodeImageUpload(event)">
-          <div class="result-box" id="barcodeResultBox">
-            <div class="result-actions">
-              <button onclick="copyBarcodeResult()" title="Copy"><i class="fas fa-copy"></i></button>
-            </div>
-            <div class="result-label"><i class="fas fa-check-circle"></i> Barcode Detected</div>
-            <div class="result-content" id="barcodeResultContent"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <div class="toast" id="toast">
@@ -485,8 +351,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <span id="toastMsg">Success</span>
 </div>
 
-<!-- ⚠️ PART 2 MEIN SCRIPT TAG YAHAN AAYEGA -->
-  <script>
+<script>
 /* ============================================================
    THEME
    ============================================================ */
@@ -526,9 +391,7 @@ function switchTab(id, btn){
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
   if(id !== 'qr-read') stopQRCamera();
-  if(id !== 'bar-read') stopBarcodeCamera();
   if(id === 'qr-read') loadQRCameras();
-  if(id === 'bar-read') loadBarcodeCameras();
 }
 
 /* ============================================================
@@ -642,6 +505,7 @@ function getQRContent(){
         const p = document.getElementById('qrField-wifipass')?.value || '';
         const t = document.getElementById('qrField-enctype')?.value || 'WPA';
         const h = document.getElementById('qrField-hidden')?.value || 'false';
+        if(!s) return '';
         return `WIFI:T:${t};S:${s};P:${p};H:${h};;`;
       }
       case 'vcard': {
@@ -654,6 +518,7 @@ function getQRContent(){
         const title = document.getElementById('qrField-vtitle')?.value || '';
         const url = document.getElementById('qrField-vurl')?.value || '';
         const addr = document.getElementById('qrField-vaddr')?.value || '';
+        if(!fn && !first && !last && !phone && !email) return '';
         let v = 'BEGIN:VCARD\nVERSION:3.0\n';
         if(fn || first || last) v += `N:${last};${first};;;\nFN:${fn || (first + ' ' + last).trim()}\n`;
         if(phone) v += `TEL;TYPE=CELL:${phone}\n`;
@@ -677,6 +542,7 @@ function getQRContent(){
         const start = document.getElementById('qrField-estart')?.value || '';
         const end = document.getElementById('qrField-eend')?.value || '';
         const desc = document.getElementById('qrField-edesc')?.value || '';
+        if(!title) return '';
         const fmt = d => d ? d.replace(/[-:]/g,'').split('T').join('T') + '00' : '';
         let v = 'BEGIN:VEVENT\n';
         if(title) v += `SUMMARY:${title}\n`;
@@ -777,6 +643,7 @@ function generateQR(){
         ctx.fillRect(x - pad, y - pad, logoSize + pad*2, logoSize + pad*2);
         ctx.drawImage(qrLogo, x, y, logoSize, logoSize);
       }
+      
       wrapper.classList.remove('hidden');
       empty.style.display = 'none';
       downloadArea.classList.remove('hidden');
@@ -825,10 +692,6 @@ function downloadQR(format){
     showToast('No QR to download', 'error');
     return;
   }
-  if(format === 'svg'){
-    showToast('SVG not supported — downloading PNG instead', 'info');
-    format = 'png';
-  }
   const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
   const ext = format === 'jpeg' ? 'jpg' : 'png';
   try {
@@ -843,8 +706,35 @@ function downloadQR(format){
   }
 }
 
+function copyQRToClipboard(){
+  const container = document.getElementById('qrPreviewCanvas');
+  const canvas = container.querySelector('canvas');
+  if(!canvas){
+    showToast('No QR to copy', 'error');
+    return;
+  }
+  try {
+    canvas.toBlob(blob => {
+      if(!blob){
+        showToast('Copy failed', 'error');
+        return;
+      }
+      if(navigator.clipboard && window.ClipboardItem){
+        navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]).then(() => showToast('Copied to clipboard!'))
+          .catch(() => showToast('Copy failed — download instead', 'error'));
+      } else {
+        showToast('Copy not supported — download instead', 'info');
+      }
+    }, 'image/png');
+  } catch(e){
+    showToast('Copy error', 'error');
+  }
+}
+
 /* ============================================================
-   QR READER
+   QR SCANNER
    ============================================================ */
 let qrScanner = null;
 let qrCamerasLoaded = false;
@@ -855,7 +745,9 @@ async function loadQRCameras(){
     const devices = await Html5Qrcode.getCameras();
     const select = document.getElementById('qrCameraSelect');
     if(devices && devices.length){
-      select.innerHTML = devices.map(d => `<option value="${d.id}">${d.label || 'Camera ' + d.id.substring(0,6)}</option>`).join('');
+      select.innerHTML = devices.map(d => 
+        `<option value="${d.id}">${d.label || 'Camera ' + d.id.substring(0,6)}</option>`
+      ).join('');
       qrCamerasLoaded = true;
     } else {
       select.innerHTML = '<option>No cameras found</option>';
@@ -893,7 +785,10 @@ async function startQRCamera(){
 
 async function stopQRCamera(){
   if(qrScanner){
-    try{ await qrScanner.stop(); await qrScanner.clear(); } catch(e){}
+    try{
+      await qrScanner.stop();
+      await qrScanner.clear();
+    } catch(e){}
     qrScanner = null;
   }
   document.getElementById('qr-reader-container').style.display = 'none';
@@ -938,8 +833,12 @@ function copyQRResult(){
 
 function openQRResult(){
   const text = document.getElementById('qrResultContent').textContent;
-  if(/^https?:\/\//i.test(text) || /^mailto:/i.test(text) || /^tel:/i.test(text)){
-    window.open(text, '_blank');
+  if(/^https?:\/\//i.test(text) || /^mailto:/i.test(text) || /^tel:/i.test(text) || /^geo:/i.test(text) || /^WIFI:/i.test(text)){
+    if(/^https?:\/\//i.test(text) || /^mailto:/i.test(text) || /^tel:/i.test(text)){
+      window.open(text, '_blank');
+    } else {
+      showToast('This type cannot be opened in browser', 'info');
+    }
   } else {
     showToast('Not a URL', 'info');
   }
@@ -962,307 +861,6 @@ qrDropzone.addEventListener('drop', e => {
 });
 
 /* ============================================================
-   BARCODE GENERATOR — FIXED
-   ============================================================ */
-function generateBarcode(){
-  const value = document.getElementById('barcodeValue').value.trim();
-  const format = document.getElementById('barcodeFormat').value;
-  const preview = document.getElementById('barcodePreviewCanvas');
-  const empty = document.getElementById('barcodeEmptyState');
-  const downloadArea = document.getElementById('barcodeDownloadArea');
-
-  if(!value){
-    preview.classList.add('hidden');
-    empty.style.display = 'block';
-    empty.innerHTML = '<i class="fas fa-barcode"></i><p>Your barcode will appear here</p>';
-    downloadArea.classList.add('hidden');
-    return;
-  }
-
-  // ✅ Check library loaded
-  if(typeof JsBarcode === 'undefined'){
-    preview.classList.add('hidden');
-    empty.style.display = 'block';
-    empty.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:var(--danger)"></i><p>Barcode library not loaded</p><span style="font-size:11px;color:var(--text-muted)">Please check your internet connection and refresh.</span>';
-    return;
-  }
-
-  const width = parseFloat(document.getElementById('barcodeWidth').value);
-  const height = parseInt(document.getElementById('barcodeHeight').value);
-  const lineColor = document.getElementById('barcodeLineColor').value;
-  const bgColor = document.getElementById('barcodeBgColor').value;
-  const displayValue = document.getElementById('barcodeDisplayValue').value === 'true';
-  const fontSize = parseInt(document.getElementById('barcodeFontSize').value);
-  const textColor = document.getElementById('barcodeTextColor').value;
-
-  try{
-    preview.innerHTML = '<svg id="barcodeSVG"></svg>';
-    preview.classList.remove('hidden');
-    empty.style.display = 'none';
-
-    JsBarcode("#barcodeSVG", value, {
-      format: format,
-      width: width,
-      height: height,
-      lineColor: lineColor,
-      background: bgColor,
-      displayValue: displayValue,
-      fontSize: fontSize,
-      font: 'Inter, sans-serif',
-      textMargin: 6,
-      fontOptions: 'bold',
-      margin: 12,
-      text: value,
-      valid: function(valid){
-        if(!valid){
-          console.warn('Barcode value invalid for format ' + format);
-        }
-      }
-    });
-
-    const svg = document.getElementById('barcodeSVG');
-    if(svg){
-      svg.querySelectorAll('text').forEach(t => t.setAttribute('fill', textColor));
-      svg.style.background = bgColor;
-      svg.style.borderRadius = '6px';
-    }
-    downloadArea.classList.remove('hidden');
-  } catch(e){
-    console.error('Barcode error:', e);
-    preview.classList.add('hidden');
-    empty.style.display = 'block';
-    empty.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:var(--warning)"></i>
-      <p>Invalid value for ${format}</p>
-      <span style="font-size:11px;color:var(--text-muted)">${e.message || 'Try a different format or value'}</span>`;
-    downloadArea.classList.add('hidden');
-  }
-}
-
-document.getElementById('barcodeFormat').addEventListener('change', function(){
-  const hints = {
-    EAN13: 'EAN-13 needs exactly 12 or 13 digits.',
-    EAN8: 'EAN-8 needs exactly 7 or 8 digits.',
-    UPC: 'UPC-A needs exactly 11 or 12 digits.',
-    UPCE: 'UPC-E needs 6, 7, or 8 digits.',
-    ITF14: 'ITF-14 needs exactly 13 or 14 digits.',
-    CODE39: 'CODE39 accepts A-Z, 0-9, and some symbols.',
-    CODE93: 'CODE93 accepts alphanumeric characters.',
-    pharmacode: 'Pharmacode accepts numbers 3-131070.',
-    MSI: 'MSI accepts digits only.',
-    codabar: 'Codabar accepts digits and -$:/.+ characters.'
-  };
-  document.getElementById('barcodeHint').textContent = hints[this.value] || 'Enter value for ' + this.value;
-  // Auto-set valid default value based on format
-  const input = document.getElementById('barcodeValue');
-  const val = input.value.trim();
-  if(this.value === 'EAN13' && !/^\d{12,13}$/.test(val)) input.value = '123456789012';
-  if(this.value === 'UPC' && !/^\d{11,12}$/.test(val)) input.value = '12345678901';
-  if(this.value === 'EAN8' && !/^\d{7,8}$/.test(val)) input.value = '1234567';
-  if(this.value === 'UPCE' && !/^\d{6,8}$/.test(val)) input.value = '123456';
-  if(this.value === 'ITF14' && !/^\d{13,14}$/.test(val)) input.value = '1234567890123';
-  generateBarcode();
-});
-
-function downloadBarcode(format){
-  const svg = document.getElementById('barcodeSVG');
-  if(!svg) return;
-  const bgColor = document.getElementById('barcodeBgColor').value;
-
-  if(format === 'svg'){
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const blob = new Blob([svgData], { type: 'image/svg+xml' });
-    downloadBlob(blob, 'barcode.svg');
-    showToast('Barcode downloaded!');
-    return;
-  }
-
-  const svgData = new XMLSerializer().serializeToString(svg);
-  const img = new Image();
-  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-  const url = URL.createObjectURL(svgBlob);
-
-  img.onload = () => {
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width || 800;
-    canvas.height = img.height || 300;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
-    canvas.toBlob(blob => {
-      downloadBlob(blob, 'barcode.' + (format === 'jpeg' ? 'jpg' : 'png'));
-      showToast('Barcode downloaded!');
-    }, 'image/' + format, 0.95);
-  };
-  img.onerror = () => showToast('Failed to convert', 'error');
-  img.src = url;
-}
-
-/* ============================================================
-   BARCODE READER
-   ============================================================ */
-let barcodeScanner = null;
-let barcodeCamerasLoaded = false;
-
-async function loadBarcodeCameras(){
-  if(barcodeCamerasLoaded) return;
-  try{
-    const devices = await Html5Qrcode.getCameras();
-    const select = document.getElementById('barcodeCameraSelect');
-    if(devices && devices.length){
-      select.innerHTML = devices.map(d => `<option value="${d.id}">${d.label || 'Camera ' + d.id.substring(0,6)}</option>`).join('');
-      barcodeCamerasLoaded = true;
-    } else {
-      select.innerHTML = '<option>No cameras found</option>';
-    }
-  } catch(e){
-    document.getElementById('barcodeCameraSelect').innerHTML = '<option>Permission denied</option>';
-  }
-}
-
-async function startBarcodeCamera(){
-  await stopBarcodeCamera();
-  await loadBarcodeCameras();
-  const camId = document.getElementById('barcodeCameraSelect').value;
-  if(!camId || camId.includes('denied') || camId.includes('No cameras')){
-    showToast('Camera not available', 'error');
-    return;
-  }
-  document.getElementById('barcode-reader-container').style.display = 'block';
-  barcodeScanner = new Html5Qrcode("barcode-reader");
-  try{
-    await barcodeScanner.start(
-      camId,
-      {
-        fps: 10,
-        qrbox: { width: 280, height: 180 },
-        formatsToSupport: [
-          Html5QrcodeSupportedFormats.CODE_128,
-          Html5QrcodeSupportedFormats.CODE_39,
-          Html5QrcodeSupportedFormats.CODE_93,
-          Html5QrcodeSupportedFormats.EAN_13,
-          Html5QrcodeSupportedFormats.EAN_8,
-          Html5QrcodeSupportedFormats.UPC_A,
-          Html5QrcodeSupportedFormats.UPC_E,
-          Html5QrcodeSupportedFormats.ITF,
-          Html5QrcodeSupportedFormats.CODABAR,
-          Html5QrcodeSupportedFormats.QR_CODE
-        ]
-      },
-      (decodedText) => {
-        showBarcodeResult(decodedText);
-        if(navigator.vibrate) navigator.vibrate(150);
-      },
-      () => {}
-    );
-  } catch(e){
-    console.error(e);
-    showToast('Failed to start camera: ' + e.message, 'error');
-  }
-}
-
-async function stopBarcodeCamera(){
-  if(barcodeScanner){
-    try{ await barcodeScanner.stop(); await barcodeScanner.clear(); } catch(e){}
-    barcodeScanner = null;
-  }
-  document.getElementById('barcode-reader-container').style.display = 'none';
-}
-
-function showBarcodeResult(text){
-  const box = document.getElementById('barcodeResultBox');
-  document.getElementById('barcodeResultContent').textContent = text;
-  box.classList.add('show');
-  showToast('Barcode detected!');
-}
-
-function handleBarcodeImageUpload(e){
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = new Image();
-    img.onload = () => {
-      try{
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-        // Try ZXing first (better for barcodes)
-        if(typeof ZXing !== 'undefined'){
-          try{
-            const hints = new Map();
-            hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
-              ZXing.BarcodeFormat.CODE_128,
-              ZXing.BarcodeFormat.CODE_39,
-              ZXing.BarcodeFormat.CODE_93,
-              ZXing.BarcodeFormat.EAN_13,
-              ZXing.BarcodeFormat.EAN_8,
-              ZXing.BarcodeFormat.UPC_A,
-              ZXing.BarcodeFormat.UPC_E,
-              ZXing.BarcodeFormat.ITF,
-              ZXing.BarcodeFormat.CODABAR,
-              ZXing.BarcodeFormat.QR_CODE
-            ]);
-            hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
-
-            const luminanceSource = new ZXing.RGBLuminanceSource(imageData.data, canvas.width, canvas.height);
-            const binaryBitmap = new ZXing.BinaryBitmap(new ZXing.HybridBinarizer(luminanceSource));
-            const readerZ = new ZXing.MultiFormatReader();
-            readerZ.setHints(hints);
-            const result = readerZ.decode(binaryBitmap);
-            if(result && result.text){
-              showBarcodeResult(result.text);
-              return;
-            }
-          } catch(zxErr){
-            console.log('ZXing failed, trying jsQR...');
-          }
-        }
-
-        // Fallback to jsQR
-        const qr = jsQR(imageData.data, imageData.width, imageData.height);
-        if(qr && qr.data){
-          showBarcodeResult(qr.data);
-        } else {
-          showToast('No barcode/QR found in image', 'error');
-        }
-      } catch(err){
-        console.error(err);
-        showToast('Failed to read barcode', 'error');
-      }
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function copyBarcodeResult(){
-  const text = document.getElementById('barcodeResultContent').textContent;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
-}
-
-const barcodeDropzone = document.getElementById('barcodeDropzone');
-barcodeDropzone.addEventListener('dragover', e => { e.preventDefault(); barcodeDropzone.classList.add('dragover'); });
-barcodeDropzone.addEventListener('dragleave', () => barcodeDropzone.classList.remove('dragover'));
-barcodeDropzone.addEventListener('drop', e => {
-  e.preventDefault();
-  barcodeDropzone.classList.remove('dragover');
-  const file = e.dataTransfer.files[0];
-  if(file && file.type.startsWith('image/')){
-    const input = document.getElementById('barcodeImageInput');
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    input.files = dt.files;
-    handleBarcodeImageUpload({ target: input });
-  }
-});
-
-/* ============================================================
    UTILITY
    ============================================================ */
 function downloadBlob(blob, filename){
@@ -1280,14 +878,18 @@ function downloadBlob(blob, filename){
    INIT
    ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
-  // QR default
+  // Load default QR type fields
   document.getElementById('qrDynamicFields').innerHTML = QR_TYPE_FIELDS.text;
+  
+  // Default sample
   const defaultField = document.getElementById('qrField-text');
-  if(defaultField) defaultField.value = 'https://omniconvertorstools.netlify.app/';
+  if(defaultField){
+    const saved = localStorage.getItem('qr_value_text');
+    defaultField.value = saved || 'https://omniconvertorstools.netlify.app/';
+  }
+  
+  // Auto-generate on load
   setTimeout(() => generateQR(), 400);
-
-  // Barcode default
-  setTimeout(() => generateBarcode(), 400);
 });
 </script>
 
