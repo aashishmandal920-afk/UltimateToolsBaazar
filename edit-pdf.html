@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit PDF - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+    </script>
+    <style>
+        .editor-layout { display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap; }
+        .canvas-container { flex: 2; min-width: 300px; overflow: auto; border: 1px solid var(--border-color); background: #fff; padding: 10px; border-radius: 8px; max-height: 600px; }
+        .sidebar { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 15px; }
+        .tool-btn-group { display: flex; flex-direction: column; gap: 10px; background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .tool-btn-group input[type="text"], .tool-btn-group input[type="file"] { width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-color); color: var(--text-color); }
+        .tool-btn-group button { width: 100%; }
+        canvas { display: block; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    </style>
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    </script>
+</head>
+<body>
+    <div class="tool-container" style="max-width: 1200px;">
+        <h2 style="color: var(--primary-blue);">✏️ Edit PDF (Add Text/Image)</h2>
+        
+        <input type="file" id="pdfInput" accept=".pdf" style="display: none;">
+        <button onclick="document.getElementById('pdfInput').click()" class="action-btn">📂 Select PDF File</button>
+
+        <div class="editor-layout" id="editorLayout" style="display: none;">
+            <div class="canvas-container" id="canvasContainer">
+                <canvas id="pdfCanvas"></canvas>
+            </div>
+            <div class="sidebar">
+                <div class="tool-btn-group">
+                    <h4>Add Text Overlay</h4>
+                    <input type="text" id="overlayText" placeholder="Enter text...">
+                    <input type="number" id="fontSize" placeholder="Font Size" value="20">
+                    <button onclick="addTextOverlay()" class="action-btn">➕ Add Text to PDF</button>
+                </div>
+                <div class="tool-btn-group">
+                    <h4>Add Image Overlay</h4>
+                    <input type="file" id="overlayImage" accept="image/*">
+                    <button onclick="addImageOverlay()" class="action-btn">🖼️ Add Image to PDF</button>
+                </div>
+                <button onclick="saveEditedPDF()" class="action-btn" style="background: #10b981; width: 100%;">💾 Save Edited PDF</button>
+                <p id="statusMsg" style="text-align: center; font-weight: bold;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalPdfBytes = null;
+        let pdfDocLib = null;
+        let pdfJsDoc = null;
+        let currentPage = 0;
+        let scale = 1.5; // Render scale
+        let overlays = []; // Store overlays { type, content, x, y }
+
+        document.getElementById('pdfInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const arrayBuffer = await file.arrayBuffer();
+            originalPdfBytes = arrayBuffer.slice(0); // Save for pdf-lib
+            
+            // Load with pdf.js for preview
+            pdfJsDoc = await pdfjsLib.getDocument({data: arrayBuffer.slice(0)}).promise;
+            document.getElementById('editorLayout').style.display = 'flex';
+            renderPage(1);
+        });
+
+        async function renderPage(pageNum) {
+            currentPage = pageNum;
+            const page = await pdfJsDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: scale });
+            
+            const canvas = document.getElementById('pdfCanvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            await page.render({ canvasContext: context, viewport: viewport }).promise;
+        }
+
+        function addTextOverlay() {
+            const text = document.getElementById('overlayText').value.trim();
+            const size = parseInt(document.getElementById('fontSize').value) || 20;
+            if(!text) return;
+
+            // Add overlay to center for demo (in real app, let user click on canvas)
+            const canvas = document.getElementById('pdfCanvas');
+            const x = canvas.width / 2;
+            const y = canvas.height / 2;
+
+            overlays.push({ type: 'text', content: text, size: size, x: x, y: y, page: currentPage });
+            
+            // Draw on canvas for visual feedback
+            const ctx = canvas.getContext('2d');
+            ctx.font = `${size}px Helvetica`;
+            ctx.fillStyle = 'red';
+            ctx.fillText(text, x, y);
+
+            document.getElementById('overlayText').value = '';
+        }
+
+        function addImageOverlay() {
+            const fileInput = document.getElementById('overlayImage');
+            if(!fileInput.files || fileInput.files.length === 0) return;
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById('pdfCanvas');
+                    const x = canvas.width / 2;
+                    const y = canvas.height / 2;
+                    
+                    // Draw on canvas
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, x, y, img.width * 0.5, img.height * 0.5); // Scale down for preview
+
+                    overlays.push({ type: 'image', data: event.target.result, x: x, y: y, width: img.width * 0.5, height: img.height * 0.5, page: currentPage });
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+            fileInput.value = '';
+        }
+
+        async function saveEditedPDF() {
+            if(!originalPdfBytes) return;
+            const status = document.getElementById('statusMsg');
+            status.style.color = "#3b82f6";
+            status.innerText = "⏳ Saving...";
+
+            try {
+                pdfDocLib = await PDFLib.PDFDocument.load(originalPdfBytes);
+                const pages = pdfDocLib.getPages();
+                const font = await pdfDocLib.embedFont(PDFLib.StandardFonts.Helvetica);
+
+                for (let overlay of overlays) {
+                    const page = pages[overlay.page - 1];
+                    const { width, height } = page.getSize();
+
+                    // Convert canvas coordinates to PDF coordinates
+                    // Canvas Y is top-down, PDF Y is bottom-up
+                    const pdfX = overlay.x / scale;
+                    const pdfY = height - (overlay.y / scale);
+
+                    if (overlay.type === 'text') {
+                        page.drawText(overlay.content, {
+                            x: pdfX,
+                            y: pdfY,
+                            size: overlay.size,
+                            font: font,
+                            color: PDFLib.rgb(1, 0, 0) // Red color
+                        });
+                    } else if (overlay.type === 'image') {
+                        const imageBytes = await fetch(overlay.data).then(res => res.arrayBuffer());
+                        let image;
+                        if (overlay.data.includes('png')) {
+                            image = await pdfDocLib.embedPng(imageBytes);
+                        } else {
+                            image = await pdfDocLib.embedJpg(imageBytes);
+                        }
+                        page.drawImage(image, {
+                            x: pdfX,
+                            y: pdfY - (overlay.height / scale),
+                            width: overlay.width / scale,
+                            height: overlay.height / scale
+                        });
+                    }
+                }
+
+                const pdfBytes = await pdfDocLib.save();
+                saveAs(new Blob([pdfBytes], { type: 'application/pdf' }), 'Edited_Document.pdf');
+                status.style.color = "#10b981";
+                status.innerText = "✅ PDF Saved Successfully!";
+            } catch (error) {
+                console.error(error);
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error saving PDF.";
+            }
+        }
+    </script>
+</body>
+</html>
