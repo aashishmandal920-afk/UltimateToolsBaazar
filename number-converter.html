@@ -5,7 +5,6 @@
     <title>Number to Words Converter</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        // Dark/Light theme index se link karne ke liye
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
     </script>
     <style>
@@ -23,11 +22,11 @@
         <span class="small-text">(Enter Number between 1 to 999,999,999,999,999 with or without comma)</span>
         
         <div style="display: flex; gap: 10px;">
-            <input type="number" id="numInput" placeholder="Enter Number or Amount..." min="0" style="flex: 1;">
+            <!-- Changed type to text to allow commas -->
+            <input type="text" id="numInput" placeholder="Enter Number or Amount..." style="flex: 1;">
             <button onclick="convertAll()" style="white-space: nowrap;">Convert In Words</button>
         </div>
 
-        <!-- 5 Result Boxes -->
         <div class="format-title">In Words (International Format)</div>
         <div class="result-box" id="resIntl">--</div>
 
@@ -49,7 +48,6 @@
             <div class="currency-row">
                 <span style="font-weight: bold;">FROM</span>
                 <select id="currFrom">
-                    <!-- Saari currencies jo aapne list ki thi -->
                     <option value="INR" selected>INR (Indian Rupee)</option>
                     <option value="USD">USD (United States dollar)</option>
                     <option value="AED">AED (United Arab Emirates dirham)</option>
@@ -108,7 +106,6 @@
                 <span style="font-weight: bold;">TO</span>
                 
                 <select id="currTo">
-                    <!-- Target currencies -->
                     <option value="USD" selected>USD (United States dollar)</option>
                     <option value="INR">INR (Indian Rupee)</option>
                     <option value="AED">AED (United Arab Emirates dirham)</option>
@@ -192,6 +189,7 @@
             "इक्यासी", "बयासी", "तिरासी", "चौरासी", "पचासी", "छियासी", "सत्तासी", "अट्ठासी", "नवासी", "नब्बे", 
             "इक्यानवे", "बानवे", "तिरानवे", "चौरानवे", "पचानवे", "छियानवे", "सत्तानवे", "अट्ठानवे", "निन्यानवे"];
 
+        // Helper for English numbers under 1000
         function getEngUnder1000(n) {
             if (n === 0) return "";
             if (n < 20) return engOnes[n];
@@ -202,13 +200,39 @@
             return s.trim();
         }
 
+        // NEW Helper for Hindi numbers under 1000 (Fixes the undefined issue)
+        function getHindiUnder1000(n) {
+            if (n === 0) return "";
+            let s = "";
+            let h = Math.floor(n / 100);
+            let r = n % 100;
+            if (h > 0) s += hindiWords[h] + " सौ ";
+            if (r > 0) s += hindiWords[r] + " ";
+            return s.trim();
+        }
+
         function convertAll() {
-            let numStr = document.getElementById("numInput").value;
-            if(!numStr || isNaN(numStr) || numStr < 0) return;
+            let rawInput = document.getElementById("numInput").value;
+            // Remove commas and trim spaces
+            let numStr = rawInput.replace(/,/g, '').trim();
             
-            let num = parseInt(numStr, 10);
+            if(!numStr || isNaN(parseFloat(numStr)) || parseFloat(numStr) < 0) {
+                alert("Please enter a valid positive number.");
+                return;
+            }
+
+            // Split integer and decimal parts
+            let parts = numStr.split('.');
+            let num = parseInt(parts[0], 10) || 0;
             
-            if(num === 0) {
+            let decimal = 0;
+            if (parts.length > 1) {
+                // Take only first two digits after decimal, pad with zero if needed
+                let decStr = parts[1].padEnd(2, '0').substring(0, 2);
+                decimal = parseInt(decStr, 10);
+            }
+
+            if(num === 0 && decimal === 0) {
                 document.getElementById("resIntl").innerText = "Zero";
                 document.getElementById("resInd").innerText = "Zero";
                 document.getElementById("resRupeeEng").innerText = "Zero rupees and zero paisa only.";
@@ -225,7 +249,10 @@
             if(m) intl += getEngUnder1000(m) + " Million, ";
             if(t) intl += getEngUnder1000(t) + " Thousand, ";
             if(r) intl += getEngUnder1000(r);
-            document.getElementById("resIntl").innerText = intl.trim().replace(/,$/, "");
+            
+            let finalIntl = intl.trim().replace(/,$/, "");
+            if (decimal > 0) finalIntl += " and " + getEngUnder1000(decimal) + " Cents";
+            document.getElementById("resIntl").innerText = finalIntl;
 
             // 2 & 3. Indian Format & English Rupee
             let ind = "";
@@ -236,20 +263,40 @@
             if(lk) ind += getEngUnder1000(lk) + " Lakh ";
             if(th) ind += getEngUnder1000(th) + " Thousand ";
             if(r) ind += getEngUnder1000(r);
-            document.getElementById("resInd").innerText = ind.trim();
-            document.getElementById("resRupeeEng").innerText = ind.trim() + " rupees and zero paisa only.";
+            
+            let finalInd = ind.trim();
+            document.getElementById("resInd").innerText = finalInd;
+            
+            let rupeeEngStr = finalInd + " rupees";
+            if(decimal > 0) {
+                rupeeEngStr += " and " + getEngUnder1000(decimal) + " paisa only.";
+            } else {
+                rupeeEngStr += " and zero paisa only.";
+            }
+            document.getElementById("resRupeeEng").innerText = rupeeEngStr;
 
-            // 4 & 5. Hindi Logic & Hindi Rupee
+            // 4 & 5. Hindi Logic & Hindi Rupee (Fixed using getHindiUnder1000)
             let hin = "";
-            let hund = Math.floor(r / 100), remLast2 = r % 100;
-            if(arab > 0) hin += hindiWords[arab] + " अरब ";
-            if(cr > 0) hin += hindiWords[cr] + " करोड़ ";
-            if(lk > 0) hin += hindiWords[lk] + " लाख ";
-            if(th > 0) hin += hindiWords[th] + " हजार ";
+            if(arab > 0) hin += getHindiUnder1000(arab) + " अरब ";
+            if(cr > 0) hin += getHindiUnder1000(cr) + " करोड़ ";
+            if(lk > 0) hin += getHindiUnder1000(lk) + " लाख ";
+            if(th > 0) hin += getHindiUnder1000(th) + " हजार ";
+            
+            let hund = Math.floor(r / 100);
+            let remLast2 = r % 100;
             if(hund > 0) hin += hindiWords[hund] + " सौ ";
             if(remLast2 > 0) hin += hindiWords[remLast2];
-            document.getElementById("resHindi").innerText = hin.trim();
-            document.getElementById("resRupeeHindi").innerText = hin.trim() + " रुपये एवं शून्य पैसे";
+            
+            let finalHin = hin.trim();
+            document.getElementById("resHindi").innerText = finalHin;
+
+            let rupeeHinStr = finalHin + " रुपये";
+            if(decimal > 0) {
+                rupeeHinStr += " एवं " + hindiWords[decimal] + " पैसे";
+            } else {
+                rupeeHinStr += " एवं शून्य पैसे";
+            }
+            document.getElementById("resRupeeHindi").innerText = rupeeHinStr;
         }
 
         // ==========================================
@@ -262,9 +309,6 @@
             
             if(isNaN(amount)) return;
             
-            // Note: HTML file me live rate ke bina exact convert karna namumkin hai.
-            // Ye ek basic logic hai jo INR aur USD ke beech calculate karega (aapke reference 1 INR = 0.012 USD ke anusar)
-            // Asli app mein yahan API call hoti hai.
             let rate = 1; 
             if(from === "INR" && to === "USD") rate = 0.012;
             else if(from === "USD" && to === "INR") rate = 83.50;
