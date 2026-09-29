@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <!-- Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.5/JsBarcode.all.min.js"></script>
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -20,9 +20,6 @@
 </script>
 
 <style>
-/* ============================================================
-   ULTIMATE QR & BARCODE SUITE — Professional Design
-   ============================================================ */
 :root{
   --primary:#6366f1;
   --primary-dark:#4f46e5;
@@ -61,7 +58,6 @@ body{
   transition:background 0.3s,color 0.3s;
 }
 
-/* ---------- HEADER ---------- */
 .top-header{
   background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
   color:white;
@@ -97,7 +93,6 @@ body{
 }
 .theme-toggle:hover{background:rgba(255,255,255,0.35);transform:rotate(20deg)}
 
-/* ---------- TABS ---------- */
 .tabs-wrapper{
   display:flex;justify-content:center;margin:-22px auto 0;
   position:relative;z-index:5;padding:0 20px;
@@ -121,7 +116,6 @@ body{
 }
 .tab-btn i{font-size:14px}
 
-/* ---------- PANELS ---------- */
 .panels{max-width:1400px;margin:30px auto;padding:0 20px}
 .panel{display:none;animation:fadeIn 0.4s ease}
 .panel.active{display:block}
@@ -155,7 +149,6 @@ body{
 .card-body::-webkit-scrollbar{width:6px}
 .card-body::-webkit-scrollbar-thumb{background:#888;border-radius:3px}
 
-/* ---------- FORM ELEMENTS ---------- */
 .form-group{margin-bottom:16px}
 .form-group label{
   display:block;font-size:11.5px;font-weight:600;
@@ -198,17 +191,17 @@ body{
 .form-row{display:flex;gap:12px}
 .form-row .form-group{flex:1}
 
-/* Segmented pill selector */
 .pill-group{
   display:flex;background:var(--bg);border-radius:10px;
-  padding:4px;gap:3px;overflow-x:auto;
+  padding:4px;gap:3px;overflow-x:auto;flex-wrap:wrap;
 }
 .pill-group::-webkit-scrollbar{height:4px}
 .pill-btn{
-  flex:1;padding:8px 10px;border:none;background:transparent;
+  flex:0 0 auto;padding:8px 12px;border:none;background:transparent;
   color:var(--text-muted);font-family:inherit;
   font-size:11.5px;font-weight:600;cursor:pointer;
   border-radius:7px;transition:0.2s;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:5px;
 }
 .pill-btn:hover{color:var(--text)}
 .pill-btn.active{
@@ -216,7 +209,6 @@ body{
   box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* ---------- BUTTONS ---------- */
 .btn{
   padding:12px 20px;border:none;border-radius:10px;
   font-family:inherit;font-size:13.5px;font-weight:600;
@@ -253,7 +245,6 @@ body{
 
 .btn-group{display:flex;gap:10px;flex-wrap:wrap}
 
-/* ---------- PREVIEW AREA ---------- */
 .preview-area{
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;padding:30px;min-height:520px;
@@ -281,14 +272,21 @@ body{
 .preview-empty i{
   font-size:52px;opacity:0.3;margin-bottom:14px;display:block;
 }
-#qrPreviewCanvas,#barcodePreviewCanvas{
+#qrPreviewCanvas,
+#barcodePreviewCanvas{
   max-width:100%;height:auto;display:block;
+  text-align:center;
+}
+#qrPreviewCanvas canvas{
+  display:inline-block;
   box-shadow:0 8px 30px rgba(0,0,0,0.15);
   border-radius:6px;
-  background:white;
+}
+#barcodePreviewCanvas svg{
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
+  border-radius:6px;
 }
 
-/* ---------- RESULT/OUTPUT ---------- */
 .result-box{
   padding:16px;background:var(--bg);border-radius:10px;
   font-family:'JetBrains Mono',monospace;font-size:13px;
@@ -318,7 +316,6 @@ body{
   padding-right:80px;line-height:1.5;
 }
 
-/* ---------- SCANNER ---------- */
 #qr-reader-container,
 #barcode-reader-container{
   width:100%;max-width:500px;margin:0 auto;
@@ -347,7 +344,6 @@ body{
   font-family:inherit!important;font-size:12px!important;
 }
 
-/* ---------- UPLOAD DROPZONE ---------- */
 .dropzone{
   border:2px dashed var(--border);border-radius:12px;
   padding:30px 20px;text-align:center;
@@ -365,7 +361,6 @@ body{
 .dropzone p{font-size:13px;font-weight:600;margin-bottom:4px}
 .dropzone span{font-size:11px;color:var(--text-muted)}
 
-/* ---------- DOWNLOAD OPTIONS ---------- */
 .download-grid{
   display:grid;grid-template-columns:repeat(3,1fr);
   gap:10px;margin-top:14px;
@@ -384,7 +379,6 @@ body{
   box-shadow:0 6px 16px rgba(99,102,241,0.15);
 }
 
-/* ---------- TOAST ---------- */
 .toast{
   position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
   background:var(--card);color:var(--text);
@@ -403,7 +397,6 @@ body{
 .toast.info{border-left-color:var(--info)}
 .toast.info i{color:var(--info)}
 
-/* ---------- STATS ---------- */
 .stats-row{
   display:flex;gap:12px;margin-top:16px;
   padding:12px;background:var(--bg);border-radius:10px;
@@ -416,7 +409,6 @@ body{
 }
 .stat-item span{color:var(--text-muted);font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
 
-/* ---------- EMPTY STATES ---------- */
 .hidden{display:none!important}
 .wifi-note{
   font-size:11px;color:var(--text-muted);
@@ -425,7 +417,6 @@ body{
   margin-top:10px;line-height:1.5;
 }
 
-/* ---------- RESPONSIVE ---------- */
 @media(max-width:600px){
   .top-header h1{font-size:22px}
   .top-header p{font-size:12px}
@@ -440,7 +431,6 @@ body{
 </head>
 <body>
 
-<!-- ======================== HEADER ======================== -->
 <header class="top-header">
   <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
     <i class="fas fa-moon"></i>
@@ -449,7 +439,6 @@ body{
   <p>Generate, customize, scan QR codes & barcodes — 100% free, no server, works offline in your browser.</p>
 </header>
 
-<!-- ======================== TABS ======================== -->
 <div class="tabs-wrapper">
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('qr-gen',this)">
@@ -467,19 +456,16 @@ body{
   </div>
 </div>
 
-<!-- ======================== PANELS ======================== -->
 <div class="panels">
 
   <!-- ==================== QR GENERATOR ==================== -->
   <div id="qr-gen" class="panel active">
     <div class="panel-grid">
-      <!-- LEFT: Options -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-cog"></i> QR Options</h3>
         </div>
         <div class="card-body">
-          <!-- Data Type -->
           <div class="form-group">
             <label>Data Type</label>
             <div class="pill-group" id="qrTypeGroup">
@@ -498,10 +484,8 @@ body{
             </div>
           </div>
 
-          <!-- Dynamic Fields -->
           <div id="qrDynamicFields"></div>
 
-          <!-- Customize -->
           <div class="form-group">
             <label>Size: <span id="qrSizeVal">300</span>px</label>
             <input type="range" id="qrSize" min="100" max="1000" value="300" step="50" oninput="document.getElementById('qrSizeVal').textContent=this.value;generateQR()">
@@ -544,7 +528,6 @@ body{
         </div>
       </div>
 
-      <!-- RIGHT: Preview -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-eye"></i> Preview</h3>
@@ -587,7 +570,6 @@ body{
   <!-- ==================== QR READER ==================== -->
   <div id="qr-read" class="panel">
     <div class="panel-grid">
-      <!-- LEFT: Camera -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-video"></i> Camera Scanner</h3>
@@ -616,7 +598,6 @@ body{
         </div>
       </div>
 
-      <!-- RIGHT: Upload + Result -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-image"></i> Upload Image</h3>
@@ -645,7 +626,6 @@ body{
   <!-- ==================== BARCODE GENERATOR ==================== -->
   <div id="bar-gen" class="panel">
     <div class="panel-grid">
-      <!-- LEFT: Options -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-cog"></i> Barcode Options</h3>
@@ -738,7 +718,6 @@ body{
         </div>
       </div>
 
-      <!-- RIGHT: Preview -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-eye"></i> Preview</h3>
@@ -773,7 +752,6 @@ body{
   <!-- ==================== BARCODE READER ==================== -->
   <div id="bar-read" class="panel">
     <div class="panel-grid">
-      <!-- LEFT: Camera -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-video"></i> Camera Scanner</h3>
@@ -802,7 +780,6 @@ body{
         </div>
       </div>
 
-      <!-- RIGHT: Upload + Result -->
       <div class="card">
         <div class="card-header">
           <h3><i class="fas fa-image"></i> Upload Image</h3>
@@ -829,7 +806,6 @@ body{
 
 </div>
 
-<!-- ======================== TOAST ======================== -->
 <div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toastMsg">Success</span>
@@ -874,7 +850,6 @@ function switchTab(id, btn){
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-  // Stop cameras when switching away
   if(id !== 'qr-read') stopQRCamera();
   if(id !== 'bar-read') stopBarcodeCamera();
   if(id === 'qr-read') loadQRCameras();
@@ -949,14 +924,29 @@ function setQRType(type, btn){
   document.querySelectorAll('#qrTypeGroup .pill-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('qrDynamicFields').innerHTML = QR_TYPE_FIELDS[type];
+  // Restore field value if exists
+  const savedKey = 'qr_value_' + type;
+  const savedVal = localStorage.getItem(savedKey);
+  if(savedVal){
+    const field = document.querySelector('#qrDynamicFields input, #qrDynamicFields textarea');
+    if(field) field.value = savedVal;
+  }
   generateQR();
 }
 
 function getQRContent(){
   try{
     switch(qrType){
-      case 'text': return document.getElementById('qrField-text')?.value || '';
-      case 'url': return document.getElementById('qrField-url')?.value || '';
+      case 'text': {
+        const v = document.getElementById('qrField-text')?.value || '';
+        if(v) localStorage.setItem('qr_value_text', v);
+        return v;
+      }
+      case 'url': {
+        const v = document.getElementById('qrField-url')?.value || '';
+        if(v) localStorage.setItem('qr_value_url', v);
+        return v;
+      }
       case 'email': {
         const e = document.getElementById('qrField-email')?.value || '';
         const s = document.getElementById('qrField-subject')?.value || '';
@@ -1055,7 +1045,7 @@ function getQRContent(){
   } catch(e){ return ''; }
 }
 
-async function generateQR(){
+function generateQR(){
   const text = getQRContent();
   const wrapper = document.getElementById('qrPreviewWrapper');
   const empty = document.getElementById('qrEmptyState');
@@ -1077,50 +1067,58 @@ async function generateQR(){
   const bg = document.getElementById('qrBgColor').value;
   const ec = document.getElementById('qrErrorLevel').value;
 
+  const ecMap = {
+    L: QRCode.CorrectLevel.L,
+    M: QRCode.CorrectLevel.M,
+    Q: QRCode.CorrectLevel.Q,
+    H: QRCode.CorrectLevel.H
+  };
+
   try{
-    const canvas = document.createElement('canvas');
-    await QRCode.toCanvas(canvas, text, {
+    container.innerHTML = '';
+    const qrDiv = document.createElement('div');
+    qrDiv.style.display = 'inline-block';
+    qrDiv.style.padding = (margin * 4) + 'px';
+    qrDiv.style.background = bg;
+    qrDiv.style.borderRadius = '8px';
+    container.appendChild(qrDiv);
+
+    new QRCode(qrDiv, {
+      text: text,
       width: size,
-      margin: margin,
-      errorCorrectionLevel: ec,
-      color: { dark: fg, light: bg }
+      height: size,
+      colorDark: fg,
+      colorLight: bg,
+      correctLevel: ecMap[ec] || QRCode.CorrectLevel.M
     });
 
-    // Draw logo if exists
-    if(qrLogo){
-      const ctx = canvas.getContext('2d');
-      const logoSize = canvas.width * 0.22;
-      const x = (canvas.width - logoSize) / 2;
-      const y = (canvas.height - logoSize) / 2;
-      // White rounded bg
-      ctx.fillStyle = bg;
-      ctx.beginPath();
-      const r = 8;
-      const bx = x - 6, by = y - 6, bw = logoSize + 12, bh = logoSize + 12;
-      ctx.moveTo(bx + r, by);
-      ctx.arcTo(bx + bw, by, bx + bw, by + bh, r);
-      ctx.arcTo(bx + bw, by + bh, bx, by + bh, r);
-      ctx.arcTo(bx, by + bh, bx, by, r);
-      ctx.arcTo(bx, by, bx + bw, by, r);
-      ctx.closePath();
-      ctx.fill();
-      ctx.drawImage(qrLogo, x, y, logoSize, logoSize);
-    }
+    setTimeout(() => {
+      const canvas = qrDiv.querySelector('canvas');
+      if(canvas && qrLogo){
+        const ctx = canvas.getContext('2d');
+        const logoSize = canvas.width * 0.22;
+        const x = (canvas.width - logoSize) / 2;
+        const y = (canvas.height - logoSize) / 2;
+        ctx.fillStyle = bg;
+        const pad = 6;
+        ctx.fillRect(x - pad, y - pad, logoSize + pad*2, logoSize + pad*2);
+        ctx.drawImage(qrLogo, x, y, logoSize, logoSize);
+      }
+      
+      wrapper.classList.remove('hidden');
+      empty.style.display = 'none';
+      downloadArea.classList.remove('hidden');
+      stats.style.display = 'flex';
+      document.getElementById('statSize').textContent = size + 'px';
+      document.getElementById('statType').textContent = qrType.toUpperCase();
+      document.getElementById('statChars').textContent = text.length;
+    }, 60);
 
-    container.innerHTML = '';
-    container.appendChild(canvas);
-    wrapper.classList.remove('hidden');
-    empty.style.display = 'none';
-    downloadArea.classList.remove('hidden');
-    stats.style.display = 'flex';
-
-    document.getElementById('statSize').textContent = size + 'px';
-    document.getElementById('statType').textContent = qrType.toUpperCase();
-    document.getElementById('statChars').textContent = text.length;
   } catch(e){
-    console.error(e);
+    console.error('QR Error:', e);
     empty.style.display = 'block';
     wrapper.classList.add('hidden');
+    showToast('QR Generation failed: ' + e.message, 'error');
   }
 }
 
@@ -1133,7 +1131,6 @@ function handleLogoUpload(e){
     img.onload = () => {
       qrLogo = img;
       document.getElementById('qrRemoveLogoBtn').style.display = 'flex';
-      // Auto set Error Correction to H
       document.getElementById('qrErrorLevel').value = 'H';
       generateQR();
     };
@@ -1149,46 +1146,35 @@ function removeLogo(){
   generateQR();
 }
 
-async function downloadQR(format){
-  const text = getQRContent();
-  if(!text) return;
-  const size = parseInt(document.getElementById('qrSize').value);
-  const margin = parseInt(document.getElementById('qrMargin').value);
-  const fg = document.getElementById('qrFgColor').value;
-  const bg = document.getElementById('qrBgColor').value;
-  const ec = document.getElementById('qrErrorLevel').value;
-
-  try{
-    if(format === 'svg'){
-      const svg = await QRCode.toString(text, {
-        type: 'svg', width: size, margin, errorCorrectionLevel: ec,
-        color: { dark: fg, light: bg }
-      });
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
-      downloadBlob(blob, 'qrcode.svg');
-    } else if(format === 'png' || format === 'jpeg'){
-      const canvas = document.createElement('canvas');
-      await QRCode.toCanvas(canvas, text, {
-        width: size, margin, errorCorrectionLevel: ec,
-        color: { dark: fg, light: bg }
-      });
-      if(qrLogo){
-        const ctx = canvas.getContext('2d');
-        const logoSize = canvas.width * 0.22;
-        const x = (canvas.width - logoSize) / 2;
-        const y = (canvas.height - logoSize) / 2;
-        ctx.fillStyle = bg;
-        ctx.fillRect(x - 6, y - 6, logoSize + 12, logoSize + 12);
-        ctx.drawImage(qrLogo, x, y, logoSize, logoSize);
+function downloadQR(format){
+  const container = document.getElementById('qrPreviewCanvas');
+  const canvas = container.querySelector('canvas');
+  
+  if(!canvas){
+    showToast('No QR to download', 'error');
+    return;
+  }
+  
+  if(format === 'svg'){
+    showToast('SVG not supported — downloading PNG instead', 'info');
+    format = 'png';
+  }
+  
+  const mime = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+  const ext = format === 'jpeg' ? 'jpg' : 'png';
+  
+  try {
+    canvas.toBlob(blob => {
+      if(!blob){
+        showToast('Download failed', 'error');
+        return;
       }
-      canvas.toBlob(blob => {
-        downloadBlob(blob, 'qrcode.' + (format === 'jpeg' ? 'jpg' : 'png'));
-      }, 'image/' + format, 0.95);
-    }
-    showToast('QR Code downloaded!');
+      downloadBlob(blob, 'qrcode.' + ext);
+      showToast('QR Code downloaded!');
+    }, mime, 0.95);
   } catch(e){
     console.error(e);
-    showToast('Download failed', 'error');
+    showToast('Download error', 'error');
   }
 }
 
@@ -1231,7 +1217,7 @@ async function startQRCamera(){
         showQRResult(decodedText);
         if(navigator.vibrate) navigator.vibrate(150);
       },
-      () => {} // ignore errors
+      () => {}
     );
   } catch(e){
     console.error(e);
@@ -1296,7 +1282,6 @@ function openQRResult(){
   }
 }
 
-// Drag & drop for QR
 const qrDropzone = document.getElementById('qrDropzone');
 qrDropzone.addEventListener('dragover', e => { e.preventDefault(); qrDropzone.classList.add('dragover'); });
 qrDropzone.addEventListener('dragleave', () => qrDropzone.classList.remove('dragover'));
@@ -1358,13 +1343,11 @@ function generateBarcode(){
       text: value
     });
 
-    // Set text color manually
     const svg = document.getElementById('barcodeSVG');
     if(svg){
       svg.querySelectorAll('text').forEach(t => {
         t.setAttribute('fill', textColor);
       });
-      // Ensure background
       svg.style.background = bgColor;
       svg.style.borderRadius = '6px';
     }
@@ -1379,7 +1362,6 @@ function generateBarcode(){
   }
 }
 
-// Barcode hints per format
 document.getElementById('barcodeFormat').addEventListener('change', function(){
   const hints = {
     EAN13: 'EAN-13 needs exactly 12 or 13 digits.',
@@ -1405,38 +1387,38 @@ function downloadBarcode(format){
     const svgData = new XMLSerializer().serializeToString(svg);
     const blob = new Blob([svgData], { type: 'image/svg+xml' });
     downloadBlob(blob, 'barcode.svg');
-  } else {
-    // Convert SVG to canvas
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const img = new Image();
-    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svgBlob);
-
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width || 800;
-      canvas.height = img.height || 300;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-      canvas.toBlob(blob => {
-        downloadBlob(blob, 'barcode.' + (format === 'jpeg' ? 'jpg' : 'png'));
-      }, 'image/' + format, 0.95);
-    };
-    img.onerror = () => showToast('Failed to convert', 'error');
-    img.src = url;
+    showToast('Barcode downloaded!');
+    return;
   }
-  showToast('Barcode downloaded!');
+
+  const svgData = new XMLSerializer().serializeToString(svg);
+  const img = new Image();
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width || 800;
+    canvas.height = img.height || 300;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+    canvas.toBlob(blob => {
+      downloadBlob(blob, 'barcode.' + (format === 'jpeg' ? 'jpg' : 'png'));
+      showToast('Barcode downloaded!');
+    }, 'image/' + format, 0.95);
+  };
+  img.onerror = () => showToast('Failed to convert', 'error');
+  img.src = url;
 }
 
 /* ============================================================
-   BARCODE READER (ZXing)
+   BARCODE READER
    ============================================================ */
 let barcodeScanner = null;
 let barcodeCamerasLoaded = false;
-let barcodeReader = null;
 
 async function loadBarcodeCameras(){
   if(barcodeCamerasLoaded) return;
@@ -1479,7 +1461,6 @@ async function startBarcodeCamera(){
           Html5QrcodeSupportedFormats.UPC_E,
           Html5QrcodeSupportedFormats.ITF,
           Html5QrcodeSupportedFormats.CODABAR,
-          Html5QrcodeSupportedFormats.CODE_128,
           Html5QrcodeSupportedFormats.QR_CODE
         ]
       },
@@ -1513,63 +1494,63 @@ function showBarcodeResult(text){
   showToast('Barcode detected!');
 }
 
-async function handleBarcodeImageUpload(e){
+function handleBarcodeImageUpload(e){
   const file = e.target.files[0];
   if(!file) return;
 
   const reader = new FileReader();
-  reader.onload = async ev => {
+  reader.onload = ev => {
     const img = new Image();
-    img.onload = async () => {
+    img.onload = () => {
       try{
-        // Use ZXing to decode
-        const hints = new Map();
-        const formats = [
-          ZXing.BarcodeFormat.CODE_128,
-          ZXing.BarcodeFormat.CODE_39,
-          ZXing.BarcodeFormat.CODE_93,
-          ZXing.BarcodeFormat.EAN_13,
-          ZXing.BarcodeFormat.EAN_8,
-          ZXing.BarcodeFormat.UPC_A,
-          ZXing.BarcodeFormat.UPC_E,
-          ZXing.BarcodeFormat.ITF,
-          ZXing.BarcodeFormat.CODABAR,
-          ZXing.BarcodeFormat.QR_CODE
-        ];
-        hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, formats);
-        hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
-
-        const readerZ = new ZXing.BrowserMultiFormatReader(hints);
-
-        // Convert image to ImageData
         const canvas = document.createElement('canvas');
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-
-        // Use ZXing's RGBLuminanceSource approach
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const luminanceSource = new ZXing.HybridBinarizer(
-          new ZXing.RGBLuminanceSource(imageData.data, canvas.width, canvas.height)
-        );
-        const binaryBitmap = new ZXing.BinaryBitmap(luminanceSource);
 
-        try{
-          const result = readerZ.decodeBitmap(binaryBitmap);
+        // Try ZXing first (better for barcodes)
+        try {
+          const hints = new Map();
+          hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+            ZXing.BarcodeFormat.CODE_128,
+            ZXing.BarcodeFormat.CODE_39,
+            ZXing.BarcodeFormat.CODE_93,
+            ZXing.BarcodeFormat.EAN_13,
+            ZXing.BarcodeFormat.EAN_8,
+            ZXing.BarcodeFormat.UPC_A,
+            ZXing.BarcodeFormat.UPC_E,
+            ZXing.BarcodeFormat.ITF,
+            ZXing.BarcodeFormat.CODABAR,
+            ZXing.BarcodeFormat.QR_CODE
+          ]);
+          hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
+
+          const luminanceSource = new ZXing.RGBLuminanceSource(
+            imageData.data, canvas.width, canvas.height
+          );
+          const binaryBitmap = new ZXing.BinaryBitmap(
+            new ZXing.HybridBinarizer(luminanceSource)
+          );
+          const readerZ = new ZXing.MultiFormatReader();
+          readerZ.setHints(hints);
+          const result = readerZ.decode(binaryBitmap);
+          
           if(result && result.text){
             showBarcodeResult(result.text);
-          } else {
-            showToast('No barcode found', 'error');
+            return;
           }
-        } catch(err){
-          // Fallback: try jsQR for QR codes
-          const qr = jsQR(imageData.data, imageData.width, imageData.height);
-          if(qr && qr.data){
-            showBarcodeResult(qr.data);
-          } else {
-            showToast('No barcode found in image', 'error');
-          }
+        } catch(zxErr){
+          console.log('ZXing failed, trying jsQR...', zxErr);
+        }
+
+        // Fallback to jsQR for QR codes
+        const qr = jsQR(imageData.data, imageData.width, imageData.height);
+        if(qr && qr.data){
+          showBarcodeResult(qr.data);
+        } else {
+          showToast('No barcode/QR found in image', 'error');
         }
       } catch(err){
         console.error(err);
@@ -1586,7 +1567,6 @@ function copyBarcodeResult(){
   navigator.clipboard.writeText(text).then(() => showToast('Copied!'));
 }
 
-// Drag & drop for Barcode
 const barcodeDropzone = document.getElementById('barcodeDropzone');
 barcodeDropzone.addEventListener('dragover', e => { e.preventDefault(); barcodeDropzone.classList.add('dragover'); });
 barcodeDropzone.addEventListener('dragleave', () => barcodeDropzone.classList.remove('dragover'));
@@ -1621,9 +1601,13 @@ function downloadBlob(blob, filename){
    INIT
    ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
-  // Load default QR type
-  setQRType('text', document.querySelector('#qrTypeGroup .pill-btn.active'));
-  // Pre-load camera lists on tab access only
+  document.getElementById('qrDynamicFields').innerHTML = QR_TYPE_FIELDS.text;
+  const defaultField = document.getElementById('qrField-text');
+  if(defaultField){
+    defaultField.value = 'https://omniconvertorstools.netlify.app/';
+  }
+  setTimeout(() => generateQR(), 300);
+  setTimeout(() => generateBarcode(), 300);
 });
 </script>
 
