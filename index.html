@@ -143,10 +143,12 @@
     <!-- ================= COMMENT & FEEDBACK SECTION ================= -->
     <div class="feedback-section">
         <h3>💬 Send Feedback or Contact Us</h3>
-        <p>Apna sujhav ya contact number ke sath message bhejein, ye seedha hamare database/sheet mein save hoga.</p>
+        <p>Drop your feedback or a message with your contact details. Your response will be recorded directly in our system.</p>
         <form id="feedbackForm" onsubmit="submitFeedback(event)">
             <input type="text" id="userName" placeholder="Your Name" required>
-            <input type="text" id="userContact" placeholder="Contact Number / Email" required>
+            <input type="text" id="userContact" placeholder="Contact Number" required>
+            <input type="text" id="userEmail" placeholder="Email" required>
+            <input type="text" id="userPurpose" placeholder="Purpose" required>
             <textarea id="userMsg" rows="3" placeholder="Your message or tool request..." required></textarea>
             <button type="submit" class="action-btn">Submit Feedback</button>
         </form>
