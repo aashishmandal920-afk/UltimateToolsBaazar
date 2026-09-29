@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Organize PDF Pages - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .page-card { background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; padding: 10px; text-align: center; position: relative; }
+        .page-card canvas { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .page-card .controls { margin-top: 8px; display: flex; justify-content: space-between; }
+        .page-card button { padding: 4px 8px; font-size: 12px; cursor: pointer; }
+    </style>
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    </script>
+</head>
+<body>
+    <div class="tool-container" style="max-width: 1000px;">
+        <h2 style="color: var(--primary-blue);">📑 Organize PDF Pages</h2>
+        <p>Delete, rotate, or drag-and-drop pages to rearrange them.</p>
+        
+        <input type="file" id="pdfInput" accept=".pdf" style="display: none;">
+        <button onclick="document.getElementById('pdfInput').click()" class="action-btn">📂 Select PDF File</button>
+        
+        <div class="page-grid" id="pageGrid"></div>
+
+        <div class="action-btns" style="margin-top: 20px;">
+            <button onclick="saveOrganizedPDF()" class="action-btn" style="background: #10b981;">💾 Save Organized PDF</button>
+        </div>
+        <p id="statusMsg" style="margin-top: 15px; font-weight: bold;"></p>
+    </div>
+
+    <script>
+        let pdfDoc = null;
+        let pageOrder = []; // Array of page indices
+        let pageRotations = {}; // Object to store rotation per page index
+        const pageGrid = document.getElementById('pageGrid');
+
+        new Sortable(pageGrid, {
+            animation: 150,
+            onEnd: function (evt) {
+                // Update pageOrder array based on new DOM order
+                const items = Array.from(pageGrid.children);
+                pageOrder = items.map(item => parseInt(item.getAttribute('data-page-index')));
+            }
+        });
+
+        document.getElementById('pdfInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const arrayBuffer = await file.arrayBuffer();
+            
+            // Load with pdf.js for rendering
+            const loadingTask = pdfjsLib.getDocument({data: arrayBuffer.slice(0)});
+            pdfDoc = await loadingTask.promise;
+            
+            pageOrder = Array.from({length: pdfDoc.numPages}, (_, i) => i);
+            pageRotations = {};
+            renderPages();
+            
+            // Store original file for later saving
+            window.originalPdfBytes = arrayBuffer;
+        });
+
+        async function renderPages() {
+            pageGrid.innerHTML = '';
+            
+            for (let i = 0; i < pageOrder.length; i++) {
+                const pageIndex = pageOrder[i];
+                const page = await pdfDoc.getPage(pageIndex + 1);
+                const viewport = page.getViewport({ scale: 0.5 });
+                
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                await page.render({ canvasContext: context, viewport: viewport }).promise;
+                
+                const card = document.createElement('div');
+                card.className = 'page-card';
+                card.setAttribute('data-page-index', pageIndex);
+                card.innerHTML = `
+                    <canvas></canvas>
+                    <div class="controls">
+                        <button onclick="rotatePage(${pageIndex}, this)">🔄 Rotate</button>
+                        <button onclick="deletePage(${pageIndex})" style="color:red;">❌ Delete</button>
+                    </div>
+                    <p style="font-size: 11px; margin-top: 5px;">Page ${pageIndex + 1}</p>
+                `;
+                card.querySelector('canvas').replaceWith(canvas);
+                pageGrid.appendChild(card);
+            }
+        }
+
+        function rotatePage(index, btn) {
+            pageRotations[index] = (pageRotations[index] || 0) + 90;
+            const canvas = btn.closest('.page-card').querySelector('canvas');
+            canvas.style.transform = `rotate(${pageRotations[index]}deg)`;
+        }
+
+        function deletePage(index) {
+            pageOrder = pageOrder.filter(idx => idx !== index);
+            renderPages();
+        }
+
+        async function saveOrganizedPDF() {
+            const status = document.getElementById('statusMsg');
+            status.style.color = "#3b82f6";
+            status.innerText = "⏳ Processing...";
+            
+            try {
+                const pdfDocLib = await PDFLib.PDFDocument.load(window.originalPdfBytes);
+                const newPdf = await PDFLib.PDFDocument.create();
+                
+                const pages = pdfDocLib.getPages();
+                
+                for (let i = 0; i < pageOrder.length; i++) {
+                    const originalIndex = pageOrder[i];
+                    const [copiedPage] = await newPdf.copyPages(pdfDocLib, [originalIndex]);
+                    
+                    // Apply rotation if any
+                    if (pageRotations[originalIndex]) {
+                        copiedPage.setRotation(PDFLib.degrees(pageRotations[originalIndex]));
+                    }
+                    
+                    newPdf.addPage(copiedPage);
+                }
+                
+                const bytes = await newPdf.save();
+                saveAs(new Blob([bytes], {type: 'application/pdf'}), 'Organized_Document.pdf');
+                
+                status.style.color = "#10b981";
+                status.innerText = "✅ PDF Saved Successfully!";
+            } catch (error) {
+                console.error(error);
+                status.style.color = "#ef4444";
+                status.innerText = "❌ Error saving PDF.";
+            }
+        }
+    </script>
+</body>
+</html>
