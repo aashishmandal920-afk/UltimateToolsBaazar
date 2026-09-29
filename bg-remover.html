@@ -8,9 +8,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- 🔥 AI Background Removal Library -->
-<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/dist/browser.js"></script>
-
 <script>
   document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
 </script>
@@ -59,9 +56,6 @@ body{
   overflow-x:hidden;
 }
 
-/* ============================================
-   HEADER
-   ============================================ */
 .top-header{
   background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
   color:white;
@@ -119,9 +113,6 @@ body{
 }
 .theme-toggle:hover{background:rgba(255,255,255,0.35);transform:rotate(20deg)}
 
-/* ============================================
-   MAIN LAYOUT
-   ============================================ */
 .main-container{
   max-width:1300px;
   margin:30px auto;
@@ -178,9 +169,6 @@ body{
   padding:30px;
 }
 
-/* ============================================
-   DROP ZONE
-   ============================================ */
 .dropzone{
   border:2.5px dashed var(--border);
   border-radius:16px;
@@ -292,9 +280,6 @@ body{
 .btn-sm{padding:8px 14px;font-size:12px}
 .btn-lg{padding:14px 28px;font-size:14.5px}
 
-/* ============================================
-   URL INPUT
-   ============================================ */
 .url-input-group{
   display:flex;
   gap:10px;
@@ -320,9 +305,6 @@ body{
   box-shadow:0 0 0 4px rgba(99,102,241,0.1);
 }
 
-/* ============================================
-   SAMPLES
-   ============================================ */
 .samples-section{
   margin-top:30px;
   padding-top:24px;
@@ -359,9 +341,6 @@ body{
   box-shadow:0 10px 25px rgba(99,102,241,0.3);
 }
 
-/* ============================================
-   PROCESSING
-   ============================================ */
 .processing-overlay{
   position:fixed;
   top:0;left:0;right:0;bottom:0;
@@ -445,9 +424,6 @@ body{
   font-family:'Inter',monospace;
 }
 
-/* ============================================
-   RESULT VIEWER
-   ============================================ */
 .result-section{
   margin-top:24px;
   display:none;
@@ -522,6 +498,10 @@ body{
   background-position:0 0,10px 10px;
   background-color:var(--checker-2);
 }
+.compare-after.no-checker {
+  background-image: none !important;
+  background-color: transparent;
+}
 .compare-after img{
   width:100%;
   height:100%;
@@ -575,9 +555,6 @@ body{
 .compare-label.before{left:16px}
 .compare-label.after{right:16px}
 
-/* ============================================
-   BACKGROUND OPTIONS
-   ============================================ */
 .bg-options{
   margin-top:24px;
   padding:20px;
@@ -594,9 +571,7 @@ body{
   font-weight:700;
   color:var(--text);
 }
-.bg-options-header i{
-  color:var(--primary);
-}
+.bg-options-header i{color:var(--primary)}
 .bg-swatches{
   display:flex;
   gap:10px;
@@ -656,9 +631,6 @@ body{
   font-size:16px;
 }
 
-/* ============================================
-   EXPORT BAR
-   ============================================ */
 .export-bar{
   margin-top:24px;
   padding:20px;
@@ -711,9 +683,6 @@ body{
   font-weight:500;
 }
 
-/* ============================================
-   INFO BOX
-   ============================================ */
 .info-box{
   margin-top:30px;
   padding:20px;
@@ -741,9 +710,6 @@ body{
   line-height:1.6;
 }
 
-/* ============================================
-   TOAST
-   ============================================ */
 .toast{
   position:fixed;
   bottom:30px;
@@ -774,9 +740,6 @@ body{
 .toast.warning{border-left-color:var(--warning)}
 .toast.warning i{color:var(--warning)}
 
-/* ============================================
-   BATCH MODE
-   ============================================ */
 .batch-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
@@ -846,9 +809,6 @@ body{
 .batch-item.done .batch-download{display:flex}
 .batch-item .batch-download:hover{background:var(--primary);transform:scale(1.1)}
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media(max-width:768px){
   .upload-section{padding:20px}
   .dropzone{padding:40px 20px}
@@ -870,7 +830,6 @@ body{
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
 <header class="top-header">
   <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
     <i class="fas fa-moon"></i>
@@ -882,10 +841,8 @@ body{
   <p>Remove image backgrounds automatically in seconds. Powered by AI — runs entirely in your browser. No upload to servers, complete privacy.</p>
 </header>
 
-<!-- ==================== MAIN ==================== -->
 <div class="main-container">
 
-  <!-- Mode Tabs -->
   <div class="mode-tabs">
     <button class="mode-tab active" onclick="switchMode('single',this)">
       <i class="fas fa-image"></i> Single
@@ -895,7 +852,6 @@ body{
     </button>
   </div>
 
-  <!-- ==================== SINGLE MODE ==================== -->
   <div id="singleMode">
     <div class="card">
       <div class="upload-section" id="uploadSection">
@@ -930,14 +886,11 @@ body{
 
         <div class="samples-section">
           <div class="samples-title">No image? Try one of these:</div>
-          <div class="samples-grid" id="samplesGrid">
-            <!-- Populated by JS -->
-          </div>
+          <div class="samples-grid" id="samplesGrid"></div>
         </div>
 
       </div>
 
-      <!-- ==================== RESULT ==================== -->
       <div class="result-section" id="resultSection">
         <div style="padding:24px">
 
@@ -950,7 +903,6 @@ body{
             </div>
           </div>
 
-          <!-- Comparison Slider -->
           <div class="compare-slider" id="compareSlider">
             <div class="compare-before">
               <img id="beforeImg" alt="Before" draggable="false">
@@ -963,7 +915,6 @@ body{
             <div class="compare-label after">Removed BG</div>
           </div>
 
-          <!-- Background Options -->
           <div class="bg-options">
             <div class="bg-options-header">
               <i class="fas fa-palette"></i>
@@ -986,7 +937,6 @@ body{
             </div>
           </div>
 
-          <!-- Export Buttons -->
           <div class="export-bar">
             <h3><i class="fas fa-download"></i> Download Your Image</h3>
             <div class="export-buttons">
@@ -1018,7 +968,6 @@ body{
     </div>
   </div>
 
-  <!-- ==================== BATCH MODE ==================== -->
   <div id="batchMode" style="display:none">
     <div class="card">
       <div class="upload-section">
@@ -1054,7 +1003,6 @@ body{
     </div>
   </div>
 
-  <!-- ==================== INFO ==================== -->
   <div class="info-box">
     <i class="fas fa-shield-alt info-icon"></i>
     <div class="info-content">
@@ -1065,7 +1013,6 @@ body{
 
 </div>
 
-<!-- ==================== PROCESSING OVERLAY ==================== -->
 <div class="processing-overlay" id="processingOverlay">
   <div class="processing-box">
     <div class="spinner"></div>
@@ -1078,24 +1025,32 @@ body{
   </div>
 </div>
 
-<!-- ==================== TOAST ==================== -->
 <div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toastMsg">Success</span>
 </div>
 
-<script>
+<script type="module">
+/* ============================================================
+   IMPORT AI LIBRARY (ES Module)
+   ============================================================ */
+import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
+
+// Expose globally for onclick handlers and other functions
+window.removeBackgroundAI = removeBackground;
+
 /* ============================================================
    THEME
    ============================================================ */
-function toggleTheme(){
+window.toggleTheme = function(){
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   document.querySelector('.theme-toggle i').className =
     next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-}
+};
+
 if(localStorage.getItem('theme') === 'light'){
   document.querySelector('.theme-toggle i').className = 'fas fa-sun';
 }
@@ -1104,7 +1059,7 @@ if(localStorage.getItem('theme') === 'light'){
    TOAST
    ============================================================ */
 let toastTimer;
-function showToast(msg, type = 'success'){
+window.showToast = function(msg, type = 'success'){
   const toast = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   toast.className = 'toast show ' + type;
@@ -1115,27 +1070,25 @@ function showToast(msg, type = 'success'){
                  : 'fas fa-check-circle';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
-}
+};
 
 /* ============================================================
    STATE
    ============================================================ */
-let originalImage = null;      // HTMLImageElement (source)
-let originalDataURL = null;    // Data URL of source
-let removedBlob = null;        // Result blob from AI
-let removedDataURL = null;     // Data URL of result
+let removedBlob = null;
+let removedDataURL = null;
 let currentBgColor = 'transparent';
 let comparePercent = 50;
 
 /* ============================================================
    MODE SWITCHING
    ============================================================ */
-function switchMode(mode, btn){
+window.switchMode = function(mode, btn){
   document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('singleMode').style.display = mode === 'single' ? 'block' : 'none';
   document.getElementById('batchMode').style.display = mode === 'batch' ? 'block' : 'none';
-}
+};
 
 /* ============================================================
    SAMPLE IMAGES
@@ -1151,6 +1104,7 @@ const SAMPLE_IMAGES = [
 
 function initSamples(){
   const grid = document.getElementById('samplesGrid');
+  if(!grid) return;
   grid.innerHTML = SAMPLE_IMAGES.map(url =>
     `<img class="sample-img" src="${url}" onclick="loadFromURL('${url}')" alt="Sample">`
   ).join('');
@@ -1177,15 +1131,13 @@ document.getElementById('batchFileInput').addEventListener('change', e => {
 const dropzone = document.getElementById('dropzone');
 ['dragenter','dragover'].forEach(evt => {
   dropzone.addEventListener(evt, e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     dropzone.classList.add('dragover');
   });
 });
 ['dragleave','drop'].forEach(evt => {
   dropzone.addEventListener(evt, e => {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     dropzone.classList.remove('dragover');
   });
 });
@@ -1200,7 +1152,6 @@ dropzone.addEventListener('click', e => {
   }
 });
 
-// Batch dropzone
 const batchDropzone = document.getElementById('batchDropzone');
 ['dragenter','dragover'].forEach(evt => {
   batchDropzone.addEventListener(evt, e => {
@@ -1243,7 +1194,7 @@ document.addEventListener('paste', e => {
   }
 });
 
-async function pasteFromClipboard(){
+window.pasteFromClipboard = async function(){
   try{
     if(!navigator.clipboard || !navigator.clipboard.read){
       showToast('Clipboard API not supported. Use Ctrl+V instead.', 'error');
@@ -1267,12 +1218,12 @@ async function pasteFromClipboard(){
   } catch(err){
     showToast('Please press Ctrl+V to paste', 'info');
   }
-}
+};
 
 /* ============================================================
    LOAD FROM URL
    ============================================================ */
-async function loadFromURL(url){
+window.loadFromURL = async function(url){
   if(!url){
     url = document.getElementById('urlInput').value.trim();
   }
@@ -1283,7 +1234,6 @@ async function loadFromURL(url){
 
   try {
     showToast('Loading image...', 'info');
-    // Try fetch first
     const response = await fetch(url, { mode: 'cors' });
     const blob = await response.blob();
     if(!blob.type.startsWith('image/')){
@@ -1292,7 +1242,6 @@ async function loadFromURL(url){
     processFile(new File([blob], 'from-url.jpg', { type: blob.type }));
   } catch(err){
     console.warn('Fetch failed, trying direct load:', err);
-    // Fallback: try loading as image element then convert to canvas
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
@@ -1309,13 +1258,12 @@ async function loadFromURL(url){
     img.onerror = () => showToast('Failed to load image (CORS blocked?)', 'error');
     img.src = url;
   }
-}
+};
 
 /* ============================================================
-   PROCESS FILE — MAIN PIPELINE
+   PROCESS FILE
    ============================================================ */
-async function processFile(file){
-  // Validate
+window.processFile = async function(file){
   if(!file.type.startsWith('image/')){
     showToast('Please select an image file', 'error');
     return;
@@ -1325,40 +1273,34 @@ async function processFile(file){
     return;
   }
 
-  // Read as dataURL
   const reader = new FileReader();
   reader.onload = e => {
-    originalDataURL = e.target.result;
+    const dataURL = e.target.result;
     const img = new Image();
     img.onload = async () => {
-      originalImage = img;
-      document.getElementById('beforeImg').src = originalDataURL;
-      // Start AI processing
+      document.getElementById('beforeImg').src = dataURL;
       await runBackgroundRemoval(file);
     };
-    img.src = originalDataURL;
+    img.src = dataURL;
   };
   reader.readAsDataURL(file);
-}
+};
 
 /* ============================================================
-   AI BACKGROUND REMOVAL — Core Function
+   AI BACKGROUND REMOVAL
    ============================================================ */
 async function runBackgroundRemoval(fileOrBlob){
   showProcessing(true, 'Loading AI Model...', 'First-time use downloads ~40MB. Please wait.');
 
   try {
-    // Check if library loaded
-    if(typeof imglyRemoveBackground === 'undefined'){
-      throw new Error('AI library not loaded. Please refresh the page.');
+    if(typeof window.removeBackgroundAI === 'undefined'){
+      throw new Error('AI library not loaded. Please wait a moment and try again.');
     }
 
-    const blob = await imglyRemoveBackground(fileOrBlob, {
+    const blob = await window.removeBackgroundAI(fileOrBlob, {
       progress: (key, current, total) => {
         const percent = total > 0 ? Math.round((current / total) * 100) : 0;
         updateProgress(percent);
-
-        // Nice human-readable progress
         if(key.includes('fetch')) updateProcessingText('Downloading AI model...', `Fetching: ${key.split('/').pop()}`);
         else if(key.includes('compute')) updateProcessingText('Removing background...', 'AI is analyzing your image');
         else updateProcessingText('Processing...', key);
@@ -1372,13 +1314,11 @@ async function runBackgroundRemoval(fileOrBlob){
     removedBlob = blob;
     removedDataURL = URL.createObjectURL(blob);
 
-    // Load result into img
     const afterImg = document.getElementById('afterImg');
     afterImg.onload = () => {
       showProcessing(false);
       showResult();
       showToast('✅ Background removed successfully!');
-      addToHistory(blob);
     };
     afterImg.onerror = () => {
       showProcessing(false);
@@ -1421,10 +1361,8 @@ function showProcessing(show, title, msg){
 function showResult(){
   document.getElementById('uploadSection').style.display = 'none';
   document.getElementById('resultSection').classList.add('active');
-  // Reset to transparent
   currentBgColor = 'transparent';
   applyBackgroundToResult();
-  // Reset slider
   setComparePosition(50);
 }
 
@@ -1472,20 +1410,18 @@ document.addEventListener('touchend', () => { isDragging = false; });
 /* ============================================================
    BACKGROUND COLOR
    ============================================================ */
-function setBackground(color, swatchEl){
-  // Update active swatch
+window.setBackground = function(color, swatchEl){
   document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
   if(swatchEl) swatchEl.classList.add('active');
   currentBgColor = color;
   applyBackgroundToResult();
-}
+};
 
 function applyBackgroundToResult(){
   const afterWrapperEl = document.getElementById('afterWrapper');
   const afterImg = document.getElementById('afterImg');
 
   if(currentBgColor === 'transparent'){
-    // Show checkerboard (default CSS)
     afterWrapperEl.style.background = '';
     afterWrapperEl.style.backgroundImage = '';
     afterWrapperEl.style.backgroundColor = '';
@@ -1497,25 +1433,13 @@ function applyBackgroundToResult(){
     afterWrapperEl.style.backgroundColor = '';
   } else {
     afterWrapperEl.classList.add('no-checker');
-    afterWrapperEl.style.background = color;
+    afterWrapperEl.style.background = currentBgColor;
     afterWrapperEl.style.backgroundImage = 'none';
-    afterWrapperEl.style.backgroundColor = color;
+    afterWrapperEl.style.backgroundColor = currentBgColor;
   }
-  // Force image to be over background
   afterImg.style.position = 'relative';
   afterImg.style.zIndex = '1';
-  afterImg.style.mixBlendMode = 'normal';
 }
-
-// Special CSS: when no-checker class applied, hide checkerboard
-const styleExtra = document.createElement('style');
-styleExtra.textContent = `
-  .compare-after.no-checker {
-    background-image: none !important;
-    background-color: transparent;
-  }
-`;
-document.head.appendChild(styleExtra);
 
 /* ============================================================
    DOWNLOAD / COPY
@@ -1523,7 +1447,6 @@ document.head.appendChild(styleExtra);
 async function generateFinalImage(format = 'png'){
   if(!removedBlob) throw new Error('No image to process');
 
-  // Load result blob into an image
   const img = await new Promise((resolve, reject) => {
     const i = new Image();
     i.onload = () => resolve(i);
@@ -1531,13 +1454,11 @@ async function generateFinalImage(format = 'png'){
     i.src = removedDataURL;
   });
 
-  // Create canvas with same dimensions
   const canvas = document.createElement('canvas');
   canvas.width = img.naturalWidth;
   canvas.height = img.naturalHeight;
   const ctx = canvas.getContext('2d');
 
-  // Fill background if not transparent
   if(format !== 'png' || (currentBgColor !== 'transparent')){
     if(currentBgColor === 'gradient'){
       const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -1549,16 +1470,13 @@ async function generateFinalImage(format = 'png'){
       ctx.fillStyle = currentBgColor;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     } else if(format === 'jpeg'){
-      // JPG doesn't support transparency, use white
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
   }
 
-  // Draw the AI result
   ctx.drawImage(img, 0, 0);
 
-  // Return blob
   return new Promise((resolve, reject) => {
     canvas.toBlob(blob => {
       if(blob) resolve(blob);
@@ -1567,7 +1485,7 @@ async function generateFinalImage(format = 'png'){
   });
 }
 
-async function download(format){
+window.download = async function(format){
   try{
     showToast('Preparing download...', 'info');
     const blob = await generateFinalImage(format);
@@ -1579,9 +1497,9 @@ async function download(format){
     console.error(err);
     showToast('Download failed: ' + err.message, 'error');
   }
-}
+};
 
-async function copyToClipboard(){
+window.copyToClipboard = async function(){
   try{
     const blob = await generateFinalImage('png');
     if(navigator.clipboard && window.ClipboardItem){
@@ -1596,7 +1514,7 @@ async function copyToClipboard(){
     console.error(err);
     showToast('Copy failed: ' + err.message, 'error');
   }
-}
+};
 
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
@@ -1612,9 +1530,7 @@ function downloadBlob(blob, filename){
 /* ============================================================
    RESET
    ============================================================ */
-function resetAll(){
-  originalImage = null;
-  originalDataURL = null;
+window.resetAll = function(){
   if(removedDataURL) URL.revokeObjectURL(removedDataURL);
   removedBlob = null;
   removedDataURL = null;
@@ -1624,16 +1540,15 @@ function resetAll(){
   document.getElementById('resultSection').classList.remove('active');
   document.getElementById('urlInput').value = '';
 
-  // Reset swatches
   document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
-  document.querySelector('.bg-swatch.transparent').classList.add('active');
+  const tSwatch = document.querySelector('.bg-swatch.transparent');
+  if(tSwatch) tSwatch.classList.add('active');
 
-  // Clear images
   document.getElementById('beforeImg').src = '';
   document.getElementById('afterImg').src = '';
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+};
 
 /* ============================================================
    BATCH PROCESSING
@@ -1641,7 +1556,7 @@ function resetAll(){
 let batchItems = [];
 let batchResults = [];
 
-async function processBatchFiles(files){
+window.processBatchFiles = async function(files){
   if(files.length > 20){
     showToast('Max 20 images per batch', 'warning');
     files = files.slice(0, 20);
@@ -1654,7 +1569,6 @@ async function processBatchFiles(files){
   document.getElementById('batchResults').style.display = 'block';
   grid.innerHTML = '';
 
-  // Render placeholders
   for(let i = 0; i < files.length; i++){
     const item = document.createElement('div');
     item.className = 'batch-item';
@@ -1674,7 +1588,6 @@ async function processBatchFiles(files){
     grid.appendChild(item);
   }
 
-  // Process sequentially
   showProcessing(true, 'Batch Processing...', `0 of ${files.length} images done`);
 
   for(let i = 0; i < files.length; i++){
@@ -1687,7 +1600,7 @@ async function processBatchFiles(files){
     updateProgress(0);
 
     try{
-      const blob = await imglyRemoveBackground(files[i], {
+      const blob = await window.removeBackgroundAI(files[i], {
         progress: (key, current, total) => {
           const percent = total > 0 ? Math.round((current / total) * 100) : 0;
           updateProgress(percent);
@@ -1715,17 +1628,17 @@ async function processBatchFiles(files){
 
   showProcessing(false);
   showToast(`✅ Batch complete: ${batchResults.length} of ${files.length} processed`);
-}
+};
 
-function downloadBatchItem(index){
+window.downloadBatchItem = function(index){
   const item = batchItems[index];
   if(!item || !item.blob) return;
   const filename = 'bg-removed-' + (item.file.name.replace(/\.[^.]+$/, '') || index) + '.png';
   downloadBlob(item.blob, filename);
   showToast('Downloaded: ' + filename);
-}
+};
 
-async function downloadAllBatch(){
+window.downloadAllBatch = async function(){
   if(batchResults.length === 0){
     showToast('No results to download', 'error');
     return;
@@ -1735,46 +1648,32 @@ async function downloadAllBatch(){
     const r = batchResults[i];
     const filename = 'bg-removed-' + (r.name.replace(/\.[^.]+$/, '') || i) + '.png';
     downloadBlob(r.blob, filename);
-    // Small delay between downloads
     await new Promise(res => setTimeout(res, 300));
   }
   showToast(`✅ Downloaded ${batchResults.length} files`);
-}
+};
 
-function clearBatch(){
+window.clearBatch = function(){
   batchItems = [];
   batchResults = [];
   document.getElementById('batchResults').style.display = 'none';
   document.getElementById('batchGrid').innerHTML = '';
-}
-
-/* ============================================================
-   HISTORY (in-memory gallery)
-   ============================================================ */
-const historyItems = [];
-function addToHistory(blob){
-  historyItems.push({ blob, url: URL.createObjectURL(blob), time: Date.now() });
-  // Keep last 20
-  while(historyItems.length > 20){
-    const old = historyItems.shift();
-    URL.revokeObjectURL(old.url);
-  }
-}
+};
 
 /* ============================================================
    INIT
    ============================================================ */
 window.addEventListener('DOMContentLoaded', () => {
   initSamples();
-  // Preload library check
   setTimeout(() => {
-    if(typeof imglyRemoveBackground === 'undefined'){
-      showToast('AI library failed to load. Please refresh page.', 'error');
+    if(typeof window.removeBackgroundAI === 'undefined'){
+      showToast('AI library is still loading. Please wait...', 'info');
+    } else {
+      showToast('AI library ready! Upload an image to begin.', 'success');
     }
-  }, 2000);
+  }, 1500);
 });
 
-// Prevent default drag on whole document
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
 </script>
