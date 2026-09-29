@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Resume Maker - Omni Convertors</title>
+    <title>Ultimate Professional Resume Maker - Omni Convertors</title>
     
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts for Resume Templates -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Poppins:wght@300;400;500;600;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600;700&family=Nunito:wght@300;400;600;700&family=Raleway:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;500;700&family=PT+Serif:wght@400;700&family=Crimson+Text:wght@400;600&family=Libre+Baskerville:wght@400;700&family=Josefin+Sans:wght@300;400;600&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
     <script>
@@ -17,41 +15,50 @@
 
     <style>
         /* =========================================
-           RESUME MAKER SPECIFIC STYLES
+           RESUME MAKER — ULTIMATE EDITION
            ========================================= */
         :root {
             --resume-primary: #2563eb;
+            --resume-secondary: #1e40af;
             --resume-font: 'Inter', sans-serif;
-            --resume-font-size: 14px;
+            --resume-font-size: 13.5px;
             --resume-text-color: #333;
-            --resume-bg: #ffffff;
-            --resume-padding: 30px;
+            --resume-bg-color: #ffffff;
+            --resume-padding: 35px;
+            --resume-line-height: 1.5;
+            --resume-heading-font: 'Inter', sans-serif;
+            --photo-shape: 50%;
         }
+
+        * { box-sizing: border-box; }
 
         .resume-app-container {
             display: flex;
-            height: calc(100vh - 80px);
+            height: calc(100vh - 100px);
             margin-top: 20px;
             background: var(--bg-color);
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
             border: 1px solid var(--border-color);
         }
 
-        /* --- Left Sidebar (Form) --- */
+        /* ============= LEFT PANEL ============= */
         .resume-form-panel {
-            width: 400px;
+            width: 420px;
             background: var(--bg-color);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             overflow-y: auto;
             flex-shrink: 0;
+            scrollbar-width: thin;
         }
+        .resume-form-panel::-webkit-scrollbar { width: 6px; }
+        .resume-form-panel::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
 
         .form-header {
-            padding: 20px;
+            padding: 15px 20px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
@@ -61,282 +68,532 @@
             top: 0;
             z-index: 10;
         }
-
-        .form-header h2 { font-size: 18px; margin: 0; color: var(--primary-blue); }
-
-        .accordion-item {
-            border-bottom: 1px solid var(--border-color);
+        .form-header h2 { font-size: 16px; margin: 0; color: var(--primary-blue); }
+        .form-header .btn-sm {
+            font-size: 11px; padding: 6px 12px; border: none; border-radius: 5px;
+            cursor: pointer; font-weight: 600; transition: 0.2s;
         }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
 
+        .accordion-item { border-bottom: 1px solid var(--border-color); }
         .accordion-header {
-            padding: 15px 20px;
+            padding: 14px 20px;
             background: rgba(0,0,0,0.02);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             transition: 0.3s;
+            user-select: none;
         }
-
         .accordion-header:hover { background: rgba(0,0,0,0.05); }
-        .accordion-header i { transition: transform 0.3s; }
-        .accordion-header.active i { transform: rotate(180deg); }
-
-        .accordion-content {
-            padding: 20px;
-            display: none;
-            background: var(--bg-color);
-        }
+        .accordion-header i.chev { transition: transform 0.3s; font-size: 12px; }
+        .accordion-header.active i.chev { transform: rotate(180deg); }
+        .accordion-content { padding: 20px; display: none; background: var(--bg-color); }
         .accordion-content.active { display: block; }
 
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: #888; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 5px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
         .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 10px;
+            width: 100%; padding: 9px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             background: var(--bg-color);
             color: var(--text-color);
-            font-family: inherit;
-            font-size: 14px;
+            font-family: inherit; font-size: 13px;
+            transition: 0.2s;
         }
-        .form-group textarea { resize: vertical; min-height: 80px; }
-        
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; font-family: inherit; }
+
+        .form-row { display: flex; gap: 10px; }
+        .form-row .form-group { flex: 1; }
+
         .dynamic-item {
             background: rgba(0,0,0,0.02);
-            padding: 15px;
+            padding: 14px;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
             border: 1px dashed var(--border-color);
             position: relative;
         }
         .dynamic-item .remove-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 14px;
+            position: absolute; top: 8px; right: 10px;
+            color: #ef4444; cursor: pointer; font-size: 13px;
+            padding: 4px; border-radius: 4px; transition: 0.2s;
         }
+        .dynamic-item .remove-btn:hover { background: rgba(239,68,68,0.1); }
 
         .add-btn {
-            width: 100%;
-            padding: 10px;
-            background: rgba(37, 99, 235, 0.1);
+            width: 100%; padding: 10px;
+            background: rgba(37, 99, 235, 0.08);
             color: var(--primary-blue);
             border: 1px dashed var(--primary-blue);
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
+            border-radius: 6px; cursor: pointer;
+            font-weight: 600; font-size: 12px; transition: 0.3s;
         }
-        .add-btn:hover { background: var(--primary-blue); color: white; }
+        .add-btn:hover { background: var(--primary-blue); color: white; border-style: solid; }
 
-        /* --- Right Sidebar (Preview) --- */
+        /* ============= RIGHT PANEL ============= */
         .resume-preview-panel {
-            flex: 1;
-            background: #525659; /* Dark gray like Adobe PDF reader */
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            flex: 1; background: #3a3d42;
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
         .preview-toolbar {
-            padding: 10px 20px;
-            background: #323639;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            flex-wrap: wrap;
-            gap: 10px;
+            padding: 8px 15px; background: #23262b;
+            display: flex; justify-content: space-between;
+            align-items: center; color: white;
+            flex-wrap: wrap; gap: 8px;
+            border-bottom: 1px solid #111;
         }
-
-        .preview-toolbar .tool-group { display: flex; gap: 10px; align-items: center; }
+        .preview-toolbar .tool-group {
+            display: flex; gap: 6px; align-items: center;
+            font-size: 12px;
+        }
+        .preview-toolbar .tool-group label { color: #aaa; font-size: 11px; }
         .preview-toolbar select, .preview-toolbar input[type="color"] {
-            padding: 5px;
-            border-radius: 4px;
-            border: none;
-            background: #444;
-            color: white;
-            cursor: pointer;
+            padding: 5px 8px; border-radius: 4px;
+            border: 1px solid #444; background: #1a1c20;
+            color: white; cursor: pointer; font-size: 11px;
+            font-family: inherit;
         }
-        .preview-toolbar input[type="color"] { width: 30px; height: 30px; padding: 0; border: none; }
-        
+        .preview-toolbar input[type="color"] { width: 32px; height: 28px; padding: 2px; }
+        .preview-toolbar select:hover { border-color: #666; }
+
+        .btn-download {
+            padding: 6px 14px; background: #10b981; color: white;
+            border: none; border-radius: 4px; cursor: pointer;
+            font-weight: 600; font-size: 11px;
+            display: flex; align-items: center; gap: 5px;
+            transition: 0.2s;
+        }
+        .btn-download:hover { background: #059669; }
+
+        .zoom-controls { display: flex; align-items: center; gap: 3px; background: #1a1c20; border-radius: 4px; padding: 2px; }
+        .zoom-controls button {
+            background: transparent; color: white; border: none;
+            padding: 4px 8px; cursor: pointer; font-size: 12px; border-radius: 3px;
+        }
+        .zoom-controls button:hover { background: #333; }
+        .zoom-controls span { font-size: 11px; padding: 0 4px; color: #ccc; min-width: 35px; text-align: center; }
+
         .preview-scroll-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px;
-            display: flex;
-            justify-content: center;
+            flex: 1; overflow: auto; padding: 30px;
+            display: flex; justify-content: center; align-items: flex-start;
         }
 
-        /* --- A4 Paper Styling --- */
+        /* ============= A4 PAGE ============= */
         .a4-page {
             width: 210mm;
             min-height: 297mm;
-            background: var(--resume-bg);
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            background: var(--resume-bg-color);
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
             padding: var(--resume-padding);
             color: var(--resume-text-color);
             font-family: var(--resume-font);
             font-size: var(--resume-font-size);
-            line-height: 1.5;
+            line-height: var(--resume-line-height);
             position: relative;
             box-sizing: border-box;
+            transition: transform 0.2s;
+            transform-origin: top center;
         }
 
-        /* Resume Header Styling with Photo Support */
-        .resume-header { 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 25px; 
-            border-bottom: 2px solid var(--resume-primary); 
-            padding-bottom: 15px; 
-            text-align: center;
+        /* Background Patterns */
+        .a4-page.bg-white { --resume-bg-color: #ffffff; }
+        .a4-page.bg-cream { --resume-bg-color: #fdfaf3; }
+        .a4-page.bg-gray { --resume-bg-color: #f5f5f5; }
+        .a4-page.bg-offwhite { --resume-bg-color: #fafaf7; }
+
+        .a4-page.bg-grid {
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .a4-page.bg-dots {
+            background-color: #ffffff;
+            background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
+        .a4-page.bg-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+        }
+        .a4-page.bg-subtle-lines {
+            background-color: #ffffff;
+            background-image: linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px);
+            background-size: 100% 24px;
         }
 
+        /* ============= RESUME HEADER ============= */
+        .resume-header {
+            display: flex; align-items: center; justify-content: center;
+            gap: 25px; margin-bottom: 22px;
+            padding-bottom: 18px; text-align: center;
+        }
         .header-photo-container {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            overflow: hidden;
+            width: 110px; height: 110px;
+            overflow: hidden; flex-shrink: 0;
+            display: none; background: #f0f0f0;
             border: 3px solid var(--resume-primary);
-            flex-shrink: 0;
-            display: none; /* Hidden by default, JS will show it */
-            background: #f0f0f0;
+            border-radius: var(--photo-shape);
         }
-
-        .header-photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .header-photo-container img { width: 100%; height: 100%; object-fit: cover; }
+        .header-info { flex: 1; min-width: 0; }
+        .resume-header h1 {
+            font-size: 32px; margin: 0 0 5px 0;
+            color: var(--resume-primary);
+            text-transform: uppercase; letter-spacing: 2px;
+            font-family: var(--resume-heading-font);
+            font-weight: 700; line-height: 1.1;
         }
-
-        .header-info {
-            flex: 1;
+        .resume-header .job-title {
+            font-size: 15px; font-weight: 600;
+            color: #555; margin-bottom: 10px; letter-spacing: 0.5px;
         }
-
-        .resume-header h1 { font-size: 32px; margin: 0 0 5px 0; color: var(--resume-primary); text-transform: uppercase; letter-spacing: 2px; }
-        .resume-header .job-title { font-size: 16px; font-weight: 600; color: #555; margin-bottom: 10px; }
-        .resume-header .contact-info { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; font-size: 12px; color: #666; }
-        .resume-header .contact-info span { display: flex; align-items: center; gap: 5px; }
-
-        .resume-section { margin-bottom: 20px; }
-        .resume-section h2 { 
-            font-size: 16px; 
-            text-transform: uppercase; 
-            color: var(--resume-primary); 
-            border-bottom: 1px solid #ddd; 
-            padding-bottom: 5px; 
-            margin-bottom: 12px; 
-            letter-spacing: 1px;
+        .resume-header .contact-info {
+            display: flex; justify-content: center;
+            flex-wrap: wrap; gap: 6px 15px;
+            font-size: 11.5px; color: #666;
         }
+        .resume-header .contact-info span {
+            display: flex; align-items: center; gap: 5px;
+        }
+        .resume-header .contact-info i { color: var(--resume-primary); }
 
-        .resume-item { margin-bottom: 15px; }
-        .resume-item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
-        .resume-item-header h3 { font-size: 14px; margin: 0; font-weight: 700; }
-        .resume-item-header .date { font-size: 12px; color: #666; font-style: italic; }
-        .resume-item-sub { font-size: 13px; font-weight: 600; color: #444; margin-bottom: 5px; }
-        .resume-item p { font-size: 13px; margin: 0 0 5px 0; color: #555; }
-        .resume-item ul { margin: 5px 0 0 0; padding-left: 20px; font-size: 13px; color: #555; }
+        /* ============= SECTIONS ============= */
+        .resume-section { margin-bottom: 18px; }
+        .resume-section h2 {
+            font-size: 14px; text-transform: uppercase;
+            color: var(--resume-primary);
+            padding-bottom: 5px; margin-bottom: 10px;
+            letter-spacing: 1.5px;
+            font-family: var(--resume-heading-font);
+            font-weight: 700;
+            border-bottom: 2px solid var(--resume-primary);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .resume-section h2 i { font-size: 13px; }
+
+        .resume-item { margin-bottom: 14px; }
+        .resume-item-header {
+            display: flex; justify-content: space-between;
+            align-items: baseline; margin-bottom: 3px;
+            gap: 10px;
+        }
+        .resume-item-header h3 { font-size: 13.5px; margin: 0; font-weight: 700; color: #222; }
+        .resume-item-header .date { font-size: 11.5px; color: #666; font-style: italic; white-space: nowrap; }
+        .resume-item-sub { font-size: 12.5px; font-weight: 600; color: #444; margin-bottom: 4px; font-style: italic; }
+        .resume-item p { font-size: 12.5px; margin: 0 0 4px 0; color: #555; }
+        .resume-item ul { margin: 4px 0 0 0; padding-left: 18px; font-size: 12.5px; color: #555; }
         .resume-item ul li { margin-bottom: 3px; }
 
-        .skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .skill-tag { background: rgba(37, 99, 235, 0.1); color: var(--resume-primary); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        /* Skills */
+        .skills-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .skill-tag {
+            background: rgba(37,99,235,0.1);
+            color: var(--resume-primary);
+            padding: 3px 12px; border-radius: 20px;
+            font-size: 11.5px; font-weight: 600;
+            border: 1px solid rgba(37,99,235,0.2);
+        }
 
-        /* Template Variations */
-        .a4-page.template-classic .resume-header { text-align: left; border-bottom: 2px solid #333; }
-        .a4-page.template-classic .resume-header h1 { color: #333; }
+        /* Skill Bars */
+        .skill-bar-item { margin-bottom: 10px; }
+        .skill-bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; font-weight: 600; }
+        .skill-bar-track { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+        .skill-bar-fill { height: 100%; background: var(--resume-primary); border-radius: 3px; transition: width 0.5s; }
+
+        /* Languages */
+        .lang-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12.5px; }
+        .lang-name { font-weight: 600; }
+        .lang-level { color: #666; font-style: italic; font-size: 11.5px; }
+
+        /* ============================================
+           TEMPLATE VARIATIONS
+           ============================================ */
+
+        /* --- Template: MODERN --- */
+        .a4-page.template-modern .resume-header { border-bottom: 2px solid var(--resume-primary); }
+        .a4-page.template-modern .resume-header h1 { color: var(--resume-primary); }
+
+        /* --- Template: CLASSIC --- */
+        .a4-page.template-classic { --resume-font: 'Merriweather', serif; --resume-heading-font: 'Merriweather', serif; }
+        .a4-page.template-classic .resume-header {
+            text-align: left; border-bottom: 3px double #333;
+            justify-content: flex-start;
+        }
+        .a4-page.template-classic .resume-header h1 { color: #1a1a1a; letter-spacing: 1px; }
         .a4-page.template-classic .resume-header .contact-info { justify-content: flex-start; }
-        .a4-page.template-classic .resume-section h2 { color: #333; border-bottom: 1px solid #333; }
+        .a4-page.template-classic .resume-section h2 {
+            color: #1a1a1a; border-bottom: 2px solid #1a1a1a;
+            text-align: center; letter-spacing: 2px;
+        }
+        .a4-page.template-classic .skill-tag {
+            background: transparent; color: #1a1a1a; border: 1px solid #1a1a1a;
+        }
 
-        .a4-page.template-minimal .resume-header { border-bottom: none; text-align: left; }
-        .a4-page.template-minimal .resume-header h1 { font-size: 28px; color: #333; letter-spacing: 0; }
+        /* --- Template: MINIMAL --- */
+        .a4-page.template-minimal { --resume-primary: #111; --resume-font: 'Source Sans Pro', sans-serif; }
+        .a4-page.template-minimal .resume-header { border-bottom: 1px solid #e5e5e5; text-align: left; }
+        .a4-page.template-minimal .resume-header h1 { font-size: 36px; color: #111; letter-spacing: -0.5px; font-weight: 300; }
         .a4-page.template-minimal .resume-header .contact-info { justify-content: flex-start; }
-        .a4-page.template-minimal .resume-section h2 { color: #333; border-bottom: 1px solid #eee; font-size: 14px; }
+        .a4-page.template-minimal .resume-section h2 {
+            color: #111; border-bottom: 1px solid #e5e5e5;
+            font-weight: 400; letter-spacing: 3px; font-size: 12px;
+        }
+        .a4-page.template-minimal .skill-tag { background: #f5f5f5; color: #333; border: none; }
 
-        /* --- Print Styles (Crucial for PDF) --- */
+        /* --- Template: EXECUTIVE --- */
+        .a4-page.template-executive { --resume-font: 'Playfair Display', serif; --resume-heading-font: 'Playfair Display', serif; }
+        .a4-page.template-executive .resume-header {
+            text-align: center; border-bottom: none;
+            padding: 25px 20px; margin: -35px -35px 25px -35px;
+            background: var(--resume-primary);
+            color: white;
+        }
+        .a4-page.template-executive .resume-header h1 { color: white; font-family: 'Playfair Display', serif; letter-spacing: 3px; }
+        .a4-page.template-executive .resume-header .job-title { color: rgba(255,255,255,0.9); }
+        .a4-page.template-executive .resume-header .contact-info { color: rgba(255,255,255,0.9); }
+        .a4-page.template-executive .resume-header .contact-info i { color: white; }
+        .a4-page.template-executive .resume-section h2 { color: var(--resume-primary); border-bottom: 1px solid #ddd; }
+        .a4-page.template-executive .header-photo-container { border-color: white; }
+
+        /* --- Template: CREATIVE (Two-Column) --- */
+        .a4-page.template-creative {
+            display: grid;
+            grid-template-columns: 32% 1fr;
+            padding: 0;
+            gap: 0;
+        }
+        .a4-page.template-creative .resume-header { display: none; }
+        .a4-page.template-creative .resume-sidebar {
+            background: var(--resume-primary);
+            color: white;
+            padding: 30px 20px;
+            min-height: 297mm;
+        }
+        .a4-page.template-creative .resume-main {
+            padding: 30px 25px;
+        }
+        .a4-page.template-creative .resume-sidebar h2 {
+            color: white; border-bottom: 1px solid rgba(255,255,255,0.3);
+            font-size: 12px; letter-spacing: 1.5px;
+        }
+        .a4-page.template-creative .resume-sidebar .resume-item,
+        .a4-page.template-creative .resume-sidebar p,
+        .a4-page.template-creative .resume-sidebar span { color: rgba(255,255,255,0.92); }
+        .a4-page.template-creative .resume-sidebar .skill-tag {
+            background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3);
+        }
+        .a4-page.template-creative .resume-sidebar .skill-bar-track { background: rgba(255,255,255,0.2); }
+        .a4-page.template-creative .resume-sidebar .skill-bar-fill { background: white; }
+        .a4-page.template-creative .resume-main h2 {
+            color: var(--resume-primary); border-bottom: 2px solid var(--resume-primary);
+        }
+        .a4-page.template-creative .sidebar-photo {
+            width: 130px; height: 130px; margin: 0 auto 20px;
+            border-radius: var(--photo-shape);
+            overflow: hidden; border: 3px solid rgba(255,255,255,0.5);
+        }
+        .a4-page.template-creative .sidebar-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .a4-page.template-creative .sidebar-name { font-size: 22px; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
+        .a4-page.template-creative .sidebar-title { font-size: 12px; opacity: 0.85; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .a4-page.template-creative .sidebar-contact { font-size: 11px; margin-bottom: 6px; word-break: break-word; display: flex; gap: 8px; align-items: flex-start; }
+        .a4-page.template-creative .sidebar-contact i { margin-top: 3px; flex-shrink: 0; }
+
+        /* --- Template: ELEGANT --- */
+        .a4-page.template-elegant { --resume-font: 'Crimson Text', serif; --resume-heading-font: 'Playfair Display', serif; }
+        .a4-page.template-elegant .resume-header {
+            text-align: center; border-top: 1px solid #c9a96a;
+            border-bottom: 1px solid #c9a96a;
+            padding: 20px 0; margin-bottom: 25px;
+        }
+        .a4-page.template-elegant .resume-header h1 { color: #1a1a1a; letter-spacing: 4px; font-weight: 400; }
+        .a4-page.template-elegant .resume-section h2 {
+            color: #c9a96a; border-bottom: 1px solid #c9a96a;
+            text-align: center; letter-spacing: 3px; font-weight: 400;
+        }
+        .a4-page.template-elegant .skill-tag { background: rgba(201,169,106,0.1); color: #8a6d3a; border: 1px solid rgba(201,169,106,0.3); }
+
+        /* --- Template: BOLD --- */
+        .a4-page.template-bold { --resume-font: 'Montserrat', sans-serif; --resume-heading-font: 'Montserrat', sans-serif; }
+        .a4-page.template-bold .resume-header {
+            background: #111; color: white;
+            padding: 30px 25px; margin: -35px -35px 25px -35px;
+            border-bottom: 6px solid var(--resume-primary);
+        }
+        .a4-page.template-bold .resume-header h1 { color: white; font-weight: 800; letter-spacing: 3px; font-size: 34px; }
+        .a4-page.template-bold .resume-header .job-title { color: var(--resume-primary); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; font-size: 12px; }
+        .a4-page.template-bold .resume-header .contact-info { color: rgba(255,255,255,0.8); }
+        .a4-page.template-bold .resume-header .contact-info i { color: var(--resume-primary); }
+        .a4-page.template-bold .resume-section h2 { color: #111; border-bottom: 3px solid #111; letter-spacing: 3px; font-weight: 800; }
+        .a4-page.template-bold .header-photo-container { border-color: var(--resume-primary); }
+
+        /* --- Template: COMPACT --- */
+        .a4-page.template-compact { --resume-padding: 22px; --resume-font-size: 12px; --resume-line-height: 1.35; }
+        .a4-page.template-compact .resume-header { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+        .a4-page.template-compact .resume-header h1 { font-size: 26px; letter-spacing: 1px; }
+        .a4-page.template-compact .resume-section { margin-bottom: 12px; }
+        .a4-page.template-compact .resume-section h2 { font-size: 12px; margin-bottom: 8px; padding-bottom: 3px; }
+        .a4-page.template-compact .resume-item { margin-bottom: 10px; }
+
+        /* --- Template: TIMELINE --- */
+        .a4-page.template-timeline .resume-header { text-align: left; border-bottom: 1px solid #ddd; }
+        .a4-page.template-timeline .resume-header .contact-info { justify-content: flex-start; }
+        .a4-page.template-timeline .resume-section { position: relative; padding-left: 30px; }
+        .a4-page.template-timeline .resume-section::before {
+            content: ''; position: absolute; left: 8px; top: 25px; bottom: 0;
+            width: 2px; background: var(--resume-primary); opacity: 0.3;
+        }
+        .a4-page.template-timeline .resume-section h2 {
+            border-bottom: none; padding-bottom: 0;
+            position: relative; margin-left: -22px;
+        }
+        .a4-page.template-timeline .resume-section h2::before {
+            content: ''; position: absolute; left: 0; top: 5px;
+            width: 12px; height: 12px; background: var(--resume-primary);
+            border-radius: 50%; border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--resume-primary);
+        }
+        .a4-page.template-timeline .resume-item-header h3::before {
+            content: '▸ '; color: var(--resume-primary); font-weight: bold;
+        }
+
+        /* --- Template: TWO-COLUMN --- */
+        .a4-page.template-twocolumn {
+            display: grid;
+            grid-template-columns: 1fr 32%;
+            gap: 30px;
+            padding: 35px 30px;
+        }
+        .a4-page.template-twocolumn .resume-header {
+            grid-column: 1 / -1;
+            border-bottom: 2px solid var(--resume-primary);
+            text-align: left; padding-bottom: 15px;
+        }
+        .a4-page.template-twocolumn .resume-header .contact-info { justify-content: flex-start; }
+        .a4-page.template-twocolumn .main-column { grid-column: 1 / 2; }
+        .a4-page.template-twocolumn .side-column { grid-column: 2 / 3; background: rgba(37,99,235,0.05); padding: 15px; border-radius: 8px; }
+        .a4-page.template-twocolumn .side-column .resume-section h2 { font-size: 12px; letter-spacing: 1px; }
+
+        /* ============= HIDDEN DEFAULT SECTIONS ============= */
+        .hidden { display: none !important; }
+
+        /* ============= PRINT STYLES ============= */
         @media print {
             body * { visibility: hidden; }
             .resume-preview-panel, .resume-preview-panel * { visibility: visible; }
-            .resume-preview-panel { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white; overflow: visible; }
+            .resume-preview-panel {
+                position: absolute; left: 0; top: 0;
+                width: 100%; height: auto;
+                background: white; overflow: visible;
+            }
             .preview-toolbar { display: none !important; }
             .preview-scroll-area { padding: 0; overflow: visible; display: block; }
-            .a4-page { width: 100%; min-height: auto; box-shadow: none; margin: 0; padding: 0; }
+            .a4-page {
+                width: 100%; min-height: auto;
+                box-shadow: none; margin: 0; padding: 15mm !important;
+                transform: none !important;
+            }
+            .a4-page.template-creative { grid-template-columns: 32% 1fr; }
+            .a4-page.template-creative .resume-sidebar { padding: 15mm 8mm; min-height: 297mm; }
+            .a4-page.template-creative .resume-main { padding: 15mm 8mm; }
+            .a4-page.template-executive .resume-header,
+            .a4-page.template-bold .resume-header { margin: -15mm -15mm 25px -15mm; padding: 15mm; }
+            .a4-page.template-twocolumn { gap: 20px; padding: 15mm; }
             .header-photo-container { display: block !important; }
-            @page { size: A4; margin: 15mm; }
+            @page { size: A4; margin: 0; }
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
+        /* ============= RESPONSIVE ============= */
+        @media (max-width: 1100px) {
             .resume-app-container { flex-direction: column; height: auto; }
-            .resume-form-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); }
-            .resume-preview-panel { height: 800px; }
-            .a4-page { transform: scale(0.8); transform-origin: top center; }
+            .resume-form-panel { width: 100%; max-height: 500px; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .resume-preview-panel { height: 700px; }
+            .a4-page { transform: scale(0.7); }
         }
+        @media (max-width: 600px) {
+            .a4-page { transform: scale(0.5); }
+            .preview-scroll-area { padding: 15px; }
+            .preview-toolbar { font-size: 10px; }
+        }
+
+        /* Sortable ghost */
+        .sortable-ghost { opacity: 0.4; background: rgba(37,99,235,0.1); }
     </style>
 </head>
 <body>
 
     <div class="header" style="margin-bottom: 10px;">
-        <h1>📄 Professional Resume Maker</h1>
-        <p>Create a stunning, ATS-friendly resume. All data stays in your browser.</p>
+        <h1>📄 Ultimate Resume Maker — Pro Edition</h1>
+        <p>10 Templates • 15+ Fonts • 8 Backgrounds • 100% Client-Side</p>
     </div>
 
     <div class="resume-app-container">
         
-        <!-- ================= LEFT PANEL: FORM ================= -->
+        <!-- ========== LEFT PANEL: FORM ========== -->
         <div class="resume-form-panel">
             <div class="form-header">
-                <h2>Resume Editor</h2>
-                <button onclick="resetResume()" class="theme-btn" style="font-size: 11px; padding: 5px 10px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Reset All</button>
+                <h2>📝 Resume Editor</h2>
+                <button onclick="resetResume()" class="btn-sm btn-danger"><i class="fas fa-trash"></i> Reset All</button>
             </div>
 
-            <!-- Accordion: Personal Info -->
+            <!-- Personal Info -->
             <div class="accordion-item">
                 <div class="accordion-header active" onclick="toggleAccordion(this)">
                     <span><i class="fas fa-user"></i> Personal Information</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down chev"></i>
                 </div>
                 <div class="accordion-content active">
-                    <!-- NEW PHOTO UPLOAD INPUT -->
                     <div class="form-group">
                         <label>Profile Photo</label>
                         <input type="file" id="input-photo" accept="image/*" onchange="handlePhotoUpload(event)">
                     </div>
                     <div class="form-group"><label>Full Name</label><input type="text" id="input-name" oninput="updateData('name', this.value)" placeholder="John Doe"></div>
                     <div class="form-group"><label>Job Title</label><input type="text" id="input-jobTitle" oninput="updateData('jobTitle', this.value)" placeholder="Senior Software Engineer"></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="input-email" oninput="updateData('email', this.value)" placeholder="john@example.com"></div>
-                    <div class="form-group"><label>Phone</label><input type="text" id="input-phone" oninput="updateData('phone', this.value)" placeholder="+1 234 567 890"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Email</label><input type="email" id="input-email" oninput="updateData('email', this.value)" placeholder="john@example.com"></div>
+                        <div class="form-group"><label>Phone</label><input type="text" id="input-phone" oninput="updateData('phone', this.value)" placeholder="+1 234 567 890"></div>
+                    </div>
                     <div class="form-group"><label>Location</label><input type="text" id="input-location" oninput="updateData('location', this.value)" placeholder="New York, USA"></div>
-                    <div class="form-group"><label>LinkedIn / Portfolio</label><input type="text" id="input-website" oninput="updateData('website', this.value)" placeholder="linkedin.com/in/johndoe"></div>
-                </div>
-            </div>
-
-            <!-- Accordion: Professional Summary -->
-            <div class="accordion-item">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <span><i class="fas fa-align-left"></i> Professional Summary</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="accordion-content">
-                    <div class="form-group">
-                        <textarea id="input-summary" oninput="updateData('summary', this.value)" placeholder="Briefly describe your professional background, key skills, and career goals..."></textarea>
+                    <div class="form-row">
+                        <div class="form-group"><label>LinkedIn</label><input type="text" id="input-linkedin" oninput="updateData('linkedin', this.value)" placeholder="linkedin.com/in/johndoe"></div>
+                        <div class="form-group"><label>Website/Portfolio</label><input type="text" id="input-website" oninput="updateData('website', this.value)" placeholder="johndoe.com"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>GitHub</label><input type="text" id="input-github" oninput="updateData('github', this.value)" placeholder="github.com/johndoe"></div>
+                        <div class="form-group"><label>Twitter/X</label><input type="text" id="input-twitter" oninput="updateData('twitter', this.value)" placeholder="@johndoe"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Accordion: Work Experience -->
+            <!-- Summary -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span><i class="fas fa-align-left"></i> Professional Summary</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="form-group">
+                        <textarea id="input-summary" oninput="updateData('summary', this.value)" placeholder="Results-driven professional with X years of experience in..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Experience -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
                     <span><i class="fas fa-briefcase"></i> Work Experience</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down chev"></i>
                 </div>
                 <div class="accordion-content">
                     <div id="experience-container"></div>
@@ -344,11 +601,11 @@
                 </div>
             </div>
 
-            <!-- Accordion: Education -->
+            <!-- Education -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
                     <span><i class="fas fa-graduation-cap"></i> Education</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down chev"></i>
                 </div>
                 <div class="accordion-content">
                     <div id="education-container"></div>
@@ -356,25 +613,44 @@
                 </div>
             </div>
 
-            <!-- Accordion: Skills -->
+            <!-- Skills -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
                     <span><i class="fas fa-cogs"></i> Skills</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down chev"></i>
                 </div>
                 <div class="accordion-content">
                     <div class="form-group">
                         <label>Skills (Comma separated)</label>
-                        <textarea id="input-skills" oninput="updateData('skills', this.value)" placeholder="JavaScript, React, Node.js, Python, SQL..."></textarea>
+                        <textarea id="input-skills" oninput="updateData('skills', this.value)" placeholder="JavaScript, React, Node.js, Python, SQL"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Style</label>
+                        <select id="skillStyle" onchange="updateData('skillStyle', this.value)">
+                            <option value="tags">Tags</option>
+                            <option value="bars">Progress Bars</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <!-- Accordion: Projects -->
+            <!-- Languages -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span><i class="fas fa-language"></i> Languages</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </div>
+                <div class="accordion-content">
+                    <div id="languages-container"></div>
+                    <button class="add-btn" onclick="addLanguage()"><i class="fas fa-plus"></i> Add Language</button>
+                </div>
+            </div>
+
+            <!-- Projects -->
             <div class="accordion-item">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
                     <span><i class="fas fa-project-diagram"></i> Projects</span>
-                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down chev"></i>
                 </div>
                 <div class="accordion-content">
                     <div id="projects-container"></div>
@@ -382,18 +658,74 @@
                 </div>
             </div>
 
+            <!-- Certifications -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span><i class="fas fa-certificate"></i> Certifications</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </div>
+                <div class="accordion-content">
+                    <div id="certifications-container"></div>
+                    <button class="add-btn" onclick="addCertification()"><i class="fas fa-plus"></i> Add Certification</button>
+                </div>
+            </div>
+
+            <!-- Awards -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span><i class="fas fa-trophy"></i> Awards & Achievements</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </div>
+                <div class="accordion-content">
+                    <div id="awards-container"></div>
+                    <button class="add-btn" onclick="addAward()"><i class="fas fa-plus"></i> Add Award</button>
+                </div>
+            </div>
+
+            <!-- Hobbies -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span><i class="fas fa-heart"></i> Hobbies & Interests</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </div>
+                <div class="accordion-content">
+                    <div class="form-group">
+                        <label>Hobbies (Comma separated)</label>
+                        <textarea id="input-hobbies" oninput="updateData('hobbies', this.value)" placeholder="Photography, Reading, Traveling, Chess"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- References -->
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion(this)">
+                    <span><i class="fas fa-users"></i> References</span>
+                    <i class="fas fa-chevron-down chev"></i>
+                </div>
+                <div class="accordion-content">
+                    <div id="references-container"></div>
+                    <button class="add-btn" onclick="addReference()"><i class="fas fa-plus"></i> Add Reference</button>
+                </div>
+            </div>
+
         </div>
 
-        <!-- ================= RIGHT PANEL: PREVIEW ================= -->
+        <!-- ========== RIGHT PANEL: PREVIEW ========== -->
         <div class="resume-preview-panel">
-            <!-- Toolbar -->
             <div class="preview-toolbar">
                 <div class="tool-group">
-                    <i class="fas fa-paint-brush"></i>
+                    <i class="fas fa-layer-group"></i>
                     <select id="templateSelect" onchange="changeTemplate(this.value)">
-                        <option value="modern">Modern Template</option>
-                        <option value="classic">Classic Template</option>
-                        <option value="minimal">Minimal Template</option>
+                        <option value="modern">Modern</option>
+                        <option value="classic">Classic</option>
+                        <option value="minimal">Minimal</option>
+                        <option value="executive">Executive</option>
+                        <option value="creative">Creative (2-Col)</option>
+                        <option value="elegant">Elegant</option>
+                        <option value="bold">Bold</option>
+                        <option value="compact">Compact</option>
+                        <option value="timeline">Timeline</option>
+                        <option value="twocolumn">Two-Column</option>
                     </select>
                 </div>
                 <div class="tool-group">
@@ -401,416 +733,788 @@
                     <select id="fontSelect" onchange="changeFont(this.value)">
                         <option value="'Inter', sans-serif">Inter</option>
                         <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Poppins', sans-serif">Poppins</option>
+                        <option value="'Lato', sans-serif">Lato</option>
+                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                        <option value="'Open Sans', sans-serif">Open Sans</option>
+                        <option value="'Nunito', sans-serif">Nunito</option>
+                        <option value="'Raleway', sans-serif">Raleway</option>
+                        <option value="'Source Sans Pro', sans-serif">Source Sans Pro</option>
+                        <option value="'Josefin Sans', sans-serif">Josefin Sans</option>
                         <option value="'Merriweather', serif">Merriweather</option>
                         <option value="'Playfair Display', serif">Playfair Display</option>
-                        <option value="Arial, sans-serif">Arial</option>
-                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="'PT Serif', serif">PT Serif</option>
+                        <option value="'Crimson Text', serif">Crimson Text</option>
+                        <option value="'Libre Baskerville', serif">Libre Baskerville</option>
                     </select>
                 </div>
                 <div class="tool-group">
                     <i class="fas fa-text-height"></i>
                     <select id="fontSizeSelect" onchange="changeFontSize(this.value)">
-                        <option value="12px">12px</option>
-                        <option value="13px">13px</option>
-                        <option value="14px" selected>14px</option>
-                        <option value="15px">15px</option>
-                        <option value="16px">16px</option>
+                        <option value="11px">11</option>
+                        <option value="12px">12</option>
+                        <option value="13px">13</option>
+                        <option value="13.5px" selected>13.5</option>
+                        <option value="14px">14</option>
+                        <option value="15px">15</option>
+                        <option value="16px">16</option>
                     </select>
                 </div>
                 <div class="tool-group">
                     <i class="fas fa-palette"></i>
-                    <input type="color" id="colorPicker" value="#2563eb" onchange="changeColor(this.value)">
+                    <input type="color" id="colorPicker" value="#2563eb" onchange="changeColor(this.value)" title="Accent Color">
                 </div>
                 <div class="tool-group">
-                    <button onclick="window.print()" class="action-btn" style="padding: 5px 15px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-                        <i class="fas fa-download"></i> Download PDF
+                    <i class="fas fa-fill-drip"></i>
+                    <select id="bgSelect" onchange="changeBackground(this.value)">
+                        <option value="bg-white">White</option>
+                        <option value="bg-cream">Cream</option>
+                        <option value="bg-gray">Light Gray</option>
+                        <option value="bg-offwhite">Off-White</option>
+                        <option value="bg-grid">Grid</option>
+                        <option value="bg-dots">Dots</option>
+                        <option value="bg-gradient">Gradient</option>
+                        <option value="bg-subtle-lines">Subtle Lines</option>
+                    </select>
+                </div>
+                <div class="tool-group">
+                    <i class="fas fa-user-circle"></i>
+                    <select id="photoShapeSelect" onchange="changePhotoShape(this.value)">
+                        <option value="50%">Circle</option>
+                        <option value="8px">Rounded</option>
+                        <option value="0%">Square</option>
+                    </select>
+                </div>
+                <div class="tool-group zoom-controls">
+                    <button onclick="changeZoom(-10)" title="Zoom Out"><i class="fas fa-minus"></i></button>
+                    <span id="zoomLevel">100%</span>
+                    <button onclick="changeZoom(10)" title="Zoom In"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="tool-group">
+                    <button onclick="window.print()" class="btn-download">
+                        <i class="fas fa-download"></i> PDF
                     </button>
                 </div>
             </div>
 
-            <!-- A4 Preview Area -->
             <div class="preview-scroll-area">
-                <div class="a4-page template-modern" id="resumePreview">
-                    
-                    <!-- Header with Photo Support -->
-                    <div class="resume-header" id="resumeHeader">
-                        <div class="header-photo-container" id="photoContainer">
-                            <img id="previewPhoto" src="" alt="Profile Photo">
-                        </div>
-                        <div class="header-info">
-                            <h1 id="preview-name">John Doe</h1>
-                            <div class="job-title" id="preview-jobTitle">Senior Software Engineer</div>
-                            <div class="contact-info">
-                                <span><i class="fas fa-envelope"></i> <span id="preview-email">john@example.com</span></span>
-                                <span><i class="fas fa-phone"></i> <span id="preview-phone">+1 234 567 890</span></span>
-                                <span><i class="fas fa-map-marker-alt"></i> <span id="preview-location">New York, USA</span></span>
-                                <span><i class="fas fa-globe"></i> <span id="preview-website">linkedin.com/in/johndoe</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sections -->
-                    <div class="resume-section" id="section-summary">
-                        <h2>Professional Summary</h2>
-                        <p id="preview-summary">Briefly describe your professional background...</p>
-                    </div>
-
-                    <div class="resume-section" id="section-experience">
-                        <h2>Work Experience</h2>
-                        <div id="preview-experience"></div>
-                    </div>
-
-                    <div class="resume-section" id="section-education">
-                        <h2>Education</h2>
-                        <div id="preview-education"></div>
-                    </div>
-
-                    <div class="resume-section" id="section-skills">
-                        <h2>Skills</h2>
-                        <div class="skills-list" id="preview-skills"></div>
-                    </div>
-
-                    <div class="resume-section" id="section-projects">
-                        <h2>Projects</h2>
-                        <div id="preview-projects"></div>
-                    </div>
-
+                <div class="a4-page template-modern bg-white" id="resumePreview">
+                    <!-- Content gets rendered by JS -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SortableJS for Drag & Drop -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-    
     <script>
         // ==========================================
         // STATE MANAGEMENT
         // ==========================================
-        let resumeData = {
-            photo: "", // New field for photo
-            name: "", jobTitle: "", email: "", phone: "", location: "", website: "",
-            summary: "", skills: "",
-            experience: [],
-            education: [],
-            projects: []
+        const defaultData = {
+            photo: "", name: "", jobTitle: "", email: "", phone: "", location: "",
+            linkedin: "", website: "", github: "", twitter: "",
+            summary: "", skills: "", skillStyle: "tags", hobbies: "",
+            experience: [], education: [], projects: [],
+            languages: [], certifications: [], awards: [], references: []
         };
 
-        // Load from LocalStorage
-        const savedData = localStorage.getItem('omniResumeData');
-        if(savedData) {
-            resumeData = JSON.parse(savedData);
-            // Ensure photo field exists if loading older data
-            if(resumeData.photo === undefined) resumeData.photo = "";
-        }
+        let resumeData = JSON.parse(localStorage.getItem('omniUltimateResume')) || JSON.parse(JSON.stringify(defaultData));
 
-        // Initialize with one empty item if none exists
-        if(resumeData.experience.length === 0) resumeData.experience.push({ title: '', company: '', date: '', desc: '' });
-        if(resumeData.education.length === 0) resumeData.education.push({ degree: '', school: '', date: '', desc: '' });
-        if(resumeData.projects.length === 0) resumeData.projects.push({ title: '', tech: '', desc: '' });
+        // Ensure arrays have at least one item
+        if(!resumeData.experience || resumeData.experience.length === 0) resumeData.experience = [{ title: '', company: '', date: '', desc: '' }];
+        if(!resumeData.education || resumeData.education.length === 0) resumeData.education = [{ degree: '', school: '', date: '', desc: '' }];
+        if(!resumeData.projects || resumeData.projects.length === 0) resumeData.projects = [{ title: '', tech: '', desc: '' }];
+        if(!resumeData.languages) resumeData.languages = [];
+        if(!resumeData.certifications) resumeData.certifications = [];
+        if(!resumeData.awards) resumeData.awards = [];
+        if(!resumeData.references) resumeData.references = [];
+        if(!resumeData.skillStyle) resumeData.skillStyle = 'tags';
+
+        // Restore UI state
+        let currentTemplate = localStorage.getItem('omniTemplate') || 'modern';
+        let currentBg = localStorage.getItem('omniBg') || 'bg-white';
+        let currentFont = localStorage.getItem('omniFont') || "'Inter', sans-serif";
+        let currentFontSize = localStorage.getItem('omniFontSize') || '13.5px';
+        let currentColor = localStorage.getItem('omniColor') || '#2563eb';
+        let currentPhotoShape = localStorage.getItem('omniPhotoShape') || '50%';
+        let currentZoom = 100;
 
         // ==========================================
-        // ACCORDION LOGIC
+        // ACCORDION
         // ==========================================
         function toggleAccordion(header) {
-            const content = header.nextElementSibling;
             header.classList.toggle('active');
-            content.classList.toggle('active');
+            header.nextElementSibling.classList.toggle('active');
         }
 
         // ==========================================
-        // PHOTO UPLOAD LOGIC
+        // PHOTO UPLOAD
         // ==========================================
         function handlePhotoUpload(event) {
             const file = event.target.files[0];
             if(!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
-                resumeData.photo = e.target.result; // Base64 string
-                saveToLocalStorage();
+                resumeData.photo = e.target.result;
+                saveData();
                 renderPreview();
             };
             reader.readAsDataURL(file);
         }
 
         // ==========================================
-        // DATA BINDING & RENDERING
+        // DATA PERSISTENCE
         // ==========================================
+        function saveData() {
+            localStorage.setItem('omniUltimateResume', JSON.stringify(resumeData));
+        }
+
         function updateData(field, value) {
             resumeData[field] = value;
-            saveToLocalStorage();
+            saveData();
             renderPreview();
         }
 
-        function saveToLocalStorage() {
-            localStorage.setItem('omniResumeData', JSON.stringify(resumeData));
-        }
-
+        // ==========================================
+        // RENDER PREVIEW
+        // ==========================================
         function renderPreview() {
-            // Personal Info
-            document.getElementById('preview-name').innerText = resumeData.name || "Your Name";
-            document.getElementById('preview-jobTitle').innerText = resumeData.jobTitle || "Your Job Title";
-            document.getElementById('preview-email').innerText = resumeData.email || "email@example.com";
-            document.getElementById('preview-phone').innerText = resumeData.phone || "+1 234 567 890";
-            document.getElementById('preview-location').innerText = resumeData.location || "City, Country";
-            document.getElementById('preview-website').innerText = resumeData.website || "linkedin.com/in/username";
-            document.getElementById('preview-summary').innerText = resumeData.summary || "Your professional summary goes here...";
+            const preview = document.getElementById('resumePreview');
+            
+            // Apply current settings
+            preview.className = `a4-page template-${currentTemplate} ${currentBg}`;
+            document.documentElement.style.setProperty('--resume-font', currentFont);
+            document.documentElement.style.setProperty('--resume-font-size', currentFontSize);
+            document.documentElement.style.setProperty('--resume-primary', currentColor);
+            document.documentElement.style.setProperty('--photo-shape', currentPhotoShape);
 
-            // Photo Logic
-            const photoContainer = document.getElementById('photoContainer');
-            const previewPhoto = document.getElementById('previewPhoto');
-            if(resumeData.photo) {
-                previewPhoto.src = resumeData.photo;
-                photoContainer.style.display = 'block';
+            // Build contact HTML
+            const contacts = [];
+            if(resumeData.email) contacts.push(`<span><i class="fas fa-envelope"></i> ${escapeHtml(resumeData.email)}</span>`);
+            if(resumeData.phone) contacts.push(`<span><i class="fas fa-phone"></i> ${escapeHtml(resumeData.phone)}</span>`);
+            if(resumeData.location) contacts.push(`<span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(resumeData.location)}</span>`);
+            if(resumeData.linkedin) contacts.push(`<span><i class="fab fa-linkedin"></i> ${escapeHtml(resumeData.linkedin)}</span>`);
+            if(resumeData.website) contacts.push(`<span><i class="fas fa-globe"></i> ${escapeHtml(resumeData.website)}</span>`);
+            if(resumeData.github) contacts.push(`<span><i class="fab fa-github"></i> ${escapeHtml(resumeData.github)}</span>`);
+            if(resumeData.twitter) contacts.push(`<span><i class="fab fa-twitter"></i> ${escapeHtml(resumeData.twitter)}</span>`);
+
+            // Build sections
+            const summaryHtml = resumeData.summary ? `
+                <div class="resume-section" data-section="summary">
+                    <h2><i class="fas fa-align-left"></i> Professional Summary</h2>
+                    <p>${escapeHtml(resumeData.summary)}</p>
+                </div>` : '';
+
+            const experienceHtml = buildExperienceSection();
+            const educationHtml = buildEducationSection();
+            const skillsHtml = buildSkillsSection();
+            const languagesHtml = buildLanguagesSection();
+            const projectsHtml = buildProjectsSection();
+            const certificationsHtml = buildCertificationsSection();
+            const awardsHtml = buildAwardsSection();
+            const hobbiesHtml = resumeData.hobbies ? `
+                <div class="resume-section" data-section="hobbies">
+                    <h2><i class="fas fa-heart"></i> Hobbies & Interests</h2>
+                    <div class="skills-list">${resumeData.hobbies.split(',').map(h => `<span class="skill-tag">${escapeHtml(h.trim())}</span>`).join('')}</div>
+                </div>` : '';
+            const referencesHtml = buildReferencesSection();
+
+            // Photo HTML
+            const photoHtml = resumeData.photo ? `<img src="${resumeData.photo}" alt="Profile Photo">` : '';
+
+            // Check template type
+            if(currentTemplate === 'creative') {
+                preview.innerHTML = `
+                    <div class="resume-sidebar">
+                        ${resumeData.photo ? `<div class="sidebar-photo">${photoHtml}</div>` : ''}
+                        <div class="sidebar-name">${escapeHtml(resumeData.name) || 'Your Name'}</div>
+                        <div class="sidebar-title">${escapeHtml(resumeData.jobTitle) || 'Job Title'}</div>
+                        <div class="resume-section">
+                            <h2>Contact</h2>
+                            ${contacts.map(c => `<div class="sidebar-contact"><i class="${extractIcon(c)}"></i> ${extractText(c)}</div>`).join('')}
+                        </div>
+                        ${skillsHtml ? `<div class="resume-section">${skillsHtml.replace('<div class="resume-section" data-section="skills">','').replace('</div>','')}</div>` : ''}
+                        ${languagesHtml}
+                        ${hobbiesHtml}
+                    </div>
+                    <div class="resume-main">
+                        ${summaryHtml}
+                        ${experienceHtml}
+                        ${educationHtml}
+                        ${projectsHtml}
+                        ${certificationsHtml}
+                        ${awardsHtml}
+                        ${referencesHtml}
+                    </div>
+                `;
+            } else if(currentTemplate === 'twocolumn') {
+                preview.innerHTML = `
+                    <div class="resume-header">
+                        ${resumeData.photo ? `<div class="header-photo-container" style="display:block">${photoHtml}</div>` : ''}
+                        <div class="header-info">
+                            <h1>${escapeHtml(resumeData.name) || 'Your Name'}</h1>
+                            <div class="job-title">${escapeHtml(resumeData.jobTitle) || 'Job Title'}</div>
+                            <div class="contact-info">${contacts.join('')}</div>
+                        </div>
+                    </div>
+                    <div class="main-column">
+                        ${summaryHtml}
+                        ${experienceHtml}
+                        ${educationHtml}
+                        ${projectsHtml}
+                    </div>
+                    <div class="side-column">
+                        ${skillsHtml}
+                        ${languagesHtml}
+                        ${certificationsHtml}
+                        ${awardsHtml}
+                        ${hobbiesHtml}
+                        ${referencesHtml}
+                    </div>
+                `;
             } else {
-                previewPhoto.src = '';
-                photoContainer.style.display = 'none';
+                // Standard single-column layout
+                preview.innerHTML = `
+                    <div class="resume-header">
+                        ${resumeData.photo ? `<div class="header-photo-container" style="display:block">${photoHtml}</div>` : ''}
+                        <div class="header-info">
+                            <h1>${escapeHtml(resumeData.name) || 'Your Name'}</h1>
+                            <div class="job-title">${escapeHtml(resumeData.jobTitle) || 'Job Title'}</div>
+                            <div class="contact-info">${contacts.join('')}</div>
+                        </div>
+                    </div>
+                    ${summaryHtml}
+                    ${experienceHtml}
+                    ${educationHtml}
+                    ${skillsHtml}
+                    ${languagesHtml}
+                    ${projectsHtml}
+                    ${certificationsHtml}
+                    ${awardsHtml}
+                    ${hobbiesHtml}
+                    ${referencesHtml}
+                `;
             }
-
-            // Skills
-            const skillsContainer = document.getElementById('preview-skills');
-            skillsContainer.innerHTML = '';
-            if(resumeData.skills) {
-                const skillsArray = resumeData.skills.split(',').map(s => s.trim()).filter(s => s);
-                skillsArray.forEach(skill => {
-                    const span = document.createElement('span');
-                    span.className = 'skill-tag';
-                    span.innerText = skill;
-                    skillsContainer.appendChild(span);
-                });
-            }
-
-            // Experience
-            const expContainer = document.getElementById('preview-experience');
-            expContainer.innerHTML = '';
-            resumeData.experience.forEach(exp => {
-                if(!exp.title && !exp.company) return;
-                const div = document.createElement('div');
-                div.className = 'resume-item';
-                div.innerHTML = `
-                    <div class="resume-item-header">
-                        <h3>${exp.title || 'Job Title'}</h3>
-                        <span class="date">${exp.date || 'Date'}</span>
-                    </div>
-                    <div class="resume-item-sub">${exp.company || 'Company Name'}</div>
-                    <ul>${exp.desc.split('\n').map(line => line.trim() ? `<li>${line}</li>` : '').join('')}</ul>
-                `;
-                expContainer.appendChild(div);
-            });
-
-            // Education
-            const eduContainer = document.getElementById('preview-education');
-            eduContainer.innerHTML = '';
-            resumeData.education.forEach(edu => {
-                if(!edu.degree && !edu.school) return;
-                const div = document.createElement('div');
-                div.className = 'resume-item';
-                div.innerHTML = `
-                    <div class="resume-item-header">
-                        <h3>${edu.degree || 'Degree'}</h3>
-                        <span class="date">${edu.date || 'Date'}</span>
-                    </div>
-                    <div class="resume-item-sub">${edu.school || 'School/University'}</div>
-                    <p>${edu.desc || ''}</p>
-                `;
-                eduContainer.appendChild(div);
-            });
-
-            // Projects
-            const projContainer = document.getElementById('preview-projects');
-            projContainer.innerHTML = '';
-            resumeData.projects.forEach(proj => {
-                if(!proj.title) return;
-                const div = document.createElement('div');
-                div.className = 'resume-item';
-                div.innerHTML = `
-                    <div class="resume-item-header">
-                        <h3>${proj.title}</h3>
-                    </div>
-                    <div class="resume-item-sub">${proj.tech || ''}</div>
-                    <p>${proj.desc || ''}</p>
-                `;
-                projContainer.appendChild(div);
-            });
         }
 
         // ==========================================
-        // DYNAMIC FORM FIELDS (Experience, Education, Projects)
+        // SECTION BUILDERS
+        // ==========================================
+        function buildExperienceSection() {
+            const valid = resumeData.experience.filter(e => e.title || e.company);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="experience">
+                    <h2><i class="fas fa-briefcase"></i> Work Experience</h2>
+                    ${valid.map(exp => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <h3>${escapeHtml(exp.title) || 'Job Title'}</h3>
+                                <span class="date">${escapeHtml(exp.date) || ''}</span>
+                            </div>
+                            <div class="resume-item-sub">${escapeHtml(exp.company) || 'Company'}</div>
+                            ${exp.desc ? `<ul>${exp.desc.split('\n').map(l => l.trim() ? `<li>${escapeHtml(l)}</li>` : '').join('')}</ul>` : ''}
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function buildEducationSection() {
+            const valid = resumeData.education.filter(e => e.degree || e.school);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="education">
+                    <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                    ${valid.map(edu => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <h3>${escapeHtml(edu.degree) || 'Degree'}</h3>
+                                <span class="date">${escapeHtml(edu.date) || ''}</span>
+                            </div>
+                            <div class="resume-item-sub">${escapeHtml(edu.school) || 'School/University'}</div>
+                            ${edu.desc ? `<p>${escapeHtml(edu.desc)}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function buildSkillsSection() {
+            if(!resumeData.skills) return '';
+            const skills = resumeData.skills.split(',').map(s => s.trim()).filter(s => s);
+            if(skills.length === 0) return '';
+            
+            let content = '';
+            if(resumeData.skillStyle === 'bars') {
+                content = skills.map(s => `
+                    <div class="skill-bar-item">
+                        <div class="skill-bar-label"><span>${escapeHtml(s)}</span><span>85%</span></div>
+                        <div class="skill-bar-track"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                    </div>
+                `).join('');
+            } else {
+                content = `<div class="skills-list">${skills.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('')}</div>`;
+            }
+            
+            return `
+                <div class="resume-section" data-section="skills">
+                    <h2><i class="fas fa-cogs"></i> Skills</h2>
+                    ${content}
+                </div>`;
+        }
+
+        function buildLanguagesSection() {
+            const valid = resumeData.languages.filter(l => l.name);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="languages">
+                    <h2><i class="fas fa-language"></i> Languages</h2>
+                    ${valid.map(l => `
+                        <div class="lang-item">
+                            <span class="lang-name">${escapeHtml(l.name)}</span>
+                            <span class="lang-level">${escapeHtml(l.level) || ''}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function buildProjectsSection() {
+            const valid = resumeData.projects.filter(p => p.title);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="projects">
+                    <h2><i class="fas fa-project-diagram"></i> Projects</h2>
+                    ${valid.map(p => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <h3>${escapeHtml(p.title)}</h3>
+                            </div>
+                            <div class="resume-item-sub">${escapeHtml(p.tech) || ''}</div>
+                            ${p.desc ? `<p>${escapeHtml(p.desc)}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function buildCertificationsSection() {
+            const valid = resumeData.certifications.filter(c => c.name);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="certifications">
+                    <h2><i class="fas fa-certificate"></i> Certifications</h2>
+                    ${valid.map(c => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <h3>${escapeHtml(c.name)}</h3>
+                                <span class="date">${escapeHtml(c.date) || ''}</span>
+                            </div>
+                            <div class="resume-item-sub">${escapeHtml(c.issuer) || ''}</div>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function buildAwardsSection() {
+            const valid = resumeData.awards.filter(a => a.title);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="awards">
+                    <h2><i class="fas fa-trophy"></i> Awards & Achievements</h2>
+                    ${valid.map(a => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <h3>${escapeHtml(a.title)}</h3>
+                                <span class="date">${escapeHtml(a.date) || ''}</span>
+                            </div>
+                            ${a.desc ? `<p>${escapeHtml(a.desc)}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        function buildReferencesSection() {
+            const valid = resumeData.references.filter(r => r.name);
+            if(valid.length === 0) return '';
+            return `
+                <div class="resume-section" data-section="references">
+                    <h2><i class="fas fa-users"></i> References</h2>
+                    ${valid.map(r => `
+                        <div class="resume-item">
+                            <div class="resume-item-header">
+                                <h3>${escapeHtml(r.name)}</h3>
+                            </div>
+                            <div class="resume-item-sub">${escapeHtml(r.position) || ''} ${r.company ? 'at ' + escapeHtml(r.company) : ''}</div>
+                            ${r.contact ? `<p><i class="fas fa-envelope"></i> ${escapeHtml(r.contact)}</p>` : ''}
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        // ==========================================
+        // HELPERS
+        // ==========================================
+        function escapeHtml(text) {
+            if(!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function extractIcon(html) {
+            const match = html.match(/class="([^"]+)"/);
+            return match ? match[1] : '';
+        }
+
+        function extractText(html) {
+            const div = document.createElement('div');
+            div.innerHTML = html;
+            return div.textContent.trim();
+        }
+
+        // ==========================================
+        // EXPERIENCE FORMS
         // ==========================================
         function addExperience() {
             resumeData.experience.push({ title: '', company: '', date: '', desc: '' });
             renderExperienceForm();
             renderPreview();
-            saveToLocalStorage();
+            saveData();
         }
 
         function renderExperienceForm() {
             const container = document.getElementById('experience-container');
-            container.innerHTML = '';
-            resumeData.experience.forEach((exp, index) => {
-                const div = document.createElement('div');
-                div.className = 'dynamic-item';
-                div.innerHTML = `
-                    <i class="fas fa-trash remove-btn" onclick="removeExperience(${index})"></i>
-                    <div class="form-group"><label>Job Title</label><input type="text" value="${exp.title}" oninput="updateExperience(${index}, 'title', this.value)" placeholder="Software Engineer"></div>
-                    <div class="form-group"><label>Company</label><input type="text" value="${exp.company}" oninput="updateExperience(${index}, 'company', this.value)" placeholder="Tech Corp"></div>
-                    <div class="form-group"><label>Date</label><input type="text" value="${exp.date}" oninput="updateExperience(${index}, 'date', this.value)" placeholder="Jan 2020 - Present"></div>
-                    <div class="form-group"><label>Description (One point per line)</label><textarea oninput="updateExperience(${index}, 'desc', this.value)" placeholder="Developed web applications...\nManaged a team of 5...">${exp.desc}</textarea></div>
-                `;
-                container.appendChild(div);
-            });
+            container.innerHTML = resumeData.experience.map((exp, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeExperience(${i})"></i>
+                    <div class="form-group"><label>Job Title</label><input type="text" value="${escapeHtml(exp.title)}" oninput="updateExperience(${i}, 'title', this.value)" placeholder="Software Engineer"></div>
+                    <div class="form-group"><label>Company</label><input type="text" value="${escapeHtml(exp.company)}" oninput="updateExperience(${i}, 'company', this.value)" placeholder="Tech Corp"></div>
+                    <div class="form-group"><label>Date</label><input type="text" value="${escapeHtml(exp.date)}" oninput="updateExperience(${i}, 'date', this.value)" placeholder="Jan 2020 - Present"></div>
+                    <div class="form-group"><label>Description (One point per line)</label><textarea oninput="updateExperience(${i}, 'desc', this.value)" placeholder="Developed web applications...">${escapeHtml(exp.desc)}</textarea></div>
+                </div>
+            `).join('');
         }
 
-        function updateExperience(index, field, value) {
-            resumeData.experience[index][field] = value;
-            saveToLocalStorage();
-            renderPreview();
+        function updateExperience(i, field, value) {
+            resumeData.experience[i][field] = value;
+            saveData(); renderPreview();
         }
 
-        function removeExperience(index) {
-            resumeData.experience.splice(index, 1);
-            if(resumeData.experience.length === 0) addExperience();
-            else { renderExperienceForm(); renderPreview(); saveToLocalStorage(); }
+        function removeExperience(i) {
+            resumeData.experience.splice(i, 1);
+            if(resumeData.experience.length === 0) resumeData.experience.push({ title: '', company: '', date: '', desc: '' });
+            renderExperienceForm(); renderPreview(); saveData();
         }
 
-        // Education
+        // ==========================================
+        // EDUCATION FORMS
+        // ==========================================
         function addEducation() {
             resumeData.education.push({ degree: '', school: '', date: '', desc: '' });
-            renderEducationForm();
-            renderPreview();
-            saveToLocalStorage();
+            renderEducationForm(); renderPreview(); saveData();
         }
 
         function renderEducationForm() {
             const container = document.getElementById('education-container');
-            container.innerHTML = '';
-            resumeData.education.forEach((edu, index) => {
-                const div = document.createElement('div');
-                div.className = 'dynamic-item';
-                div.innerHTML = `
-                    <i class="fas fa-trash remove-btn" onclick="removeEducation(${index})"></i>
-                    <div class="form-group"><label>Degree</label><input type="text" value="${edu.degree}" oninput="updateEducation(${index}, 'degree', this.value)" placeholder="B.Tech in Computer Science"></div>
-                    <div class="form-group"><label>School / University</label><input type="text" value="${edu.school}" oninput="updateEducation(${index}, 'school', this.value)" placeholder="University of Technology"></div>
-                    <div class="form-group"><label>Date</label><input type="text" value="${edu.date}" oninput="updateEducation(${index}, 'date', this.value)" placeholder="2016 - 2020"></div>
-                    <div class="form-group"><label>Description (Optional)</label><textarea oninput="updateEducation(${index}, 'desc', this.value)" placeholder="GPA: 3.8/4.0">${edu.desc}</textarea></div>
-                `;
-                container.appendChild(div);
-            });
+            container.innerHTML = resumeData.education.map((edu, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeEducation(${i})"></i>
+                    <div class="form-group"><label>Degree</label><input type="text" value="${escapeHtml(edu.degree)}" oninput="updateEducation(${i}, 'degree', this.value)" placeholder="B.Tech Computer Science"></div>
+                    <div class="form-group"><label>School / University</label><input type="text" value="${escapeHtml(edu.school)}" oninput="updateEducation(${i}, 'school', this.value)" placeholder="University Name"></div>
+                    <div class="form-group"><label>Date</label><input type="text" value="${escapeHtml(edu.date)}" oninput="updateEducation(${i}, 'date', this.value)" placeholder="2016 - 2020"></div>
+                    <div class="form-group"><label>Description (Optional)</label><textarea oninput="updateEducation(${i}, 'desc', this.value)" placeholder="GPA: 3.8/4.0">${escapeHtml(edu.desc)}</textarea></div>
+                </div>
+            `).join('');
         }
 
-        function updateEducation(index, field, value) {
-            resumeData.education[index][field] = value;
-            saveToLocalStorage();
-            renderPreview();
+        function updateEducation(i, field, value) {
+            resumeData.education[i][field] = value;
+            saveData(); renderPreview();
         }
 
-        function removeEducation(index) {
-            resumeData.education.splice(index, 1);
-            if(resumeData.education.length === 0) addEducation();
-            else { renderEducationForm(); renderPreview(); saveToLocalStorage(); }
+        function removeEducation(i) {
+            resumeData.education.splice(i, 1);
+            if(resumeData.education.length === 0) resumeData.education.push({ degree: '', school: '', date: '', desc: '' });
+            renderEducationForm(); renderPreview(); saveData();
         }
 
-        // Projects
+        // ==========================================
+        // PROJECTS FORMS
+        // ==========================================
         function addProject() {
             resumeData.projects.push({ title: '', tech: '', desc: '' });
-            renderProjectForm();
-            renderPreview();
-            saveToLocalStorage();
+            renderProjectForm(); renderPreview(); saveData();
         }
 
         function renderProjectForm() {
             const container = document.getElementById('projects-container');
-            container.innerHTML = '';
-            resumeData.projects.forEach((proj, index) => {
-                const div = document.createElement('div');
-                div.className = 'dynamic-item';
-                div.innerHTML = `
-                    <i class="fas fa-trash remove-btn" onclick="removeProject(${index})"></i>
-                    <div class="form-group"><label>Project Title</label><input type="text" value="${proj.title}" oninput="updateProject(${index}, 'title', this.value)" placeholder="E-commerce Website"></div>
-                    <div class="form-group"><label>Technologies Used</label><input type="text" value="${proj.tech}" oninput="updateProject(${index}, 'tech', this.value)" placeholder="React, Node.js, MongoDB"></div>
-                    <div class="form-group"><label>Description</label><textarea oninput="updateProject(${index}, 'desc', this.value)" placeholder="Built a full-stack e-commerce platform...">${proj.desc}</textarea></div>
-                `;
-                container.appendChild(div);
-            });
+            container.innerHTML = resumeData.projects.map((p, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeProject(${i})"></i>
+                    <div class="form-group"><label>Project Title</label><input type="text" value="${escapeHtml(p.title)}" oninput="updateProject(${i}, 'title', this.value)" placeholder="E-commerce Website"></div>
+                    <div class="form-group"><label>Technologies</label><input type="text" value="${escapeHtml(p.tech)}" oninput="updateProject(${i}, 'tech', this.value)" placeholder="React, Node.js"></div>
+                    <div class="form-group"><label>Description</label><textarea oninput="updateProject(${i}, 'desc', this.value)" placeholder="Built a full-stack platform...">${escapeHtml(p.desc)}</textarea></div>
+                </div>
+            `).join('');
         }
 
-        function updateProject(index, field, value) {
-            resumeData.projects[index][field] = value;
-            saveToLocalStorage();
+        function updateProject(i, field, value) {
+            resumeData.projects[i][field] = value;
+            saveData(); renderPreview();
+        }
+
+        function removeProject(i) {
+            resumeData.projects.splice(i, 1);
+            if(resumeData.projects.length === 0) resumeData.projects.push({ title: '', tech: '', desc: '' });
+            renderProjectForm(); renderPreview(); saveData();
+        }
+
+        // ==========================================
+        // LANGUAGES FORMS
+        // ==========================================
+        function addLanguage() {
+            resumeData.languages.push({ name: '', level: 'Fluent' });
+            renderLanguageForm(); renderPreview(); saveData();
+        }
+
+        function renderLanguageForm() {
+            const container = document.getElementById('languages-container');
+            if(resumeData.languages.length === 0) {
+                container.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No languages added yet.</p>';
+                return;
+            }
+            container.innerHTML = resumeData.languages.map((l, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeLanguage(${i})"></i>
+                    <div class="form-row">
+                        <div class="form-group"><label>Language</label><input type="text" value="${escapeHtml(l.name)}" oninput="updateLanguage(${i}, 'name', this.value)" placeholder="English"></div>
+                        <div class="form-group"><label>Proficiency</label>
+                            <select onchange="updateLanguage(${i}, 'level', this.value)">
+                                <option value="Native" ${l.level === 'Native' ? 'selected' : ''}>Native</option>
+                                <option value="Fluent" ${l.level === 'Fluent' ? 'selected' : ''}>Fluent</option>
+                                <option value="Advanced" ${l.level === 'Advanced' ? 'selected' : ''}>Advanced</option>
+                                <option value="Intermediate" ${l.level === 'Intermediate' ? 'selected' : ''}>Intermediate</option>
+                                <option value="Basic" ${l.level === 'Basic' ? 'selected' : ''}>Basic</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateLanguage(i, field, value) {
+            resumeData.languages[i][field] = value;
+            saveData(); renderPreview();
+        }
+
+        function removeLanguage(i) {
+            resumeData.languages.splice(i, 1);
+            renderLanguageForm(); renderPreview(); saveData();
+        }
+
+        // ==========================================
+        // CERTIFICATIONS FORMS
+        // ==========================================
+        function addCertification() {
+            resumeData.certifications.push({ name: '', issuer: '', date: '' });
+            renderCertificationForm(); renderPreview(); saveData();
+        }
+
+        function renderCertificationForm() {
+            const container = document.getElementById('certifications-container');
+            if(resumeData.certifications.length === 0) {
+                container.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No certifications added yet.</p>';
+                return;
+            }
+            container.innerHTML = resumeData.certifications.map((c, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeCertification(${i})"></i>
+                    <div class="form-group"><label>Certification Name</label><input type="text" value="${escapeHtml(c.name)}" oninput="updateCertification(${i}, 'name', this.value)" placeholder="AWS Certified Developer"></div>
+                    <div class="form-group"><label>Issuing Organization</label><input type="text" value="${escapeHtml(c.issuer)}" oninput="updateCertification(${i}, 'issuer', this.value)" placeholder="Amazon Web Services"></div>
+                    <div class="form-group"><label>Date</label><input type="text" value="${escapeHtml(c.date)}" oninput="updateCertification(${i}, 'date', this.value)" placeholder="2023"></div>
+                </div>
+            `).join('');
+        }
+
+        function updateCertification(i, field, value) {
+            resumeData.certifications[i][field] = value;
+            saveData(); renderPreview();
+        }
+
+        function removeCertification(i) {
+            resumeData.certifications.splice(i, 1);
+            renderCertificationForm(); renderPreview(); saveData();
+        }
+
+        // ==========================================
+        // AWARDS FORMS
+        // ==========================================
+        function addAward() {
+            resumeData.awards.push({ title: '', date: '', desc: '' });
+            renderAwardForm(); renderPreview(); saveData();
+        }
+
+        function renderAwardForm() {
+            const container = document.getElementById('awards-container');
+            if(resumeData.awards.length === 0) {
+                container.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No awards added yet.</p>';
+                return;
+            }
+            container.innerHTML = resumeData.awards.map((a, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeAward(${i})"></i>
+                    <div class="form-group"><label>Award Title</label><input type="text" value="${escapeHtml(a.title)}" oninput="updateAward(${i}, 'title', this.value)" placeholder="Employee of the Year"></div>
+                    <div class="form-group"><label>Date</label><input type="text" value="${escapeHtml(a.date)}" oninput="updateAward(${i}, 'date', this.value)" placeholder="2023"></div>
+                    <div class="form-group"><label>Description</label><textarea oninput="updateAward(${i}, 'desc', this.value)" placeholder="Recognized for...">${escapeHtml(a.desc)}</textarea></div>
+                </div>
+            `).join('');
+        }
+
+        function updateAward(i, field, value) {
+            resumeData.awards[i][field] = value;
+            saveData(); renderPreview();
+        }
+
+        function removeAward(i) {
+            resumeData.awards.splice(i, 1);
+            renderAwardForm(); renderPreview(); saveData();
+        }
+
+        // ==========================================
+        // REFERENCES FORMS
+        // ==========================================
+        function addReference() {
+            resumeData.references.push({ name: '', position: '', company: '', contact: '' });
+            renderReferenceForm(); renderPreview(); saveData();
+        }
+
+        function renderReferenceForm() {
+            const container = document.getElementById('references-container');
+            if(resumeData.references.length === 0) {
+                container.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No references added yet.</p>';
+                return;
+            }
+            container.innerHTML = resumeData.references.map((r, i) => `
+                <div class="dynamic-item">
+                    <i class="fas fa-trash remove-btn" onclick="removeReference(${i})"></i>
+                    <div class="form-group"><label>Name</label><input type="text" value="${escapeHtml(r.name)}" oninput="updateReference(${i}, 'name', this.value)" placeholder="Jane Smith"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Position</label><input type="text" value="${escapeHtml(r.position)}" oninput="updateReference(${i}, 'position', this.value)" placeholder="Manager"></div>
+                        <div class="form-group"><label>Company</label><input type="text" value="${escapeHtml(r.company)}" oninput="updateReference(${i}, 'company', this.value)" placeholder="Tech Corp"></div>
+                    </div>
+                    <div class="form-group"><label>Contact</label><input type="text" value="${escapeHtml(r.contact)}" oninput="updateReference(${i}, 'contact', this.value)" placeholder="jane@example.com"></div>
+                </div>
+            `).join('');
+        }
+
+        function updateReference(i, field, value) {
+            resumeData.references[i][field] = value;
+            saveData(); renderPreview();
+        }
+
+        function removeReference(i) {
+            resumeData.references.splice(i, 1);
+            renderReferenceForm(); renderPreview(); saveData();
+        }
+
+        // ==========================================
+        // TOOLBAR FUNCTIONS
+        // ==========================================
+        function changeTemplate(t) {
+            currentTemplate = t;
+            localStorage.setItem('omniTemplate', t);
             renderPreview();
         }
 
-        function removeProject(index) {
-            resumeData.projects.splice(index, 1);
-            if(resumeData.projects.length === 0) addProject();
-            else { renderProjectForm(); renderPreview(); saveToLocalStorage(); }
+        function changeFont(f) {
+            currentFont = f;
+            localStorage.setItem('omniFont', f);
+            renderPreview();
+        }
+
+        function changeFontSize(s) {
+            currentFontSize = s;
+            localStorage.setItem('omniFontSize', s);
+            renderPreview();
+        }
+
+        function changeColor(c) {
+            currentColor = c;
+            localStorage.setItem('omniColor', c);
+            renderPreview();
+        }
+
+        function changeBackground(b) {
+            currentBg = b;
+            localStorage.setItem('omniBg', b);
+            renderPreview();
+        }
+
+        function changePhotoShape(s) {
+            currentPhotoShape = s;
+            localStorage.setItem('omniPhotoShape', s);
+            renderPreview();
+        }
+
+        function changeZoom(delta) {
+            currentZoom = Math.max(30, Math.min(150, currentZoom + delta));
+            document.getElementById('zoomLevel').innerText = currentZoom + '%';
+            document.getElementById('resumePreview').style.transform = `scale(${currentZoom / 100})`;
         }
 
         // ==========================================
-        // TOOLBAR FUNCTIONS (Template, Font, Color)
+        // RESET
         // ==========================================
-        function changeTemplate(template) {
-            const preview = document.getElementById('resumePreview');
-            preview.className = `a4-page template-${template}`;
-        }
-
-        function changeFont(font) {
-            document.documentElement.style.setProperty('--resume-font', font);
-        }
-
-        function changeFontSize(size) {
-            document.documentElement.style.setProperty('--resume-font-size', size);
-        }
-
-        function changeColor(color) {
-            document.documentElement.style.setProperty('--resume-primary', color);
+        function resetResume() {
+            if(confirm("Are you sure you want to reset ALL data? This cannot be undone.")) {
+                localStorage.removeItem('omniUltimateResume');
+                location.reload();
+            }
         }
 
         // ==========================================
         // INITIALIZATION
         // ==========================================
         function init() {
-            // Populate form fields from loaded data
-            document.getElementById('input-name').value = resumeData.name;
-            document.getElementById('input-jobTitle').value = resumeData.jobTitle;
-            document.getElementById('input-email').value = resumeData.email;
-            document.getElementById('input-phone').value = resumeData.phone;
-            document.getElementById('input-location').value = resumeData.location;
-            document.getElementById('input-website').value = resumeData.website;
-            document.getElementById('input-summary').value = resumeData.summary;
-            document.getElementById('input-skills').value = resumeData.skills;
+            // Populate form fields
+            ['name', 'jobTitle', 'email', 'phone', 'location', 'linkedin', 'website', 'github', 'twitter', 'summary', 'skills', 'hobbies'].forEach(f => {
+                const el = document.getElementById('input-' + f);
+                if(el) el.value = resumeData[f] || '';
+            });
 
-            // Render dynamic forms
+            // Restore toolbar state
+            document.getElementById('templateSelect').value = currentTemplate;
+            document.getElementById('fontSelect').value = currentFont;
+            document.getElementById('fontSizeSelect').value = currentFontSize;
+            document.getElementById('colorPicker').value = currentColor;
+            document.getElementById('bgSelect').value = currentBg;
+            document.getElementById('photoShapeSelect').value = currentPhotoShape;
+            document.getElementById('skillStyle').value = resumeData.skillStyle || 'tags';
+
+            // Render all forms
             renderExperienceForm();
             renderEducationForm();
             renderProjectForm();
-            
-            // Initial Preview Render
+            renderLanguageForm();
+            renderCertificationForm();
+            renderAwardForm();
+            renderReferenceForm();
+
+            // Render preview
             renderPreview();
 
-            // Initialize SortableJS for Drag & Drop of sections
-            const previewContainer = document.querySelector('.a4-page');
-            new Sortable(previewContainer, {
+            // Initialize SortableJS for section reordering
+            const previewEl = document.getElementById('resumePreview');
+            new Sortable(previewEl, {
                 animation: 150,
-                handle: '.resume-section', // Only allow dragging by section header
+                handle: '.resume-section',
                 ghostClass: 'sortable-ghost',
-                onEnd: function (evt) {
-                    // Optional: Save the new order to localStorage
+                filter: '.resume-header',
+                onEnd: () => {
+                    // Future: persist section order if needed
                 }
             });
         }
 
-        function resetResume() {
-            if(confirm("Are you sure you want to reset all data? This cannot be undone.")) {
-                localStorage.removeItem('omniResumeData');
-                location.reload();
-            }
-        }
-
-        // Run initialization when page loads
         window.onload = init;
-
     </script>
 </body>
 </html>
