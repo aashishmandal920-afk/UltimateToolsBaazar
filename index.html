@@ -18,6 +18,18 @@
 
     <!-- Stylesheet & Theme Script -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- ================= NAYE PLUGINS ADD KIYE GAYE HAIN ================= -->
+    <!-- Country Code Plugin (Intl-tel-input) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    
+    <!-- Searchable Dropdown Plugin (Select2 & jQuery) -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- =================================================================== -->
+
     <script>
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
         function toggleTheme() {
@@ -140,32 +152,117 @@
 
     </div>
 
-    <!-- ================= COMMENT & FEEDBACK SECTION ================= -->
-    <div class="feedback-section">
-        <h3>💬 Send Feedback or Contact Us</h3>
-        <p>Drop your feedback or a message with your contact details. Your response will be recorded directly in our system.</p>
+    <!-- ================= COMMENT & FEEDBACK SECTION (UPDATED) ================= -->
+    <div class="feedback-section" style="max-width: 700px; margin: 40px auto; padding: 20px; background: var(--bg-card, #1e293b); border-radius: 12px; border: 1px solid var(--border-color, #334155);">
+        <h3 style="margin-top: 0; color: var(--primary-blue, #3b82f6);">💬 Send Feedback or Contact Us</h3>
+        <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-muted, #94a3b8);">Please share your suggestions or send a message along with your contact details. Your response will be securely recorded in our system.</p>
         
         <form id="feedbackForm" onsubmit="submitFeedback(event)">
-            <input type="text" id="userName" name="name" placeholder="Your Name" required>
-            <input type="text" id="userContact" name="contact" placeholder="Contact Number" required>
-            <input type="email" id="userEmail" name="email" placeholder="Email" required>
+            <style>
+                /* Ensures all inputs have the exact same width and layout */
+                #feedbackForm .form-group {
+                    margin-bottom: 15px;
+                    width: 100%;
+                }
+                #feedbackForm input[type="text"], 
+                #feedbackForm input[type="email"], 
+                #feedbackForm textarea {
+                    width: 100%;
+                    padding: 12px 15px;
+                    border: 1px solid var(--border-color, #ccc);
+                    border-radius: 8px;
+                    font-size: 15px;
+                    background: var(--bg-input, #fff);
+                    color: inherit;
+                    box-sizing: border-box;
+                    font-family: inherit;
+                }
+                
+                /* Country Code Plugin Styling */
+                .iti { width: 100%; display: block; } 
+                .iti__input { 
+                    width: 100% !important; 
+                    padding: 12px 15px 12px 50px !important; 
+                    border: 1px solid var(--border-color, #ccc);
+                    border-radius: 8px;
+                    font-size: 15px;
+                    background: var(--bg-input, #fff);
+                    color: inherit;
+                    box-sizing: border-box;
+                }
+
+                /* Searchable Dropdown Styling */
+                .select2-container { width: 100% !important; }
+                .select2-container .select2-selection--single {
+                    height: 45px;
+                    border: 1px solid var(--border-color, #ccc);
+                    border-radius: 8px;
+                    background: var(--bg-input, #fff);
+                    display: flex;
+                    align-items: center;
+                }
+                .select2-container--default .select2-selection--single .select2-selection__rendered {
+                    color: inherit;
+                    padding-left: 15px;
+                    font-size: 15px;
+                }
+                .select2-container--default .select2-selection--single .select2-selection__arrow {
+                    height: 43px;
+                    right: 10px;
+                }
+                .select2-dropdown {
+                    background: var(--bg-input, #fff);
+                    border: 1px solid var(--border-color, #ccc);
+                    color: #000; /* Ensure text is readable in dropdown */
+                }
+            </style>
+
+            <div class="form-group">
+                <input type="text" id="userName" name="name" placeholder="Your Name" required>
+            </div>
             
-            <!-- Naya Dropdown Field -->
-            <select id="userPurpose" name="purpose" required style="width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border-color, #ccc); border-radius: 8px; font-size: 15px; background: var(--bg-input, #fff); color: inherit; appearance: none; cursor: pointer;">
-                <option value="" disabled selected>Select Purpose</option>
-                <option value="General Inquiry">General Inquiry</option>
-                <option value="Tool/Feature Request">Tool/Feature Request</option>
-                <option value="Website Issue/Bug Report">Website Issue / Bug Report</option>
-                <option value="Business/Partnership">Business / Partnership</option>
-                <option value="Feedback/Suggestion">Feedback / Suggestion</option>
-                <option value="Other">Other</option>
-            </select>
+            <div class="form-group">
+                <!-- Tel input for Country Code Plugin -->
+                <input type="tel" id="userContact" class="iti__input" placeholder="Contact Number" required>
+            </div>
             
-            <textarea id="userMsg" name="message" rows="3" placeholder="Your message or tool request..." required></textarea>
+            <div class="form-group">
+                <input type="email" id="userEmail" name="email" placeholder="Email Address" required>
+            </div>
             
-            <button type="submit" class="action-btn">Submit Feedback</button>
+            <div class="form-group">
+                <select id="userPurpose" class="searchable-dropdown" required>
+                    <option value="" disabled selected>Search or Select Purpose...</option>
+                    <option value="General Inquiry">General Inquiry</option>
+                    <option value="Tool / Feature Request">Tool / Feature Request</option>
+                    <option value="Bug Report / Error">Bug Report / Error found</option>
+                    <option value="Website Performance Issue">Website Performance Issue</option>
+                    <option value="UI/UX Suggestion">Design & UI/UX Suggestion</option>
+                    <option value="Business Proposal">Business / Partnership Proposal</option>
+                    <option value="Advertisement Inquiry">Advertisement Inquiry</option>
+                    <option value="API Access Request">API / Data Access Request</option>
+                    <option value="Sponsorship">Sponsorship Opportunities</option>
+                    <option value="Content Contribution">Write / Contribute Content</option>
+                    <option value="Feedback / Appreciation">Feedback / Appreciation</option>
+                    <option value="Complaint">Complaint</option>
+                    <option value="Technical Support">Technical Support</option>
+                    <option value="Billing / Payment Issue">Billing / Payment Issue</option>
+                    <option value="Account Deletion">Account Removal/Deletion</option>
+                    <option value="Data Privacy Concern">Data Privacy Concern (GDPR)</option>
+                    <option value="Copyright Claim">Copyright Infringement Claim</option>
+                    <option value="Job / Career Inquiry">Job / Career Inquiry</option>
+                    <option value="Media / Press Contact">Media / Press Contact</option>
+                    <option value="Other">Other (Please specify in message)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <textarea id="userMsg" name="message" rows="4" placeholder="Your message or tool request..." required></textarea>
+            </div>
+            
+            <button type="submit" class="action-btn" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold; background-color: var(--primary-blue, #3b82f6); color: white; border: none; border-radius: 8px; cursor: pointer;">Submit Feedback</button>
         </form>
-        <p id="formStatus" style="margin-top: 10px; font-size: 13px;"></p>
+        <p id="formStatus" style="margin-top: 15px; font-size: 14px; text-align: center; font-weight: 500;"></p>
     </div>
 
     <footer style="text-align:center; padding: 30px; color: var(--text-muted); font-size: 13px;">
@@ -173,7 +270,7 @@
     </footer>
 
     <script>
-        // Search Filter Logic
+        // ================= SEARCH TOOLS LOGIC =================
         function searchTools() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.getElementsByClassName('tool-card');
@@ -187,40 +284,73 @@
             }
         }
 
-        // Google Sheet Integration Script for Feedback
+        // ================= INITIALIZE PLUGINS =================
+        let phoneInput;
+        document.addEventListener("DOMContentLoaded", function() {
+            // 1. Initialize Country Code Plugin
+            const phoneInputField = document.querySelector("#userContact");
+            phoneInput = window.intlTelInput(phoneInputField, {
+                preferredCountries: ["in", "us", "gb", "ae", "ca", "au"], // Top countries
+                separateDialCode: true, // Dial code alag se dikhega
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+            });
+
+            // 2. Initialize Searchable Dropdown
+            $('.searchable-dropdown').select2({
+                placeholder: "Search or Select Purpose...",
+                allowClear: true
+            });
+        });
+
+        // ================= FORM SUBMISSION LOGIC =================
         function submitFeedback(e) {
             e.preventDefault();
-            let name = document.getElementById('userName').value;
-            let contact = document.getElementById('userContact').value;
-            let msg = document.getElementById('userMsg').value;
-            let status = document.getElementById('formStatus');
-            let btn = e.target.querySelector('button');
+            
+            var form = document.getElementById('feedbackForm');
+            var status = document.getElementById('formStatus');
+            var submitBtn = form.querySelector('button[type="submit"]');
 
-            // LIVE GOOGLE SCRIPT URL
-            let googleScriptURL = "https://script.google.com/macros/s/AKfycbw8mhl3uOeIu5yeKvzUUU9wvwREfva_HIedh_F9OfvkNZps3mNXxYKDbUWIsJ5SztRafA/exec
+            // Aapki Google Script URL
+            let googleScriptURL = "https://script.google.com/macros/s/AKfycbw8mhl3uOeIu5yeKvzUUU9wvwREfva_HIedh_F9OfvkNZps3mNXxYKDbUWIsJ5SztRafA/exec";
 
-            status.style.color = "#3b82f6";
-            status.innerText = "Sending feedback...";
-            btn.disabled = true;
+            status.style.color = "#3b82f6"; // Blue text
+            status.innerText = "Sending feedback securely...";
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Submitting...";
 
-            // Form data prepare karna
+            // Values nikalna
+            let nameVal = document.getElementById('userName').value;
+            let emailVal = document.getElementById('userEmail').value;
+            let purposeVal = document.getElementById('userPurpose').value;
+            let msgVal = document.getElementById('userMsg').value;
+            
+            // Number with Country Code (e.g., +918279826088)
+            let contactVal = phoneInput.getNumber(); 
+
+            // FormData setup karna (Jaisa Google Script ko chahiye)
             let formData = new FormData();
-            formData.append('name', name);
-            formData.append('contact', contact);
-            formData.append('message', msg);
+            formData.append('name', nameVal);
+            formData.append('contact', contactVal);
+            formData.append('email', emailVal);
+            formData.append('purpose', purposeVal);
+            formData.append('message', msgVal);
 
-            // Google Sheet par data bhejna
+            // Data bhejna
             fetch(googleScriptURL, { method: 'POST', body: formData })
                 .then(response => {
-                    status.style.color = "#10b981";
+                    status.style.color = "#10b981"; // Green text
                     status.innerText = "✅ Thank you! Your feedback has been sent to our database.";
-                    document.getElementById('feedbackForm').reset();
-                    btn.disabled = false;
+                    form.reset();
+                    // Select2 dropdown clear karna
+                    $('.searchable-dropdown').val(null).trigger('change');
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Submit Feedback";
                 })
                 .catch(error => {
-                    status.style.color = "#ff4d4d";
-                    status.innerText = "❌ Error sending feedback. Please try again.";
-                    btn.disabled = false;
+                    status.style.color = "#ff4d4d"; // Red text
+                    status.innerText = "❌ Error sending feedback. Please try again or check your internet.";
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Submit Feedback";
                 });
         }
     </script>
