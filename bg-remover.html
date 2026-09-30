@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hybrid Background Remover — AI + Manual</title>
+<title>AI Background Remover — Pro Edition</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -43,7 +43,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .top-header{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden}
 .top-header::before{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);border-radius:50%}
 .top-header h1{font-size:clamp(22px,4vw,34px);font-weight:800;margin-bottom:8px;position:relative;z-index:1}
-.top-header p{font-size:clamp(12px,1.5vw,14px);opacity:0.92;max-width:750px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
+.top-header p{font-size:clamp(12px,1.5vw,14px);opacity:0.92;max-width:700px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
 .top-header .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:600;margin-bottom:12px;position:relative;z-index:1;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25)}
 .theme-toggle{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;z-index:2;backdrop-filter:blur(10px)}
 
@@ -52,12 +52,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(99,102,241,0.04),transparent);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .card-header h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px}
 .card-header h2 i{color:var(--primary)}
-
-/* Mode Tabs */
-.engine-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:20px;background:var(--card);padding:6px;border-radius:14px;box-shadow:var(--shadow);max-width:640px;margin-left:auto;margin-right:auto;border:1px solid var(--border)}
-.engine-tab{flex:1;padding:11px 14px;border:none;background:transparent;color:var(--text-muted);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:10px;transition:0.25s;display:flex;align-items:center;justify-content:center;gap:6px}
-.engine-tab:hover{color:var(--text);background:rgba(99,102,241,0.08)}
-.engine-tab.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
 
 /* Dropzone */
 .upload-section{padding:24px}
@@ -74,9 +68,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn{padding:11px 20px;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:0.25s;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
 .btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 14px rgba(99,102,241,0.4)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.5)}
-.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:white}
-.btn-success:hover{transform:translateY(-2px)}
-.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:white}
 .btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
 .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
 .btn-block{width:100%}
@@ -87,9 +78,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .editor-layout{display:grid;grid-template-columns:1fr 400px;gap:20px;padding:20px}
 @media(max-width:1024px){.editor-layout{grid-template-columns:1fr}}
 
-.canvas-wrapper{position:relative;background:linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);background-size:20px 20px;background-position:0 0,10px 10px;background-color:var(--checker-2);border-radius:14px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:500px;position:relative}
-.canvas-wrapper canvas{max-width:100%;max-height:70vh;display:block;cursor:crosshair;position:relative;z-index:1}
-.canvas-wrapper.brush-none canvas{cursor:default}
+.canvas-wrapper{position:relative;background-color:var(--checker-2);background-image:linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);background-size:20px 20px;background-position:0 0,10px 10px;border-radius:14px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:500px;position:relative}
+.canvas-wrapper canvas{max-width:100%;max-height:70vh;display:block;position:relative;z-index:1;touch-action:none}
+.canvas-wrapper.brush-active canvas{cursor:none}
+
+/* Brush cursor */
+.brush-cursor{position:absolute;pointer-events:none;border:2px solid white;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,0.8),inset 0 0 0 1px rgba(0,0,0,0.3);z-index:10;display:none;transform:translate(-50%,-50%);mix-blend-mode:difference}
 
 /* Side Panel */
 .side-panel{display:flex;flex-direction:column;gap:14px}
@@ -97,7 +91,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .tool-section h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .tool-section h4 i{color:var(--primary)}
 
-/* Brush */
+/* Brush buttons */
 .brush-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .brush-btn{padding:10px 8px;border:2px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text)}
 .brush-btn:hover{border-color:var(--primary);color:var(--primary)}
@@ -111,19 +105,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--primary);border-radius:50%;box-shadow:0 2px 6px rgba(99,102,241,0.5)}
 .slider-row .value{font-size:11px;font-weight:700;color:var(--primary);min-width:42px;text-align:right;font-family:monospace}
 
-/* Toggle */
-.toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:600}
-.toggle{position:relative;width:40px;height:22px;background:var(--border);border-radius:11px;cursor:pointer;transition:0.3s}
-.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
-.toggle.active{background:var(--primary)}
-.toggle.active::after{left:20px}
-
-/* Color picker section */
-.color-pickers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
-.color-item{display:flex;flex-direction:column;gap:6px}
-.color-item label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase}
-.color-item input[type="color"]{width:100%;height:40px;border:2px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:var(--card)}
-
 /* BG swatches */
 .bg-swatches{display:flex;gap:8px;flex-wrap:wrap}
 .bg-swatch{width:38px;height:38px;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:0.2s;position:relative;overflow:hidden}
@@ -132,29 +113,33 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .bg-swatch.transparent{background:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:12px 12px;background-position:0 0,6px 6px;background-color:#fff}
 .bg-swatch.white{background:#fff}.bg-swatch.black{background:#000}.bg-swatch.blue{background:#2563eb}.bg-swatch.red{background:#dc2626}.bg-swatch.green{background:#16a34a}.bg-swatch.gray{background:#6b7280}.bg-swatch.gradient{background:linear-gradient(135deg,#6366f1,#ec4899)}
 
+/* Custom color */
+.bg-custom-wrapper{position:relative}
+.bg-custom-wrapper input[type="color"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.bg-custom-wrapper .bg-swatch{display:flex;align-items:center;justify-content:center;color:white;font-size:14px;background:linear-gradient(135deg,#6366f1,#ec4899)}
+
 /* Export */
 .export-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px;background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));border-radius:12px}
 .export-btn{padding:12px 8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text);transition:0.25s;display:flex;flex-direction:column;align-items:center;gap:6px}
 .export-btn i{font-size:16px;color:var(--primary)}
 .export-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
 
-/* Mode indicator */
-.mode-indicator{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-.mode-indicator.ai{background:rgba(139,92,246,0.15);color:#8b5cf6}
-.mode-indicator.noai{background:rgba(16,185,129,0.15);color:#10b981}
-
-/* Processing */
-.processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
-.processing-overlay.active{display:flex}
+/* Processing overlay */
+.processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+.processing-overlay.active{display:flex !important}
 .processing-box{background:var(--card);border-radius:20px;padding:40px 50px;max-width:500px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5);animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)}
 @keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 .processing-box .spinner{width:64px;height:64px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 22px;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .processing-box h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.processing-box p{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;line-height:1.5}
+.processing-box p{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;line-height:1.5;min-height:18px}
 .progress-bar-wrapper{width:100%;height:8px;background:var(--bg);border-radius:20px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border)}
-.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:20px;transition:width 0.3s}
-.progress-text{font-size:12px;color:var(--text-muted);font-family:monospace}
+.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:20px;transition:width 0.3s;position:relative;overflow:hidden}
+.progress-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.progress-text{font-size:12px;color:var(--text-muted);font-family:monospace;font-weight:600}
+.processing-hint{margin-top:16px;padding:10px 14px;background:rgba(99,102,241,0.08);border-radius:8px;font-size:11.5px;color:var(--text-muted);line-height:1.5}
+.processing-hint i{color:var(--primary);margin-right:4px}
 
 /* Toast */
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(150px);background:var(--card);color:var(--text);padding:14px 22px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-size:13px;font-weight:600;z-index:2000;transition:0.35s;display:flex;align-items:center;gap:10px;border-left:4px solid var(--success);opacity:0;max-width:90vw}
@@ -162,6 +147,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .toast.error{border-left-color:var(--danger)}.toast.error i{color:var(--danger)}
 .toast.info{border-left-color:var(--info)}.toast.info i{color:var(--info)}
 .toast.warning{border-left-color:var(--warning)}.toast.warning i{color:var(--warning)}
+
+/* Status badge */
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.status-badge.loading{background:rgba(245,158,11,0.15);color:#f59e0b}
+.status-badge.ready{background:rgba(16,185,129,0.15);color:#10b981}
+.status-badge.processing{background:rgba(99,102,241,0.15);color:#6366f1}
 
 /* Info Box */
 .info-box{margin-top:20px;padding:16px 20px;background:var(--bg);border-radius:14px;border:1px solid var(--border);display:flex;gap:14px;align-items:flex-start}
@@ -173,7 +164,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   .editor-layout{grid-template-columns:1fr}
   .upload-section{padding:16px}
   .dropzone{padding:40px 20px}
-  .color-pickers{grid-template-columns:1fr 1fr}
+  .processing-box{padding:30px 24px}
 }
 </style>
 </head>
@@ -181,22 +172,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <header class="top-header">
   <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-  <div class="badge"><i class="fas fa-bolt"></i> AI + Manual • Best of Both Worlds</div>
-  <h1>🎨 Hybrid Background Remover</h1>
-  <p>AI ka accuracy aur manual chromakey ka speed — dono ek hi tool mein. AI se auto-remove karein ya khud color pick karke background hatayein.</p>
+  <div class="badge"><i class="fas fa-bolt"></i> AI-Powered • 100% Client-Side</div>
+  <h1>🎨 AI Background Remover</h1>
+  <p>Ek click mein background remove karein. AI model browser mein chalta hai — koi upload nahi, complete privacy.</p>
 </header>
 
 <div class="main-container">
-
-  <!-- Engine Selector -->
-  <div class="engine-tabs">
-    <button class="engine-tab active" onclick="switchEngine('ai', this)">
-      <i class="fas fa-brain"></i> AI Mode (Auto)
-    </button>
-    <button class="engine-tab" onclick="switchEngine('manual', this)">
-      <i class="fas fa-hand-pointer"></i> Manual Mode (Offline)
-    </button>
-  </div>
 
   <!-- Upload Card -->
   <div class="card" id="uploadCard">
@@ -222,11 +203,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="card" id="editorCard" style="display:none">
     <div class="card-header">
       <h2><i class="fas fa-magic"></i> Background Editor
-        <span class="mode-indicator ai" id="modeIndicator"><i class="fas fa-brain"></i> AI Mode</span>
+        <span class="status-badge ready" id="statusBadge"><i class="fas fa-check-circle"></i> Ready</span>
       </h2>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="rerunCurrentEngine()" title="Re-run with current settings">
-          <i class="fas fa-sync-alt"></i> Re-run
+        <button class="btn btn-outline btn-sm" onclick="undo()" id="undoBtn" disabled title="Undo last brush stroke">
+          <i class="fas fa-undo"></i> Undo
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="reRunAI()" id="rerunBtn" title="Re-run AI from scratch">
+          <i class="fas fa-sync-alt"></i> Re-run AI
         </button>
         <button class="btn btn-outline btn-sm" onclick="resetAll()">
           <i class="fas fa-redo"></i> New Image
@@ -239,6 +223,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       <div>
         <div class="canvas-wrapper" id="canvasWrapper">
           <canvas id="editCanvas"></canvas>
+          <div class="brush-cursor" id="brushCursor"></div>
         </div>
       </div>
 
@@ -261,74 +246,30 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
           <div class="slider-row" style="margin-top:12px">
             <label>Brush Size</label>
-            <input type="range" id="brushSize" min="5" max="100" value="30" oninput="document.getElementById('brushSizeVal').textContent=this.value">
-            <span class="value" id="brushSizeVal">30</span>
+            <input type="range" id="brushSize" min="5" max="200" value="40" oninput="updateBrushSize()">
+            <span class="value" id="brushSizeVal">40</span>
           </div>
-        </div>
-
-        <!-- Manual Mode Color Picker -->
-        <div class="tool-section" id="colorPickerSection" style="display:none">
-          <h4><i class="fas fa-eye-dropper"></i> Manual Chromakey</h4>
-          <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">
-            Image par <strong>click</strong> karein background color pick karne ke liye.
+          <p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:8px">
+            <strong>Eraser:</strong> Background hataayein · <strong>Restore:</strong> Subject wapas laayein
           </p>
-          <div class="color-pickers">
-            <div class="color-item">
-              <label>Picked</label>
-              <input type="color" id="pickedColor" value="#ff0000">
-            </div>
-            <div class="color-item">
-              <label>Tolerance: <span id="chromaTolVal">60</span></label>
-              <input type="range" id="chromaTolerance" min="10" max="200" value="60" oninput="document.getElementById('chromaTolVal').textContent=this.value">
-            </div>
-            <div class="color-item">
-              <label>&nbsp;</label>
-              <button class="btn btn-primary btn-sm" onclick="applyChromaKey()" style="width:100%;padding:10px">
-                <i class="fas fa-check"></i> Apply
-              </button>
-            </div>
-          </div>
         </div>
 
-        <!-- Detection Settings (shown in manual mode) -->
-        <div class="tool-section" id="detectionSettings" style="display:none">
-          <h4><i class="fas fa-sliders-h"></i> Detection Settings</h4>
-          <div class="slider-row">
-            <label>Tolerance</label>
-            <input type="range" id="tolerance" min="5" max="150" value="40" oninput="document.getElementById('toleranceVal').textContent=this.value; autoDetect()">
-            <span class="value" id="toleranceVal">40</span>
-          </div>
-          <div class="slider-row">
-            <label>Edge Softness</label>
-            <input type="range" id="softness" min="0" max="10" value="2" oninput="document.getElementById('softnessVal').textContent=this.value; autoDetect()">
-            <span class="value" id="softnessVal">2</span>
-          </div>
-          <div class="toggle-row">
-            <span>Remove Shadow</span>
-            <div class="toggle" id="shadowToggle" onclick="toggleSetting('shadow')"></div>
-          </div>
-          <div class="toggle-row">
-            <span>Despill Color</span>
-            <div class="toggle active" id="despillToggle" onclick="toggleSetting('despill')"></div>
-          </div>
-          <div class="toggle-row">
-            <span>Despeckle</span>
-            <div class="toggle active" id="despeckleToggle" onclick="toggleSetting('despeckle')"></div>
-          </div>
-        </div>
-
-        <!-- Background Swatches -->
+        <!-- Background Color -->
         <div class="tool-section">
           <h4><i class="fas fa-fill-drip"></i> Background Color</h4>
           <div class="bg-swatches">
-            <div class="bg-swatch transparent active" onclick="setBg('transparent', this)"></div>
-            <div class="bg-swatch white" onclick="setBg('#ffffff', this)"></div>
-            <div class="bg-swatch black" onclick="setBg('#000000', this)"></div>
-            <div class="bg-swatch blue" onclick="setBg('#2563eb', this)"></div>
-            <div class="bg-swatch red" onclick="setBg('#dc2626', this)"></div>
-            <div class="bg-swatch green" onclick="setBg('#16a34a', this)"></div>
-            <div class="bg-swatch gray" onclick="setBg('#6b7280', this)"></div>
-            <div class="bg-swatch gradient" onclick="setBg('gradient', this)"></div>
+            <div class="bg-swatch transparent active" title="Transparent" onclick="setBg('transparent', this)"></div>
+            <div class="bg-swatch white" title="White" onclick="setBg('#ffffff', this)"></div>
+            <div class="bg-swatch black" title="Black" onclick="setBg('#000000', this)"></div>
+            <div class="bg-swatch blue" title="Blue" onclick="setBg('#2563eb', this)"></div>
+            <div class="bg-swatch red" title="Red" onclick="setBg('#dc2626', this)"></div>
+            <div class="bg-swatch green" title="Green" onclick="setBg('#16a34a', this)"></div>
+            <div class="bg-swatch gray" title="Gray" onclick="setBg('#6b7280', this)"></div>
+            <div class="bg-swatch gradient" title="Gradient" onclick="setBg('gradient', this)"></div>
+            <div class="bg-custom-wrapper" title="Custom Color">
+              <div class="bg-swatch"><i class="fas fa-eye-dropper"></i></div>
+              <input type="color" id="customColorInput" value="#6366f1" onchange="setBg(this.value, document.querySelector('.bg-custom-wrapper .bg-swatch'))">
+            </div>
           </div>
         </div>
 
@@ -354,12 +295,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
   <!-- Info -->
   <div class="info-box">
-    <i class="fas fa-info-circle info-icon"></i>
+    <i class="fas fa-shield-alt info-icon"></i>
     <div class="info-content">
-      <h4>💡 Hybrid Approach</h4>
-      <p><strong>AI Mode:</strong> Best quality, sab backgrounds ke liye. Pehli baar 40MB download hoga.<br>
-      <strong>Manual Mode:</strong> Instant, offline, solid color backgrounds (red/green/blue/white) ke liye perfect.<br>
-      <strong>Dono mein:</strong> Result ke baad manual brush se refine kar sakte hain.</p>
+      <h4>🔒 100% Private & Free</h4>
+      <p>Sab kuch aapke browser mein hota hai. Image kabhi server par upload nahi hoti. Pehli baar ~40MB AI model download hoga, uske baad instant.</p>
     </div>
   </div>
 
@@ -369,10 +308,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <div class="processing-overlay" id="processingOverlay">
   <div class="processing-box">
     <div class="spinner"></div>
-    <h3 id="processingTitle">Processing...</h3>
+    <h3 id="processingTitle">Loading AI Model...</h3>
     <p id="processingMsg">Please wait...</p>
     <div class="progress-bar-wrapper"><div class="progress-bar-fill" id="progressFill"></div></div>
     <div class="progress-text" id="progressText">0%</div>
+    <div class="processing-hint" id="processingHint">
+      <i class="fas fa-info-circle"></i>
+      Pehli baar use karne par ~40MB AI model download hoga. Ye sirf ek baar hota hai.
+    </div>
   </div>
 </div>
 
@@ -383,7 +326,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </div>
 
 <!-- ============================================================
-     AI LIBRARY IMPORT (ES Module)
+     AI LIBRARY (ES Module)
      ============================================================ -->
 <script type="module">
   import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
@@ -392,7 +335,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </script>
 
 <!-- ============================================================
-     MAIN SCRIPT
+     MAIN LOGIC
      ============================================================ -->
 <script>
 /* ============================================================
@@ -413,19 +356,18 @@ if(localStorage.getItem('theme') === 'light'){
 /* ============================================================
    STATE
    ============================================================ */
-let currentEngine = 'ai'; // 'ai' or 'manual'
+let originalFile = null;
 let sourceImage = null;
-let sourceCanvas = null;
-let sourceImageData = null;
-let workingAlpha = null;
+let aiResultImageData = null;   // ImageData from AI result (RGB channels)
+let workingAlpha = null;        // Uint8ClampedArray of alpha per pixel
 let editorCanvas = null;
 let editorCtx = null;
-let aiResultBlob = null;    // For AI mode
-let aiResultDataURL = null;
 let currentBg = 'transparent';
 let brushMode = 'none';
 let isDrawing = false;
-let settings = { shadow: false, despill: true, despeckle: true };
+let lastBrushPoint = null;
+let undoStack = [];             // For undo functionality
+let cursorCanvasBounds = null;
 
 /* ============================================================
    TOAST
@@ -445,56 +387,36 @@ function showToast(msg, type = 'success'){
 }
 
 /* ============================================================
-   PROCESSING
+   STATUS BADGE
    ============================================================ */
-function showProcessing(show, title, msg){
+function setStatus(status, text){
+  const badge = document.getElementById('statusBadge');
+  badge.className = 'status-badge ' + status;
+  const icons = {
+    loading: 'fas fa-spinner fa-spin',
+    ready: 'fas fa-check-circle',
+    processing: 'fas fa-cog fa-spin'
+  };
+  badge.innerHTML = `<i class="${icons[status] || 'fas fa-check-circle'}"></i> ${text}`;
+}
+
+/* ============================================================
+   PROCESSING OVERLAY
+   ============================================================ */
+function updateProgress(pct){
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+}
+function showProcessing(show, title, msg, hint){
   const overlay = document.getElementById('processingOverlay');
   if(show){
     overlay.classList.add('active');
     if(title) document.getElementById('processingTitle').textContent = title;
     if(msg) document.getElementById('processingMsg').textContent = msg;
+    if(hint !== undefined) document.getElementById('processingHint').innerHTML = hint;
     updateProgress(0);
   } else {
     overlay.classList.remove('active');
-  }
-}
-function updateProgress(pct){
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent = pct + '%';
-}
-
-/* ============================================================
-   ENGINE SWITCH
-   ============================================================ */
-function switchEngine(engine, btn){
-  currentEngine = engine;
-  document.querySelectorAll('.engine-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  const indicator = document.getElementById('modeIndicator');
-  if(engine === 'ai'){
-    indicator.className = 'mode-indicator ai';
-    indicator.innerHTML = '<i class="fas fa-brain"></i> AI Mode';
-    document.getElementById('colorPickerSection').style.display = 'none';
-    document.getElementById('detectionSettings').style.display = 'none';
-  } else {
-    indicator.className = 'mode-indicator noai';
-    indicator.innerHTML = '<i class="fas fa-hand-pointer"></i> Manual Mode';
-    document.getElementById('colorPickerSection').style.display = 'block';
-    document.getElementById('detectionSettings').style.display = 'block';
-  }
-
-  if(sourceImage){
-    rerunCurrentEngine();
-  }
-}
-
-function rerunCurrentEngine(){
-  if(!sourceImage) return;
-  if(currentEngine === 'ai'){
-    runAIMode();
-  } else {
-    runManualMode();
   }
 }
 
@@ -535,6 +457,10 @@ document.addEventListener('paste', e => {
 
 async function pasteFromClipboard(){
   try {
+    if(!navigator.clipboard || !navigator.clipboard.read){
+      showToast('Ctrl+V dabayein paste ke liye', 'info');
+      return;
+    }
     const items = await navigator.clipboard.read();
     for(const item of items){
       for(const type of item.types){
@@ -552,14 +478,19 @@ async function pasteFromClipboard(){
 }
 
 /* ============================================================
-   PROCESS FILE
+   MAIN PROCESS
    ============================================================ */
 async function processFile(file){
   if(!file.type.startsWith('image/')){ showToast('Image select karein', 'error'); return; }
   if(file.size > 30 * 1024 * 1024){ showToast('Image 30MB se choti honi chahiye', 'error'); return; }
 
-  showProcessing(true, 'Loading Image...', 'Please wait...');
+  // Show loading state
+  showProcessing(true, 'Loading Image...', 'Please wait...', '');
+  setStatus('loading', 'Loading');
 
+  originalFile = file;
+
+  // Load image
   const dataURL = await new Promise((res, rej) => {
     const r = new FileReader();
     r.onload = e => res(e.target.result);
@@ -576,274 +507,124 @@ async function processFile(file){
 
   sourceImage = img;
 
-  // Setup source canvas
-  sourceCanvas = document.createElement('canvas');
-  sourceCanvas.width = img.naturalWidth;
-  sourceCanvas.height = img.naturalHeight;
-  const sCtx = sourceCanvas.getContext('2d');
-  sCtx.drawImage(img, 0, 0);
-  sourceImageData = sCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
-
-  // Initialize alpha
-  workingAlpha = new Uint8ClampedArray(sourceCanvas.width * sourceCanvas.height);
-  workingAlpha.fill(255);
-
   // Setup editor canvas
   editorCanvas = document.getElementById('editCanvas');
-  editorCanvas.width = sourceCanvas.width;
-  editorCanvas.height = sourceCanvas.height;
-  editorCtx = editorCanvas.getContext('2d');
-
-  // Store original file for AI
-  window._originalFile = file;
+  editorCanvas.width = img.naturalWidth;
+  editorCanvas.height = img.naturalHeight;
+  editorCtx = editorCanvas.getContext('2d', { willReadFrequently: true });
 
   // Show editor
   document.getElementById('uploadCard').style.display = 'none';
   document.getElementById('editorCard').style.display = 'block';
 
-  // Init canvas events
+  // Init events
   initCanvasEvents();
+  updateBrushSize();
 
-  // Run current engine
-  await rerunCurrentEngine();
-
-  showProcessing(false);
+  // Run AI
+  await runAI();
 }
 
 /* ============================================================
-   AI MODE
+   AI PROCESSING
    ============================================================ */
-async function runAIMode(){
+async function runAI(){
+  // Wait for AI library
   if(!window.removeBackgroundAI){
-    showToast('AI library load ho rahi hai...', 'warning');
-    // Wait for it
+    showProcessing(true, 'Loading AI Library...', 'Ek second...', '');
     await new Promise(res => window.addEventListener('ai-ready', res, { once: true }));
   }
 
-  if(!window._originalFile){
-    showToast('No file to process', 'error');
-    return;
-  }
-
-  showProcessing(true, 'AI Processing...', 'Background remove ho raha hai...');
+  setStatus('processing', 'Removing Background');
+  showProcessing(true, 'Removing Background...', 'AI aapki image analyze kar raha hai...',
+    '<i class="fas fa-info-circle"></i> Pehli baar 40MB model download hoga (~30 seconds). Uske baad 3-5 seconds.'
+  );
 
   try {
-    const blob = await window.removeBackgroundAI(window._originalFile, {
+    const blob = await window.removeBackgroundAI(originalFile, {
       progress: (key, current, total) => {
         const percent = total > 0 ? Math.round((current / total) * 100) : 0;
         updateProgress(percent);
-        if(key.includes('fetch')) {
-          document.getElementById('processingTitle').textContent = 'Loading AI Model...';
-          document.getElementById('processingMsg').textContent = `Fetching: ${key.split('/').pop()}`;
-        } else if(key.includes('compute')) {
+
+        if(key.includes('fetch') || key.includes('download')){
+          document.getElementById('processingTitle').textContent = 'Downloading AI Model...';
+          document.getElementById('processingMsg').textContent = `File: ${key.split('/').pop()} — ${percent}%`;
+          document.getElementById('processingHint').innerHTML = '<i class="fas fa-download"></i> Pehli baar ~40MB download ho raha hai. Please wait...';
+        } else if(key.includes('compute') || key.includes('inference')){
           document.getElementById('processingTitle').textContent = 'Removing Background...';
-          document.getElementById('processingMsg').textContent = 'AI analyzing image';
+          document.getElementById('processingMsg').textContent = 'AI edges detect kar raha hai...';
+          document.getElementById('processingHint').innerHTML = '<i class="fas fa-cog fa-spin"></i> AI model image process kar raha hai...';
         }
       },
       output: { format: 'image/png', quality: 1.0 }
     });
 
-    aiResultBlob = blob;
-    aiResultDataURL = URL.createObjectURL(blob);
-
-    // Load AI result into image
-    const img = await new Promise((res, rej) => {
+    // Convert to ImageData
+    const resultURL = URL.createObjectURL(blob);
+    const resultImg = await new Promise((res, rej) => {
       const i = new Image();
       i.onload = () => res(i);
       i.onerror = rej;
-      i.src = aiResultDataURL;
+      i.src = resultURL;
     });
 
-    // Draw AI result to editor canvas
+    // Draw to canvas at original size
     editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
-    editorCtx.drawImage(img, 0, 0, editorCanvas.width, editorCanvas.height);
+    editorCtx.drawImage(resultImg, 0, 0, editorCanvas.width, editorCanvas.height);
 
-    // Extract alpha from AI result for brush editing
-    const aiData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
+    // Extract ImageData (RGB) and alpha
+    aiResultImageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
     workingAlpha = new Uint8ClampedArray(editorCanvas.width * editorCanvas.height);
     for(let i = 0; i < workingAlpha.length; i++){
-      workingAlpha[i] = aiData.data[i * 4 + 3];
+      workingAlpha[i] = aiResultImageData.data[i * 4 + 3];
     }
 
-    showProcessing(false);
-    showToast('✅ AI ne background remove kar diya!');
+    URL.revokeObjectURL(resultURL);
+
+    // Reset undo stack
+    undoStack = [];
+
+    // Apply current background
     applyBackground();
+
+    showProcessing(false);
+    setStatus('ready', 'Ready');
+    showToast('✅ Background removed! Ab brush se refine karein.', 'success');
+
   } catch(err){
     console.error('AI error:', err);
     showProcessing(false);
-    showToast('AI error: ' + (err.message || 'Failed'), 'error');
-    // Suggest manual mode
-    setTimeout(() => {
-      showToast('💡 Manual Mode try karein — instant aur offline hai', 'info');
-    }, 2000);
+    setStatus('ready', 'Error');
+    showToast('Error: ' + (err.message || 'Failed to process'), 'error');
   }
 }
 
-/* ============================================================
-   MANUAL MODE (Auto Detect)
-   ============================================================ */
-async function runManualMode(){
-  if(!sourceImageData) return;
-  showProcessing(true, 'Analyzing...', 'Background color detect kar raha hai...');
-  await new Promise(res => setTimeout(res, 100));
-
-  autoDetect();
-  renderResult();
-
-  showProcessing(false);
-  showToast('✅ Manual detection complete!');
+async function reRunAI(){
+  if(!originalFile) return;
+  undoStack = [];
+  await runAI();
 }
 
 /* ============================================================
-   AUTO DETECT — Corner-based
+   RENDER — Builds canvas from aiResultImageData + workingAlpha
    ============================================================ */
-function autoDetect(){
-  if(!sourceImageData) return;
+function render(){
+  if(!aiResultImageData || !workingAlpha) return;
 
-  const W = sourceCanvas.width;
-  const H = sourceCanvas.height;
-  const data = sourceImageData.data;
-
-  const sampleSize = Math.min(20, Math.floor(Math.min(W, H) * 0.05));
-  const corners = [
-    { x: 0, y: 0 },
-    { x: W - sampleSize, y: 0 },
-    { x: 0, y: H - sampleSize },
-    { x: W - sampleSize, y: H - sampleSize }
-  ];
-
-  let rTotal = 0, gTotal = 0, bTotal = 0, count = 0;
-  for(const c of corners){
-    for(let y = c.y; y < c.y + sampleSize; y++){
-      for(let x = c.x; x < c.x + sampleSize; x++){
-        const idx = (y * W + x) * 4;
-        rTotal += data[idx];
-        gTotal += data[idx + 1];
-        bTotal += data[idx + 2];
-        count++;
-      }
-    }
-  }
-  const avgColor = { r: rTotal / count, g: gTotal / count, b: bTotal / count };
-
-  const tol = parseInt(document.getElementById('tolerance').value);
-  const soft = parseInt(document.getElementById('softness').value);
-
-  applyColorRemoval(avgColor, tol, soft);
-  if(settings.despeckle) despeckleAlpha(W, H);
-  if(settings.shadow) removeShadows(W, H);
-}
-
-/* ============================================================
-   CHROMAKEY
-   ============================================================ */
-function applyChromaKey(){
-  const color = hexToRgb(document.getElementById('pickedColor').value);
-  const tol = parseInt(document.getElementById('chromaTolerance').value);
-  const soft = parseInt(document.getElementById('softness').value);
-
-  applyColorRemoval(color, tol, soft);
-  if(settings.despeckle) despeckleAlpha(sourceCanvas.width, sourceCanvas.height);
-  renderResult();
-  showToast('✅ Chromakey applied!');
-}
-
-/* ============================================================
-   COLOR REMOVAL
-   ============================================================ */
-function applyColorRemoval(targetColor, toleranceValue, softnessValue){
-  const W = sourceCanvas.width;
-  const H = sourceCanvas.height;
-  const data = sourceImageData.data;
-  const tol = toleranceValue * toleranceValue * 3;
-  const softnessFactor = (softnessValue || 0) * 0.15;
+  const W = editorCanvas.width;
+  const H = editorCanvas.height;
+  const out = new ImageData(W, H);
+  const src = aiResultImageData.data;
 
   for(let i = 0; i < W * H; i++){
     const idx = i * 4;
-    const r = data[idx];
-    const g = data[idx + 1];
-    const b = data[idx + 2];
-
-    const dr = r - targetColor.r;
-    const dg = g - targetColor.g;
-    const db = b - targetColor.b;
-    const distSq = dr * dr + dg * dg + db * db;
-
-    let alpha;
-    if(distSq < tol * 0.6){
-      alpha = 0;
-    } else if(distSq < tol * 1.4){
-      const t = (distSq - tol * 0.6) / (tol * 0.8);
-      alpha = Math.round(t * 255);
-    } else {
-      alpha = 255;
-    }
-
-    if(softnessFactor > 0 && alpha > 0 && alpha < 255){
-      alpha = Math.round(255 * Math.pow(alpha / 255, 1 - softnessFactor * 0.5));
-    }
-
-    workingAlpha[i] = alpha;
-  }
-}
-
-/* ============================================================
-   DESPECKLE & SHADOW
-   ============================================================ */
-function despeckleAlpha(W, H){
-  const copy = new Uint8ClampedArray(workingAlpha);
-  for(let y = 1; y < H - 1; y++){
-    for(let x = 1; x < W - 1; x++){
-      const idx = y * W + x;
-      let sum = 0;
-      for(let dy = -1; dy <= 1; dy++){
-        for(let dx = -1; dx <= 1; dx++){
-          sum += copy[(y + dy) * W + (x + dx)];
-        }
-      }
-      const avg = sum / 9;
-      if(Math.abs(copy[idx] - avg) > 100) workingAlpha[idx] = avg;
-    }
-  }
-}
-
-function removeShadows(W, H){
-  for(let i = 0; i < W * H; i++){
-    if(workingAlpha[i] < 200 && workingAlpha[i] > 30) workingAlpha[i] = 0;
-  }
-}
-
-/* ============================================================
-   RENDER
-   ============================================================ */
-function renderResult(){
-  if(!sourceImageData || !workingAlpha) return;
-
-  const W = sourceCanvas.width;
-  const H = sourceCanvas.height;
-  const resultData = new ImageData(W, H);
-  const srcData = sourceImageData.data;
-
-  for(let i = 0; i < W * H; i++){
-    const idx = i * 4;
-    let r = srcData[idx];
-    let g = srcData[idx + 1];
-    let b = srcData[idx + 2];
-    const a = workingAlpha[i];
-
-    if(settings.despill && a < 255 && a > 0){
-      const maxRB = Math.max(r, b);
-      if(g > maxRB + 20) g = maxRB;
-    }
-
-    resultData.data[idx] = r;
-    resultData.data[idx + 1] = g;
-    resultData.data[idx + 2] = b;
-    resultData.data[idx + 3] = a;
+    out.data[idx] = src[idx];
+    out.data[idx + 1] = src[idx + 1];
+    out.data[idx + 2] = src[idx + 2];
+    out.data[idx + 3] = workingAlpha[i];
   }
 
-  editorCtx.putImageData(resultData, 0, 0);
-  applyBackground();
+  editorCtx.putImageData(out, 0, 0);
 }
 
 /* ============================================================
@@ -858,18 +639,16 @@ function setBg(bg, swatch){
 
 function applyBackground(){
   const wrapper = document.getElementById('canvasWrapper');
-  if(!wrapper) return;
 
   if(currentBg === 'transparent'){
-    wrapper.style.background = '';
-    wrapper.style.backgroundImage = '';
     wrapper.style.backgroundColor = '';
+    wrapper.style.backgroundImage = '';
   } else if(currentBg === 'gradient'){
-    wrapper.style.background = 'linear-gradient(135deg,#6366f1,#ec4899)';
-    wrapper.style.backgroundImage = 'none';
+    wrapper.style.backgroundColor = '';
+    wrapper.style.backgroundImage = 'linear-gradient(135deg,#6366f1,#ec4899)';
   } else {
-    wrapper.style.background = currentBg;
     wrapper.style.backgroundImage = 'none';
+    wrapper.style.backgroundColor = currentBg;
   }
 }
 
@@ -880,71 +659,152 @@ function setBrush(mode, btn){
   brushMode = mode;
   document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
+
   const wrapper = document.getElementById('canvasWrapper');
-  if(mode === 'none') wrapper.classList.add('brush-none');
-  else wrapper.classList.remove('brush-none');
+  const cursor = document.getElementById('brushCursor');
+
+  if(mode === 'none'){
+    wrapper.classList.remove('brush-active');
+    cursor.style.display = 'none';
+  } else {
+    wrapper.classList.add('brush-active');
+  }
+}
+
+function updateBrushSize(){
+  const size = document.getElementById('brushSize').value;
+  document.getElementById('brushSizeVal').textContent = size;
+  const cursor = document.getElementById('brushCursor');
+  cursor.style.width = size + 'px';
+  cursor.style.height = size + 'px';
 }
 
 function initCanvasEvents(){
+  // Mouse events
   editorCanvas.addEventListener('mousedown', e => {
     if(brushMode === 'none') return;
+    e.preventDefault();
     isDrawing = true;
-    applyBrush(e);
+    // Save state for undo (only once per stroke)
+    saveUndoState();
+    lastBrushPoint = getCanvasPoint(e);
+    applyBrushAt(lastBrushPoint.x, lastBrushPoint.y);
   });
-  editorCanvas.addEventListener('mousemove', e => {
-    if(!isDrawing || brushMode === 'none') return;
-    applyBrush(e);
-  });
-  editorCanvas.addEventListener('mouseup', () => { isDrawing = false; });
-  editorCanvas.addEventListener('mouseleave', () => { isDrawing = false; });
 
+  editorCanvas.addEventListener('mousemove', e => {
+    // Brush cursor follow
+    updateBrushCursor(e);
+
+    if(!isDrawing || brushMode === 'none') return;
+    const point = getCanvasPoint(e);
+    if(lastBrushPoint){
+      // Interpolate between last and current point for smooth strokes
+      interpolateBrush(lastBrushPoint, point);
+    }
+    lastBrushPoint = point;
+  });
+
+  editorCanvas.addEventListener('mouseup', () => {
+    isDrawing = false;
+    lastBrushPoint = null;
+  });
+  editorCanvas.addEventListener('mouseleave', () => {
+    isDrawing = false;
+    lastBrushPoint = null;
+    document.getElementById('brushCursor').style.display = 'none';
+  });
+  editorCanvas.addEventListener('mouseenter', () => {
+    if(brushMode !== 'none'){
+      document.getElementById('brushCursor').style.display = 'block';
+    }
+  });
+
+  // Touch
   editorCanvas.addEventListener('touchstart', e => {
     if(brushMode === 'none') return;
-    e.preventDefault(); isDrawing = true;
-    applyBrush(e.touches[0]);
+    e.preventDefault();
+    isDrawing = true;
+    saveUndoState();
+    const t = e.touches[0];
+    lastBrushPoint = getCanvasPoint(t);
+    applyBrushAt(lastBrushPoint.x, lastBrushPoint.y);
   }, { passive: false });
+
   editorCanvas.addEventListener('touchmove', e => {
     if(!isDrawing || brushMode === 'none') return;
     e.preventDefault();
-    applyBrush(e.touches[0]);
+    const t = e.touches[0];
+    const point = getCanvasPoint(t);
+    if(lastBrushPoint){
+      interpolateBrush(lastBrushPoint, point);
+    }
+    lastBrushPoint = point;
   }, { passive: false });
-  editorCanvas.addEventListener('touchend', () => { isDrawing = false; });
 
-  // Click for color pick (manual mode)
-  editorCanvas.addEventListener('click', e => {
-    if(currentEngine !== 'manual') return;
-    const rect = editorCanvas.getBoundingClientRect();
-    const scaleX = editorCanvas.width / rect.width;
-    const scaleY = editorCanvas.height / rect.height;
-    const x = Math.floor((e.clientX - rect.left) * scaleX);
-    const y = Math.floor((e.clientY - rect.top) * scaleY);
-    const idx = (y * editorCanvas.width + x) * 4;
-    const data = sourceImageData.data;
-    const hex = rgbToHex(data[idx], data[idx + 1], data[idx + 2]);
-    document.getElementById('pickedColor').value = hex;
-    showToast('Color picked: ' + hex, 'info');
+  editorCanvas.addEventListener('touchend', () => {
+    isDrawing = false;
+    lastBrushPoint = null;
   });
 }
 
-function applyBrush(e){
+function updateBrushCursor(e){
+  if(brushMode === 'none') return;
+  const cursor = document.getElementById('brushCursor');
+  const wrapper = document.getElementById('canvasWrapper');
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const size = parseInt(document.getElementById('brushSize').value);
+
+  cursor.style.display = 'block';
+  cursor.style.width = size + 'px';
+  cursor.style.height = size + 'px';
+  cursor.style.left = (e.clientX - wrapperRect.left) + 'px';
+  cursor.style.top = (e.clientY - wrapperRect.top) + 'px';
+}
+
+function getCanvasPoint(e){
   const rect = editorCanvas.getBoundingClientRect();
   const scaleX = editorCanvas.width / rect.width;
   const scaleY = editorCanvas.height / rect.height;
-  const cx = (e.clientX - rect.left) * scaleX;
-  const cy = (e.clientY - rect.top) * scaleY;
+  return {
+    x: (e.clientX - rect.left) * scaleX,
+    y: (e.clientY - rect.top) * scaleY
+  };
+}
+
+function interpolateBrush(p1, p2){
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const dist = Math.sqrt(dx * dx + dy * dy);
   const size = parseInt(document.getElementById('brushSize').value);
-  const radius = size / 2;
+  const step = Math.max(1, size / 4);
+  const steps = Math.ceil(dist / step);
+
+  for(let i = 1; i <= steps; i++){
+    const t = i / steps;
+    applyBrushAt(p1.x + dx * t, p1.y + dy * t);
+  }
+}
+
+function applyBrushAt(x, y){
   const W = editorCanvas.width;
   const H = editorCanvas.height;
+  const size = parseInt(document.getElementById('brushSize').value);
+  const radius = size / 2;
+  const radiusSq = radius * radius;
 
-  for(let py = Math.max(0, Math.floor(cy - radius)); py < Math.min(H, Math.ceil(cy + radius)); py++){
-    for(let px = Math.max(0, Math.floor(cx - radius)); px < Math.min(W, Math.ceil(cx + radius)); px++){
-      const dx = px - cx;
-      const dy = py - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if(dist <= radius){
+  const startX = Math.max(0, Math.floor(x - radius));
+  const endX = Math.min(W, Math.ceil(x + radius));
+  const startY = Math.max(0, Math.floor(y - radius));
+  const endY = Math.min(H, Math.ceil(y + radius));
+
+  for(let py = startY; py < endY; py++){
+    for(let px = startX; px < endX; px++){
+      const dx = px - x;
+      const dy = py - y;
+      const distSq = dx * dx + dy * dy;
+      if(distSq <= radiusSq){
         const idx = py * W + px;
-        const falloff = 1 - (dist / radius);
+        const falloff = 1 - Math.sqrt(distSq) / radius;
         if(brushMode === 'erase'){
           workingAlpha[idx] = Math.max(0, workingAlpha[idx] - falloff * 255);
         } else if(brushMode === 'restore'){
@@ -954,43 +814,25 @@ function applyBrush(e){
     }
   }
 
-  // Re-render from source
-  if(currentEngine === 'manual'){
-    renderResult();
-  } else {
-    // AI mode: render from AI result + brush alpha
-    renderAIWithBrush();
-  }
-}
-
-function renderAIWithBrush(){
-  if(!aiResultDataURL || !workingAlpha) return;
-
-  // Reload AI result
-  const img = new Image();
-  img.onload = () => {
-    editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
-    editorCtx.drawImage(img, 0, 0, editorCanvas.width, editorCanvas.height);
-
-    const imgData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
-    for(let i = 0; i < workingAlpha.length; i++){
-      imgData.data[i * 4 + 3] = workingAlpha[i];
-    }
-    editorCtx.putImageData(imgData, 0, 0);
-    applyBackground();
-  };
-  img.src = aiResultDataURL;
+  render();
 }
 
 /* ============================================================
-   TOGGLES
+   UNDO
    ============================================================ */
-function toggleSetting(key){
-  settings[key] = !settings[key];
-  const toggle = document.getElementById(key + 'Toggle');
-  toggle.classList.toggle('active', settings[key]);
+function saveUndoState(){
+  // Save max 20 states
+  if(undoStack.length >= 20) undoStack.shift();
+  undoStack.push(new Uint8ClampedArray(workingAlpha));
+  document.getElementById('undoBtn').disabled = false;
+}
 
-  if(currentEngine === 'manual') autoDetect(), renderResult();
+function undo(){
+  if(undoStack.length === 0) return;
+  workingAlpha = undoStack.pop();
+  render();
+  document.getElementById('undoBtn').disabled = undoStack.length === 0;
+  showToast('Undo ho gaya', 'info');
 }
 
 /* ============================================================
@@ -1002,6 +844,7 @@ async function generateFinalImage(format){
   canvas.height = editorCanvas.height;
   const ctx = canvas.getContext('2d');
 
+  // Fill background if needed
   if(format !== 'png' || currentBg !== 'transparent'){
     if(currentBg === 'gradient'){
       const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -1045,9 +888,9 @@ async function copyToClipboard(){
     const blob = await generateFinalImage('png');
     if(navigator.clipboard && window.ClipboardItem){
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      showToast('✅ Copied!');
+      showToast('✅ Copied to clipboard!');
     } else {
-      showToast('Copy support nahi hai', 'error');
+      showToast('Copy support nahi hai — download karein', 'error');
     }
   } catch(err){
     showToast('Copy fail: ' + err.message, 'error');
@@ -1055,40 +898,19 @@ async function copyToClipboard(){
 }
 
 /* ============================================================
-   UTILITIES
-   ============================================================ */
-function hexToRgb(hex){
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : { r: 0, g: 0, b: 0 };
-}
-
-function rgbToHex(r, g, b){
-  return '#' + [r, g, b].map(x => {
-    const hex = x.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  }).join('');
-}
-
-/* ============================================================
    RESET
    ============================================================ */
 function resetAll(){
+  originalFile = null;
   sourceImage = null;
-  sourceCanvas = null;
-  sourceImageData = null;
+  aiResultImageData = null;
   workingAlpha = null;
-  aiResultBlob = null;
-  if(aiResultDataURL) URL.revokeObjectURL(aiResultDataURL);
-  aiResultDataURL = null;
-  window._originalFile = null;
+  undoStack = [];
   currentBg = 'transparent';
 
   document.getElementById('uploadCard').style.display = 'block';
   document.getElementById('editorCard').style.display = 'none';
+  document.getElementById('undoBtn').disabled = true;
 
   document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
   const tSwatch = document.querySelector('.bg-swatch.transparent');
@@ -1103,15 +925,13 @@ function resetAll(){
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
 
-// Wait for AI library
 window.addEventListener('ai-ready', () => {
-  console.log('AI library ready');
+  console.log('AI library loaded');
+  showToast('✅ AI ready! Image upload karein.', 'success');
 });
 
 setTimeout(() => {
-  if(window.removeBackgroundAI){
-    showToast('✅ Ready! Image upload karein.', 'success');
-  } else {
+  if(!window.removeBackgroundAI){
     showToast('AI library load ho rahi hai...', 'info');
   }
 }, 1000);
