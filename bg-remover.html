@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Background Remover — Pro Edition v4</title>
+<title>AI Background Remover — Pro Edition v5</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -66,13 +66,46 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .editor-card{display:none}
 .editor-card.active{display:block}
 
-.editor-layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;padding:16px;align-items:start}
-@media(max-width:1100px){.editor-layout{grid-template-columns:1fr}}
+/* ============================================================
+   BULLETPROOF LAYOUT: Flexbox so the tools panel NEVER resizes
+   ============================================================ */
+.editor-layout{
+  display:flex;
+  gap:16px;
+  padding:16px;
+  align-items:flex-start;
+  width:100%;
+}
+.editor-canvas-col{
+  flex:1 1 0;
+  min-width:0;           /* Critical: allows the column to shrink */
+  overflow:hidden;       /* Critical: prevents expanding past parent */
+  display:flex;
+  flex-direction:column;
+}
+.side-panel{
+  width:380px;
+  flex:0 0 380px;        /* Fixed width, cannot shrink or grow */
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+@media(max-width:1100px){
+  .editor-layout{flex-direction:column}
+  .editor-canvas-col{width:100%;flex:0 0 auto}
+  .side-panel{width:100%;flex:0 0 auto}
+}
 
+/* Fullscreen */
 .editor-card.fullscreen{position:fixed;inset:0;z-index:100;margin:0;border-radius:0;max-width:none;display:flex;flex-direction:column}
 .editor-card.fullscreen .editor-layout{flex:1;overflow:hidden;min-height:0}
+.editor-card.fullscreen .editor-canvas-col{height:100%}
 .editor-card.fullscreen .canvas-scroll-container{height:100%;max-height:none}
-@media(max-width:1100px){.editor-card.fullscreen .editor-layout{grid-template-columns:1fr;grid-template-rows:1fr auto}}
+@media(max-width:1100px){
+  .editor-card.fullscreen .editor-layout{flex-direction:column}
+  .editor-card.fullscreen .editor-canvas-col{flex:1 1 auto;min-height:0}
+  .editor-card.fullscreen .side-panel{flex:0 0 auto;max-height:45vh;overflow-y:auto}
+}
 
 .canvas-scroll-container{
   overflow:auto;
@@ -82,17 +115,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   border:1px solid var(--border);
   background:var(--bg);
   padding:24px;
-  display:block;
   position:relative;
   resize:vertical;
+  width:100%;
 }
 
 .canvas-scroll-inner{
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  min-width:min-content;
-  min-height:min-content;
+  width:max-content;
+  min-width:100%;
+  min-height:100%;
 }
 
 .canvas-wrapper{
@@ -105,15 +139,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   background-position:0 0,10px 10px;
   border-radius:4px;
   box-shadow:0 4px 20px rgba(0,0,0,0.15);
-  display:inline-block;
+  display:block;
   line-height:0;
-  flex-shrink:0;
+  flex:0 0 auto;
 }
 
 .canvas-wrapper canvas{
   display:block;
   image-rendering:auto;
   touch-action:none;
+  /* Canvas size is controlled via inline width/height (in px).
+     No transform, no scale — layout stays untouched. */
 }
 .canvas-wrapper.brush-active canvas{cursor:none}
 
@@ -125,7 +161,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   mix-blend-mode:difference;
 }
 
-.side-panel{display:flex;flex-direction:column;gap:12px}
 .tool-section{background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border)}
 .tool-section h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .tool-section h4 i{color:var(--primary)}
@@ -231,7 +266,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <div class="main-container">
 
-  <!-- Upload -->
   <div class="card" id="uploadCard">
     <div class="upload-section">
       <div class="dropzone" id="dropzone">
@@ -251,7 +285,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Editor -->
   <div class="card editor-card" id="editorCard">
     <div class="card-header">
       <h2>
@@ -278,7 +311,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
 
     <div class="editor-layout">
-      <div>
+      <div class="editor-canvas-col">
         <div class="canvas-scroll-container" id="canvasScrollContainer">
           <div class="canvas-scroll-inner">
             <div class="canvas-wrapper" id="canvasWrapper">
@@ -291,7 +324,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
       <div class="side-panel">
 
-        <!-- Zoom & Navigation -->
         <div class="tool-section">
           <h4><i class="fas fa-search"></i> Zoom &amp; Navigation</h4>
           <div class="zoom-row">
@@ -309,7 +341,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </p>
         </div>
 
-        <!-- Brush Tools -->
         <div class="tool-section">
           <h4><i class="fas fa-paint-brush"></i> Brush Tools</h4>
           <div class="brush-buttons">
@@ -333,7 +364,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </p>
         </div>
 
-        <!-- Background Color -->
         <div class="tool-section">
           <h4><i class="fas fa-fill-drip"></i> Background Color</h4>
           <div class="bg-swatches">
@@ -352,7 +382,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
         </div>
 
-        <!-- Download -->
         <div class="download-wrapper">
           <button class="download-main-btn" onclick="toggleDownloadMenu(event)">
             <i class="fas fa-download"></i> Download Image
@@ -379,7 +408,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Hardware info -->
   <div class="hardware-warning">
     <i class="fas fa-microchip"></i>
     <div>
@@ -398,7 +426,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 </div>
 
-<!-- Processing overlay -->
 <div class="processing-overlay" id="processingOverlay">
   <div class="processing-box">
     <div class="spinner"></div>
@@ -412,7 +439,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toastMsg">Success</span>
@@ -425,6 +451,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </script>
 
 <script>
+console.log('AI Background Remover — version 5 loaded');
+
 /* ============================================================
    THEME
    ============================================================ */
@@ -439,9 +467,6 @@ if(localStorage.getItem('theme') === 'light'){
   document.querySelector('.theme-toggle i').className = 'fas fa-sun';
 }
 
-/* ============================================================
-   STATE
-   ============================================================ */
 let originalFile = null;
 let sourceCanvas = null;
 let aiResultCanvas = null;
@@ -463,9 +488,6 @@ let eraseStampCanvas = null;
 let eraseStampSize = 0;
 let scratchCanvas = null;
 
-/* ============================================================
-   TOAST
-   ============================================================ */
 let toastTimer;
 function showToast(msg, type = 'success'){
   const toast = document.getElementById('toast');
@@ -480,9 +502,6 @@ function showToast(msg, type = 'success'){
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-/* ============================================================
-   STATUS BADGE
-   ============================================================ */
 function setStatus(status, text){
   const badge = document.getElementById('statusBadge');
   badge.className = 'status-badge ' + status;
@@ -490,9 +509,6 @@ function setStatus(status, text){
   badge.innerHTML = `<i class="${icons[status] || 'fas fa-check-circle'}"></i> ${text}`;
 }
 
-/* ============================================================
-   PROCESSING OVERLAY
-   ============================================================ */
 function updateProgress(pct){
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressText').textContent = pct + '%';
@@ -510,9 +526,6 @@ function showProcessing(show, title, msg, hint){
   }
 }
 
-/* ============================================================
-   FILE INPUT
-   ============================================================ */
 const dropzone = document.getElementById('dropzone');
 ['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => {
   e.preventDefault(); dropzone.classList.add('dragover');
@@ -565,7 +578,7 @@ async function pasteFromClipboard(){
 }
 
 /* ============================================================
-   FILE PROCESS — NO downscaling, original resolution preserved
+   FILE PROCESS — Exact original resolution, no downscaling
    ============================================================ */
 async function processFile(file){
   if(!file.type.startsWith('image/')){ showToast('Please select an image file', 'error'); return; }
@@ -589,13 +602,9 @@ async function processFile(file){
     i.src = dataURL;
   });
 
-  // NO downscaling — preserve exact original dimensions
+  // Preserve exact original dimensions — no downscaling at all
   const finalW = img.naturalWidth;
   const finalH = img.naturalHeight;
-
-  if(finalW * finalH > 12_000_000){
-    showToast(`Large image (${finalW}×${finalH}). Brush may be slow on older devices.`, 'warning');
-  }
 
   sourceCanvas = document.createElement('canvas');
   sourceCanvas.width = finalW;
@@ -697,14 +706,21 @@ async function reRunAI(){
 }
 
 /* ============================================================
-   ZOOM — Only affects the canvas, not the toolbar
+   ZOOM — Only resizes the canvas element, never the tools panel
    ============================================================ */
 function applyZoom(){
   if(!editCanvas || !canvasWrapper) return;
-  // Set canvas CSS size directly (no transform). This preserves layout
-  // so the side panel and toolbar are unaffected.
-  editCanvas.style.width = (editCanvas.width * zoom) + 'px';
-  editCanvas.style.height = (editCanvas.height * zoom) + 'px';
+
+  // Set canvas CSS size to zoom * natural size
+  const displayW = Math.round(editCanvas.width * zoom);
+  const displayH = Math.round(editCanvas.height * zoom);
+  editCanvas.style.width = displayW + 'px';
+  editCanvas.style.height = displayH + 'px';
+
+  // The wrapper wraps the canvas — its size matches the scaled canvas
+  canvasWrapper.style.width = displayW + 'px';
+  canvasWrapper.style.height = displayH + 'px';
+
   document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
   updateBrushSize();
 }
@@ -767,7 +783,7 @@ function setBg(bg, swatch){
 }
 
 /* ============================================================
-   BRUSH — Fast, stamp-based
+   BRUSH
    ============================================================ */
 function setBrush(mode, btn){
   brushMode = mode;
@@ -838,7 +854,6 @@ function initCanvasEvents(){
     if(brushMode !== 'none') document.getElementById('brushCursor').style.display = 'block';
   });
 
-  // Touch
   editCanvas.addEventListener('touchstart', e => {
     if(brushMode === 'none') return;
     e.preventDefault();
@@ -859,7 +874,6 @@ function initCanvasEvents(){
     lastPoint = null;
   });
 
-  // Ctrl+wheel zoom
   document.getElementById('canvasScrollContainer').addEventListener('wheel', e => {
     if(e.ctrlKey || e.metaKey){
       e.preventDefault();
@@ -899,13 +913,13 @@ function paintAt(x, y){
     editCtx.drawImage(getEraseStamp(size), x - r, y - r);
     editCtx.restore();
   } else if(brushMode === 'restore'){
-    // Step 1: clear brush area
+    // Step 1: clear brush region
     editCtx.save();
     editCtx.globalCompositeOperation = 'destination-out';
     editCtx.drawImage(getEraseStamp(size), x - r, y - r);
     editCtx.restore();
 
-    // Step 2: prepare masked AI result in scratch
+    // Step 2: prepare masked slice of the AI result
     if(!scratchCanvas) scratchCanvas = document.createElement('canvas');
     if(scratchCanvas.width !== size || scratchCanvas.height !== size){
       scratchCanvas.width = size;
@@ -919,7 +933,7 @@ function paintAt(x, y){
     sCtx.drawImage(getEraseStamp(size), 0, 0);
     sCtx.globalCompositeOperation = 'source-over';
 
-    // Step 3: draw the masked AI result back on canvas
+    // Step 3: composite it back
     editCtx.save();
     editCtx.globalCompositeOperation = 'source-over';
     editCtx.drawImage(scratchCanvas, x - r, y - r);
@@ -989,9 +1003,6 @@ function updateHistoryButtons(){
   document.getElementById('redoBtn').disabled = redoStack.length === 0;
 }
 
-/* ============================================================
-   KEYBOARD SHORTCUTS
-   ============================================================ */
 document.addEventListener('keydown', e => {
   const ctrl = e.ctrlKey || e.metaKey;
   if(!ctrl) return;
@@ -1018,9 +1029,6 @@ document.addEventListener('click', e => {
   }
 });
 
-/* ============================================================
-   DOWNLOAD / COPY
-   ============================================================ */
 async function generateFinalImage(format){
   const canvas = document.createElement('canvas');
   canvas.width = editCanvas.width;
@@ -1081,9 +1089,6 @@ async function copyToClipboard(){
   }
 }
 
-/* ============================================================
-   RESET
-   ============================================================ */
 function resetAll(){
   if(isFullscreen) toggleFullscreen();
   originalFile = null;
@@ -1108,9 +1113,6 @@ function resetAll(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ============================================================
-   INIT
-   ============================================================ */
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
 
