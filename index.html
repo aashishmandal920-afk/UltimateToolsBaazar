@@ -4,373 +4,435 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Professional SEO Title & Description -->
-    <title>Ultimate Tools Baazar - 100% Free Online Utility Tools Suite</title>
-    <meta name="description" content="Access a collection of 100% free online utility tools including Age Calculator, Image Compressor, Number to Word Converter, Word Counter, and Internet Speed Test. Fast, secure, and easy to use.">
-    <meta name="keywords" content="online utility tools, free tools suite, age calculator, image compressor, number to word converter, word counter, internet speed test, pdf tools, Ultimate Tools Bazar">
+    <!-- SEO -->
+    <title>Ultimate Tools Baazar — 18+ Free Online Tools | Age, PDF, Image, Typing & More</title>
+    <meta name="description" content="Free online tools: Age Calculator, PDF editor, AI Background Remover, Image Enhancer, Typing Master, QR Code Generator, EMI Calculator, SIP Calculator, Word Counter & more. No signup, works in browser.">
+    <meta name="keywords" content="free online tools, age calculator, pdf tools online, image compressor, ai background remover, image enhancer, resume maker, typing master, typing test, qr code generator, emi calculator, sip calculator, word counter, number to word, internet speed test">
     <meta name="author" content="Ashish Mandal">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://aashishmandal920-afk.github.io/UltimateToolsBaazar/">
 
-    <!-- Open Graph / Social Media Sharing Tags -->
-    <meta property="og:title" content="Ultimate Tools Baazar - Free Online Utility Tools Suite">
-    <meta property="og:description" content="Use fast and secure free tools like Age Calculator, Word Counter, Image Compressor, and Speed Test instantly in your browser.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Ultimate Tools Baazar — 18+ Free Online Tools">
+    <meta property="og:description" content="Free online tools: PDF editor, Image tools, Calculators, Typing Master, QR Code & more. No signup, 100% private.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://omniconvertorstools.netlify.app/">
+    <meta property="og:url" content="https://aashishmandal920-afk.github.io/UltimateToolsBaazar/">
 
-    <!-- Stylesheet & Theme Script -->
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ultimate Tools Baazar — 18+ Free Online Tools">
+    <meta name="twitter:description" content="PDF, Image, Calculators, Typing, QR Code — all in your browser.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
-    
-    <!-- ================= NAYE PLUGINS ADD KIYE GAYE HAIN ================= -->
-    <!-- Country Code Plugin (Intl-tel-input) -->
+
+    <!-- Plugins for feedback form -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-    
-    <!-- Searchable Dropdown Plugin (Select2 & jQuery) -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- =================================================================== -->
 
     <script>
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
         function toggleTheme() {
-            let t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', t);
-            localStorage.setItem('theme', t);
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
         }
+    </script>
+
+    <!-- ============================================
+         STRUCTURED DATA — Google Rich Results
+         ============================================ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Ultimate Tools Baazar",
+      "url": "https://aashishmandal920-afk.github.io/UltimateToolsBaazar/",
+      "description": "18+ free online tools: PDF, Image, Calculators, Typing Master, QR Code & more.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://aashishmandal920-afk.github.io/UltimateToolsBaazar/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
     </script>
 </head>
 <body>
-    <div class="header">
+
+    <header class="header">
         <h1>⚡ Ultimate Tools Baazar</h1>
-        <p>100% Free Online Tools Suite | Fast, Secure & Easy to Use</p>
-        <button class="theme-btn" onclick="toggleTheme()">🌗 Dark/Light Mode</button>
-    </div>
+        <p>18+ Free Online Tools — Fast, Secure & 100% Private</p>
+        <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+            <span id="themeIcon">🌗</span> Theme
+        </button>
+    </header>
 
     <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search any tool (e.g., Age, Word, Speed, PDF)..." onkeyup="searchTools()">
+        <input type="text" id="searchInput" placeholder="Search tools… e.g., age calculator, pdf editor, typing test" oninput="searchTools()" autocomplete="off">
     </div>
 
-    <div class="dashboard-grid" id="toolsGrid">
-        
-        <!-- ================= TOOL 0: BG Remover ================= -->
-        <a href="bg-remover.html" class="tool-card" data-name="remove background image ai transparent png bg remover">
+    <div class="category-chips" id="categoryChips">
+        <button class="chip active" data-cat="all">All</button>
+        <button class="chip" data-cat="pdf">📄 PDF</button>
+        <button class="chip" data-cat="image">🎨 Image</button>
+        <button class="chip" data-cat="calculate">🧮 Calculators</button>
+        <button class="chip" data-cat="text">📝 Text</button>
+        <button class="chip" data-cat="utility">🛠️ Utility</button>
+    </div>
+
+    <main class="dashboard-grid" id="toolsGrid">
+
+        <!-- IMAGE -->
+        <a href="bg-remover.html" class="tool-card" data-name="ai background remover remove bg image transparent png cut out photo editor" data-cat="image">
+            <span class="tool-category">Image</span>
             <div class="tool-icon">🎨</div>
             <h3>AI Background Remover</h3>
-            <p>Remove image backgrounds automatically with AI. 100% free & private</p>
+            <p>Remove image backgrounds automatically with AI. Clean transparent PNG output in one click.</p>
         </a>
 
-        <!-- ================= TOOL: Image Enhancer ================= -->
-        <a href="Image-Enhancer.html" class="tool-card" data-name="Pro Image Enhancer — Real-Time Adjustment Studio">
-            <div class="tool-icon">🎨</div>
-            <h3>Image-Enhancer</h3>
-            <p>Pro Image Enhancer — Real-Time Adjustment Studio</p>
+        <a href="Image-Enhancer.html" class="tool-card" data-name="image enhancer photo editor filter preset brighten contrast saturation" data-cat="image">
+            <span class="tool-category">Image</span>
+            <div class="tool-icon">✨</div>
+            <h3>Image Enhancer</h3>
+            <p>100 Instagram filters & 100 presets. Brighten, sharpen, and color-correct any photo instantly.</p>
         </a>
 
-        <!-- ================= RESUME MAKER ================= -->
-        <a href="resume-maker.html" class="tool-card" data-name="resume maker cv builder professional">
-            <div class="tool-icon">📄</div>
-            <h3>Resume Maker</h3>
-            <p>Create a highly professional, ATS-friendly resume with live preview and templates.</p>
-        </a>
-
-        <!-- ================= Typing Master ================= -->
-        <a href="Typing-Master.html" class="tool-card" data-name="Typing Master — Learn, Practice, Test, Play">
-            <div class="tool-icon">📄</div>
-            <h3>Typing Master</h3>
-            <p>Welcome! Start with Lessons or try a quick test.</p>
-        </a>
-
-        <!-- ================= QR CODE SUITE ================= -->
-        <a href="qrcode-suite.html" class="tool-card" data-name="qr code generator scanner reader barcode upc ean code128 wifi vcard upi">
-            <div class="tool-icon">🔳</div>
-            <h3>QR Code Suite</h3>
-            <p>Generate & scan QR codes. 12+ QR types formats.</p>
-        </a>
-
-        <!-- ================= TOOL 1: AGE CALCULATOR ================= -->
-        <a href="age-calculator.html" class="tool-card" data-name="age calculator date">
-            <div class="tool-icon">⏳</div>
-            <h3>Age Calculator</h3>
-            <p>Calculate precise years, months, and days from birth date.</p>
-        </a>
-
-        <!-- ================= TOOL 2: IMAGE COMPRESSOR ================= -->
-        <a href="image-compressor.html" class="tool-card" data-name="image file size reducer compressor">
+        <a href="image-compressor.html" class="tool-card" data-name="image compressor reduce file size jpg png webp compress photo" data-cat="image">
+            <span class="tool-category">Image</span>
             <div class="tool-icon">🗜️</div>
-            <h3>Image File Size Reducer</h3>
-            <p>Compress JPG/PNG photos instantly in browser.</p>
+            <h3>Image Compressor</h3>
+            <p>Reduce JPG, PNG, and WebP file sizes dramatically without losing quality. Runs offline.</p>
         </a>
 
-        <!-- ================= TOOL 3: NUMBER CONVERTER ================= -->
-        <a href="number-converter.html" class="tool-card" data-name="number to word convertor indian currency">
-            <div class="tool-icon">🔢</div>
-            <h3>Number to Word Convertor</h3>
-            <p>Convert numbers to Indian/International words & Rupees.</p>
-        </a>
-
-        <!-- ================= TOOL 4: WORD COUNTER ================= -->
-        <a href="word-counter.html" class="tool-card" data-name="word counter character counter text">
-            <div class="tool-icon">📝</div>
-            <h3>Word Counter</h3>
-            <p>Count words, characters, and reading time instantly.</p>
-        </a>
-
-        <!-- ================= TOOL 5: SPEED TEST ================= -->
-        <a href="speed-test.html" class="tool-card" data-name="internet speed test download upload">
-            <div class="tool-icon">🚀</div>
-            <h3>Internet Speed Test</h3>
-            <p>Test real-time download and upload network speed.</p>
-        </a>
-
-        <!-- ================= TOOL 6: SIP CALCULATOR ================= -->
-        <a href="sip-calculator.html" class="tool-card" data-name="sip calculator mutual fund investment return">
-            <div class="tool-icon">📈</div>
-            <h3>SIP Calculator</h3>
-            <p>Calculate future value and returns of your monthly SIP investments.</p>
-        </a>
-
-        <!-- ================= TOOL 7: EMI CALCULATOR ================= -->
-        <a href="emi-calculator.html" class="tool-card" data-name="emi calculator loan interest">
-            <div class="tool-icon">🏦</div>
-            <h3>EMI Calculator</h3>
-            <p>Calculate monthly loan EMI, total interest, and total payable amount with chart.</p>
-        </a>
-
-        <!-- ================= PDF TOOL 1: COMBINE FILES ================= -->
-        <a href="combine-files.html" class="tool-card" data-name="combine merge pdf files">
+        <!-- PDF -->
+        <a href="combine-files.html" class="tool-card" data-name="combine pdf files merge join multiple pdf into one" data-cat="pdf">
+            <span class="tool-category">PDF</span>
             <div class="tool-icon">🔗</div>
-            <h3>Combine Files</h3>
-            <p>Merge multiple PDFs into one. Drag and drop to reorder.</p>
+            <h3>Combine PDF Files</h3>
+            <p>Merge multiple PDFs into one document. Drag to reorder pages. Private & offline.</p>
         </a>
 
-        <!-- ================= PDF TOOL 2: ORGANIZE PAGES ================= -->
-        <a href="organize-pages.html" class="tool-card" data-name="organize pdf pages delete rotate">
+        <a href="organize-pages.html" class="tool-card" data-name="organize pdf pages delete rotate rearrange reorder" data-cat="pdf">
+            <span class="tool-category">PDF</span>
             <div class="tool-icon">📑</div>
-            <h3>Organize Pages</h3>
-            <p>Delete, rotate, or rearrange PDF pages easily.</p>
+            <h3>Organize PDF Pages</h3>
+            <p>Delete, rotate, reorder, or extract pages from any PDF. Visual preview of every page.</p>
         </a>
 
-        <!-- ================= PDF TOOL 3: CREATE PDF ================= -->
-        <a href="create-pdf.html" class="tool-card" data-name="create pdf text image document">
+        <a href="create-pdf.html" class="tool-card" data-name="create pdf from text image convert document generator" data-cat="pdf">
+            <span class="tool-category">PDF</span>
             <div class="tool-icon">📄</div>
             <h3>Create PDF</h3>
-            <p>Convert text or images into a new PDF document.</p>
+            <p>Turn text or images into a PDF document. A4 or Letter size, custom margins, instant download.</p>
         </a>
 
-        <!-- ================= PDF TOOL 4: EDIT PDF ================= -->
-        <a href="edit-pdf.html" class="tool-card" data-name="edit pdf add text image overlay">
+        <a href="edit-pdf.html" class="tool-card" data-name="edit pdf add text image signature overlay annotate" data-cat="pdf">
+            <span class="tool-category">PDF</span>
             <div class="tool-icon">✏️</div>
             <h3>Edit PDF</h3>
-            <p>Add text, images, or shapes to your existing PDF.</p>
+            <p>Add text, images, signatures, or shapes onto existing PDF pages. No upload required.</p>
         </a>
 
-        <!-- ================= PDF TOOL 5: EXPORT PDF ================= -->
-        <a href="export-pdf.html" class="tool-card" data-name="export pdf to image text jpg png">
+        <a href="export-pdf.html" class="tool-card" data-name="export pdf to image jpg png extract text convert" data-cat="pdf">
+            <span class="tool-category">PDF</span>
             <div class="tool-icon">📤</div>
             <h3>Export PDF</h3>
-            <p>Convert PDF pages to images (JPG/PNG) or extract text.</p>
+            <p>Convert PDF pages to JPG/PNG images or extract plain text. Batch download as ZIP.</p>
         </a>
 
+        <!-- CALCULATORS -->
+        <a href="age-calculator.html" class="tool-card" data-name="age calculator date of birth dob years months days" data-cat="calculate">
+            <span class="tool-category">Calculator</span>
+            <div class="tool-icon">⏳</div>
+            <h3>Age Calculator</h3>
+            <p>Find your exact age in years, months, days, hours, and seconds from any date.</p>
+        </a>
+
+        <a href="emi-calculator.html" class="tool-card" data-name="emi calculator home loan car loan interest monthly payment" data-cat="calculate">
+            <span class="tool-category">Calculator</span>
+            <div class="tool-icon">🏦</div>
+            <h3>EMI Calculator</h3>
+            <p>Calculate monthly EMI, total interest, and total payable for home, car, or personal loans.</p>
+        </a>
+
+        <a href="sip-calculator.html" class="tool-card" data-name="sip calculator mutual fund investment returns growth compound" data-cat="calculate">
+            <span class="tool-category">Calculator</span>
+            <div class="tool-icon">📈</div>
+            <h3>SIP Calculator</h3>
+            <p>Project future value and returns of your monthly SIP investments with year-wise breakdown.</p>
+        </a>
+
+        <a href="number-converter.html" class="tool-card" data-name="number to word convertor indian rupees international currency" data-cat="text">
+            <span class="tool-category">Text</span>
+            <div class="tool-icon">🔢</div>
+            <h3>Number to Word Convertor</h3>
+            <p>Convert any number to Indian or International words. Perfect for cheques, invoices, and legal documents.</p>
+        </a>
+
+        <a href="word-counter.html" class="tool-card" data-name="word counter character count reading time text tool" data-cat="text">
+            <span class="tool-category">Text</span>
+            <div class="tool-icon">📝</div>
+            <h3>Word Counter</h3>
+            <p>Count words, characters, sentences, and reading time. Ideal for essays, blogs, and social posts.</p>
+        </a>
+
+        <a href="Typing-Master.html" class="tool-card" data-name="typing master typing test speed wpm lessons practice games" data-cat="utility">
+            <span class="tool-category">Utility</span>
+            <div class="tool-icon">⌨️</div>
+            <h3>Typing Master</h3>
+            <p>Learn touch typing with lessons, timed tests, and 4 games. Track WPM and accuracy live.</p>
+        </a>
+
+        <a href="resume-maker.html" class="tool-card" data-name="resume maker cv builder free professional ats template" data-cat="utility">
+            <span class="tool-category">Utility</span>
+            <div class="tool-icon">📋</div>
+            <h3>Resume Maker</h3>
+            <p>Build a professional, ATS-friendly resume with 100 templates and live preview. Download PDF.</p>
+        </a>
+
+        <a href="qrcode-suite.html" class="tool-card" data-name="qr code generator scanner reader barcode wifi vcard upi url" data-cat="utility">
+            <span class="tool-category">Utility</span>
+            <div class="tool-icon">🔳</div>
+            <h3>QR Code Suite</h3>
+            <p>Generate & scan 12+ QR types: URL, WiFi, vCard, UPI, WhatsApp, and more. Works offline.</p>
+        </a>
+
+        <a href="speed-test.html" class="tool-card" data-name="internet speed test download upload ping bandwidth test" data-cat="utility">
+            <span class="tool-category">Utility</span>
+            <div class="tool-icon">🚀</div>
+            <h3>Internet Speed Test</h3>
+            <p>Measure download speed, upload speed, and latency in seconds. No app required.</p>
+        </a>
+
+    </main>
+
+    <div class="no-results" id="noResults" style="display:none;">
+        <i>🔍</i>
+        <p>No tools match your search. Try "age", "pdf", "image", or "typing".</p>
     </div>
 
-    <!-- ================= COMMENT & FEEDBACK SECTION (UPDATED) ================= -->
-    <div class="feedback-section" style="max-width: 700px; margin: 40px auto; padding: 20px; background: var(--bg-card, #1e293b); border-radius: 12px; border: 1px solid var(--border-color, #334155);">
-        <h3 style="margin-top: 0; color: var(--primary-blue, #3b82f6);">💬 Send Feedback or Contact Us</h3>
-        <p style="font-size: 14px; margin-bottom: 20px; color: var(--text-muted, #94a3b8);">Please share your suggestions or send a message along with your contact details. Your response will be securely recorded in our system.</p>
-        
+    <!-- ============================================
+         FEEDBACK SECTION
+         ============================================ -->
+    <section class="feedback-section">
+        <h3>💬 Send Feedback or Contact Us</h3>
+        <p>Share your suggestions, request a new tool, or report a bug. Your message goes straight to our team.</p>
+
         <form id="feedbackForm" onsubmit="submitFeedback(event)">
             <style>
-                /* Ensures all inputs have the exact same width and layout */
-                #feedbackForm .form-group {
-                    margin-bottom: 15px;
-                    width: 100%;
-                }
-                #feedbackForm input[type="text"], 
-                #feedbackForm input[type="email"], 
+                #feedbackForm .form-group { margin-bottom: 14px; width: 100%; }
+                #feedbackForm input[type="text"],
+                #feedbackForm input[type="email"],
                 #feedbackForm textarea {
                     width: 100%;
-                    padding: 12px 15px;
-                    border: 1px solid var(--border-color, #ccc);
-                    border-radius: 8px;
-                    font-size: 15px;
-                    background: var(--bg-input, #fff);
-                    color: inherit;
+                    padding: 13px 16px;
+                    border: 1.5px solid var(--border);
+                    border-radius: var(--radius-sm);
+                    font-size: 14.5px;
+                    background: var(--surface);
+                    color: var(--text);
+                    box-sizing: border-box;
+                    font-family: inherit;
+                    transition: all var(--transition);
+                }
+                #feedbackForm input:focus,
+                #feedbackForm textarea:focus {
+                    border-color: var(--primary);
+                    box-shadow: var(--shadow-glow);
+                    outline: none;
+                }
+                .iti { width: 100%; display: block; }
+                .iti__input {
+                    width: 100% !important;
+                    padding: 13px 16px 13px 95px !important;
+                    border: 1.5px solid var(--border);
+                    border-radius: var(--radius-sm);
+                    font-size: 14.5px;
+                    background: var(--surface);
+                    color: var(--text);
                     box-sizing: border-box;
                     font-family: inherit;
                 }
-                
-                /* Country Code Plugin Styling - FIXED OVERLAP */
-                .iti { width: 100%; display: block; } 
-                .iti__input { 
-                    width: 100% !important; 
-                    /* 50px ki jagah 95px kar diya gaya hai taaki overlap na ho */
-                    padding: 12px 15px 12px 95px !important; 
-                    border: 1px solid var(--border-color, #ccc);
-                    border-radius: 8px;
-                    font-size: 15px;
-                    background: var(--bg-input, #fff);
-                    color: inherit;
-                    box-sizing: border-box;
-                }
-
-                /* Searchable Dropdown Styling */
                 .select2-container { width: 100% !important; }
                 .select2-container .select2-selection--single {
-                    height: 45px;
-                    border: 1px solid var(--border-color, #ccc);
-                    border-radius: 8px;
-                    background: var(--bg-input, #fff);
+                    height: 48px;
+                    border: 1.5px solid var(--border);
+                    border-radius: var(--radius-sm);
+                    background: var(--surface);
                     display: flex;
                     align-items: center;
                 }
                 .select2-container--default .select2-selection--single .select2-selection__rendered {
-                    color: inherit;
-                    padding-left: 15px;
-                    font-size: 15px;
+                    color: var(--text);
+                    padding-left: 16px;
+                    font-size: 14.5px;
+                    line-height: 48px;
                 }
                 .select2-container--default .select2-selection--single .select2-selection__arrow {
-                    height: 43px;
-                    right: 10px;
+                    height: 46px;
+                    right: 12px;
                 }
                 .select2-dropdown {
-                    background: var(--bg-input, #fff);
-                    border: 1px solid var(--border-color, #ccc);
-                    color: #000; 
+                    background: var(--surface);
+                    border: 1.5px solid var(--border);
+                    color: var(--text);
+                    border-radius: var(--radius-sm);
+                }
+                .select2-results__option { padding: 10px 16px; font-size: 14px; }
+                .select2-results__option--highlighted {
+                    background: var(--primary) !important;
+                    color: white !important;
                 }
             </style>
 
             <div class="form-group">
                 <input type="text" id="userName" name="name" placeholder="Your Name" required>
             </div>
-            
             <div class="form-group">
-                <!-- Tel input for Country Code Plugin -->
                 <input type="tel" id="userContact" class="iti__input" placeholder="Contact Number" required>
             </div>
-            
             <div class="form-group">
                 <input type="email" id="userEmail" name="email" placeholder="Email Address" required>
             </div>
-            
             <div class="form-group">
                 <select id="userPurpose" class="searchable-dropdown" required>
-                    <option value="" disabled selected>Search or Select Purpose...</option>
-                    <option value="General Inquiry">General Inquiry</option>
-                    <option value="Tool / Feature Request">Tool / Feature Request</option>
-                    <option value="Bug Report / Error">Bug Report / Error found</option>
-                    <option value="Website Performance Issue">Website Performance Issue</option>
-                    <option value="UI/UX Suggestion">Design & UI/UX Suggestion</option>
-                    <option value="Business Proposal">Business / Partnership Proposal</option>
-                    <option value="Advertisement Inquiry">Advertisement Inquiry</option>
-                    <option value="API Access Request">API / Data Access Request</option>
-                    <option value="Sponsorship">Sponsorship Opportunities</option>
-                    <option value="Content Contribution">Write / Contribute Content</option>
-                    <option value="Feedback / Appreciation">Feedback / Appreciation</option>
-                    <option value="Complaint">Complaint</option>
-                    <option value="Technical Support">Technical Support</option>
-                    <option value="Billing / Payment Issue">Billing / Payment Issue</option>
-                    <option value="Account Deletion">Account Removal/Deletion</option>
-                    <option value="Data Privacy Concern">Data Privacy Concern (GDPR)</option>
-                    <option value="Copyright Claim">Copyright Infringement Claim</option>
-                    <option value="Job / Career Inquiry">Job / Career Inquiry</option>
-                    <option value="Media / Press Contact">Media / Press Contact</option>
-                    <option value="Other">Other (Please specify in message)</option>
+                    <option value="" disabled selected>Search or Select Purpose…</option>
+                    <option>General Inquiry</option>
+                    <option>Tool / Feature Request</option>
+                    <option>Bug Report / Error</option>
+                    <option>Website Performance Issue</option>
+                    <option>UI/UX Suggestion</option>
+                    <option>Business / Partnership Proposal</option>
+                    <option>Advertisement Inquiry</option>
+                    <option>API / Data Access Request</option>
+                    <option>Feedback / Appreciation</option>
+                    <option>Complaint</option>
+                    <option>Technical Support</option>
+                    <option>Billing / Payment Issue</option>
+                    <option>Account Removal / Deletion</option>
+                    <option>Data Privacy Concern (GDPR)</option>
+                    <option>Copyright Infringement Claim</option>
+                    <option>Job / Career Inquiry</option>
+                    <option>Media / Press Contact</option>
+                    <option>Other (Please specify)</option>
                 </select>
             </div>
-            
             <div class="form-group">
-                <textarea id="userMsg" name="message" rows="4" placeholder="Your message or tool request..." required></textarea>
+                <textarea id="userMsg" name="message" rows="4" placeholder="Your message or tool request…" required></textarea>
             </div>
-            
-            <button type="submit" class="action-btn" style="width: 100%; padding: 12px; font-size: 16px; font-weight: bold; background-color: var(--primary-blue, #3b82f6); color: white; border: none; border-radius: 8px; cursor: pointer;">Submit Feedback</button>
+            <button type="submit" class="action-btn">Submit Feedback</button>
         </form>
-        <p id="formStatus" style="margin-top: 15px; font-size: 14px; text-align: center; font-weight: 500;"></p>
-    </div>
+        <p id="formStatus" style="margin-top: 15px; font-size: 13.5px; text-align: center; font-weight: 600;"></p>
+    </section>
 
-    <footer style="text-align:center; padding: 30px; color: var(--text-muted); font-size: 13px;">
-        &copy; 2026 Ultimate Tools Baazar. All tools are 100% Free.
+    <footer>
+        &copy; 2026 Ultimate Tools Baazar · All tools are 100% free.
     </footer>
 
     <script>
-        // ================= SEARCH TOOLS LOGIC =================
-        function searchTools() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('tool-card');
-            for (let i = 0; i < cards.length; i++) {
-                let name = cards[i].getAttribute('data-name');
-                if (name.includes(input)) {
-                    cards[i].style.display = "block";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
-        }
+        /* ============================================================
+           SEARCH + CATEGORY FILTER
+           ============================================================ */
+        let activeCategory = 'all';
 
-        // ================= INITIALIZE PLUGINS =================
-        let phoneInput;
-        document.addEventListener("DOMContentLoaded", function() {
-            // 1. Initialize Country Code Plugin
-            const phoneInputField = document.querySelector("#userContact");
-            phoneInput = window.intlTelInput(phoneInputField, {
-                preferredCountries: ["in", "us", "gb", "ae", "ca", "au"], // Top countries
-                separateDialCode: true, // Dial code alag se dikhega
-                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        function searchTools() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.tool-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name') || '';
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const desc = card.querySelector('p').textContent.toLowerCase();
+                const cat = card.getAttribute('data-cat');
+                const haystack = (name + ' ' + title + ' ' + desc).toLowerCase();
+
+                const matchesSearch = !query || haystack.includes(query);
+                const matchesCategory = activeCategory === 'all' || cat === activeCategory;
+
+                if (matchesSearch && matchesCategory) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
             });
 
-            // 2. Initialize Searchable Dropdown
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        document.querySelectorAll('#categoryChips .chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('#categoryChips .chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeCategory = chip.dataset.cat;
+                searchTools();
+            });
+        });
+
+        /* ============================================================
+           FEEDBACK FORM PLUGINS
+           ============================================================ */
+        let phoneInput;
+        document.addEventListener('DOMContentLoaded', function() {
+            phoneInput = window.intlTelInput(document.querySelector("#userContact"), {
+                preferredCountries: ["in", "us", "gb", "ae", "ca", "au"],
+                separateDialCode: true,
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+            });
+
             $('.searchable-dropdown').select2({
-                placeholder: "Search or Select Purpose...",
+                placeholder: "Search or Select Purpose…",
                 allowClear: true
             });
         });
 
-        // ================= FORM SUBMISSION LOGIC =================
+        /* ============================================================
+           FORM SUBMISSION
+           ============================================================ */
         function submitFeedback(e) {
             e.preventDefault();
-            
-            var form = document.getElementById('feedbackForm');
-            var status = document.getElementById('formStatus');
-            var submitBtn = form.querySelector('button[type="submit"]');
+            const form = document.getElementById('feedbackForm');
+            const status = document.getElementById('formStatus');
+            const submitBtn = form.querySelector('button[type="submit"]');
 
-            // Aapki Google Script URL
-            let googleScriptURL = "https://script.google.com/macros/s/AKfycbw8mhl3uOeIu5yeKvzUUU9wvwREfva_HIedh_F9OfvkNZps3mNXxYKDbUWIsJ5SztRafA/exec";
+            const googleScriptURL = "https://script.google.com/macros/s/AKfycbw8mhl3uOeIu5yeKvzUUU9wvwREfva_HIedh_F9OfvkNZps3mNXxYKDbUWIsJ5SztRafA/exec";
 
-            status.style.color = "#3b82f6"; // Blue text
-            status.innerText = "Sending feedback securely...";
+            status.style.color = "#3b82f6";
+            status.innerText = "Sending feedback securely…";
             submitBtn.disabled = true;
-            submitBtn.innerText = "Submitting...";
+            submitBtn.innerText = "Submitting…";
 
-            // Values nikalna
-            let nameVal = document.getElementById('userName').value;
-            let emailVal = document.getElementById('userEmail').value;
-            let purposeVal = document.getElementById('userPurpose').value;
-            let msgVal = document.getElementById('userMsg').value;
-            
-            // Number with Country Code (e.g., +918279826088)
-            let contactVal = phoneInput.getNumber(); 
+            const formData = new FormData();
+            formData.append('name', document.getElementById('userName').value);
+            formData.append('contact', phoneInput.getNumber());
+            formData.append('email', document.getElementById('userEmail').value);
+            formData.append('purpose', document.getElementById('userPurpose').value);
+            formData.append('message', document.getElementById('userMsg').value);
 
-            // FormData setup karna (Jaisa Google Script ko chahiye)
-            let formData = new FormData();
-            formData.append('name', nameVal);
-            formData.append('contact', contactVal);
-            formData.append('email', emailVal);
-            formData.append('purpose', purposeVal);
-            formData.append('message', msgVal);
-
-            // Data bhejna
             fetch(googleScriptURL, { method: 'POST', body: formData })
-                .then(response => {
-                    status.style.color = "#10b981"; // Green text
-                    status.innerText = "✅ Thank you! Your feedback has been sent to our database.";
+                .then(() => {
+                    status.style.color = "#10b981";
+                    status.innerText = "✅ Thank you! Your feedback has been sent.";
                     form.reset();
-                    // Select2 dropdown clear karna
                     $('.searchable-dropdown').val(null).trigger('change');
                     submitBtn.disabled = false;
                     submitBtn.innerText = "Submit Feedback";
                 })
-                .catch(error => {
-                    status.style.color = "#ff4d4d"; // Red text
-                    status.innerText = "❌ Error sending feedback. Please try again or check your internet.";
+                .catch(() => {
+                    status.style.color = "#ef4444";
+                    status.innerText = "❌ Error sending feedback. Please try again.";
                     submitBtn.disabled = false;
                     submitBtn.innerText = "Submit Feedback";
                 });
