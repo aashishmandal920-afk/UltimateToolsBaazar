@@ -8,6 +8,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+<!-- ============================================================
+     AI LIBRARIES FOR SUPER-RESOLUTION
+     Order matters: TF.js → Model → Upscaler
+     ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-slim@1.0.0-beta.19/dist/umd/2x.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upscaler@1.0.0-beta.19/dist/browser/umd/upscaler.min.js"></script>
+
 <script>
   document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
 </script>
@@ -87,16 +95,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .view-tab i{font-size:12px}
 
 .canvas-scroll-container{overflow:auto;max-height:calc(100vh - 280px);min-height:440px;border-radius:14px;border:1px solid var(--border);background:var(--bg);padding:24px;position:relative;resize:vertical;width:100%}
-
 .canvas-stage{display:flex;justify-content:center;align-items:flex-start;min-width:min-content;min-height:100%}
 
-/* Single view */
 .canvas-single{position:relative;background-color:#e5e7eb;background-image:linear-gradient(45deg,#f0f0f0 25%,transparent 25%,transparent 75%,#f0f0f0 75%),linear-gradient(45deg,#f0f0f0 25%,transparent 25%,transparent 75%,#f0f0f0 75%);background-size:20px 20px;background-position:0 0,10px 10px;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,0.15);line-height:0}
 [data-theme="dark"] .canvas-single{background-color:#0f172a;background-image:linear-gradient(45deg,#1a1f2e 25%,transparent 25%,transparent 75%,#1a1f2e 75%),linear-gradient(45deg,#1a1f2e 25%,transparent 25%,transparent 75%,#1a1f2e 75%)}
 .canvas-single canvas{display:block}
 
-/* Split slider view */
-.canvas-split{position:relative;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,0.15);overflow:hidden;line-height:0;user-select:none;touch-action:none}
+.canvas-split{position:relative;border-radius:4px;box-shadow:0 4px 20px rgba(0,0,0,0.15);overflow:hidden;line-height:0;user-select:none;touch-action:none;background:#e5e7eb}
+[data-theme="dark"] .canvas-split{background:#0f172a}
 .canvas-split canvas{display:block;position:absolute;top:0;left:0}
 .canvas-split canvas.base{position:relative}
 .canvas-split canvas.overlay{clip-path:inset(0 0 0 50%);z-index:2}
@@ -106,7 +112,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .split-label.left{left:12px}
 .split-label.right{right:12px}
 
-/* Side by side view */
 .canvas-sbs{display:flex;gap:20px;align-items:flex-start}
 .sbs-col{display:flex;flex-direction:column;gap:8px;align-items:center}
 .sbs-label{padding:5px 14px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--text-muted)}
@@ -221,7 +226,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <div class="main-container">
 
-  <!-- Upload -->
   <div class="card" id="uploadCard">
     <div class="upload-section">
       <div class="dropzone" id="dropzone">
@@ -241,7 +245,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Editor -->
   <div class="card editor-card" id="editorCard">
     <div class="card-header">
       <h2>
@@ -249,24 +252,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <span class="status-badge ready" id="statusBadge"><i class="fas fa-check-circle"></i> Ready</span>
       </h2>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)">
-          <i class="fas fa-undo"></i> Undo
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)">
-          <i class="fas fa-redo"></i> Redo
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()" id="fullscreenBtn">
-          <i class="fas fa-expand"></i> Fullscreen
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="resetAll()">
-          <i class="fas fa-times"></i> New Image
-        </button>
+        <button class="btn btn-outline btn-sm" onclick="undo()" id="undoBtn" disabled><i class="fas fa-undo"></i> Undo</button>
+        <button class="btn btn-outline btn-sm" onclick="redo()" id="redoBtn" disabled><i class="fas fa-redo"></i> Redo</button>
+        <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()" id="fullscreenBtn"><i class="fas fa-expand"></i> Fullscreen</button>
+        <button class="btn btn-outline btn-sm" onclick="resetAll()"><i class="fas fa-times"></i> New Image</button>
       </div>
     </div>
 
     <div class="editor-layout">
       <div class="editor-canvas-col">
-
         <div class="view-tabs">
           <button class="view-tab active" data-view="split" onclick="setViewMode('split', this)">
             <i class="fas fa-columns"></i> Split
@@ -285,7 +279,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       </div>
 
       <div class="side-panel">
-
         <div class="tool-section">
           <h4><i class="fas fa-search"></i> Zoom &amp; Navigation</h4>
           <div class="zoom-row">
@@ -314,7 +307,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
               <i class="fas fa-up-right-and-down-left-from-center main"></i>
               <div class="ai-btn-text">
                 <strong>AI Super-Resolution 2×</strong>
-                <small>Neural upscale (ESRGAN) &middot; First run downloads ~1 MB model</small>
+                <small id="srStatusText">Neural upscale (ESRGAN) &middot; ~2 MB model on first use</small>
               </div>
             </button>
           </div>
@@ -370,7 +363,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <button class="download-menu-item" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy to clipboard</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -379,7 +371,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <i class="fas fa-microchip"></i>
     <div>
       <h5>Hardware Requirements</h5>
-      <p>The classical enhancement engine is instant and needs no downloads. AI Super-Resolution uses a neural network that runs on your device's CPU/GPU — it downloads a ~1 MB model on first use and takes 10–40 seconds per photo on typical laptops.</p>
+      <p>The classical enhancement engine is instant and needs no downloads. AI Super-Resolution uses a neural network that runs on your device's CPU/GPU — it downloads a small model (~2 MB) on first use and takes 5–30 seconds per photo depending on your hardware and image size.</p>
     </div>
   </div>
 
@@ -411,14 +403,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <span id="toastMsg">Success</span>
 </div>
 
-<!-- ============================================================
-     LIBRARIES (TF.js + UpscalerJS for AI Super-Resolution)
-     ============================================================ -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/upscaler@1.0.0-beta.19/dist/browser/upscaler.js"></script>
-
 <script>
-console.log('Pro Image Enhancer v3 — side-by-side + real AI SR');
+console.log('Pro Image Enhancer v4 loaded');
 
 /* ============================================================
    THEME
@@ -446,10 +432,9 @@ const DEFAULT_ADJ = {
 let adjustments = { ...DEFAULT_ADJ };
 let originalFile = null;
 let sourceImg = null;
-let sourceImageData = null;   // ImageData of original (full res)
-let currentRender = null;      // ImageData of enhanced (full res)
+let sourceImageData = null;
+let currentRender = null;
 
-// DOM refs
 let viewMode = 'split';
 let zoom = 1;
 let isFullscreen = false;
@@ -462,7 +447,10 @@ const MAX_HISTORY = 20;
 
 let renderScheduled = false;
 let busy = false;
+
+// AI upscaler state
 let srUpscaler = null;
+let srLibraryReady = false;
 
 /* ============================================================
    TOAST
@@ -725,10 +713,7 @@ function renderEnhanced(){
       b = lum + (b - lum) * sat;
     }
 
-    dst[i] = r;
-    dst[i + 1] = g;
-    dst[i + 2] = b;
-    dst[i + 3] = src[i + 3];
+    dst[i] = r; dst[i + 1] = g; dst[i + 2] = b; dst[i + 3] = src[i + 3];
   }
 
   if(sharpness > 0 || clarity > 0){
@@ -755,12 +740,11 @@ function renderEnhanced(){
 function applyUnsharpMask(imageData, W, H, sharpness, clarity){
   const data = imageData.data;
   const copy = new Uint8ClampedArray(data);
-
   if(sharpness > 0){
     const blurred = boxBlur(copy, W, H, 1);
     const amount = sharpness * 1.8;
     for(let i = 0; i < data.length; i += 4){
-      data[i]     = copy[i]     + (copy[i]     - blurred[i])     * amount;
+      data[i] = copy[i] + (copy[i] - blurred[i]) * amount;
       data[i + 1] = copy[i + 1] + (copy[i + 1] - blurred[i + 1]) * amount;
       data[i + 2] = copy[i + 2] + (copy[i + 2] - blurred[i + 2]) * amount;
     }
@@ -769,7 +753,7 @@ function applyUnsharpMask(imageData, W, H, sharpness, clarity){
     const blurred = boxBlur(copy, W, H, 4);
     const amount = clarity * 0.8;
     for(let i = 0; i < data.length; i += 4){
-      data[i]     += (copy[i]     - blurred[i])     * amount;
+      data[i] += (copy[i] - blurred[i]) * amount;
       data[i + 1] += (copy[i + 1] - blurred[i + 1]) * amount;
       data[i + 2] += (copy[i + 2] - blurred[i + 2]) * amount;
     }
@@ -834,16 +818,10 @@ function updateViews(){
   const displayW = Math.round(W * zoom);
   const displayH = Math.round(H * zoom);
 
-  // Store original canvas pixel data as ImageData.
-  // For enhanced canvas we use currentRender.
-
   if(viewMode === 'single'){
-    // Only enhanced view
-    let wrap = stage.querySelector('.canvas-single');
-    if(!wrap || stage.dataset.mode !== 'single'){
+    if(stage.dataset.mode !== 'single'){
       stage.innerHTML = `<div class="canvas-single"><canvas id="cvEnhanced"></canvas></div>`;
       stage.dataset.mode = 'single';
-      wrap = stage.querySelector('.canvas-single');
     }
     const canvas = document.getElementById('cvEnhanced');
     canvas.width = W; canvas.height = H;
@@ -907,10 +885,10 @@ function updateViews(){
   document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
 }
 
-/* Split drag */
 function setupSplitDrag(){
   const wrap = document.getElementById('splitWrap');
   const handle = document.getElementById('splitHandle');
+  if(!wrap || !handle) return;
 
   const startSplit = (e) => {
     e.preventDefault();
@@ -963,7 +941,6 @@ function fitToScreen(){
   const availH = container.clientHeight - 48;
   let scaleX = availW / sourceImageData.width;
   let scaleY = availH / sourceImageData.height;
-  // In side-by-side, half the width
   if(viewMode === 'side-by-side') scaleX *= 0.5;
   zoom = Math.min(scaleX, scaleY, 1);
   updateViews();
@@ -1071,7 +1048,6 @@ async function processFile(file){
 
   if(W * H > 12_000_000) showToast(`Large image (${W}×${H}). Slider response may slow slightly.`, 'warning');
 
-  // Cache source ImageData at full resolution
   const offCanvas = document.createElement('canvas');
   offCanvas.width = W; offCanvas.height = H;
   const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
@@ -1079,39 +1055,27 @@ async function processFile(file){
   offCtx.drawImage(img, 0, 0);
   sourceImageData = offCtx.getImageData(0, 0, W, H);
 
-  // Reset adjustments
   adjustments = { ...DEFAULT_ADJ };
-  Object.keys(SLIDERS).forEach(cat => {
-    SLIDERS[cat].forEach(def => updateSliderVisual(def));
-  });
+  Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
   undoStack = []; redoStack = [];
   updateHistoryButtons();
 
-  // Show editor
   document.getElementById('uploadCard').style.display = 'none';
   document.getElementById('editorCard').classList.add('active');
 
-  // Default view: split
   viewMode = 'split';
   document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'split'));
-
-  // Reset split to 50%
   splitPercent = 50;
 
-  // Render initial (identity)
   renderEnhanced();
   updateViews();
   setTimeout(fitToScreen, 60);
 
-  // Apply auto-enhance after a short delay so user sees original first
   showProcessing(false);
   setStatus('ready', 'Ready');
 
-  setTimeout(() => {
-    runAutoEnhance(true);
-  }, 400);
-
-  showToast('Image loaded. Compare views with the Split slider.', 'success');
+  setTimeout(() => { runAutoEnhance(true); }, 400);
+  showToast('Image loaded. Drag the split handle to compare.', 'success');
 }
 
 /* ============================================================
@@ -1138,10 +1102,8 @@ async function runAutoEnhance(silent){
   const stepBytes = step * 4;
 
   const lumHist = new Uint32Array(256);
-  let sumR = 0, sumG = 0, sumB = 0;
-  let lumSum = 0, satSum = 0;
-  let darkPixels = 0, brightPixels = 0;
-  let sampled = 0;
+  let sumR = 0, sumG = 0, sumB = 0, lumSum = 0, satSum = 0;
+  let darkPixels = 0, brightPixels = 0, sampled = 0;
 
   for(let i = 0; i < data.length; i += stepBytes){
     const r = data[i], g = data[i + 1], b = data[i + 2];
@@ -1179,52 +1141,35 @@ async function runAutoEnhance(silent){
 
   const newAdj = { ...DEFAULT_ADJ };
 
-  // Exposure drives mean luminance to ~128
   newAdj.exposure = Math.round(Math.max(-40, Math.min(50, (128 - meanLum) * 0.55)));
 
-  // Contrast: stretch toward full range
   const range = hiLum - loLum;
   newAdj.contrast = Math.round(Math.max(20, Math.min(60, 22 + (245 - range) * 0.4)));
 
-  // Shadows
   if(darkRatio > 0.015 && loLum < 75){
     newAdj.shadows = Math.round(Math.min(55, 25 + (75 - loLum) * 0.55));
   } else if(darkRatio > 0.008){
     newAdj.shadows = 22;
   }
 
-  // Highlights
   if(brightRatio > 0.015 && hiLum > 220){
     newAdj.highlights = -Math.round(Math.min(45, 18 + (hiLum - 220) * 0.7));
   } else if(brightRatio > 0.008){
     newAdj.highlights = -18;
   }
 
-  // Saturation / Vibrance
-  if(avgSat < 0.20){
-    newAdj.saturation = 35;
-    newAdj.vibrance = 35;
-  } else if(avgSat < 0.32){
-    newAdj.saturation = 25;
-    newAdj.vibrance = 28;
-  } else if(avgSat < 0.45){
-    newAdj.saturation = 15;
-    newAdj.vibrance = 20;
-  } else {
-    newAdj.saturation = 6;
-    newAdj.vibrance = 14;
-  }
+  if(avgSat < 0.20){ newAdj.saturation = 35; newAdj.vibrance = 35; }
+  else if(avgSat < 0.32){ newAdj.saturation = 25; newAdj.vibrance = 28; }
+  else if(avgSat < 0.45){ newAdj.saturation = 15; newAdj.vibrance = 20; }
+  else { newAdj.saturation = 6; newAdj.vibrance = 14; }
 
-  // White balance
   const rRatio = avgR / grayAvg, bRatio = avgB / grayAvg;
   newAdj.temperature = Math.round(Math.max(-35, Math.min(35, (bRatio - rRatio) * 65)));
 
-  // Gamma
   if(meanLum < 100) newAdj.gamma = 1.10;
   else if(meanLum > 155) newAdj.gamma = 0.95;
   else newAdj.gamma = 1.03;
 
-  // Always add sharpening + clarity
   newAdj.sharpness = 40;
   newAdj.clarity = 25;
 
@@ -1237,7 +1182,6 @@ async function runAutoEnhance(silent){
   renderEnhanced();
   updateViews();
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.preset-btn[data-preset="original"]').classList.remove('active');
 
   busy = false;
   if(!silent){
@@ -1250,13 +1194,15 @@ async function runAutoEnhance(silent){
 }
 
 /* ============================================================
-   AI SUPER-RESOLUTION via UpscalerJS
+   AI SUPER-RESOLUTION — using ESRGAN-Slim 2x via UpscalerJS
    ============================================================ */
 async function runSuperResolution(){
   if(!sourceImageData){ showToast('Load an image first', 'error'); return; }
   if(busy){ showToast('Please wait for the current operation', 'warning'); return; }
-  if(typeof Upscaler === 'undefined'){
-    showToast('AI library failed to load. Check your internet connection.', 'error');
+
+  // Check libraries
+  if(typeof window.Upscaler === 'undefined' || typeof window.ESRGANSlim2x === 'undefined'){
+    showToast('AI library not available. Check your internet connection.', 'error');
     return;
   }
 
@@ -1265,32 +1211,51 @@ async function runSuperResolution(){
   btn.disabled = true;
 
   try {
-    showProcessing(true, 'Loading AI Model...', 'Initializing neural network...',
-      '<i class="fas fa-download"></i> First use downloads ~1 MB model. Cached for future.'
+    showProcessing(true, 'Loading AI Model...', 'Initializing ESRGAN neural network...',
+      '<i class="fas fa-download"></i> First use downloads ~2 MB model. Cached for future.'
     );
     setStatus('processing', 'AI Upscale');
 
     if(!srUpscaler){
-      srUpscaler = new Upscaler({
-        model: {
-          path: 'https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-slim@1.0.0-beta.19/models/4x/',
-          scale: 4
-        }
-      });
+      srUpscaler = new window.Upscaler({ model: window.ESRGANSlim2x });
     }
 
-    // Prepare source canvas
-    const workCanvas = document.createElement('canvas');
-    workCanvas.width = sourceImageData.width;
-    workCanvas.height = sourceImageData.height;
-    workCanvas.getContext('2d').putImageData(sourceImageData, 0, 0);
+    // Prepare source canvas at a size the model can handle well.
+    // ESRGAN-Slim works best on smaller images; we downscale large inputs first.
+    const MAX_DIM = 900;
+    let workW = sourceImageData.width;
+    let workH = sourceImageData.height;
+    let needsDownscale = Math.max(workW, workH) > MAX_DIM;
 
-    showProcessing(true, 'AI Upscaling...', 'Neural network processing your image...',
-      '<i class="fas fa-cog fa-spin"></i> This may take 10–40 seconds depending on image size and device.'
+    const workCanvas = document.createElement('canvas');
+    if(needsDownscale){
+      const scale = MAX_DIM / Math.max(workW, workH);
+      workW = Math.round(workW * scale);
+      workH = Math.round(workH * scale);
+      workCanvas.width = workW;
+      workCanvas.height = workH;
+      const c = workCanvas.getContext('2d');
+      c.imageSmoothingQuality = 'high';
+      // Use current enhanced state as the base for upscaling
+      const tmp = document.createElement('canvas');
+      tmp.width = sourceImageData.width;
+      tmp.height = sourceImageData.height;
+      tmp.getContext('2d').putImageData(currentRender || sourceImageData, 0, 0);
+      c.drawImage(tmp, 0, 0, workW, workH);
+      showToast('Downscaled to 900px for AI processing, will upscale back.', 'info');
+    } else {
+      workCanvas.width = workW;
+      workCanvas.height = workH;
+      workCanvas.getContext('2d').putImageData(currentRender || sourceImageData, 0, 0);
+    }
+
+    showProcessing(true, 'AI Upscaling...', 'Neural network is enhancing your image...',
+      '<i class="fas fa-cog fa-spin"></i> This can take 5–30 seconds depending on size and device.'
     );
     updateProgress(10);
 
-    const upscaled = await srUpscaler.upscale(workCanvas, {
+    // Run the upscaler
+    const upscaledResult = await srUpscaler.upscale(workCanvas, {
       patchSize: 64,
       padding: 4,
       progress: (pct) => {
@@ -1300,26 +1265,23 @@ async function runSuperResolution(){
 
     updateProgress(95);
 
-    // upscaled is an HTMLImageElement; we downscale back to original size
-    // but with the enhanced detail baked in
+    // upscaledResult is an HTMLImageElement; resize back to original dimensions
     const finalCanvas = document.createElement('canvas');
     finalCanvas.width = sourceImageData.width;
     finalCanvas.height = sourceImageData.height;
     const fCtx = finalCanvas.getContext('2d', { willReadFrequently: true });
     fCtx.imageSmoothingQuality = 'high';
-    fCtx.drawImage(upscaled, 0, 0, finalCanvas.width, finalCanvas.height);
+    fCtx.drawImage(upscaledResult, 0, 0, finalCanvas.width, finalCanvas.height);
 
-    // Update source ImageData
     sourceImageData = fCtx.getImageData(0, 0, finalCanvas.width, finalCanvas.height);
 
-    // Re-render
     renderEnhanced();
     updateViews();
 
     updateProgress(100);
     showProcessing(false);
     setStatus('ready', 'AI Enhanced');
-    showToast('AI Super-Resolution complete!', 'success');
+    showToast('AI Super-Resolution complete! Compare in Split view.', 'success');
 
   } catch(err){
     console.error('AI SR error:', err);
@@ -1491,8 +1453,9 @@ function resetAll(){
   zoom = 1; splitPercent = 50;
   document.getElementById('uploadCard').style.display = 'block';
   document.getElementById('editorCard').classList.remove('active');
-  document.getElementById('canvasStage').innerHTML = '';
-  document.getElementById('canvasStage').dataset.mode = '';
+  const stage = document.getElementById('canvasStage');
+  stage.innerHTML = '';
+  stage.dataset.mode = '';
   updateHistoryButtons();
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.preset-btn[data-preset="original"]').classList.add('active');
@@ -1510,21 +1473,35 @@ window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
 window.addEventListener('resize', () => { if(isFullscreen) fitToScreen(); });
 
-// Verify AI library loaded
-setTimeout(() => {
-  if(typeof Upscaler === 'undefined'){
-    console.warn('UpscalerJS library failed to load');
-    const btn = document.getElementById('btnSR');
+// Verify AI library loaded, update button state
+function checkAILibrary(){
+  const hasUpscaler = typeof window.Upscaler !== 'undefined';
+  const hasModel = typeof window.ESRGANSlim2x !== 'undefined';
+  const btn = document.getElementById('btnSR');
+  const srText = document.getElementById('srStatusText');
+
+  if(hasUpscaler && hasModel){
+    srLibraryReady = true;
+    console.log('✅ UpscalerJS + ESRGAN-Slim 2x loaded');
+    return true;
+  } else {
+    srLibraryReady = false;
+    console.warn('❌ UpscalerJS or ESRGAN model not loaded');
+    console.warn('  Upscaler:', hasUpscaler);
+    console.warn('  ESRGANSlim2x:', hasModel);
     if(btn){
       btn.disabled = true;
-      btn.querySelector('small').textContent = 'Library failed to load — check internet';
+      if(srText) srText.textContent = 'Library failed to load — check internet';
     }
-  } else {
-    console.log('UpscalerJS ready');
+    return false;
   }
-}, 2500);
+}
 
-setTimeout(() => showToast('Image Enhancer ready. Upload an image to begin.', 'success'), 500);
+// Check immediately and again after a short delay (in case of slow network)
+setTimeout(checkAILibrary, 500);
+setTimeout(checkAILibrary, 2500);
+
+setTimeout(() => showToast('Image Enhancer ready. Upload an image to begin.', 'success'), 600);
 </script>
 
 </body>
