@@ -3,18 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro Image Enhancer — AI + Real-Time Studio</title>
+<title>Pro Photo Studio — Instagram Filters + Manual Adjustments</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<!-- ============================================================
-     AI LIBRARIES FOR SUPER-RESOLUTION
-     Order matters: TF.js → Model → Upscaler
-     ============================================================ -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-slim@1.0.0-beta.19/dist/umd/2x.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/upscaler@1.0.0-beta.19/dist/browser/umd/upscaler.min.js"></script>
 
 <script>
   document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
@@ -73,7 +65,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 .editor-layout{display:flex;gap:16px;padding:16px;align-items:flex-start;width:100%}
 .editor-canvas-col{flex:1 1 0;min-width:0;overflow:hidden;display:flex;flex-direction:column;gap:12px}
-.side-panel{width:390px;flex:0 0 390px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 200px);overflow-y:auto;padding-right:4px}
+.side-panel{width:400px;flex:0 0 400px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 200px);overflow-y:auto;padding-right:4px}
 .side-panel::-webkit-scrollbar{width:6px}
 .side-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 @media(max-width:1100px){
@@ -121,8 +113,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .sbs-canvas-wrap canvas{display:block}
 
 .tool-section{background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border)}
-.tool-section h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.tool-section h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:7px;justify-content:space-between}
 .tool-section h4 i{color:var(--primary)}
+.tool-section h4 span{color:var(--text-muted);font-size:10.5px;font-weight:600}
 
 .zoom-row{display:flex;gap:6px;align-items:center}
 .zoom-row button{background:var(--card);border:1.5px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:0.2s;font-family:inherit;font-weight:600}
@@ -130,19 +123,85 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .zoom-row button.wide{width:auto;padding:0 12px;font-size:11.5px}
 .zoom-level{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--primary);font-family:monospace;padding:0 8px;background:var(--card);border-radius:8px;border:1.5px solid var(--border);height:36px;display:flex;align-items:center;justify-content:center}
 
-.ai-section{background:linear-gradient(135deg,rgba(99,102,241,0.08),rgba(139,92,246,0.08));border:1px solid rgba(99,102,241,0.25)}
-.ai-section h4 i{color:var(--secondary)}
-.ai-buttons{display:flex;flex-direction:column;gap:8px}
-.ai-btn{padding:12px 16px;border:none;border-radius:10px;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;transition:0.2s;display:flex;align-items:center;gap:10px;text-align:left;width:100%;color:white}
-.ai-btn-auto{background:linear-gradient(135deg,var(--primary),var(--secondary));box-shadow:0 4px 14px rgba(99,102,241,0.4)}
-.ai-btn-auto:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,0.5)}
-.ai-btn-sr{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 14px rgba(16,185,129,0.4)}
-.ai-btn-sr:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(16,185,129,0.5)}
-.ai-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
-.ai-btn i.main{font-size:16px}
-.ai-btn .ai-btn-text{flex:1}
-.ai-btn .ai-btn-text strong{display:block;font-size:12.5px;margin-bottom:2px}
-.ai-btn .ai-btn-text small{display:block;font-size:10.5px;opacity:0.85;font-weight:500;line-height:1.35}
+/* Filter grid */
+.filter-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  max-height:400px;
+  overflow-y:auto;
+  padding:2px;
+}
+.filter-grid::-webkit-scrollbar{width:5px}
+.filter-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.filter-item{
+  cursor:pointer;
+  border-radius:10px;
+  overflow:hidden;
+  border:2px solid var(--border);
+  transition:0.2s;
+  background:var(--card);
+  text-align:center;
+  padding:0;
+  position:relative;
+}
+.filter-item:hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 6px 18px rgba(99,102,241,0.2)}
+.filter-item.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
+.filter-thumb{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  display:block;
+  background:#e5e7eb;
+}
+.filter-name{
+  font-size:10.5px;
+  font-weight:600;
+  padding:6px 2px;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.filter-item.active .filter-name{color:var(--primary);font-weight:700}
+
+/* Filter intensity */
+.intensity-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:10px;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+}
+.intensity-row label{font-size:11.5px;font-weight:600;min-width:60px}
+.intensity-track{flex:1;position:relative;height:6px;background:var(--border);border-radius:3px;cursor:pointer;touch-action:none}
+.intensity-fill{position:absolute;top:0;bottom:0;left:0;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:3px;pointer-events:none}
+.intensity-thumb{position:absolute;top:50%;width:16px;height:16px;background:white;border:2px solid var(--primary);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 2px 6px rgba(99,102,241,0.5)}
+.intensity-val{font-size:11px;font-weight:700;color:var(--primary);font-family:monospace;min-width:40px;text-align:right}
+
+/* Auto enhance */
+.btn-auto{
+  width:100%;
+  padding:14px 18px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:white;
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  box-shadow:0 6px 18px rgba(99,102,241,0.4);
+  transition:0.25s;
+  margin-bottom:8px;
+}
+.btn-auto:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.5)}
+.btn-auto i{font-size:16px}
 
 .preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .preset-btn{padding:8px 6px;border:1.5px solid var(--border);border-radius:9px;background:var(--card);cursor:pointer;font-family:inherit;font-size:10.5px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text);text-align:center;line-height:1.15}
@@ -181,19 +240,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .hardware-warning h5{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--warning)}
 .hardware-warning p{font-size:11.5px;color:var(--text-muted);line-height:1.55}
 
-.processing-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
-.processing-overlay.active{display:flex !important}
-.processing-box{background:var(--card);border-radius:20px;padding:36px 44px;max-width:520px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
-.processing-box .spinner{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 20px;animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.processing-box h3{font-size:17px;font-weight:700;margin-bottom:8px}
-.processing-box p{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;line-height:1.5;min-height:18px}
-.progress-bar-wrapper{width:100%;height:8px;background:var(--bg);border-radius:20px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border)}
-.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:20px;transition:width 0.3s}
-.progress-text{font-size:12px;color:var(--text-muted);font-family:monospace;font-weight:600}
-.processing-hint{margin-top:14px;padding:10px 14px;background:rgba(99,102,241,0.08);border-radius:8px;font-size:11.5px;color:var(--text-muted);line-height:1.5}
-.processing-hint i{color:var(--primary);margin-right:4px}
-
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(150px);background:var(--card);color:var(--text);padding:13px 20px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-size:12.5px;font-weight:600;z-index:2000;transition:0.35s;display:flex;align-items:center;gap:10px;border-left:4px solid var(--success);opacity:0;max-width:90vw}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.error{border-left-color:var(--danger)}.toast.error i{color:var(--danger)}
@@ -201,13 +247,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .toast.warning{border-left-color:var(--warning)}.toast.warning i{color:var(--warning)}
 
 .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-.status-badge.loading{background:rgba(245,158,11,0.15);color:#f59e0b}
 .status-badge.ready{background:rgba(16,185,129,0.15);color:#10b981}
 .status-badge.processing{background:rgba(99,102,241,0.15);color:#6366f1}
 
 @media(max-width:768px){
   .editor-layout{padding:12px;gap:12px}
   .preset-grid{grid-template-columns:repeat(2,1fr)}
+  .filter-grid{grid-template-columns:repeat(3,1fr)}
 }
 </style>
 </head>
@@ -218,10 +264,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <i class="fas fa-moon"></i>
   </button>
   <div class="badge">
-    <i class="fas fa-wand-magic-sparkles"></i> Side-by-Side Compare &middot; AI Super-Resolution &middot; Full Zoom
+    <i class="fas fa-camera-retro"></i> 24 Instagram Filters &middot; Live Split Compare &middot; Instant
   </div>
-  <h1>Pro Image Enhancer</h1>
-  <p>Enhance photos with a professional-grade engine. See the difference side-by-side in real time. Upscale with neural AI. All processing happens in your browser.</p>
+  <h1>Pro Photo Studio</h1>
+  <p>Apply beautiful Instagram-style filters, fine-tune with professional sliders, and compare before/after in real time. All processing happens in your browser.</p>
 </header>
 
 <div class="main-container">
@@ -248,7 +294,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="card editor-card" id="editorCard">
     <div class="card-header">
       <h2>
-        <i class="fas fa-magic"></i> Enhancement Studio
+        <i class="fas fa-magic"></i> Photo Studio
         <span class="status-badge ready" id="statusBadge"><i class="fas fa-check-circle"></i> Ready</span>
       </h2>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -279,6 +325,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
       </div>
 
       <div class="side-panel">
+
         <div class="tool-section">
           <h4><i class="fas fa-search"></i> Zoom &amp; Navigation</h4>
           <div class="zoom-row">
@@ -288,28 +335,31 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <button class="wide" onclick="fitToScreen()"><i class="fas fa-expand"></i> Fit</button>
             <button class="wide" onclick="resetZoom()">1:1</button>
           </div>
-          <p style="font-size:10.5px;color:var(--text-muted);line-height:1.5;margin-top:8px">
-            Hold Ctrl and scroll to zoom. Drag scrollbars to pan.
+        </div>
+
+        <div class="tool-section">
+          <h4><i class="fas fa-wand-magic-sparkles"></i> One-Click</h4>
+          <button class="btn-auto" onclick="autoEnhance()">
+            <i class="fas fa-wand-sparkles"></i> Auto Enhance
+          </button>
+          <p style="font-size:10.5px;color:var(--text-muted);line-height:1.5;text-align:center">
+            Subtle, tasteful correction — never over-done
           </p>
         </div>
 
-        <div class="tool-section ai-section">
-          <h4><i class="fas fa-wand-magic-sparkles"></i> AI Enhancement</h4>
-          <div class="ai-buttons">
-            <button class="ai-btn ai-btn-auto" id="btnAuto" onclick="runAutoEnhance()">
-              <i class="fas fa-wand-sparkles main"></i>
-              <div class="ai-btn-text">
-                <strong>Smart Auto Enhance</strong>
-                <small>Instantly analyzes and optimizes your photo</small>
-              </div>
-            </button>
-            <button class="ai-btn ai-btn-sr" id="btnSR" onclick="runSuperResolution()">
-              <i class="fas fa-up-right-and-down-left-from-center main"></i>
-              <div class="ai-btn-text">
-                <strong>AI Super-Resolution 2×</strong>
-                <small id="srStatusText">Neural upscale (ESRGAN) &middot; ~2 MB model on first use</small>
-              </div>
-            </button>
+        <div class="tool-section">
+          <h4>
+            <span><i class="fas fa-filter"></i> Filters</span>
+            <span id="filterCount">24 filters</span>
+          </h4>
+          <div class="filter-grid" id="filterGrid"></div>
+          <div class="intensity-row">
+            <label>Intensity</label>
+            <div class="intensity-track" id="intensityTrack">
+              <div class="intensity-fill" id="intensityFill"></div>
+              <div class="intensity-thumb" id="intensityThumb"></div>
+            </div>
+            <span class="intensity-val" id="intensityVal">100%</span>
           </div>
         </div>
 
@@ -320,14 +370,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <button class="preset-btn" data-preset="portrait" onclick="applyPreset('portrait', this)"><i class="fas fa-user"></i> Portrait</button>
             <button class="preset-btn" data-preset="landscape" onclick="applyPreset('landscape', this)"><i class="fas fa-mountain"></i> Landscape</button>
             <button class="preset-btn" data-preset="night" onclick="applyPreset('night', this)"><i class="fas fa-moon"></i> Night</button>
-            <button class="preset-btn" data-preset="vivid" onclick="applyPreset('vivid', this)"><i class="fas fa-palette"></i> Vivid</button>
-            <button class="preset-btn" data-preset="soft" onclick="applyPreset('soft', this)"><i class="fas fa-feather"></i> Soft</button>
-            <button class="preset-btn" data-preset="warm" onclick="applyPreset('warm', this)"><i class="fas fa-sun"></i> Warm</button>
-            <button class="preset-btn" data-preset="cool" onclick="applyPreset('cool', this)"><i class="fas fa-snowflake"></i> Cool</button>
+            <button class="preset-btn" data-preset="food" onclick="applyPreset('food', this)"><i class="fas fa-utensils"></i> Food</button>
             <button class="preset-btn" data-preset="vintage" onclick="applyPreset('vintage', this)"><i class="fas fa-camera-retro"></i> Vintage</button>
-            <button class="preset-btn" data-preset="sepia" onclick="applyPreset('sepia', this)"><i class="fas fa-scroll"></i> Sepia</button>
-            <button class="preset-btn" data-preset="bw" onclick="applyPreset('bw', this)"><i class="fas fa-circle-half-stroke"></i> B&amp;W</button>
-            <button class="preset-btn" data-preset="hdr" onclick="applyPreset('hdr', this)"><i class="fas fa-sun"></i> HDR Look</button>
           </div>
         </div>
 
@@ -347,12 +391,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         </div>
 
         <button class="btn btn-outline" onclick="resetAdjustments()" style="width:100%">
-          <i class="fas fa-rotate-left"></i> Reset All Adjustments
+          <i class="fas fa-rotate-left"></i> Reset All
         </button>
 
         <div class="download-wrapper">
           <button class="download-main-btn" onclick="toggleDownloadMenu(event)">
-            <i class="fas fa-download"></i> Download Enhanced
+            <i class="fas fa-download"></i> Download
             <i class="fas fa-chevron-up" style="margin-left:auto;font-size:11px"></i>
           </button>
           <div class="download-menu" id="downloadMenu">
@@ -363,39 +407,19 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
             <button class="download-menu-item" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy to clipboard</button>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="hardware-warning">
-    <i class="fas fa-microchip"></i>
-    <div>
-      <h5>Hardware Requirements</h5>
-      <p>The classical enhancement engine is instant and needs no downloads. AI Super-Resolution uses a neural network that runs on your device's CPU/GPU — it downloads a small model (~2 MB) on first use and takes 5–30 seconds per photo depending on your hardware and image size.</p>
+      </div>
     </div>
   </div>
 
   <div class="info-box">
     <i class="fas fa-shield-alt info-icon"></i>
     <div>
-      <h4>100% Private &amp; Free</h4>
-      <p>Everything runs locally in your browser. Images are never uploaded to any server. The split-slider view is the fastest way to see the difference — drag the handle left or right.</p>
+      <h4>100% Private &amp; Instant</h4>
+      <p>All filters and adjustments use pure color science — no downloads, no waiting, no server uploads. Your photos never leave your device.</p>
     </div>
   </div>
 
-</div>
-
-<div class="processing-overlay" id="processingOverlay">
-  <div class="processing-box">
-    <div class="spinner"></div>
-    <h3 id="processingTitle">Loading...</h3>
-    <p id="processingMsg">Please wait...</p>
-    <div class="progress-bar-wrapper"><div class="progress-bar-fill" id="progressFill"></div></div>
-    <div class="progress-text" id="progressText">0%</div>
-    <div class="processing-hint" id="processingHint">
-      <i class="fas fa-info-circle"></i> Processing your image...
-    </div>
-  </div>
 </div>
 
 <div class="toast" id="toast">
@@ -404,7 +428,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </div>
 
 <script>
-console.log('Pro Image Enhancer v4 loaded');
+console.log('Pro Photo Studio v1 loaded');
 
 /* ============================================================
    THEME
@@ -426,10 +450,16 @@ if(localStorage.getItem('theme') === 'light'){
 const DEFAULT_ADJ = {
   brightness: 0, contrast: 0, exposure: 0, highlights: 0, shadows: 0,
   saturation: 0, vibrance: 0, temperature: 0, tint: 0,
-  sharpness: 0, clarity: 0, gamma: 1.0, vignette: 0
+  sharpness: 0, clarity: 0, gamma: 1.0, vignette: 0,
+  fade: 0, grain: 0
 };
 
-let adjustments = { ...DEFAULT_ADJ };
+let baseAdjustments = { ...DEFAULT_ADJ };
+let filterAdjustments = { ...DEFAULT_ADJ };  // Extra from filter
+let filterIntensity = 100;
+let activeFilter = 'original';
+let filterOverlay = null;                     // { r, g, b, alpha }
+
 let originalFile = null;
 let sourceImg = null;
 let sourceImageData = null;
@@ -446,11 +476,8 @@ let redoStack = [];
 const MAX_HISTORY = 20;
 
 let renderScheduled = false;
-let busy = false;
 
-// AI upscaler state
-let srUpscaler = null;
-let srLibraryReady = false;
+let intensityDragging = false;
 
 /* ============================================================
    TOAST
@@ -468,53 +495,164 @@ function showToast(msg, type = 'success'){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
-
 function setStatus(status, text){
   const badge = document.getElementById('statusBadge');
   badge.className = 'status-badge ' + status;
-  const icons = { loading: 'fas fa-spinner fa-spin', ready: 'fas fa-check-circle', processing: 'fas fa-cog fa-spin' };
+  const icons = { ready: 'fas fa-check-circle', processing: 'fas fa-cog fa-spin' };
   badge.innerHTML = `<i class="${icons[status] || 'fas fa-check-circle'}"></i> ${text}`;
 }
 
-function updateProgress(pct){
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent = Math.round(pct) + '%';
-}
-function showProcessing(show, title, msg, hint){
-  const overlay = document.getElementById('processingOverlay');
-  if(show){
-    overlay.classList.add('active');
-    if(title) document.getElementById('processingTitle').textContent = title;
-    if(msg) document.getElementById('processingMsg').textContent = msg;
-    if(hint !== undefined) document.getElementById('processingHint').innerHTML = hint;
-    updateProgress(0);
-  } else {
-    overlay.classList.remove('active');
-  }
-}
+/* ============================================================
+   INSTAGRAM FILTERS — real color science profiles
+   ============================================================ */
+const FILTERS = {
+  original: { name: 'Original', adj: {} },
+
+  clarendon: { name: 'Clarendon', adj: {
+    brightness: 5, contrast: 22, saturation: 18, temperature: -8,
+    highlights: -8, shadows: 10, clarity: 8, vibrance: 15
+  }},
+
+  gingham: { name: 'Gingham', adj: {
+    brightness: 14, saturation: -30, contrast: -10, fade: 12, gamma: 1.05
+  }},
+
+  moon: { name: 'Moon', adj: {
+    saturation: -100, contrast: 25, brightness: 8, gamma: 1.08
+  }},
+
+  lark: { name: 'Lark', adj: {
+    brightness: 12, saturation: -15, contrast: -5, temperature: 5, fade: 8
+  }},
+
+  reyes: { name: 'Reyes', adj: {
+    brightness: 8, saturation: -20, contrast: -8, fade: 18, temperature: 8
+  }},
+
+  juno: { name: 'Juno', adj: {
+    saturation: 25, vibrance: 20, contrast: 15, temperature: 18, shadows: 8
+  }},
+
+  slumber: { name: 'Slumber', adj: {
+    brightness: 6, saturation: -25, contrast: -5, fade: 22, temperature: 10, tint: 5
+  }},
+
+  crema: { name: 'Crema', adj: {
+    brightness: 8, saturation: -10, contrast: 5, temperature: -5, fade: 10, gamma: 1.03
+  }},
+
+  ludwig: { name: 'Ludwig', adj: {
+    brightness: 4, saturation: 8, contrast: 10, temperature: 20, highlights: 10, clarity: 8
+  }},
+
+  aden: { name: 'Aden', adj: {
+    brightness: 10, saturation: -15, contrast: -8, temperature: 5, tint: 12, fade: 12
+  }},
+
+  perpetua: { name: 'Perpetua', adj: {
+    brightness: 5, saturation: 5, contrast: 8, temperature: -8, tint: -5, clarity: 6
+  }},
+
+  amaro: { name: 'Amaro', adj: {
+    brightness: 12, saturation: -8, contrast: 12, temperature: -10, highlights: -12, shadows: 10
+  }},
+
+  mayfair: { name: 'Mayfair', adj: {
+    brightness: 8, saturation: 5, contrast: 10, temperature: 12, tint: 8, vignette: 20
+  }},
+
+  rise: { name: 'Rise', adj: {
+    brightness: 8, saturation: -8, contrast: 8, temperature: 15, fade: 12, highlights: -5
+  }},
+
+  hudson: { name: 'Hudson', adj: {
+    brightness: 5, saturation: -10, contrast: 15, temperature: -18, clarity: 10, vignette: 12
+  }},
+
+  valencia: { name: 'Valencia', adj: {
+    brightness: 8, saturation: 12, contrast: 8, temperature: 20, highlights: -8, shadows: 5
+  }},
+
+  xpro2: { name: 'X-Pro II', adj: {
+    contrast: 30, saturation: 20, temperature: 15, highlights: -15, shadows: 8, vignette: 25
+  }},
+
+  sierra: { name: 'Sierra', adj: {
+    brightness: 6, saturation: -10, contrast: 12, temperature: 18, highlights: 8, fade: 8
+  }},
+
+  willow: { name: 'Willow', adj: {
+    saturation: -100, brightness: 10, contrast: 5, gamma: 1.06, fade: 8
+  }},
+
+  lofi: { name: 'Lo-Fi', adj: {
+    contrast: 35, saturation: 35, vibrance: 25, clarity: 18, vignette: 25
+  }},
+
+  inkwell: { name: 'Inkwell', adj: {
+    saturation: -100, contrast: 40, brightness: 5, clarity: 15
+  }},
+
+  hefe: { name: 'Hefe', adj: {
+    contrast: 30, saturation: 15, temperature: 20, vignette: 30, clarity: 10
+  }},
+
+  nashville: { name: 'Nashville', adj: {
+    brightness: 10, contrast: 15, saturation: -8, temperature: 22, tint: 8, fade: 15
+  }},
+
+  f1977: { name: '1977', adj: {
+    brightness: 12, contrast: 8, saturation: -12, temperature: 18, fade: 18, vignette: 10
+  }},
+
+  kelvin: { name: 'Kelvin', adj: {
+    brightness: 8, contrast: 12, saturation: 15, temperature: 35, tint: 10, highlights: -8
+  }},
+
+  walden: { name: 'Walden', adj: {
+    brightness: 10, contrast: -5, saturation: -15, temperature: -5, fade: 20, vignette: 20
+  }},
+
+  toaster: { name: 'Toaster', adj: {
+    brightness: 8, contrast: 20, saturation: 15, temperature: 30, tint: 15, vignette: 25
+  }},
+
+  brannan: { name: 'Brannan', adj: {
+    brightness: 6, contrast: 30, saturation: -8, temperature: 15, highlights: -18, shadows: 8
+  }},
+
+  earlybird: { name: 'Earlybird', adj: {
+    brightness: 8, contrast: 12, saturation: -10, temperature: 20, tint: 8, fade: 15, vignette: 15
+  }},
+
+  sutro: { name: 'Sutro', adj: {
+    brightness: 5, contrast: 20, saturation: -20, temperature: 25, tint: 12, vignette: 35, gamma: 1.05
+  }}
+};
 
 /* ============================================================
    SLIDERS
    ============================================================ */
 const SLIDERS = {
   light: [
-    { key: 'exposure', label: 'Exposure', min: -100, max: 100 },
-    { key: 'brightness', label: 'Brightness', min: -100, max: 100 },
-    { key: 'contrast', label: 'Contrast', min: -100, max: 100 },
-    { key: 'highlights', label: 'Highlights', min: -100, max: 100 },
-    { key: 'shadows', label: 'Shadows', min: -100, max: 100 }
+    { key: 'exposure', label: 'Exposure', min: -50, max: 50 },
+    { key: 'brightness', label: 'Brightness', min: -50, max: 50 },
+    { key: 'contrast', label: 'Contrast', min: -50, max: 50 },
+    { key: 'highlights', label: 'Highlights', min: -50, max: 50 },
+    { key: 'shadows', label: 'Shadows', min: -50, max: 50 }
   ],
   color: [
-    { key: 'saturation', label: 'Saturation', min: -100, max: 100 },
-    { key: 'vibrance', label: 'Vibrance', min: -100, max: 100 },
-    { key: 'temperature', label: 'Temperature', min: -100, max: 100 },
-    { key: 'tint', label: 'Tint', min: -100, max: 100 }
+    { key: 'saturation', label: 'Saturation', min: -50, max: 50 },
+    { key: 'vibrance', label: 'Vibrance', min: -50, max: 50 },
+    { key: 'temperature', label: 'Temperature', min: -50, max: 50 },
+    { key: 'tint', label: 'Tint', min: -50, max: 50 }
   ],
   detail: [
-    { key: 'sharpness', label: 'Sharpness', min: 0, max: 100 },
-    { key: 'clarity', label: 'Clarity', min: 0, max: 100 },
-    { key: 'gamma', label: 'Gamma', min: 0.2, max: 3, step: 0.05 },
-    { key: 'vignette', label: 'Vignette', min: 0, max: 100 }
+    { key: 'sharpness', label: 'Sharpness', min: 0, max: 50 },
+    { key: 'clarity', label: 'Clarity', min: 0, max: 50 },
+    { key: 'vignette', label: 'Vignette', min: 0, max: 50 },
+    { key: 'fade', label: 'Fade', min: 0, max: 40 },
+    { key: 'grain', label: 'Grain', min: 0, max: 50 }
   ]
 };
 
@@ -539,14 +677,14 @@ function buildSliders(container, defs){
     track.addEventListener('touchstart', start, { passive: false });
     track.addEventListener('dblclick', () => {
       saveHistory();
-      adjustments[def.key] = def.key === 'gamma' ? 1.0 : 0;
+      baseAdjustments[def.key] = 0;
       updateSliderVisual(def);
       scheduleRender();
     });
     const valEl = document.getElementById('val-' + def.key);
     valEl.addEventListener('click', () => {
       saveHistory();
-      adjustments[def.key] = def.key === 'gamma' ? 1.0 : 0;
+      baseAdjustments[def.key] = 0;
       updateSliderVisual(def);
       scheduleRender();
     });
@@ -554,12 +692,24 @@ function buildSliders(container, defs){
   defs.forEach(def => updateSliderVisual(def));
 }
 
+function getEffectiveAdj(key){
+  // Combine base + filter weight
+  const base = baseAdjustments[key] || 0;
+  const filter = filterAdjustments[key] || 0;
+  const w = filterIntensity / 100;
+  if(key === 'gamma'){
+    // Gamma is multiplicative; blend from 1.0
+    const filterGamma = filter || 1.0;
+    return 1.0 + (filterGamma - 1.0) * w;
+  }
+  return base + filter * w;
+}
+
 function updateSliderVisual(def){
-  const value = adjustments[def.key];
+  const value = baseAdjustments[def.key] || 0;
   const fill = document.getElementById('fill-' + def.key);
   const thumb = document.getElementById('thumb-' + def.key);
   const valEl = document.getElementById('val-' + def.key);
-  const isGamma = def.key === 'gamma';
   const range = def.max - def.min;
   const pct = ((value - def.min) / range) * 100;
 
@@ -574,14 +724,8 @@ function updateSliderVisual(def){
     fill.style.right = (100 - pct) + '%';
   }
   thumb.style.left = pct + '%';
-
-  if(isGamma){
-    valEl.textContent = value.toFixed(2);
-    valEl.className = 'slider-val ' + (value > 1.05 ? 'pos' : value < 0.95 ? 'neg' : '');
-  } else {
-    valEl.textContent = (value > 0 ? '+' : '') + Math.round(value);
-    valEl.className = 'slider-val ' + (value > 0 ? 'pos' : value < 0 ? 'neg' : '');
-  }
+  valEl.textContent = (value > 0 ? '+' : '') + Math.round(value);
+  valEl.className = 'slider-val ' + (value > 0 ? 'pos' : value < 0 ? 'neg' : '');
 }
 
 let activeDrag = null;
@@ -616,11 +760,112 @@ function updateFromDrag(e){
   let pct = (clientX - rect.left) / rect.width;
   pct = Math.max(0, Math.min(1, pct));
   let value = def.min + pct * (def.max - def.min);
-  if(def.key === 'gamma') value = Math.round(value * 20) / 20;
-  else value = Math.round(value);
-  adjustments[def.key] = value;
+  value = Math.round(value);
+  baseAdjustments[def.key] = value;
   updateSliderVisual(def);
   scheduleRender();
+}
+
+/* ============================================================
+   INTENSITY SLIDER
+   ============================================================ */
+function setupIntensitySlider(){
+  const track = document.getElementById('intensityTrack');
+  const update = (e) => {
+    const rect = track.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    let pct = (clientX - rect.left) / rect.width;
+    pct = Math.max(0, Math.min(1, pct)) * 100;
+    filterIntensity = Math.round(pct);
+    document.getElementById('intensityFill').style.width = filterIntensity + '%';
+    document.getElementById('intensityThumb').style.left = filterIntensity + '%';
+    document.getElementById('intensityVal').textContent = filterIntensity + '%';
+    scheduleRender();
+  };
+  track.addEventListener('mousedown', (e) => {
+    intensityDragging = true;
+    saveHistory();
+    update(e);
+  });
+  track.addEventListener('touchstart', (e) => {
+    intensityDragging = true;
+    saveHistory();
+    update(e);
+  }, { passive: true });
+  document.addEventListener('mousemove', (e) => { if(intensityDragging) update(e); });
+  document.addEventListener('touchmove', (e) => { if(intensityDragging) update(e); }, { passive: true });
+  document.addEventListener('mouseup', () => { intensityDragging = false; });
+  document.addEventListener('touchend', () => { intensityDragging = false; });
+}
+function updateIntensityVisual(){
+  document.getElementById('intensityFill').style.width = filterIntensity + '%';
+  document.getElementById('intensityThumb').style.left = filterIntensity + '%';
+  document.getElementById('intensityVal').textContent = filterIntensity + '%';
+}
+
+/* ============================================================
+   FILTER GRID
+   ============================================================ */
+function buildFilterGrid(){
+  const grid = document.getElementById('filterGrid');
+  grid.innerHTML = Object.keys(FILTERS).map(key => `
+    <div class="filter-item ${key === 'original' ? 'active' : ''}" data-filter="${key}" onclick="applyFilter('${key}', this)">
+      <canvas class="filter-thumb" id="thumb-${key}" width="100" height="100"></canvas>
+      <div class="filter-name">${FILTERS[key].name}</div>
+    </div>
+  `).join('');
+  document.getElementById('filterCount').textContent = Object.keys(FILTERS).length + ' filters';
+}
+
+function updateFilterThumbnails(){
+  if(!sourceImageData) return;
+  // Create a small base canvas from the source image
+  const THUMB = 100;
+  const baseCanvas = document.createElement('canvas');
+  baseCanvas.width = THUMB;
+  baseCanvas.height = THUMB;
+  const bCtx = baseCanvas.getContext('2d');
+  // Calculate crop to fill square
+  const W = sourceImageData.width, H = sourceImageData.height;
+  const s = Math.min(W, H);
+  const sx = (W - s) / 2, sy = (H - s) / 2;
+  // Draw source into a temp canvas
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = W; tempCanvas.height = H;
+  tempCanvas.getContext('2d').putImageData(sourceImageData, 0, 0);
+  bCtx.drawImage(tempCanvas, sx, sy, s, s, 0, 0, THUMB, THUMB);
+  const baseThumb = bCtx.getImageData(0, 0, THUMB, THUMB);
+
+  // For each filter, render a thumbnail
+  Object.keys(FILTERS).forEach(key => {
+    const thumbCanvas = document.getElementById('thumb-' + key);
+    if(!thumbCanvas) return;
+    const tCtx = thumbCanvas.getContext('2d');
+    const filtered = applyFilterToImageData(baseThumb, FILTERS[key], 100);
+    tCtx.putImageData(filtered, 0, 0);
+  });
+}
+
+function applyFilter(filterKey, el){
+  saveHistory();
+  activeFilter = filterKey;
+  const filter = FILTERS[filterKey];
+  // Reset filter adjustments, then apply new
+  filterAdjustments = { ...DEFAULT_ADJ };
+  if(filter.adj){
+    Object.keys(filter.adj).forEach(k => {
+      if(k in filterAdjustments) filterAdjustments[k] = filter.adj[k];
+    });
+  }
+  // Reset intensity to 100 unless original
+  filterIntensity = filterKey === 'original' ? 0 : 100;
+  updateIntensityVisual();
+  scheduleRender();
+
+  document.querySelectorAll('.filter-item').forEach(item => item.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  showToast(`${filter.name} applied`, 'success');
 }
 
 /* ============================================================
@@ -637,35 +882,56 @@ function scheduleRender(){
 
 function renderEnhanced(){
   if(!sourceImageData) return;
-  const W = sourceImageData.width;
-  const H = sourceImageData.height;
-  const src = sourceImageData.data;
+  const filter = FILTERS[activeFilter] || FILTERS.original;
+  currentRender = applyFilterToImageData(sourceImageData, filter, filterIntensity, baseAdjustments);
+  updateViews();
+}
+
+function applyFilterToImageData(imageData, filter, intensity, base){
+  base = base || {};
+  const W = imageData.width;
+  const H = imageData.height;
+  const src = imageData.data;
   const out = new ImageData(W, H);
   const dst = out.data;
+  const w = intensity / 100;
 
-  const exposure = Math.pow(2, adjustments.exposure / 100);
-  const brightness = adjustments.brightness * 1.2;
-  const contrastRaw = adjustments.contrast / 100;
+  // Blend filter adj and base adj
+  function val(key, defVal){
+    const b = (base[key] || 0);
+    const f = (filter.adj && filter.adj[key]) ? filter.adj[key] : defVal;
+    return b + f * w;
+  }
+
+  const exposure = Math.pow(2, val('exposure', 0) / 100);
+  const brightness = val('brightness', 0) * 1.2;
+  const contrastRaw = val('contrast', 0) / 100;
   const cFactor = (259 * (contrastRaw * 255 + 255)) / (255 * (259 - contrastRaw * 255));
-  const saturation = 1 + adjustments.saturation / 100;
-  const vibrance = adjustments.vibrance / 100;
-  const gamma = adjustments.gamma;
+  const saturation = 1 + val('saturation', 0) / 100;
+  const vibrance = val('vibrance', 0) / 100;
+  const gammaRaw = (filter.adj && filter.adj.gamma) ? filter.adj.gamma : 1.0;
+  const baseGamma = base.gamma || 1.0;
+  const gamma = 1.0 + ((baseGamma * gammaRaw) - 1.0) * (intensity === 100 ? 1 : 1);
   const invGamma = 1 / gamma;
-  const temp = adjustments.temperature / 100;
-  const tint = adjustments.tint / 100;
-  const highlights = adjustments.highlights / 100;
-  const shadows = adjustments.shadows / 100;
-  const vignette = adjustments.vignette / 100;
-  const sharpness = adjustments.sharpness / 100;
-  const clarity = adjustments.clarity / 100;
+  const temp = val('temperature', 0) / 100;
+  const tint = val('tint', 0) / 100;
+  const highlights = val('highlights', 0) / 100;
+  const shadows = val('shadows', 0) / 100;
+  const vignette = val('vignette', 0) / 100;
+  const sharpness = val('sharpness', 0) / 100;
+  const clarity = val('clarity', 0) / 100;
+  const fade = val('fade', 0) / 100;
+  const grain = val('grain', 0) / 100;
 
   const gammaLUT = new Uint8ClampedArray(256);
-  for(let i = 0; i < 256; i++) gammaLUT[i] = Math.round(255 * Math.pow(i / 255, invGamma));
+  for(let i = 0; i < 256; i++){
+    gammaLUT[i] = Math.round(255 * Math.pow(i / 255, invGamma));
+  }
 
-  const tempROff = temp > 0 ? temp * 40 : 0;
-  const tempBOff = temp < 0 ? -temp * 40 : 0;
-  const tintROff = tint * 25;
-  const tintGOff = -tint * 18;
+  const tempROff = temp > 0 ? temp * 30 : 0;
+  const tempBOff = temp < 0 ? -temp * 30 : 0;
+  const tintROff = tint * 18;
+  const tintGOff = -tint * 12;
   const applyColor = temp !== 0 || tint !== 0;
 
   for(let i = 0; i < src.length; i += 4){
@@ -713,6 +979,14 @@ function renderEnhanced(){
       b = lum + (b - lum) * sat;
     }
 
+    // Fade — soften blacks and push toward cream
+    if(fade > 0){
+      const fadeAmt = fade * 40;
+      r = r * (1 - fade * 0.35) + fadeAmt * 0.6;
+      g = g * (1 - fade * 0.35) + fadeAmt * 0.6;
+      b = b * (1 - fade * 0.35) + fadeAmt * 0.65;
+    }
+
     dst[i] = r; dst[i + 1] = g; dst[i + 2] = b; dst[i + 3] = src[i + 3];
   }
 
@@ -732,9 +1006,16 @@ function renderEnhanced(){
       }
     }
   }
-
-  currentRender = out;
-  updateViews();
+  if(grain > 0){
+    const amt = grain * 25;
+    for(let i = 0; i < dst.length; i += 4){
+      const n = (Math.random() - 0.5) * amt;
+      dst[i] += n;
+      dst[i + 1] += n;
+      dst[i + 2] += n;
+    }
+  }
+  return out;
 }
 
 function applyUnsharpMask(imageData, W, H, sharpness, clarity){
@@ -742,7 +1023,7 @@ function applyUnsharpMask(imageData, W, H, sharpness, clarity){
   const copy = new Uint8ClampedArray(data);
   if(sharpness > 0){
     const blurred = boxBlur(copy, W, H, 1);
-    const amount = sharpness * 1.8;
+    const amount = sharpness * 1.5;
     for(let i = 0; i < data.length; i += 4){
       data[i] = copy[i] + (copy[i] - blurred[i]) * amount;
       data[i + 1] = copy[i + 1] + (copy[i + 1] - blurred[i + 1]) * amount;
@@ -750,8 +1031,8 @@ function applyUnsharpMask(imageData, W, H, sharpness, clarity){
     }
   }
   if(clarity > 0){
-    const blurred = boxBlur(copy, W, H, 4);
-    const amount = clarity * 0.8;
+    const blurred = boxBlur(copy, W, H, 3);
+    const amount = clarity * 0.7;
     for(let i = 0; i < data.length; i += 4){
       data[i] += (copy[i] - blurred[i]) * amount;
       data[i + 1] += (copy[i + 1] - blurred[i + 1]) * amount;
@@ -811,7 +1092,6 @@ function setViewMode(mode, btn){
 
 function updateViews(){
   if(!sourceImageData) return;
-
   const W = sourceImageData.width;
   const H = sourceImageData.height;
   const stage = document.getElementById('canvasStage');
@@ -881,7 +1161,6 @@ function updateViews(){
     cvOrig.getContext('2d').putImageData(sourceImageData, 0, 0);
     cvEnh.getContext('2d').putImageData(currentRender || sourceImageData, 0, 0);
   }
-
   document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
 }
 
@@ -889,19 +1168,9 @@ function setupSplitDrag(){
   const wrap = document.getElementById('splitWrap');
   const handle = document.getElementById('splitHandle');
   if(!wrap || !handle) return;
-
-  const startSplit = (e) => {
-    e.preventDefault();
-    isSplitDragging = true;
-    updateSplit(e);
-  };
-  const moveSplit = (e) => {
-    if(!isSplitDragging) return;
-    e.preventDefault();
-    updateSplit(e);
-  };
+  const startSplit = (e) => { e.preventDefault(); isSplitDragging = true; updateSplit(e); };
+  const moveSplit = (e) => { if(!isSplitDragging) return; e.preventDefault(); updateSplit(e); };
   const endSplit = () => { isSplitDragging = false; };
-
   handle.addEventListener('mousedown', startSplit);
   handle.addEventListener('touchstart', startSplit, { passive: false });
   wrap.addEventListener('mousedown', startSplit);
@@ -1024,8 +1293,7 @@ async function processFile(file){
   if(!file.type.startsWith('image/')){ showToast('Please select an image file', 'error'); return; }
   if(file.size > 50 * 1024 * 1024){ showToast('Maximum file size: 50 MB', 'error'); return; }
 
-  showProcessing(true, 'Loading Image...', 'Preparing your image...', '');
-  setStatus('loading', 'Loading');
+  setStatus('processing', 'Loading');
   originalFile = file;
 
   const dataURL = await new Promise((res, rej) => {
@@ -1046,7 +1314,7 @@ async function processFile(file){
   const W = img.naturalWidth;
   const H = img.naturalHeight;
 
-  if(W * H > 12_000_000) showToast(`Large image (${W}×${H}). Slider response may slow slightly.`, 'warning');
+  if(W * H > 15_000_000) showToast(`Large image (${W}×${H}). Filter previews may take a moment.`, 'warning');
 
   const offCanvas = document.createElement('canvas');
   offCanvas.width = W; offCanvas.height = H;
@@ -1055,8 +1323,12 @@ async function processFile(file){
   offCtx.drawImage(img, 0, 0);
   sourceImageData = offCtx.getImageData(0, 0, W, H);
 
-  adjustments = { ...DEFAULT_ADJ };
+  baseAdjustments = { ...DEFAULT_ADJ };
+  filterAdjustments = { ...DEFAULT_ADJ };
+  filterIntensity = 100;
+  activeFilter = 'original';
   Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
+  updateIntensityVisual();
   undoStack = []; redoStack = [];
   updateHistoryButtons();
 
@@ -1067,38 +1339,30 @@ async function processFile(file){
   document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'split'));
   splitPercent = 50;
 
+  document.querySelectorAll('.filter-item').forEach(i => i.classList.toggle('active', i.dataset.filter === 'original'));
+
   renderEnhanced();
   updateViews();
   setTimeout(fitToScreen, 60);
-
-  showProcessing(false);
   setStatus('ready', 'Ready');
 
-  setTimeout(() => { runAutoEnhance(true); }, 400);
-  showToast('Image loaded. Drag the split handle to compare.', 'success');
+  // Build filter thumbnails after a small delay
+  setTimeout(updateFilterThumbnails, 100);
+
+  showToast('Image loaded. Pick a filter to get started.', 'success');
 }
 
 /* ============================================================
-   AUTO ENHANCE
+   AUTO ENHANCE — subtle, tasteful
    ============================================================ */
-async function runAutoEnhance(silent){
-  if(!sourceImageData || busy) return;
-  busy = true;
-
-  if(!silent){
-    saveHistory();
-    showProcessing(true, 'Analyzing Image...', 'Computing optimal values...',
-      '<i class="fas fa-wand-magic-sparkles"></i> Analyzing luminance, color balance, and contrast.'
-    );
-    setStatus('processing', 'Analyzing');
-  }
-
-  await new Promise(res => setTimeout(res, 60));
+function autoEnhance(){
+  if(!sourceImageData){ showToast('Load an image first', 'error'); return; }
+  saveHistory();
 
   const W = sourceImageData.width;
   const H = sourceImageData.height;
   const data = sourceImageData.data;
-  const step = Math.max(1, Math.floor((W * H) / 150_000));
+  const step = Math.max(1, Math.floor((W * H) / 200_000));
   const stepBytes = step * 4;
 
   const lumHist = new Uint32Array(256);
@@ -1117,11 +1381,8 @@ async function runAutoEnhance(silent){
     if(lum < 40) darkPixels++;
     if(lum > 215) brightPixels++;
     sampled++;
-    if(sampled >= 150_000) break;
+    if(sampled >= 200_000) break;
   }
-
-  updateProgress(40);
-  await new Promise(res => setTimeout(res, 20));
 
   const clip = sampled * 0.005;
   let loLum = 0, hiLum = 255, cum = 0;
@@ -1136,162 +1397,41 @@ async function runAutoEnhance(silent){
   const darkRatio = darkPixels / sampled;
   const brightRatio = brightPixels / sampled;
 
-  updateProgress(75);
-  await new Promise(res => setTimeout(res, 20));
-
   const newAdj = { ...DEFAULT_ADJ };
 
-  newAdj.exposure = Math.round(Math.max(-40, Math.min(50, (128 - meanLum) * 0.55)));
+  // Exposure — subtle, cap at ±12
+  newAdj.exposure = Math.round(Math.max(-12, Math.min(12, (128 - meanLum) * 0.15)));
 
+  // Contrast — target 220 range, subtle
   const range = hiLum - loLum;
-  newAdj.contrast = Math.round(Math.max(20, Math.min(60, 22 + (245 - range) * 0.4)));
+  newAdj.contrast = Math.round(Math.max(0, Math.min(15, (220 - range) * 0.12)));
 
-  if(darkRatio > 0.015 && loLum < 75){
-    newAdj.shadows = Math.round(Math.min(55, 25 + (75 - loLum) * 0.55));
-  } else if(darkRatio > 0.008){
-    newAdj.shadows = 22;
+  // Shadows — only lift if there are dark areas
+  if(darkRatio > 0.02 && loLum < 60){
+    newAdj.shadows = Math.round(Math.min(18, (60 - loLum) * 0.3));
   }
 
-  if(brightRatio > 0.015 && hiLum > 220){
-    newAdj.highlights = -Math.round(Math.min(45, 18 + (hiLum - 220) * 0.7));
-  } else if(brightRatio > 0.008){
-    newAdj.highlights = -18;
+  // Highlights — only recover if lots of bright areas
+  if(brightRatio > 0.02 && hiLum > 225){
+    newAdj.highlights = -Math.round(Math.min(15, (hiLum - 225) * 0.5));
   }
 
-  if(avgSat < 0.20){ newAdj.saturation = 35; newAdj.vibrance = 35; }
-  else if(avgSat < 0.32){ newAdj.saturation = 25; newAdj.vibrance = 28; }
-  else if(avgSat < 0.45){ newAdj.saturation = 15; newAdj.vibrance = 20; }
-  else { newAdj.saturation = 6; newAdj.vibrance = 14; }
+  // Saturation — subtle
+  if(avgSat < 0.22) newAdj.saturation = Math.round(Math.min(12, (0.25 - avgSat) * 60));
+  else if(avgSat > 0.50) newAdj.saturation = -Math.round(Math.min(8, (avgSat - 0.50) * 40));
 
+  // White balance — subtle
   const rRatio = avgR / grayAvg, bRatio = avgB / grayAvg;
-  newAdj.temperature = Math.round(Math.max(-35, Math.min(35, (bRatio - rRatio) * 65)));
+  newAdj.temperature = Math.round(Math.max(-12, Math.min(12, (bRatio - rRatio) * 25)));
 
-  if(meanLum < 100) newAdj.gamma = 1.10;
-  else if(meanLum > 155) newAdj.gamma = 0.95;
-  else newAdj.gamma = 1.03;
+  // Small clarity + sharpness
+  newAdj.clarity = 8;
+  newAdj.sharpness = 10;
 
-  newAdj.sharpness = 40;
-  newAdj.clarity = 25;
-
-  updateProgress(90);
-  await new Promise(res => setTimeout(res, 20));
-
-  adjustments = newAdj;
+  baseAdjustments = { ...newAdj };
   Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
-  updateProgress(100);
-  renderEnhanced();
-  updateViews();
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-
-  busy = false;
-  if(!silent){
-    showProcessing(false);
-    setStatus('ready', 'Enhanced');
-    showToast('Auto Enhance applied. Drag the split handle to compare!', 'success');
-  } else {
-    setStatus('ready', 'Ready');
-  }
-}
-
-/* ============================================================
-   AI SUPER-RESOLUTION — using ESRGAN-Slim 2x via UpscalerJS
-   ============================================================ */
-async function runSuperResolution(){
-  if(!sourceImageData){ showToast('Load an image first', 'error'); return; }
-  if(busy){ showToast('Please wait for the current operation', 'warning'); return; }
-
-  // Check libraries
-  if(typeof window.Upscaler === 'undefined' || typeof window.ESRGANSlim2x === 'undefined'){
-    showToast('AI library not available. Check your internet connection.', 'error');
-    return;
-  }
-
-  busy = true;
-  const btn = document.getElementById('btnSR');
-  btn.disabled = true;
-
-  try {
-    showProcessing(true, 'Loading AI Model...', 'Initializing ESRGAN neural network...',
-      '<i class="fas fa-download"></i> First use downloads ~2 MB model. Cached for future.'
-    );
-    setStatus('processing', 'AI Upscale');
-
-    if(!srUpscaler){
-      srUpscaler = new window.Upscaler({ model: window.ESRGANSlim2x });
-    }
-
-    // Prepare source canvas at a size the model can handle well.
-    // ESRGAN-Slim works best on smaller images; we downscale large inputs first.
-    const MAX_DIM = 900;
-    let workW = sourceImageData.width;
-    let workH = sourceImageData.height;
-    let needsDownscale = Math.max(workW, workH) > MAX_DIM;
-
-    const workCanvas = document.createElement('canvas');
-    if(needsDownscale){
-      const scale = MAX_DIM / Math.max(workW, workH);
-      workW = Math.round(workW * scale);
-      workH = Math.round(workH * scale);
-      workCanvas.width = workW;
-      workCanvas.height = workH;
-      const c = workCanvas.getContext('2d');
-      c.imageSmoothingQuality = 'high';
-      // Use current enhanced state as the base for upscaling
-      const tmp = document.createElement('canvas');
-      tmp.width = sourceImageData.width;
-      tmp.height = sourceImageData.height;
-      tmp.getContext('2d').putImageData(currentRender || sourceImageData, 0, 0);
-      c.drawImage(tmp, 0, 0, workW, workH);
-      showToast('Downscaled to 900px for AI processing, will upscale back.', 'info');
-    } else {
-      workCanvas.width = workW;
-      workCanvas.height = workH;
-      workCanvas.getContext('2d').putImageData(currentRender || sourceImageData, 0, 0);
-    }
-
-    showProcessing(true, 'AI Upscaling...', 'Neural network is enhancing your image...',
-      '<i class="fas fa-cog fa-spin"></i> This can take 5–30 seconds depending on size and device.'
-    );
-    updateProgress(10);
-
-    // Run the upscaler
-    const upscaledResult = await srUpscaler.upscale(workCanvas, {
-      patchSize: 64,
-      padding: 4,
-      progress: (pct) => {
-        updateProgress(10 + pct * 0.85);
-      }
-    });
-
-    updateProgress(95);
-
-    // upscaledResult is an HTMLImageElement; resize back to original dimensions
-    const finalCanvas = document.createElement('canvas');
-    finalCanvas.width = sourceImageData.width;
-    finalCanvas.height = sourceImageData.height;
-    const fCtx = finalCanvas.getContext('2d', { willReadFrequently: true });
-    fCtx.imageSmoothingQuality = 'high';
-    fCtx.drawImage(upscaledResult, 0, 0, finalCanvas.width, finalCanvas.height);
-
-    sourceImageData = fCtx.getImageData(0, 0, finalCanvas.width, finalCanvas.height);
-
-    renderEnhanced();
-    updateViews();
-
-    updateProgress(100);
-    showProcessing(false);
-    setStatus('ready', 'AI Enhanced');
-    showToast('AI Super-Resolution complete! Compare in Split view.', 'success');
-
-  } catch(err){
-    console.error('AI SR error:', err);
-    showProcessing(false);
-    setStatus('ready', 'Error');
-    showToast('AI upscale failed: ' + (err.message || 'Unknown error'), 'error');
-  } finally {
-    busy = false;
-    btn.disabled = false;
-  }
+  scheduleRender();
+  showToast('Auto Enhance applied — subtle and natural', 'success');
 }
 
 /* ============================================================
@@ -1299,27 +1439,39 @@ async function runSuperResolution(){
    ============================================================ */
 const PRESETS = {
   original:  { ...DEFAULT_ADJ },
-  portrait:  { ...DEFAULT_ADJ, exposure: 10, brightness: 6, contrast: 22, highlights: -22, shadows: 26, saturation: 8, vibrance: 26, temperature: 10, tint: 3, sharpness: 28, clarity: 14, gamma: 1.05 },
-  landscape: { ...DEFAULT_ADJ, exposure: 6, contrast: 40, highlights: -25, shadows: 22, saturation: 28, vibrance: 40, temperature: -8, sharpness: 40, clarity: 35, gamma: 1.03 },
-  night:     { ...DEFAULT_ADJ, exposure: 35, contrast: 25, highlights: -35, shadows: 50, saturation: 10, vibrance: 30, temperature: -12, sharpness: 20, clarity: 20, gamma: 1.15 },
-  vivid:     { ...DEFAULT_ADJ, contrast: 32, saturation: 45, vibrance: 40, sharpness: 35, clarity: 30, gamma: 1.02 },
-  soft:      { ...DEFAULT_ADJ, brightness: 12, contrast: -12, highlights: 20, shadows: 18, saturation: -3, vibrance: 14, sharpness: 0, clarity: 0, gamma: 1.10 },
-  warm:      { ...DEFAULT_ADJ, temperature: 40, saturation: 18, vibrance: 22, contrast: 15, gamma: 1.06 },
-  cool:      { ...DEFAULT_ADJ, temperature: -40, saturation: 12, vibrance: 18, contrast: 18, gamma: 0.98 },
-  vintage:   { ...DEFAULT_ADJ, contrast: 25, highlights: -20, shadows: 28, saturation: -25, vibrance: 18, temperature: 25, tint: 12, vignette: 50, gamma: 1.10 },
-  sepia:     { ...DEFAULT_ADJ, saturation: -100, temperature: 50, tint: 12, contrast: 18, vignette: 30 },
-  bw:        { ...DEFAULT_ADJ, saturation: -100, contrast: 40, clarity: 30, sharpness: 30 },
-  hdr:       { ...DEFAULT_ADJ, exposure: 5, contrast: 45, highlights: -35, shadows: 55, saturation: 15, vibrance: 35, clarity: 45, sharpness: 25, gamma: 1.05 }
+  portrait:  { brightness: 5, contrast: 10, shadows: 12, highlights: -8, saturation: 6, vibrance: 15, temperature: 8, clarity: 6, sharpness: 12 },
+  landscape: { contrast: 18, saturation: 15, vibrance: 22, temperature: -5, clarity: 15, sharpness: 18, shadows: 10 },
+  night:     { exposure: 15, contrast: 10, shadows: 20, highlights: -18, saturation: 5, vibrance: 15, gamma: 1.08 },
+  food:      { brightness: 5, contrast: 12, saturation: 18, vibrance: 20, temperature: 12, clarity: 12, sharpness: 15 },
+  vintage:   { brightness: 5, contrast: 8, saturation: -18, vibrance: 10, temperature: 15, tint: 8, fade: 20, vignette: 25, grain: 10 }
 };
 
 function applyPreset(name, btn){
+  if(name === 'original'){
+    saveHistory();
+    baseAdjustments = { ...DEFAULT_ADJ };
+    filterAdjustments = { ...DEFAULT_ADJ };
+    filterIntensity = 0;
+    activeFilter = 'original';
+    updateIntensityVisual();
+    document.querySelectorAll('.filter-item').forEach(i => i.classList.toggle('active', i.dataset.filter === 'original'));
+    Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
+    scheduleRender();
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    showToast('Reset to original', 'info');
+    return;
+  }
   saveHistory();
-  const preset = PRESETS[name];
-  if(!preset) return;
-  adjustments = { ...preset };
+  const preset = PRESETS[name] || {};
+  baseAdjustments = { ...DEFAULT_ADJ, ...preset };
+  filterAdjustments = { ...DEFAULT_ADJ };
+  filterIntensity = 0;
+  activeFilter = 'original';
+  updateIntensityVisual();
+  document.querySelectorAll('.filter-item').forEach(i => i.classList.toggle('active', i.dataset.filter === 'original'));
   Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
-  renderEnhanced();
-  updateViews();
+  scheduleRender();
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   showToast(`Preset: ${name.charAt(0).toUpperCase() + name.slice(1)}`, 'success');
@@ -1327,40 +1479,68 @@ function applyPreset(name, btn){
 
 function resetAdjustments(){
   saveHistory();
-  adjustments = { ...DEFAULT_ADJ };
-  Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
-  renderEnhanced();
-  updateViews();
+  baseAdjustments = { ...DEFAULT_ADJ };
+  filterAdjustments = { ...DEFAULT_ADJ };
+  filterIntensity = 0;
+  activeFilter = 'original';
+  updateIntensityVisual();
+  document.querySelectorAll('.filter-item').forEach(i => i.classList.toggle('active', i.dataset.filter === 'original'));
   document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('.preset-btn[data-preset="original"]').classList.add('active');
-  showToast('Adjustments reset', 'info');
+  Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
+  scheduleRender();
+  showToast('All adjustments reset', 'info');
 }
 
 /* ============================================================
    UNDO / REDO
    ============================================================ */
 function saveHistory(){
-  undoStack.push(JSON.parse(JSON.stringify(adjustments)));
+  const state = {
+    base: JSON.parse(JSON.stringify(baseAdjustments)),
+    filter: JSON.parse(JSON.stringify(filterAdjustments)),
+    intensity: filterIntensity,
+    active: activeFilter
+  };
+  undoStack.push(state);
   if(undoStack.length > MAX_HISTORY) undoStack.shift();
   redoStack = [];
   updateHistoryButtons();
 }
+function restoreState(state){
+  baseAdjustments = state.base;
+  filterAdjustments = state.filter;
+  filterIntensity = state.intensity;
+  activeFilter = state.active;
+  updateIntensityVisual();
+  document.querySelectorAll('.filter-item').forEach(i => i.classList.toggle('active', i.dataset.filter === activeFilter));
+  Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
+  scheduleRender();
+}
 function undo(){
   if(undoStack.length === 0){ showToast('Nothing to undo', 'info'); return; }
-  redoStack.push(JSON.parse(JSON.stringify(adjustments)));
+  const current = {
+    base: JSON.parse(JSON.stringify(baseAdjustments)),
+    filter: JSON.parse(JSON.stringify(filterAdjustments)),
+    intensity: filterIntensity,
+    active: activeFilter
+  };
+  redoStack.push(current);
   if(redoStack.length > MAX_HISTORY) redoStack.shift();
-  adjustments = undoStack.pop();
-  Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
-  renderEnhanced(); updateViews();
+  restoreState(undoStack.pop());
   updateHistoryButtons();
 }
 function redo(){
   if(redoStack.length === 0){ showToast('Nothing to redo', 'info'); return; }
-  undoStack.push(JSON.parse(JSON.stringify(adjustments)));
+  const current = {
+    base: JSON.parse(JSON.stringify(baseAdjustments)),
+    filter: JSON.parse(JSON.stringify(filterAdjustments)),
+    intensity: filterIntensity,
+    active: activeFilter
+  };
+  undoStack.push(current);
   if(undoStack.length > MAX_HISTORY) undoStack.shift();
-  adjustments = redoStack.pop();
-  Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
-  renderEnhanced(); updateViews();
+  restoreState(redoStack.pop());
   updateHistoryButtons();
 }
 function updateHistoryButtons(){
@@ -1369,7 +1549,7 @@ function updateHistoryButtons(){
 }
 
 /* ============================================================
-   KEYBOARD SHORTCUTS
+   KEYBOARD
    ============================================================ */
 document.addEventListener('keydown', e => {
   const ctrl = e.ctrlKey || e.metaKey;
@@ -1406,7 +1586,6 @@ async function generateFinalImage(format){
     canvas.toBlob(blob => blob ? res(blob) : rej(new Error('Blob creation failed')), 'image/' + format, 0.95);
   });
 }
-
 async function download(format){
   document.getElementById('downloadMenu').classList.remove('open');
   try {
@@ -1416,7 +1595,7 @@ async function download(format){
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `enhanced-${Date.now()}.${ext}`;
+    a.download = `photo-${Date.now()}.${ext}`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
     showToast('Downloaded successfully', 'success');
@@ -1448,7 +1627,10 @@ function resetAll(){
   sourceImg = null;
   sourceImageData = null;
   currentRender = null;
-  adjustments = { ...DEFAULT_ADJ };
+  baseAdjustments = { ...DEFAULT_ADJ };
+  filterAdjustments = { ...DEFAULT_ADJ };
+  filterIntensity = 100;
+  activeFilter = 'original';
   undoStack = []; redoStack = [];
   zoom = 1; splitPercent = 50;
   document.getElementById('uploadCard').style.display = 'block';
@@ -1457,8 +1639,6 @@ function resetAll(){
   stage.innerHTML = '';
   stage.dataset.mode = '';
   updateHistoryButtons();
-  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.preset-btn[data-preset="original"]').classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1468,40 +1648,14 @@ function resetAll(){
 buildSliders(document.getElementById('slidersLight'), SLIDERS.light);
 buildSliders(document.getElementById('slidersColor'), SLIDERS.color);
 buildSliders(document.getElementById('slidersDetail'), SLIDERS.detail);
+buildFilterGrid();
+setupIntensitySlider();
 
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
 window.addEventListener('resize', () => { if(isFullscreen) fitToScreen(); });
 
-// Verify AI library loaded, update button state
-function checkAILibrary(){
-  const hasUpscaler = typeof window.Upscaler !== 'undefined';
-  const hasModel = typeof window.ESRGANSlim2x !== 'undefined';
-  const btn = document.getElementById('btnSR');
-  const srText = document.getElementById('srStatusText');
-
-  if(hasUpscaler && hasModel){
-    srLibraryReady = true;
-    console.log('✅ UpscalerJS + ESRGAN-Slim 2x loaded');
-    return true;
-  } else {
-    srLibraryReady = false;
-    console.warn('❌ UpscalerJS or ESRGAN model not loaded');
-    console.warn('  Upscaler:', hasUpscaler);
-    console.warn('  ESRGANSlim2x:', hasModel);
-    if(btn){
-      btn.disabled = true;
-      if(srText) srText.textContent = 'Library failed to load — check internet';
-    }
-    return false;
-  }
-}
-
-// Check immediately and again after a short delay (in case of slow network)
-setTimeout(checkAILibrary, 500);
-setTimeout(checkAILibrary, 2500);
-
-setTimeout(() => showToast('Image Enhancer ready. Upload an image to begin.', 'success'), 600);
+setTimeout(() => showToast('Photo Studio ready. Upload an image to begin.', 'success'), 500);
 </script>
 
 </body>
