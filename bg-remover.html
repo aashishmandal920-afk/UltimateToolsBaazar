@@ -3,24 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pro AI Background Remover — 6 Models • Alpha Matting • Manual Refinement</title>
+<title>Smart Background Remover — No AI, 100% Offline</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<script>
-  document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
-</script>
-
 <style>
-/* ============================================================
-   CSS VARIABLES
-   ============================================================ */
 :root{
   --primary:#6366f1;
-  --primary-dark:#4f46e5;
   --secondary:#8b5cf6;
-  --accent:#ec4899;
   --success:#10b981;
   --danger:#ef4444;
   --warning:#f59e0b;
@@ -36,1185 +27,1009 @@
   --checker-2:#e0e0e0;
 }
 [data-theme="dark"]{
-  --bg:#0f172a;
-  --card:#1e293b;
-  --border:#334155;
-  --text:#f1f5f9;
-  --text-muted:#94a3b8;
+  --bg:#0f172a; --card:#1e293b; --border:#334155;
+  --text:#f1f5f9; --text-muted:#94a3b8;
   --shadow:0 4px 20px rgba(0,0,0,0.4);
   --shadow-lg:0 20px 50px rgba(0,0,0,0.6);
-  --checker-1:#1a1f2e;
-  --checker-2:#0f172a;
+  --checker-1:#1a1f2e; --checker-2:#0f172a;
 }
-
 *{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 
-body{
-  font-family:'Inter',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  padding-bottom:80px;
-  transition:background 0.3s,color 0.3s;
-  overflow-x:hidden;
-}
+.top-header{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;padding:36px 20px 28px;text-align:center;position:relative}
+.top-header h1{font-size:clamp(22px,4vw,34px);font-weight:800;margin-bottom:8px;position:relative;z-index:1}
+.top-header p{font-size:clamp(12px,1.5vw,14px);opacity:0.92;max-width:700px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
+.top-header .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:600;margin-bottom:12px;position:relative;z-index:1;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25)}
+.theme-toggle{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;z-index:2;backdrop-filter:blur(10px)}
 
-/* ============================================================
-   HEADER
-   ============================================================ */
-.top-header{
-  background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
-  color:white;
-  padding:40px 20px 30px;
-  text-align:center;
-  position:relative;
-  overflow:hidden;
-}
-.top-header::before{
-  content:'';position:absolute;top:-50%;right:-10%;
-  width:400px;height:400px;
-  background:radial-gradient(circle,rgba(255,255,255,0.15) 0%,transparent 70%);
-  border-radius:50%;
-}
-.top-header::after{
-  content:'';position:absolute;bottom:-60%;left:-5%;
-  width:350px;height:350px;
-  background:radial-gradient(circle,rgba(255,255,255,0.1) 0%,transparent 70%);
-  border-radius:50%;
-}
-.top-header h1{
-  font-size:clamp(24px,4vw,38px);
-  font-weight:800;
-  letter-spacing:-0.5px;
-  position:relative;z-index:1;
-  margin-bottom:10px;
-}
-.top-header p{
-  font-size:clamp(12px,1.5vw,15px);
-  opacity:0.92;
-  position:relative;z-index:1;
-  font-weight:400;
-  max-width:750px;
-  margin:0 auto;
-  line-height:1.6;
-}
-.top-header .badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,0.2);
-  padding:5px 14px;border-radius:20px;
-  font-size:11.5px;font-weight:600;
-  margin-bottom:14px;
-  position:relative;z-index:1;
-  backdrop-filter:blur(10px);
-  border:1px solid rgba(255,255,255,0.25);
-}
-.theme-toggle{
-  position:absolute;top:20px;right:20px;
-  background:rgba(255,255,255,0.2);
-  border:1px solid rgba(255,255,255,0.3);
-  color:white;width:42px;height:42px;
-  border-radius:50%;cursor:pointer;
-  font-size:16px;transition:0.3s;z-index:2;
-  backdrop-filter:blur(10px);
-}
-.theme-toggle:hover{background:rgba(255,255,255,0.35);transform:rotate(20deg)}
+.main-container{max-width:1400px;margin:24px auto;padding:0 20px}
 
-/* ============================================================
-   MAIN CONTAINER
-   ============================================================ */
-.main-container{
-  max-width:1500px;
-  margin:30px auto;
-  padding:0 20px;
-}
-
-.card{
-  background:var(--card);
-  border-radius:16px;
-  border:1px solid var(--border);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-  margin-bottom:20px;
-}
-
-.card-header{
-  padding:16px 20px;
-  border-bottom:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(99,102,241,0.04),transparent);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:10px;
-}
-.card-header h2{
-  font-size:15px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(99,102,241,0.04),transparent);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.card-header h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px}
 .card-header h2 i{color:var(--primary)}
 
-/* ============================================================
-   MODEL SELECTOR
-   ============================================================ */
-.model-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:12px;
-  padding:20px;
-}
-.model-card{
-  padding:16px;
-  border:2px solid var(--border);
-  border-radius:12px;
-  cursor:pointer;
-  transition:0.25s;
-  position:relative;
-  background:var(--card);
-}
-.model-card:hover{
-  border-color:var(--primary);
-  transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(99,102,241,0.15);
-}
-.model-card.active{
-  border-color:var(--primary);
-  background:rgba(99,102,241,0.06);
-  box-shadow:0 0 0 3px rgba(99,102,241,0.15);
-}
-.model-card h4{
-  font-size:13px;
-  font-weight:700;
-  margin-bottom:6px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.model-card h4 i{color:var(--primary)}
-.model-card p{
-  font-size:11px;
-  color:var(--text-muted);
-  line-height:1.5;
-  margin-bottom:8px;
-}
-.model-card .badge{
-  position:absolute;
-  top:12px;
-  right:12px;
-  font-size:9px;
-  padding:3px 8px;
-  border-radius:10px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:0.5px;
-}
-.badge.fast{background:#dbeafe;color:#1e40af}
-.badge.balanced{background:#fef3c7;color:#92400e}
-.badge.quality{background:#d1fae5;color:#065f46}
-.badge.pro{background:#fce7f3;color:#9d174d}
-.model-card .model-meta{
-  display:flex;
-  gap:10px;
-  font-size:10px;
-  color:var(--text-muted);
-  margin-top:8px;
-  padding-top:8px;
-  border-top:1px dashed var(--border);
-}
-.model-card .model-meta span{display:flex;align-items:center;gap:4px}
-
-/* ============================================================
-   MODE TABS
-   ============================================================ */
-.mode-tabs{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin-bottom:20px;
-  background:var(--card);
-  padding:6px;
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  max-width:500px;
-  margin-left:auto;
-  margin-right:auto;
-  border:1px solid var(--border);
-}
-.mode-tab{
-  flex:1;
-  padding:10px 18px;
-  border:none;
-  background:transparent;
-  color:var(--text-muted);
-  font-family:inherit;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-  border-radius:10px;
-  transition:0.25s;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-}
+/* Mode tabs */
+.mode-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:20px;background:var(--card);padding:6px;border-radius:14px;box-shadow:var(--shadow);max-width:600px;margin-left:auto;margin-right:auto;border:1px solid var(--border)}
+.mode-tab{flex:1;padding:10px 14px;border:none;background:transparent;color:var(--text-muted);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:10px;transition:0.25s;display:flex;align-items:center;justify-content:center;gap:6px}
 .mode-tab:hover{color:var(--text);background:rgba(99,102,241,0.08)}
-.mode-tab.active{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;
-  box-shadow:0 4px 12px rgba(99,102,241,0.4);
-}
+.mode-tab.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
 
-/* ============================================================
-   DROPZONE
-   ============================================================ */
+/* Dropzone */
 .upload-section{padding:24px}
-.dropzone{
-  border:2.5px dashed var(--border);
-  border-radius:16px;
-  padding:60px 30px;
-  text-align:center;
-  cursor:pointer;
-  transition:0.3s;
-  background:var(--bg);
-  position:relative;
-  overflow:hidden;
-}
-.dropzone:hover{
-  border-color:var(--primary);
-  background:rgba(99,102,241,0.04);
-}
-.dropzone.dragover{
-  border-color:var(--primary);
-  background:rgba(99,102,241,0.08);
-  transform:scale(1.01);
-}
-.dropzone.dragover .dropzone-icon{
-  transform:scale(1.15) translateY(-5px);
-  color:var(--primary);
-}
-.dropzone-icon{
-  font-size:64px;
-  color:var(--text-muted);
-  margin-bottom:20px;
-  transition:0.3s;
-  opacity:0.6;
-}
-.dropzone h3{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:10px;
-  color:var(--text);
-}
-.dropzone p{
-  font-size:13.5px;
-  color:var(--text-muted);
-  margin-bottom:20px;
-  line-height:1.6;
-}
-.dropzone kbd{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:4px;
-  padding:1px 6px;
-  font-size:11px;
-  font-family:'Inter',monospace;
-  font-weight:600;
-  color:var(--text);
-}
-.upload-actions{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  margin-top:16px;
-}
+.dropzone{border:2.5px dashed var(--border);border-radius:16px;padding:55px 30px;text-align:center;cursor:pointer;transition:0.3s;background:var(--bg)}
+.dropzone:hover{border-color:var(--primary);background:rgba(99,102,241,0.04)}
+.dropzone.dragover{border-color:var(--primary);background:rgba(99,102,241,0.08)}
+.dropzone-icon{font-size:60px;color:var(--text-muted);margin-bottom:18px;opacity:0.6}
+.dropzone h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.dropzone p{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.dropzone kbd{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;font-family:monospace;font-weight:600}
+.upload-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-/* ============================================================
-   BUTTONS
-   ============================================================ */
-.btn{
-  padding:11px 20px;
-  border:none;
-  border-radius:10px;
-  font-family:inherit;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-  transition:0.25s;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  white-space:nowrap;
-}
-.btn-primary{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;
-  box-shadow:0 4px 14px rgba(99,102,241,0.4);
-}
-.btn-primary:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(99,102,241,0.5);
-}
-.btn-success{
-  background:linear-gradient(135deg,#10b981,#059669);
-  color:white;
-  box-shadow:0 4px 14px rgba(16,185,129,0.4);
-}
+/* Buttons */
+.btn{padding:11px 20px;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:0.25s;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 14px rgba(99,102,241,0.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.5)}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:white}
 .btn-success:hover{transform:translateY(-2px)}
-.btn-danger{
-  background:linear-gradient(135deg,#ef4444,#dc2626);
-  color:white;
-  box-shadow:0 4px 14px rgba(239,68,68,0.4);
-}
-.btn-danger:hover{transform:translateY(-2px)}
-.btn-outline{
-  background:transparent;
-  color:var(--text);
-  border:1.5px solid var(--border);
-}
-.btn-outline:hover{
-  border-color:var(--primary);
-  color:var(--primary);
-  background:rgba(99,102,241,0.06);
-}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:white}
+.btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
 .btn-block{width:100%}
-.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
 .btn-sm{padding:8px 14px;font-size:12px}
 
-/* ============================================================
-   URL INPUT
-   ============================================================ */
-.url-input-group{
-  display:flex;
-  gap:10px;
-  margin-top:20px;
-  max-width:600px;
-  margin-left:auto;
-  margin-right:auto;
-}
-.url-input-group input{
-  flex:1;
-  padding:12px 16px;
-  border:1.5px solid var(--border);
-  border-radius:10px;
-  background:var(--card);
-  color:var(--text);
-  font-family:inherit;
-  font-size:13.5px;
-  transition:0.2s;
-}
-.url-input-group input:focus{
-  outline:none;
-  border-color:var(--primary);
-  box-shadow:0 0 0 4px rgba(99,102,241,0.1);
-}
+/* Method selector */
+.method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;padding:20px}
+.method-card{padding:16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:0.25s;background:var(--card);position:relative}
+.method-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.15)}
+.method-card.active{border-color:var(--primary);background:rgba(99,102,241,0.06);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
+.method-card h4{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.method-card h4 i{color:var(--primary)}
+.method-card p{font-size:11px;color:var(--text-muted);line-height:1.5}
+.method-card .method-icon{position:absolute;top:12px;right:12px;font-size:22px;opacity:0.15}
 
-/* ============================================================
-   RESULT VIEW
-   ============================================================ */
-.result-section{display:none;padding:24px}
-.result-section.active{display:block;animation:fadeIn 0.4s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* Editor Layout */
+.editor-layout{display:grid;grid-template-columns:1fr 380px;gap:20px;padding:20px}
+@media(max-width:1024px){.editor-layout{grid-template-columns:1fr}}
 
-.result-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-bottom:20px;
-  padding-bottom:16px;
-  border-bottom:1px solid var(--border);
-}
-.result-header h2{
-  font-size:18px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.result-header h2 i{color:var(--success)}
+.canvas-area{position:relative;background:linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);background-size:20px 20px;background-position:0 0,10px 10px;background-color:var(--checker-2);border-radius:14px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:500px}
+.canvas-area canvas{max-width:100%;max-height:70vh;display:block;cursor:crosshair}
+.canvas-area.brush-none canvas{cursor:default}
 
-.canvas-wrapper{
-  position:relative;
-  max-width:1000px;
-  margin:0 auto;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:var(--shadow-lg);
-  background:
-    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),
-    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);
-  background-size:20px 20px;
-  background-position:0 0,10px 10px;
-  background-color:var(--checker-2);
-  border:1px solid var(--border);
-}
-.canvas-wrapper canvas{
-  display:block;
-  max-width:100%;
-  height:auto;
-  cursor:crosshair;
-}
-.canvas-wrapper.brush-none canvas{cursor:default}
+/* Side Panel */
+.side-panel{display:flex;flex-direction:column;gap:16px}
 
-/* ============================================================
-   BRUSH TOOLS
-   ============================================================ */
-.brush-tools{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  padding:16px 20px;
-  flex-wrap:wrap;
-  border-bottom:1px solid var(--border);
-  background:var(--bg);
-}
-.brush-btn{
-  padding:10px 16px;
-  border:2px solid var(--border);
-  border-radius:10px;
-  background:var(--card);
-  cursor:pointer;
-  font-family:inherit;
-  font-size:12px;
-  font-weight:600;
-  transition:0.2s;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  color:var(--text);
-}
+.tool-section{background:var(--bg);border-radius:12px;padding:16px;border:1px solid var(--border)}
+.tool-section h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.tool-section h4 i{color:var(--primary)}
+
+.brush-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.brush-btn{padding:10px 8px;border:2px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text)}
 .brush-btn:hover{border-color:var(--primary);color:var(--primary)}
-.brush-btn.active{
-  border-color:var(--primary);
-  background:rgba(99,102,241,0.1);
-  color:var(--primary);
-}
-.brush-size-control{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:0 12px;
-  font-size:12px;
-  font-weight:600;
-  color:var(--text-muted);
-}
-.brush-size-control input[type="range"]{
-  width:100px;
-  height:6px;
-  -webkit-appearance:none;
-  background:var(--border);
-  border-radius:3px;
-  cursor:pointer;
-}
-.brush-size-control input[type="range"]::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:16px;
-  height:16px;
-  background:var(--primary);
-  border-radius:50%;
-  box-shadow:0 2px 6px rgba(99,102,241,0.5);
-}
+.brush-btn.active{border-color:var(--primary);background:rgba(99,102,241,0.1);color:var(--primary)}
+.brush-btn i{font-size:14px}
 
-/* ============================================================
-   BACKGROUND SWATCHES
-   ============================================================ */
-.bg-swatches{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  padding:16px 20px;
-  justify-content:center;
-  border-bottom:1px solid var(--border);
-}
-.bg-swatch{
-  width:44px;
-  height:44px;
-  border-radius:10px;
-  cursor:pointer;
-  border:2px solid var(--border);
-  transition:0.2s;
-  position:relative;
-  overflow:hidden;
-}
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.slider-row label{font-size:11.5px;font-weight:600;min-width:80px}
+.slider-row input[type="range"]{flex:1;height:6px;-webkit-appearance:none;background:var(--border);border-radius:3px;cursor:pointer}
+.slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--primary);border-radius:50%;box-shadow:0 2px 6px rgba(99,102,241,0.5)}
+.slider-row .value{font-size:11px;font-weight:700;color:var(--primary);min-width:40px;text-align:right;font-family:monospace}
+
+.color-pickers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.color-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+.color-item label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase}
+.color-item input[type="color"]{width:100%;height:36px;border:2px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:var(--card)}
+
+.bg-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.bg-swatch{width:36px;height:36px;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:0.2s;position:relative;overflow:hidden}
 .bg-swatch:hover{transform:scale(1.1);border-color:var(--primary)}
-.bg-swatch.active{
-  border-color:var(--primary);
-  border-width:3px;
-  box-shadow:0 0 0 3px rgba(99,102,241,0.2);
-}
-.bg-swatch.transparent{
-  background:
-    linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),
-    linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);
-  background-size:12px 12px;
-  background-position:0 0,6px 6px;
-  background-color:#fff;
-}
-.bg-swatch.white{background:#ffffff}
-.bg-swatch.black{background:#000000}
-.bg-swatch.blue{background:#2563eb}
-.bg-swatch.red{background:#dc2626}
-.bg-swatch.green{background:#16a34a}
-.bg-swatch.gradient{background:linear-gradient(135deg,#6366f1,#ec4899)}
-.bg-custom-wrapper{position:relative}
-.bg-custom-wrapper input[type="color"]{
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
-  opacity:0;
-  cursor:pointer;
-}
-.bg-custom-wrapper .bg-swatch{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--text-muted);
-  font-size:16px;
-  background:linear-gradient(135deg,#6366f1,#ec4899);
-}
+.bg-swatch.active{border-color:var(--primary);border-width:3px;box-shadow:0 0 0 3px rgba(99,102,241,0.2)}
+.bg-swatch.transparent{background:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:12px 12px;background-position:0 0,6px 6px;background-color:#fff}
+.bg-swatch.white{background:#fff}.bg-swatch.black{background:#000}.bg-swatch.blue{background:#2563eb}.bg-swatch.red{background:#dc2626}.bg-swatch.green{background:#16a34a}.bg-swatch.gray{background:#6b7280}
 
-/* ============================================================
-   ADVANCED CONTROLS
-   ============================================================ */
-.advanced-controls{
-  padding:20px;
-  border-bottom:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:16px;
-  background:var(--bg);
-}
-.control-group{
-  background:var(--card);
-  padding:16px;
-  border-radius:12px;
-  border:1px solid var(--border);
-}
-.control-group h4{
-  font-size:12px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:0.5px;
-  color:var(--text-muted);
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.control-group h4 i{color:var(--primary)}
-.slider-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:12px;
-}
-.slider-row label{
-  font-size:12px;
-  font-weight:600;
-  min-width:90px;
-  color:var(--text);
-}
-.slider-row input[type="range"]{
-  flex:1;
-  height:6px;
-  -webkit-appearance:none;
-  background:var(--border);
-  border-radius:3px;
-  cursor:pointer;
-}
-.slider-row input[type="range"]::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:18px;
-  height:18px;
-  background:var(--primary);
-  border-radius:50%;
-  box-shadow:0 2px 6px rgba(99,102,241,0.5);
-}
-.slider-row .value{
-  font-size:12px;
-  font-weight:700;
-  color:var(--primary);
-  min-width:45px;
-  text-align:right;
-  font-family:monospace;
-}
-.toggle-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-  font-size:12.5px;
-  font-weight:600;
-}
-.toggle-switch{
-  position:relative;
-  width:44px;
-  height:24px;
-  background:var(--border);
-  border-radius:12px;
-  cursor:pointer;
-  transition:0.3s;
-}
-.toggle-switch::after{
-  content:'';
-  position:absolute;
-  top:2px;
-  left:2px;
-  width:20px;
-  height:20px;
-  background:white;
-  border-radius:50%;
-  transition:0.3s;
-  box-shadow:0 2px 4px rgba(0,0,0,0.2);
-}
-.toggle-switch.active{background:var(--primary)}
-.toggle-switch.active::after{left:22px}
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px;background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));border-radius:12px}
+.export-btn{padding:12px 8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text);transition:0.25s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.export-btn i{font-size:16px;color:var(--primary)}
+.export-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
 
-/* ============================================================
-   EXPORT BAR
-   ============================================================ */
-.export-bar{
-  padding:20px;
-  background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:600}
+.toggle{position:relative;width:40px;height:22px;background:var(--border);border-radius:11px;cursor:pointer;transition:0.3s}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.toggle.active{background:var(--primary)}
+.toggle.active::after{left:20px}
 
-/* ============================================================
-   BATCH MODE
-   ============================================================ */
-.batch-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:16px;
-  padding:20px;
-}
-.batch-item{
-  background:var(--bg);
-  border-radius:12px;
-  overflow:hidden;
-  border:1px solid var(--border);
-  position:relative;
-  transition:0.25s;
-}
-.batch-item:hover{
-  transform:translateY(-2px);
-  box-shadow:var(--shadow-lg);
-}
-.batch-item .batch-thumb{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  display:block;
-  background:
-    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),
-    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);
-  background-size:16px 16px;
-  background-position:0 0,8px 8px;
-  background-color:var(--checker-2);
-}
-.batch-item .batch-info{
-  padding:10px 12px;
-  font-size:11.5px;
-}
-.batch-item .batch-name{
-  font-weight:600;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin-bottom:4px;
-}
-.batch-item .batch-status{
-  font-size:10.5px;
-  color:var(--text-muted);
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.batch-item .batch-status.processing{color:var(--info)}
-.batch-item .batch-status.done{color:var(--success)}
-.batch-item .batch-status.error{color:var(--danger)}
-.batch-item .batch-download{
-  position:absolute;
-  top:10px;right:10px;
-  background:rgba(0,0,0,0.7);
-  color:white;
-  border:none;
-  width:34px;height:34px;
-  border-radius:50%;
-  cursor:pointer;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  backdrop-filter:blur(10px);
-  transition:0.2s;
-}
-.batch-item.done .batch-download{display:flex}
-.batch-item .batch-download:hover{background:var(--primary);transform:scale(1.1)}
-
-/* ============================================================
-   PROCESSING OVERLAY
-   ============================================================ */
-.processing-overlay{
-  position:fixed;
-  top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(10px);
-  z-index:999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
+/* Processing */
+.processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
 .processing-overlay.active{display:flex}
-.processing-box{
-  background:var(--card);
-  border-radius:20px;
-  padding:40px 50px;
-  max-width:500px;
-  width:100%;
-  text-align:center;
-  box-shadow:0 30px 80px rgba(0,0,0,0.5);
-  animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
-}
-@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
-.processing-box .spinner{
-  width:70px;height:70px;
-  border:5px solid var(--border);
-  border-top-color:var(--primary);
-  border-radius:50%;
-  margin:0 auto 24px;
-  animation:spin 1s linear infinite;
-}
+.processing-box{background:var(--card);border-radius:20px;padding:36px 44px;max-width:440px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
+.processing-box .spinner{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 20px;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.processing-box h3{font-size:19px;font-weight:700;margin-bottom:10px}
-.processing-box p{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
-.progress-bar-wrapper{
-  width:100%;height:8px;
-  background:var(--bg);
-  border-radius:20px;
-  overflow:hidden;
-  margin-bottom:12px;
-  border:1px solid var(--border);
-}
-.progress-bar-fill{
-  height:100%;width:0%;
-  background:linear-gradient(90deg,var(--primary),var(--secondary));
-  border-radius:20px;
-  transition:width 0.3s;
-  position:relative;
-  overflow:hidden;
-}
-.progress-bar-fill::after{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
-  animation:shimmer 1.5s infinite;
-}
-@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.progress-text{font-size:12px;color:var(--text-muted);font-weight:500;font-family:monospace}
+.processing-box h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.processing-box p{font-size:12.5px;color:var(--text-muted)}
 
-/* ============================================================
-   TOAST
-   ============================================================ */
-.toast{
-  position:fixed;bottom:30px;left:50%;
-  transform:translateX(-50%) translateY(150px);
-  background:var(--card);color:var(--text);
-  padding:14px 22px;border-radius:12px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.3);
-  font-size:13px;font-weight:600;
-  z-index:2000;
-  transition:0.35s cubic-bezier(0.4,0,0.2,1);
-  display:flex;align-items:center;gap:10px;
-  border-left:4px solid var(--success);
-  opacity:0;max-width:90vw;
-}
+/* Toast */
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(150px);background:var(--card);color:var(--text);padding:14px 22px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-size:13px;font-weight:600;z-index:2000;transition:0.35s;display:flex;align-items:center;gap:10px;border-left:4px solid var(--success);opacity:0;max-width:90vw}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.toast.error{border-left-color:var(--danger)}
-.toast.error i{color:var(--danger)}
-.toast.success i{color:var(--success)}
-.toast.info{border-left-color:var(--info)}
-.toast.info i{color:var(--info)}
-.toast.warning{border-left-color:var(--warning)}
-.toast.warning i{color:var(--warning)}
+.toast.error{border-left-color:var(--danger)}.toast.error i{color:var(--danger)}
+.toast.info{border-left-color:var(--info)}.toast.info i{color:var(--info)}
+.toast.warning{border-left-color:var(--warning)}.toast.warning i{color:var(--warning)}
 
-/* ============================================================
-   INFO BOX
-   ============================================================ */
-.info-box{
-  margin-top:30px;
-  padding:20px;
-  background:var(--bg);
-  border-radius:14px;
-  border:1px solid var(--border);
-  display:flex;
-  gap:16px;
-  align-items:flex-start;
-}
-.info-box .info-icon{
-  color:var(--primary);
-  font-size:22px;
-  flex-shrink:0;
-  margin-top:2px;
-}
-.info-box .info-content h4{font-size:14px;font-weight:700;margin-bottom:6px}
-.info-box .info-content p{font-size:12.5px;color:var(--text-muted);line-height:1.6}
+/* Auto detect panel */
+.autodetect-info{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px;font-size:11.5px;color:var(--text-muted);line-height:1.5;margin-top:10px}
+.autodetect-info strong{color:var(--success);font-weight:700}
 
-/* ============================================================
-   RESPONSIVE
-   ============================================================ */
+.preview-mini{max-width:100%;border-radius:8px;margin-top:10px;border:1px solid var(--border)}
+
 @media(max-width:768px){
+  .editor-layout{grid-template-columns:1fr}
   .upload-section{padding:16px}
   .dropzone{padding:40px 20px}
-  .dropzone-icon{font-size:48px}
-  .dropzone h3{font-size:17px}
-  .processing-box{padding:30px 24px}
-  .result-header{flex-direction:column;align-items:flex-start}
-  .export-bar{flex-direction:column}
-  .export-bar .btn{width:100%}
-  .url-input-group{flex-direction:column}
-  .advanced-controls{grid-template-columns:1fr}
-  .brush-tools{padding:12px}
-  .brush-btn{padding:8px 12px;font-size:11px}
-}
-@media(max-width:480px){
-  .slider-row{flex-wrap:wrap}
-  .slider-row label{min-width:100%}
 }
 </style>
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
 <header class="top-header">
   <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
   <div class="badge">
-    <i class="fas fa-bolt"></i> 6 AI Models • Alpha Matting • Manual Brush
+    <i class="fas fa-bolt"></i> 100% Offline • No AI • No Download • Instant
   </div>
-  <h1>🎨 Pro AI Background Remover</h1>
-  <p>Professional-grade background removal with 6 AI models, alpha matting, manual brush refinement, and batch processing. 100% client-side.</p>
+  <h1>🎨 Smart Background Remover</h1>
+  <p>Traditional algorithms se background remove karein — bilkul offline, bina kisi AI model ke. Color-based detection, chromakey, aur manual brush ke saath.</p>
 </header>
 
 <div class="main-container">
 
-  <!-- ==================== MODEL SELECTOR ==================== -->
-  <div class="card">
-    <div class="card-header">
-      <h2><i class="fas fa-brain"></i> Select AI Model</h2>
-    </div>
-    <div class="model-grid" id="modelGrid">
-      <div class="model-card active" data-model="isnet" onclick="selectModel('isnet', this)">
-        <div class="badge balanced">Balanced</div>
-        <h4><i class="fas fa-star"></i> ISNet General</h4>
-        <p>Best all-rounder. Works for people, products, animals, and objects.</p>
-        <div class="model-meta">
-          <span><i class="fas fa-database"></i> 40MB</span>
-          <span><i class="fas fa-clock"></i> ~5s</span>
-          <span><i class="fas fa-expand"></i> 1024px</span>
-        </div>
-      </div>
-      <div class="model-card" data-model="isnet_fp16" onclick="selectModel('isnet_fp16', this)">
-        <div class="badge fast">Fastest</div>
-        <h4><i class="fas fa-bolt"></i> ISNet FP16</h4>
-        <p>Half precision version. Smaller size, faster processing.</p>
-        <div class="model-meta">
-          <span><i class="fas fa-database"></i> 20MB</span>
-          <span><i class="fas fa-clock"></i> ~3s</span>
-          <span><i class="fas fa-expand"></i> 1024px</span>
-        </div>
-      </div>
-      <div class="model-card" data-model="isnet_quint8" onclick="selectModel('isnet_quint8', this)">
-        <div class="badge fast">Smallest</div>
-        <h4><i class="fas fa-feather"></i> ISNet Quantized</h4>
-        <p>8-bit quantized. Smallest download, good for slow connections.</p>
-        <div class="model-meta">
-          <span><i class="fas fa-database"></i> 10MB</span>
-          <span><i class="fas fa-clock"></i> ~4s</span>
-          <span><i class="fas fa-expand"></i> 1024px</span>
-        </div>
-      </div>
-      <div class="model-card" data-model="u2net_human" onclick="selectModel('u2net_human', this)">
-        <div class="badge quality">Best Portraits</div>
-        <h4><i class="fas fa-user"></i> U2Net Human</h4>
-        <p>Specialized for human portraits. Better hair detail.</p>
-        <div class="model-meta">
-          <span><i class="fas fa-database"></i> 168MB</span>
-          <span><i class="fas fa-clock"></i> ~15s</span>
-          <span><i class="fas fa-expand"></i> 320px</span>
-        </div>
-      </div>
-      <div class="model-card" data-model="bria_rmbg" onclick="selectModel('bria_rmbg', this)">
-        <div class="badge pro">Professional</div>
-        <h4><i class="fas fa-crown"></i> BRIA RMBG 2.0</h4>
-        <p>Professional-grade, highest quality. Best for commercial use.</p>
-        <div class="model-meta">
-          <span><i class="fas fa-database"></i> 176MB</span>
-          <span><i class="fas fa-clock"></i> ~45s</span>
-          <span><i class="fas fa-expand"></i> 1024px</span>
-        </div>
-      </div>
-      <div class="model-card" data-model="silueta" onclick="selectModel('silueta', this)">
-        <div class="badge fast">Lightweight</div>
-        <h4><i class="fas fa-leaf"></i> Silueta</h4>
-        <p>Lightweight silhouette model. Great for simple subjects.</p>
-        <div class="model-meta">
-          <span><i class="fas fa-database"></i> 42MB</span>
-          <span><i class="fas fa-clock"></i> ~6s</span>
-          <span><i class="fas fa-expand"></i> 320px</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== MODE TABS ==================== -->
-  <div class="mode-tabs">
-    <button class="mode-tab active" onclick="switchMode('single',this)">
-      <i class="fas fa-image"></i> Single
-    </button>
-    <button class="mode-tab" onclick="switchMode('batch',this)">
-      <i class="fas fa-images"></i> Batch
-    </button>
-  </div>
-
-  <!-- ==================== SINGLE MODE ==================== -->
-  <div id="singleMode">
-    <div class="card">
-      <div class="upload-section" id="uploadSection">
-        <div class="dropzone" id="dropzone">
-          <div class="dropzone-icon">
-            <i class="fas fa-cloud-upload-alt"></i>
-          </div>
-          <h3>Drop image here or click to upload</h3>
-          <p>
-            Click to select a file, press <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste,<br>
-            or drag and drop from your desktop
-          </p>
-          <div class="upload-actions">
-            <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
-              <i class="fas fa-folder-open"></i> Choose File
-            </button>
-            <button class="btn btn-outline" onclick="pasteFromClipboard()">
-              <i class="fas fa-paste"></i> Paste
-            </button>
-          </div>
-        </div>
-        <input type="file" id="fileInput" accept="image/*" style="display:none">
-        <div class="url-input-group">
-          <input type="url" id="urlInput" placeholder="Or paste image URL here..." onkeydown="if(event.key==='Enter') loadFromURL()">
-          <button class="btn btn-primary" onclick="loadFromURL()">
-            <i class="fas fa-link"></i> Load
+  <!-- Upload -->
+  <div class="card" id="uploadCard">
+    <div class="upload-section">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h3>Drop image here or click to upload</h3>
+        <p>Click karein, <kbd>Ctrl</kbd>+<kbd>V</kbd> dabayein, ya drag karein</p>
+        <div class="upload-actions">
+          <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-folder-open"></i> Choose File
+          </button>
+          <button class="btn btn-outline" onclick="pasteFromClipboard()">
+            <i class="fas fa-paste"></i> Paste
           </button>
         </div>
       </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+  </div>
 
-      <!-- RESULT -->
-      <div class="result-section" id="resultSection">
-        <div class="result-header">
-          <h2><i class="fas fa-check-circle"></i> Background Removed</h2>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-outline btn-sm" onclick="resetAll()">
-              <i class="fas fa-redo"></i> New Image
-            </button>
-          </div>
+  <!-- Editor -->
+  <div class="card" id="editorCard" style="display:none">
+    <div class="card-header">
+      <h2><i class="fas fa-magic"></i> Background Editor</h2>
+      <button class="btn btn-outline btn-sm" onclick="resetAll()">
+        <i class="fas fa-redo"></i> New Image
+      </button>
+    </div>
+
+    <!-- Method Selector -->
+    <div class="method-grid">
+      <div class="method-card active" data-method="auto" onclick="selectMethod('auto', this)">
+        <div class="method-icon">🤖</div>
+        <h4><i class="fas fa-wand-magic-sparkles"></i> Auto Detect</h4>
+        <p>Corner pixels se background color detect karke remove karta hai. Solid backgrounds ke liye best.</p>
+      </div>
+      <div class="method-card" data-method="chromakey" onclick="selectMethod('chromakey', this)">
+        <div class="method-icon">🟢</div>
+        <h4><i class="fas fa-fill-drip"></i> Chromakey</h4>
+        <p>Manually color pick karein. Green screen, red, blue backgrounds ke liye perfect.</p>
+      </div>
+      <div class="method-card" data-method="threshold" onclick="selectMethod('threshold', this)">
+        <div class="method-icon">⚡</div>
+        <h4><i class="fas fa-sliders-h"></i> Brightness Threshold</h4>
+        <p>Light/dark backgrounds ke liye. White ya black background instantly remove.</p>
+      </div>
+      <div class="method-card" data-method="magic" onclick="selectMethod('magic', this)">
+        <div class="method-icon">✨</div>
+        <h4><i class="fas fa-magic"></i> Magic Edge</h4>
+        <p>Edge detection + color flood. Complex backgrounds ke liye advanced.</p>
+      </div>
+    </div>
+
+    <div class="editor-layout">
+      <!-- Canvas -->
+      <div>
+        <div class="canvas-area" id="canvasArea">
+          <canvas id="editCanvas"></canvas>
         </div>
+      </div>
+
+      <!-- Side Panel -->
+      <div class="side-panel">
 
         <!-- Brush Tools -->
-        <div class="brush-tools">
-          <button class="brush-btn active" onclick="setBrushMode('none', this)">
-            <i class="fas fa-mouse-pointer"></i> None
-          </button>
-          <button class="brush-btn" onclick="setBrushMode('erase', this)">
-            <i class="fas fa-eraser"></i> Eraser
-          </button>
-          <button class="brush-btn" onclick="setBrushMode('restore', this)">
-            <i class="fas fa-paint-brush"></i> Restore
-          </button>
-          <div class="brush-size-control">
-            <i class="fas fa-circle" style="font-size:8px"></i>
-            <input type="range" id="brushSize" min="5" max="150" value="40" oninput="document.getElementById('brushSizeVal').textContent=this.value">
-            <span id="brushSizeVal" style="color:var(--primary);font-weight:700;min-width:30px">40</span>
+        <div class="tool-section">
+          <h4><i class="fas fa-paint-brush"></i> Brush Tools</h4>
+          <div class="brush-buttons">
+            <button class="brush-btn active" onclick="setBrush('none', this)">
+              <i class="fas fa-mouse-pointer"></i> None
+            </button>
+            <button class="brush-btn" onclick="setBrush('erase', this)">
+              <i class="fas fa-eraser"></i> Eraser
+            </button>
+            <button class="brush-btn" onclick="setBrush('restore', this)">
+              <i class="fas fa-undo"></i> Restore
+            </button>
+          </div>
+          <div class="slider-row" style="margin-top:12px">
+            <label>Brush Size</label>
+            <input type="range" id="brushSize" min="5" max="100" value="30" oninput="document.getElementById('brushSizeVal').textContent=this.value">
+            <span class="value" id="brushSizeVal">30</span>
+          </div>
+        </div>
+
+        <!-- Detection Settings -->
+        <div class="tool-section">
+          <h4><i class="fas fa-sliders-h"></i> Detection Settings</h4>
+          <div class="slider-row">
+            <label>Tolerance</label>
+            <input type="range" id="tolerance" min="5" max="150" value="40" oninput="document.getElementById('toleranceVal').textContent=this.value; autoDetect()">
+            <span class="value" id="toleranceVal">40</span>
+          </div>
+          <div class="slider-row">
+            <label>Edge Softness</label>
+            <input type="range" id="softness" min="0" max="10" value="2" oninput="document.getElementById('softnessVal').textContent=this.value; autoDetect()">
+            <span class="value" id="softnessVal">2</span>
+          </div>
+          <div class="toggle-row">
+            <span>Remove Shadow</span>
+            <div class="toggle" id="shadowToggle" onclick="toggleSetting('shadow')"></div>
+          </div>
+          <div class="toggle-row">
+            <span>Despill Color</span>
+            <div class="toggle active" id="despillToggle" onclick="toggleSetting('despill')"></div>
+          </div>
+          <div class="toggle-row">
+            <span>Despeckle</span>
+            <div class="toggle active" id="despeckleToggle" onclick="toggleSetting('despeckle')"></div>
+          </div>
+        </div>
+
+        <!-- Manual Color Picker -->
+        <div class="tool-section" id="colorPickerSection" style="display:none">
+          <h4><i class="fas fa-eye-dropper"></i> Pick Background Color</h4>
+          <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">
+            Image par <strong>click</strong> karein background color pick karne ke liye, phir Remove dabayein.
+          </p>
+          <div class="color-pickers">
+            <div class="color-item">
+              <label>Picked</label>
+              <input type="color" id="pickedColor" value="#ff0000">
+            </div>
+            <div class="color-item">
+              <label>Tolerance</label>
+              <input type="range" id="chromaTolerance" min="10" max="200" value="60" oninput="document.getElementById('chromaTolVal').textContent=this.value">
+            </div>
+            <div class="color-item">
+              <label>Value: <span id="chromaTolVal">60</span></label>
+              <button class="btn btn-primary btn-sm" onclick="applyChromaKey()" style="width:100%;padding:6px;font-size:11px">
+                <i class="fas fa-check"></i> Apply
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Background Swatches -->
-        <div class="bg-swatches">
-          <div class="bg-swatch transparent active" title="Transparent" onclick="setBg('transparent', this)"></div>
-          <div class="bg-swatch white" title="White" onclick="setBg('#ffffff', this)"></div>
-          <div class="bg-swatch black" title="Black" onclick="setBg('#000000', this)"></div>
-          <div class="bg-swatch blue" title="Blue" onclick="setBg('#2563eb', this)"></div>
-          <div class="bg-swatch red" title="Red" onclick="setBg('#dc2626', this)"></div>
-          <div class="bg-swatch green" title="Green" onclick="setBg('#16a34a', this)"></div>
-          <div class="bg-swatch gradient" title="Gradient" onclick="setBg('gradient', this)"></div>
-          <div class="bg-custom-wrapper" title="Custom Color">
-            <div class="bg-swatch"></div>
-            <input type="color" id="customColorInput" value="#6366f1" onchange="setBg(this.value, document.querySelector('.bg-custom-wrapper .bg-swatch'))">
+        <div class="tool-section">
+          <h4><i class="fas fa-fill-drip"></i> Background Color</h4>
+          <div class="bg-swatches">
+            <div class="bg-swatch transparent active" title="Transparent" onclick="setBg('transparent', this)"></div>
+            <div class="bg-swatch white" title="White" onclick="setBg('#ffffff', this)"></div>
+            <div class="bg-swatch black" title="Black" onclick="setBg('#000000', this)"></div>
+            <div class="bg-swatch blue" title="Blue" onclick="setBg('#2563eb', this)"></div>
+            <div class="bg-swatch red" title="Red" onclick="setBg('#dc2626', this)"></div>
+            <div class="bg-swatch green" title="Green" onclick="setBg('#16a34a', this)"></div>
+            <div class="bg-swatch gray" title="Gray" onclick="setBg('#6b7280', this)"></div>
+            <div class="bg-swatch" style="background:linear-gradient(135deg,#6366f1,#ec4899)" title="Gradient" onclick="setBg('gradient', this)"></div>
           </div>
-        </div>
-
-        <!-- Advanced Controls -->
-        <div class="advanced-controls">
-          <div class="control-group">
-            <h4><i class="fas fa-sliders-h"></i> Edge Refinement</h4>
-            <div class="slider-row">
-              <label>Feather</label>
-              <input type="range" id="featherAmount" min="0" max="10" value="0" step="0.5" oninput="document.getElementById('featherVal').textContent=this.value;applyEdgeRefinement()">
-              <span class="value" id="featherVal">0</span>
-            </div>
-            <div class="slider-row">
-              <label>Edge Shift</label>
-              <input type="range" id="edgeShift" min="-10" max="10" value="0" step="1" oninput="document.getElementById('edgeShiftVal').textContent=this.value;applyEdgeRefinement()">
-              <span class="value" id="edgeShiftVal">0</span>
-            </div>
-            <div class="slider-row">
-              <label>Threshold</label>
-              <input type="range" id="alphaThreshold" min="0" max="255" value="128" step="1" oninput="document.getElementById('thresholdVal').textContent=this.value;applyThreshold()">
-              <span class="value" id="thresholdVal">128</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h4><i class="fas fa-magic"></i> Alpha Matting</h4>
-            <div class="toggle-row">
-              <span>Enable Alpha Matting</span>
-              <div class="toggle-switch" id="alphaMattingToggle" onclick="toggleAlphaMatting()"></div>
-            </div>
-            <div class="slider-row">
-              <label>Erode Size</label>
-              <input type="range" id="erodeSize" min="0" max="30" value="10" oninput="document.getElementById('erodeVal').textContent=this.value">
-              <span class="value" id="erodeVal">10</span>
-            </div>
-            <div class="slider-row">
-              <label>Foreground</label>
-              <input type="range" id="fgThreshold" min="0" max="255" value="240" oninput="document.getElementById('fgThreshVal').textContent=this.value">
-              <span class="value" id="fgThreshVal">240</span>
-            </div>
-            <div class="slider-row">
-              <label>Background</label>
-              <input type="range" id="bgThreshold" min="0" max="255" value="10" oninput="document.getElementById('bgThreshVal').textContent=this.value">
-              <span class="value" id="bgThreshVal">10</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <h4><i class="fas fa-cog"></i> Post-Processing</h4>
-            <div class="toggle-row">
-              <span>Smooth Edges</span>
-              <div class="toggle-switch active" id="smoothToggle" onclick="toggleSmooth()"></div>
-            </div>
-            <div class="toggle-row">
-              <span>Despill Color</span>
-              <div class="toggle-switch active" id="despillToggle" onclick="toggleDespill()"></div>
-            </div>
-            <div class="toggle-row">
-              <span>Remove Shadows</span>
-              <div class="toggle-switch" id="shadowToggle" onclick="toggleShadow()"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Canvas -->
-        <div class="canvas-wrapper" id="canvasWrapper">
-          <canvas id="editCanvas"></canvas>
         </div>
 
         <!-- Export -->
-        <div class="export-bar">
-          <button class="btn btn-primary" onclick="downloadResult('png')">
-            <i class="fas fa-file-image"></i> Download PNG
+        <div class="export-grid">
+          <button class="export-btn" onclick="download('png')">
+            <i class="fas fa-file-image"></i> PNG
           </button>
-          <button class="btn btn-outline" onclick="downloadResult('jpeg')">
-            <i class="fas fa-file-image"></i> Download JPG
+          <button class="export-btn" onclick="download('jpeg')">
+            <i class="fas fa-file-image"></i> JPG
           </button>
-          <button class="btn btn-outline" onclick="downloadResult('webp')">
-            <i class="fas fa-file-image"></i> Download WebP
+          <button class="export-btn" onclick="download('webp')">
+            <i class="fas fa-file-image"></i> WebP
           </button>
-          <button class="btn btn-outline" onclick="copyToClipboard()">
+          <button class="export-btn" onclick="copyToClipboard()">
             <i class="fas fa-copy"></i> Copy
           </button>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ==================== BATCH MODE ==================== -->
-  <div id="batchMode" style="display:none">
-    <div class="card">
-      <div class="upload-section">
-        <div class="dropzone" id="batchDropzone">
-          <div class="dropzone-icon">
-            <i class="fas fa-layer-group"></i>
-          </div>
-          <h3>Drop multiple images here</h3>
-          <p>Process up to 10 images at once with the selected AI model.</p>
-          <div class="upload-actions">
-            <button class="btn btn-primary" onclick="document.getElementById('batchFileInput').click()">
-              <i class="fas fa-folder-open"></i> Choose Files
-            </button>
-          </div>
-        </div>
-        <input type="file" id="batchFileInput" accept="image/*" multiple style="display:none">
       </div>
-
-      <div id="batchResults" style="display:none">
-        <div class="card-header">
-          <h2><i class="fas fa-layer-group"></i> Batch Results</h2>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-success btn-sm" onclick="downloadAllBatch()">
-              <i class="fas fa-download"></i> Download All
-            </button>
-            <button class="btn btn-outline btn-sm" onclick="clearBatch()">
-              <i class="fas fa-redo"></i> Clear
-            </button>
-          </div>
-        </div>
-        <div class="batch-grid" id="batchGrid"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- INFO -->
-  <div class="info-box">
-    <i class="fas fa-shield-alt info-icon"></i>
-    <div class="info-content">
-      <h4>🔒 100% Private & Free</h4>
-      <p>All processing happens directly in your browser. Your images never leave your device. Pehli baar 20-180MB ka AI model download hoga (cached for future). Alpha matting aur manual brush se remove.bg jaisa result milega.</p>
     </div>
   </div>
 
 </div>
 
-<!-- PROCESSING OVERLAY -->
+<!-- Processing Overlay -->
 <div class="processing-overlay" id="processingOverlay">
   <div class="processing-box">
     <div class="spinner"></div>
-    <h3 id="processingTitle">Loading AI Model...</h3>
+    <h3 id="processingTitle">Processing...</h3>
     <p id="processingMsg">Please wait...</p>
-    <div class="progress-bar-wrapper">
-      <div class="progress-bar-fill" id="progressFill"></div>
-    </div>
-    <div class="progress-text" id="progressText">0%</div>
   </div>
 </div>
 
-<!-- TOAST -->
+<!-- Toast -->
 <div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toastMsg">Success</span>
 </div>
 
-<!-- ============================================================
-     MAIN SCRIPT
-     ============================================================ -->
-<script src="bg-remover-core.js" type="module"></script>
+<script>
+/* ============================================================
+   THEME
+   ============================================================ */
+function toggleTheme(){
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.querySelector('.theme-toggle i').className =
+    next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+if(localStorage.getItem('theme') === 'light'){
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.querySelector('.theme-toggle i').className = 'fas fa-sun';
+}
 
+/* ============================================================
+   STATE
+   ============================================================ */
+let sourceImage = null;
+let sourceCanvas = null;
+let sourceImageData = null;
+let workingAlpha = null;   // Uint8ClampedArray (per-pixel alpha 0-255)
+let editorCanvas = null;
+let editorCtx = null;
+let currentBg = 'transparent';
+let brushMode = 'none';
+let isDrawing = false;
+let currentMethod = 'auto';
+let tolerance = 40;
+let softness = 2;
+let settings = { shadow: false, despill: true, despeckle: true };
+let lastAutoDetectResult = null;
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimer;
+function showToast(msg, type = 'success'){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.className = 'toast show ' + type;
+  const icon = toast.querySelector('i');
+  icon.className = type === 'error' ? 'fas fa-exclamation-circle'
+                 : type === 'info' ? 'fas fa-info-circle'
+                 : type === 'warning' ? 'fas fa-exclamation-triangle'
+                 : 'fas fa-check-circle';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+/* ============================================================
+   PROCESSING
+   ============================================================ */
+function showProcessing(show, title, msg){
+  const overlay = document.getElementById('processingOverlay');
+  if(show){
+    overlay.classList.add('active');
+    if(title) document.getElementById('processingTitle').textContent = title;
+    if(msg) document.getElementById('processingMsg').textContent = msg;
+  } else {
+    overlay.classList.remove('active');
+  }
+}
+
+/* ============================================================
+   FILE HANDLING
+   ============================================================ */
+const dropzone = document.getElementById('dropzone');
+['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => {
+  e.preventDefault(); dropzone.classList.add('dragover');
+}));
+['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => {
+  e.preventDefault(); dropzone.classList.remove('dragover');
+}));
+dropzone.addEventListener('drop', e => {
+  const file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')) processFile(file);
+  else showToast('Image file drop karein', 'error');
+});
+dropzone.addEventListener('click', e => {
+  if(!e.target.closest('button')) document.getElementById('fileInput').click();
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(file) processFile(file);
+  e.target.value = '';
+});
+
+document.addEventListener('paste', e => {
+  const items = e.clipboardData?.items;
+  if(!items) return;
+  for(let item of items){
+    if(item.type.startsWith('image/')){
+      const file = item.getAsFile();
+      if(file){ processFile(file); break; }
+    }
+  }
+});
+
+async function pasteFromClipboard(){
+  try {
+    const items = await navigator.clipboard.read();
+    for(const item of items){
+      for(const type of item.types){
+        if(type.startsWith('image/')){
+          const blob = await item.getType(type);
+          processFile(new File([blob], 'paste.png', { type }));
+          return;
+        }
+      }
+    }
+    showToast('Clipboard mein image nahi hai', 'error');
+  } catch(err){
+    showToast('Ctrl+V dabayein paste ke liye', 'info');
+  }
+}
+
+/* ============================================================
+   PROCESS FILE
+   ============================================================ */
+async function processFile(file){
+  if(!file.type.startsWith('image/')){ showToast('Image select karein', 'error'); return; }
+  if(file.size > 30 * 1024 * 1024){ showToast('Image 30MB se choti honi chahiye', 'error'); return; }
+
+  showProcessing(true, 'Loading Image...', 'Please wait...');
+
+  const dataURL = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+
+  const img = await new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = dataURL;
+  });
+
+  sourceImage = img;
+
+  // Setup source canvas
+  sourceCanvas = document.createElement('canvas');
+  sourceCanvas.width = img.naturalWidth;
+  sourceCanvas.height = img.naturalHeight;
+  const sCtx = sourceCanvas.getContext('2d');
+  sCtx.drawImage(img, 0, 0);
+  sourceImageData = sCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
+
+  // Initialize alpha channel (all opaque)
+  workingAlpha = new Uint8ClampedArray(sourceCanvas.width * sourceCanvas.height);
+  workingAlpha.fill(255);
+
+  // Setup editor canvas
+  editorCanvas = document.getElementById('editCanvas');
+  editorCanvas.width = sourceCanvas.width;
+  editorCanvas.height = sourceCanvas.height;
+  editorCtx = editorCanvas.getContext('2d');
+
+  // Show editor
+  document.getElementById('uploadCard').style.display = 'none';
+  document.getElementById('editorCard').style.display = 'block';
+
+  // Init canvas events
+  initCanvasEvents();
+
+  // Run auto-detect
+  await autoDetect();
+
+  showProcessing(false);
+  showToast('✅ Image loaded! Auto-detect chala.');
+}
+
+/* ============================================================
+   AUTO DETECT — Corner pixels se background color nikalta hai
+   ============================================================ */
+function autoDetect(){
+  if(!sourceImageData) return;
+
+  const W = sourceCanvas.width;
+  const H = sourceCanvas.height;
+  const data = sourceImageData.data;
+
+  // Sample 4 corners (each 20x20 region)
+  const sampleSize = Math.min(20, Math.floor(Math.min(W, H) * 0.05));
+  const bgColors = [];
+
+  const corners = [
+    { x: 0, y: 0 },
+    { x: W - sampleSize, y: 0 },
+    { x: 0, y: H - sampleSize },
+    { x: W - sampleSize, y: H - sampleSize }
+  ];
+
+  for(const corner of corners){
+    let r = 0, g = 0, b = 0, count = 0;
+    for(let y = corner.y; y < corner.y + sampleSize; y++){
+      for(let x = corner.x; x < corner.x + sampleSize; x++){
+        const idx = (y * W + x) * 4;
+        r += data[idx];
+        g += data[idx + 1];
+        b += data[idx + 2];
+        count++;
+      }
+    }
+    bgColors.push({ r: r / count, g: g / count, b: b / count });
+  }
+
+  // Average of 4 corners
+  const avgColor = {
+    r: bgColors.reduce((s, c) => s + c.r, 0) / 4,
+    g: bgColors.reduce((s, c) => s + c.g, 0) / 4,
+    b: bgColors.reduce((s, c) => s + c.b, 0) / 4
+  };
+
+  // Apply color removal
+  applyColorRemoval(avgColor, tolerance);
+
+  // Render
+  renderResult();
+}
+
+/* ============================================================
+   CHROMAKEY — Manual color pick
+   ============================================================ */
+function applyChromaKey(){
+  const color = hexToRgb(document.getElementById('pickedColor').value);
+  const tol = parseInt(document.getElementById('chromaTolerance').value);
+  applyColorRemoval(color, tol);
+  renderResult();
+  showToast('✅ Chromakey applied!');
+}
+
+/* ============================================================
+   COLOR REMOVAL — Distance-based alpha
+   ============================================================ */
+function applyColorRemoval(targetColor, toleranceValue){
+  const W = sourceCanvas.width;
+  const H = sourceCanvas.height;
+  const data = sourceImageData.data;
+  const tol = toleranceValue * toleranceValue * 3; // Squared for faster computation
+
+  const softnessFactor = softness * 0.15;
+
+  for(let i = 0; i < W * H; i++){
+    const idx = i * 4;
+    const r = data[idx];
+    const g = data[idx + 1];
+    const b = data[idx + 2];
+
+    // Euclidean distance squared
+    const dr = r - targetColor.r;
+    const dg = g - targetColor.g;
+    const db = b - targetColor.b;
+    const distSq = dr * dr + dg * dg + db * db;
+
+    let alpha;
+    if(distSq < tol * 0.6){
+      // Definitely background
+      alpha = 0;
+    } else if(distSq < tol * 1.4){
+      // Transition zone (edge)
+      const t = (distSq - tol * 0.6) / (tol * 0.8);
+      alpha = Math.round(t * 255);
+    } else {
+      // Definitely foreground
+      alpha = 255;
+    }
+
+    // Apply softness
+    if(softnessFactor > 0 && alpha > 0 && alpha < 255){
+      alpha = Math.round(255 * Math.pow(alpha / 255, 1 - softnessFactor * 0.5));
+    }
+
+    workingAlpha[i] = alpha;
+  }
+
+  // Post-processing
+  if(settings.despeckle) despeckleAlpha(W, H);
+  if(settings.shadow) removeShadows(W, H);
+}
+
+/* ============================================================
+   DESPECKLE — Chhote noise dots hatata hai
+   ============================================================ */
+function despeckleAlpha(W, H){
+  const copy = new Uint8ClampedArray(workingAlpha);
+  for(let y = 1; y < H - 1; y++){
+    for(let x = 1; x < W - 1; x++){
+      const idx = y * W + x;
+      let sum = 0;
+      for(let dy = -1; dy <= 1; dy++){
+        for(let dx = -1; dx <= 1; dx++){
+          sum += copy[(y + dy) * W + (x + dx)];
+        }
+      }
+      // Median-ish smoothing
+      const avg = sum / 9;
+      if(Math.abs(copy[idx] - avg) > 100){
+        workingAlpha[idx] = avg;
+      }
+    }
+  }
+}
+
+/* ============================================================
+   REMOVE SHADOWS — Semi-transparent pixels ko clear karta hai
+   ============================================================ */
+function removeShadows(W, H){
+  for(let i = 0; i < W * H; i++){
+    if(workingAlpha[i] < 200 && workingAlpha[i] > 30){
+      // Semi-transparent = likely shadow
+      workingAlpha[i] = 0;
+    }
+  }
+}
+
+/* ============================================================
+   RENDER — Alpha apply karke canvas par draw karta hai
+   ============================================================ */
+function renderResult(){
+  if(!sourceImageData || !workingAlpha) return;
+
+  const W = sourceCanvas.width;
+  const H = sourceCanvas.height;
+  const resultData = new ImageData(W, H);
+  const srcData = sourceImageData.data;
+
+  for(let i = 0; i < W * H; i++){
+    const idx = i * 4;
+    let r = srcData[idx];
+    let g = srcData[idx + 1];
+    let b = srcData[idx + 2];
+    const a = workingAlpha[i];
+
+    // Despill (green fringe removal)
+    if(settings.despill && a < 255 && a > 0){
+      const maxRB = Math.max(r, b);
+      if(g > maxRB + 20){
+        g = maxRB;
+      }
+    }
+
+    resultData.data[idx] = r;
+    resultData.data[idx + 1] = g;
+    resultData.data[idx + 2] = b;
+    resultData.data[idx + 3] = a;
+  }
+
+  editorCtx.putImageData(resultData, 0, 0);
+  applyBackground();
+}
+
+/* ============================================================
+   BACKGROUND
+   ============================================================ */
+function setBg(bg, swatch){
+  currentBg = bg;
+  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+  if(swatch) swatch.classList.add('active');
+  applyBackground();
+}
+
+function applyBackground(){
+  const area = document.getElementById('canvasArea');
+  if(!area) return;
+
+  if(currentBg === 'transparent'){
+    area.style.background = '';
+    area.style.backgroundImage = '';
+    area.style.backgroundColor = '';
+  } else if(currentBg === 'gradient'){
+    area.style.background = 'linear-gradient(135deg,#6366f1,#ec4899)';
+  } else {
+    area.style.background = currentBg;
+  }
+}
+
+/* ============================================================
+   METHOD SELECTOR
+   ============================================================ */
+function selectMethod(method, card){
+  currentMethod = method;
+  document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
+  card.classList.add('active');
+
+  const colorSection = document.getElementById('colorPickerSection');
+  colorSection.style.display = (method === 'chromakey') ? 'block' : 'none';
+
+  if(method === 'auto'){
+    autoDetect();
+  } else if(method === 'threshold'){
+    applyThresholdMethod();
+  } else if(method === 'magic'){
+    applyMagicEdge();
+  }
+}
+
+/* ============================================================
+   THRESHOLD METHOD — Brightness-based
+   ============================================================ */
+function applyThresholdMethod(){
+  const W = sourceCanvas.width;
+  const H = sourceCanvas.height;
+  const data = sourceImageData.data;
+
+  // Determine if background is light or dark
+  let cornerBrightness = 0, cornerCount = 0;
+  const sampleSize = Math.min(20, Math.floor(Math.min(W, H) * 0.05));
+  const corners = [[0,0], [W-sampleSize, 0], [0, H-sampleSize], [W-sampleSize, H-sampleSize]];
+
+  for(const [cx, cy] of corners){
+    for(let y = cy; y < cy + sampleSize; y++){
+      for(let x = cx; x < cx + sampleSize; x++){
+        const idx = (y * W + x) * 4;
+        cornerBrightness += (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+        cornerCount++;
+      }
+    }
+  }
+  const avgBrightness = cornerBrightness / cornerCount;
+  const threshold = avgBrightness > 128 ? 200 : 55; // If bg is light, remove light; else remove dark
+
+  for(let i = 0; i < W * H; i++){
+    const idx = i * 4;
+    const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
+    if(avgBrightness > 128){
+      workingAlpha[i] = brightness > threshold ? 0 : 255;
+    } else {
+      workingAlpha[i] = brightness < threshold ? 0 : 255;
+    }
+  }
+
+  if(settings.despeckle) despeckleAlpha(W, H);
+  renderResult();
+}
+
+/* ============================================================
+   MAGIC EDGE — Combined approach
+   ============================================================ */
+function applyMagicEdge(){
+  // First run auto-detect
+  autoDetect();
+  // Then sharpen edges via additional pass
+  const W = sourceCanvas.width;
+  const H = sourceCanvas.height;
+  for(let i = 0; i < W * H; i++){
+    if(workingAlpha[i] > 100 && workingAlpha[i] < 200){
+      workingAlpha[i] = workingAlpha[i] < 128 ? 0 : 255;
+    }
+  }
+  renderResult();
+}
+
+/* ============================================================
+   BRUSH
+   ============================================================ */
+function setBrush(mode, btn){
+  brushMode = mode;
+  document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const area = document.getElementById('canvasArea');
+  if(mode === 'none') area.classList.add('brush-none');
+  else area.classList.remove('brush-none');
+}
+
+function initCanvasEvents(){
+  editorCanvas.addEventListener('mousedown', e => {
+    if(brushMode === 'none') return;
+    isDrawing = true;
+    applyBrush(e);
+  });
+  editorCanvas.addEventListener('mousemove', e => {
+    if(!isDrawing || brushMode === 'none') return;
+    applyBrush(e);
+  });
+  editorCanvas.addEventListener('mouseup', () => { isDrawing = false; });
+  editorCanvas.addEventListener('mouseleave', () => { isDrawing = false; });
+
+  // Touch
+  editorCanvas.addEventListener('touchstart', e => {
+    if(brushMode === 'none') return;
+    e.preventDefault();
+    isDrawing = true;
+    applyBrush(e.touches[0]);
+  }, { passive: false });
+  editorCanvas.addEventListener('touchmove', e => {
+    if(!isDrawing || brushMode === 'none') return;
+    e.preventDefault();
+    applyBrush(e.touches[0]);
+  }, { passive: false });
+  editorCanvas.addEventListener('touchend', () => { isDrawing = false; });
+
+  // Color pick for chromakey
+  editorCanvas.addEventListener('click', e => {
+    if(currentMethod !== 'chromakey') return;
+    const rect = editorCanvas.getBoundingClientRect();
+    const scaleX = editorCanvas.width / rect.width;
+    const scaleY = editorCanvas.height / rect.height;
+    const x = Math.floor((e.clientX - rect.left) * scaleX);
+    const y = Math.floor((e.clientY - rect.top) * scaleY);
+    const idx = (y * editorCanvas.width + x) * 4;
+    const data = sourceImageData.data;
+    const hex = rgbToHex(data[idx], data[idx + 1], data[idx + 2]);
+    document.getElementById('pickedColor').value = hex;
+    showToast('Color picked: ' + hex, 'info');
+  });
+}
+
+function applyBrush(e){
+  const rect = editorCanvas.getBoundingClientRect();
+  const scaleX = editorCanvas.width / rect.width;
+  const scaleY = editorCanvas.height / rect.height;
+  const cx = (e.clientX - rect.left) * scaleX;
+  const cy = (e.clientY - rect.top) * scaleY;
+  const size = parseInt(document.getElementById('brushSize').value);
+  const radius = size / 2;
+  const W = editorCanvas.width;
+  const H = editorCanvas.height;
+
+  for(let py = Math.max(0, Math.floor(cy - radius)); py < Math.min(H, Math.ceil(cy + radius)); py++){
+    for(let px = Math.max(0, Math.floor(cx - radius)); px < Math.min(W, Math.ceil(cx + radius)); px++){
+      const dx = px - cx;
+      const dy = py - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if(dist <= radius){
+        const idx = py * W + px;
+        const falloff = 1 - (dist / radius);
+        if(brushMode === 'erase'){
+          workingAlpha[idx] = Math.max(0, workingAlpha[idx] - falloff * 255);
+        } else if(brushMode === 'restore'){
+          workingAlpha[idx] = Math.min(255, workingAlpha[idx] + falloff * 255);
+        }
+      }
+    }
+  }
+  renderResult();
+}
+
+/* ============================================================
+   SETTINGS TOGGLES
+   ============================================================ */
+function toggleSetting(key){
+  settings[key] = !settings[key];
+  const toggle = document.getElementById(key + 'Toggle');
+  toggle.classList.toggle('active', settings[key]);
+
+  if(currentMethod === 'auto') autoDetect();
+  else if(currentMethod === 'threshold') applyThresholdMethod();
+  else renderResult();
+}
+
+/* ============================================================
+   DOWNLOAD / COPY
+   ============================================================ */
+async function generateFinalImage(format){
+  const canvas = document.createElement('canvas');
+  canvas.width = editorCanvas.width;
+  canvas.height = editorCanvas.height;
+  const ctx = canvas.getContext('2d');
+
+  if(format !== 'png' || currentBg !== 'transparent'){
+    if(currentBg === 'gradient'){
+      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      grad.addColorStop(0, '#6366f1');
+      grad.addColorStop(1, '#ec4899');
+      ctx.fillStyle = grad;
+    } else if(currentBg !== 'transparent'){
+      ctx.fillStyle = currentBg;
+    } else {
+      ctx.fillStyle = '#ffffff';
+    }
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  ctx.drawImage(editorCanvas, 0, 0);
+
+  return new Promise((res, rej) => {
+    canvas.toBlob(blob => blob ? res(blob) : rej(new Error('Blob fail')), 'image/' + format, 0.95);
+  });
+}
+
+async function download(format){
+  try {
+    showToast('Preparing download...', 'info');
+    const blob = await generateFinalImage(format);
+    const ext = format === 'jpeg' ? 'jpg' : format;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bg-removed-${Date.now()}.${ext}`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('✅ Downloaded!');
+  } catch(err){
+    showToast('Download fail: ' + err.message, 'error');
+  }
+}
+
+async function copyToClipboard(){
+  try {
+    const blob = await generateFinalImage('png');
+    if(navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      showToast('✅ Copied!');
+    } else {
+      showToast('Copy support nahi hai', 'error');
+    }
+  } catch(err){
+    showToast('Copy fail: ' + err.message, 'error');
+  }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function hexToRgb(hex){
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : { r: 0, g: 0, b: 0 };
+}
+
+function rgbToHex(r, g, b){
+  return '#' + [r, g, b].map(x => {
+    const hex = x.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  }).join('');
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetAll(){
+  sourceImage = null;
+  sourceCanvas = null;
+  sourceImageData = null;
+  workingAlpha = null;
+  currentBg = 'transparent';
+
+  document.getElementById('uploadCard').style.display = 'block';
+  document.getElementById('editorCard').style.display = 'none';
+
+  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+  const tSwatch = document.querySelector('.bg-swatch.transparent');
+  if(tSwatch) tSwatch.classList.add('active');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => e.preventDefault());
+
+showToast('Ready! Image upload karein.', 'info');
+</script>
 </body>
 </html>
