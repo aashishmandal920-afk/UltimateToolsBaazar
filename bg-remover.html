@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Background Remover — Remove.bg Alternative</title>
+<title>Pro AI Background Remover — 6 Models • Alpha Matting • Manual Refinement</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,6 +13,9 @@
 </script>
 
 <style>
+/* ============================================================
+   CSS VARIABLES
+   ============================================================ */
 :root{
   --primary:#6366f1;
   --primary-dark:#4f46e5;
@@ -51,11 +54,14 @@ body{
   background:var(--bg);
   color:var(--text);
   min-height:100vh;
-  padding-bottom:60px;
+  padding-bottom:80px;
   transition:background 0.3s,color 0.3s;
   overflow-x:hidden;
 }
 
+/* ============================================================
+   HEADER
+   ============================================================ */
 .top-header{
   background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);
   color:white;
@@ -88,7 +94,7 @@ body{
   opacity:0.92;
   position:relative;z-index:1;
   font-weight:400;
-  max-width:700px;
+  max-width:750px;
   margin:0 auto;
   line-height:1.6;
 }
@@ -113,22 +119,125 @@ body{
 }
 .theme-toggle:hover{background:rgba(255,255,255,0.35);transform:rotate(20deg)}
 
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
 .main-container{
-  max-width:1300px;
+  max-width:1500px;
   margin:30px auto;
   padding:0 20px;
 }
 
+.card{
+  background:var(--card);
+  border-radius:16px;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  margin-bottom:20px;
+}
+
+.card-header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(99,102,241,0.04),transparent);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.card-header h2{
+  font-size:15px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.card-header h2 i{color:var(--primary)}
+
+/* ============================================================
+   MODEL SELECTOR
+   ============================================================ */
+.model-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+  padding:20px;
+}
+.model-card{
+  padding:16px;
+  border:2px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  transition:0.25s;
+  position:relative;
+  background:var(--card);
+}
+.model-card:hover{
+  border-color:var(--primary);
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(99,102,241,0.15);
+}
+.model-card.active{
+  border-color:var(--primary);
+  background:rgba(99,102,241,0.06);
+  box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+}
+.model-card h4{
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.model-card h4 i{color:var(--primary)}
+.model-card p{
+  font-size:11px;
+  color:var(--text-muted);
+  line-height:1.5;
+  margin-bottom:8px;
+}
+.model-card .badge{
+  position:absolute;
+  top:12px;
+  right:12px;
+  font-size:9px;
+  padding:3px 8px;
+  border-radius:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.badge.fast{background:#dbeafe;color:#1e40af}
+.badge.balanced{background:#fef3c7;color:#92400e}
+.badge.quality{background:#d1fae5;color:#065f46}
+.badge.pro{background:#fce7f3;color:#9d174d}
+.model-card .model-meta{
+  display:flex;
+  gap:10px;
+  font-size:10px;
+  color:var(--text-muted);
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px dashed var(--border);
+}
+.model-card .model-meta span{display:flex;align-items:center;gap:4px}
+
+/* ============================================================
+   MODE TABS
+   ============================================================ */
 .mode-tabs{
   display:flex;
   justify-content:center;
   gap:8px;
-  margin-bottom:24px;
+  margin-bottom:20px;
   background:var(--card);
   padding:6px;
   border-radius:14px;
   box-shadow:var(--shadow);
-  max-width:400px;
+  max-width:500px;
   margin-left:auto;
   margin-right:auto;
   border:1px solid var(--border);
@@ -157,18 +266,10 @@ body{
   box-shadow:0 4px 12px rgba(99,102,241,0.4);
 }
 
-.card{
-  background:var(--card);
-  border-radius:16px;
-  border:1px solid var(--border);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-
-.upload-section{
-  padding:30px;
-}
-
+/* ============================================================
+   DROPZONE
+   ============================================================ */
+.upload-section{padding:24px}
 .dropzone{
   border:2.5px dashed var(--border);
   border-radius:16px;
@@ -229,6 +330,10 @@ body{
   flex-wrap:wrap;
   margin-top:16px;
 }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
 .btn{
   padding:11px 20px;
   border:none;
@@ -278,8 +383,10 @@ body{
 .btn-block{width:100%}
 .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
 .btn-sm{padding:8px 14px;font-size:12px}
-.btn-lg{padding:14px 28px;font-size:14.5px}
 
+/* ============================================================
+   URL INPUT
+   ============================================================ */
 .url-input-group{
   display:flex;
   gap:10px;
@@ -305,129 +412,10 @@ body{
   box-shadow:0 0 0 4px rgba(99,102,241,0.1);
 }
 
-.samples-section{
-  margin-top:30px;
-  padding-top:24px;
-  border-top:1px solid var(--border);
-}
-.samples-title{
-  font-size:12.5px;
-  font-weight:600;
-  color:var(--text-muted);
-  text-transform:uppercase;
-  letter-spacing:0.5px;
-  margin-bottom:14px;
-  text-align:center;
-}
-.samples-grid{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-.sample-img{
-  width:80px;
-  height:80px;
-  border-radius:12px;
-  object-fit:cover;
-  cursor:pointer;
-  transition:0.25s;
-  border:2px solid var(--border);
-  box-shadow:var(--shadow);
-}
-.sample-img:hover{
-  transform:translateY(-4px) scale(1.05);
-  border-color:var(--primary);
-  box-shadow:0 10px 25px rgba(99,102,241,0.3);
-}
-
-.processing-overlay{
-  position:fixed;
-  top:0;left:0;right:0;bottom:0;
-  background:rgba(0,0,0,0.7);
-  backdrop-filter:blur(8px);
-  z-index:999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
-.processing-overlay.active{display:flex}
-.processing-box{
-  background:var(--card);
-  border-radius:20px;
-  padding:40px 50px;
-  max-width:500px;
-  width:100%;
-  text-align:center;
-  box-shadow:0 30px 80px rgba(0,0,0,0.5);
-  animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
-}
-@keyframes popIn{
-  from{opacity:0;transform:scale(0.85)}
-  to{opacity:1;transform:scale(1)}
-}
-.processing-box .spinner{
-  width:70px;
-  height:70px;
-  border:5px solid var(--border);
-  border-top-color:var(--primary);
-  border-radius:50%;
-  margin:0 auto 24px;
-  animation:spin 1s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.processing-box h3{
-  font-size:19px;
-  font-weight:700;
-  margin-bottom:10px;
-}
-.processing-box p{
-  font-size:13px;
-  color:var(--text-muted);
-  margin-bottom:24px;
-  line-height:1.6;
-}
-.progress-bar-wrapper{
-  width:100%;
-  height:8px;
-  background:var(--bg);
-  border-radius:20px;
-  overflow:hidden;
-  margin-bottom:12px;
-  border:1px solid var(--border);
-}
-.progress-bar-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--primary),var(--secondary));
-  border-radius:20px;
-  transition:width 0.3s ease;
-  position:relative;
-  overflow:hidden;
-}
-.progress-bar-fill::after{
-  content:'';
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
-  animation:shimmer 1.5s infinite;
-}
-@keyframes shimmer{
-  from{transform:translateX(-100%)}
-  to{transform:translateX(100%)}
-}
-.progress-text{
-  font-size:12px;
-  color:var(--text-muted);
-  font-weight:500;
-  font-family:'Inter',monospace;
-}
-
-.result-section{
-  margin-top:24px;
-  display:none;
-}
+/* ============================================================
+   RESULT VIEW
+   ============================================================ */
+.result-section{display:none;padding:24px}
 .result-section.active{display:block;animation:fadeIn 0.4s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
@@ -450,10 +438,9 @@ body{
 }
 .result-header h2 i{color:var(--success)}
 
-.compare-slider{
+.canvas-wrapper{
   position:relative;
-  width:100%;
-  max-width:900px;
+  max-width:1000px;
   margin:0 auto;
   border-radius:16px;
   overflow:hidden;
@@ -464,119 +451,85 @@ body{
   background-size:20px 20px;
   background-position:0 0,10px 10px;
   background-color:var(--checker-2);
-  aspect-ratio:auto;
-  user-select:none;
-  cursor:ew-resize;
   border:1px solid var(--border);
 }
-.compare-slider img{
+.canvas-wrapper canvas{
   display:block;
-  width:100%;
+  max-width:100%;
   height:auto;
-  max-height:70vh;
-  object-fit:contain;
-  pointer-events:none;
-  user-select:none;
+  cursor:crosshair;
 }
-.compare-before{
-  position:relative;
-  z-index:1;
-}
-.compare-after{
-  position:absolute;
-  top:0;left:0;
-  width:100%;height:100%;
-  z-index:2;
-  clip-path:inset(0 0 0 50%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:
-    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),
-    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);
-  background-size:20px 20px;
-  background-position:0 0,10px 10px;
-  background-color:var(--checker-2);
-}
-.compare-after.no-checker {
-  background-image: none !important;
-  background-color: transparent;
-}
-.compare-after img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-.compare-handle{
-  position:absolute;
-  top:0;
-  bottom:0;
-  left:50%;
-  width:3px;
-  background:white;
-  z-index:10;
-  transform:translateX(-50%);
-  pointer-events:none;
-  box-shadow:0 0 15px rgba(0,0,0,0.5);
-}
-.compare-handle::after{
-  content:'\f337';
-  font-family:'Font Awesome 6 Free';
-  font-weight:900;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:48px;
-  height:48px;
-  background:white;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--primary);
-  font-size:16px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.3);
-}
-.compare-label{
-  position:absolute;
-  top:16px;
-  padding:6px 14px;
-  background:rgba(0,0,0,0.7);
-  color:white;
-  border-radius:20px;
-  font-size:11px;
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  z-index:20;
-  backdrop-filter:blur(5px);
-}
-.compare-label.before{left:16px}
-.compare-label.after{right:16px}
+.canvas-wrapper.brush-none canvas{cursor:default}
 
-.bg-options{
-  margin-top:24px;
-  padding:20px;
+/* ============================================================
+   BRUSH TOOLS
+   ============================================================ */
+.brush-tools{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  padding:16px 20px;
+  flex-wrap:wrap;
+  border-bottom:1px solid var(--border);
   background:var(--bg);
-  border-radius:14px;
-  border:1px solid var(--border);
 }
-.bg-options-header{
+.brush-btn{
+  padding:10px 16px;
+  border:2px solid var(--border);
+  border-radius:10px;
+  background:var(--card);
+  cursor:pointer;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:600;
+  transition:0.2s;
   display:flex;
   align-items:center;
-  gap:10px;
-  margin-bottom:14px;
-  font-size:13px;
-  font-weight:700;
+  gap:6px;
   color:var(--text);
 }
-.bg-options-header i{color:var(--primary)}
+.brush-btn:hover{border-color:var(--primary);color:var(--primary)}
+.brush-btn.active{
+  border-color:var(--primary);
+  background:rgba(99,102,241,0.1);
+  color:var(--primary);
+}
+.brush-size-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:0 12px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--text-muted);
+}
+.brush-size-control input[type="range"]{
+  width:100px;
+  height:6px;
+  -webkit-appearance:none;
+  background:var(--border);
+  border-radius:3px;
+  cursor:pointer;
+}
+.brush-size-control input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:16px;
+  height:16px;
+  background:var(--primary);
+  border-radius:50%;
+  box-shadow:0 2px 6px rgba(99,102,241,0.5);
+}
+
+/* ============================================================
+   BACKGROUND SWATCHES
+   ============================================================ */
 .bg-swatches{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
-  align-items:center;
+  padding:16px 20px;
+  justify-content:center;
+  border-bottom:1px solid var(--border);
 }
 .bg-swatch{
   width:44px;
@@ -588,10 +541,7 @@ body{
   position:relative;
   overflow:hidden;
 }
-.bg-swatch:hover{
-  transform:scale(1.1);
-  border-color:var(--primary);
-}
+.bg-swatch:hover{transform:scale(1.1);border-color:var(--primary)}
 .bg-swatch.active{
   border-color:var(--primary);
   border-width:3px;
@@ -610,12 +560,8 @@ body{
 .bg-swatch.blue{background:#2563eb}
 .bg-swatch.red{background:#dc2626}
 .bg-swatch.green{background:#16a34a}
-.bg-swatch.gradient{
-  background:linear-gradient(135deg,#6366f1,#ec4899);
-}
-.bg-custom-wrapper{
-  position:relative;
-}
+.bg-swatch.gradient{background:linear-gradient(135deg,#6366f1,#ec4899)}
+.bg-custom-wrapper{position:relative}
 .bg-custom-wrapper input[type="color"]{
   position:absolute;
   top:0;left:0;
@@ -629,122 +575,126 @@ body{
   justify-content:center;
   color:var(--text-muted);
   font-size:16px;
+  background:linear-gradient(135deg,#6366f1,#ec4899);
 }
 
-.export-bar{
-  margin-top:24px;
+/* ============================================================
+   ADVANCED CONTROLS
+   ============================================================ */
+.advanced-controls{
   padding:20px;
-  background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));
-  border-radius:14px;
+  border-bottom:1px solid var(--border);
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:16px;
+  background:var(--bg);
+}
+.control-group{
+  background:var(--card);
+  padding:16px;
+  border-radius:12px;
   border:1px solid var(--border);
 }
-.export-bar h3{
-  font-size:13px;
+.control-group h4{
+  font-size:12px;
   font-weight:700;
   text-transform:uppercase;
   letter-spacing:0.5px;
   color:var(--text-muted);
-  margin-bottom:14px;
+  margin-bottom:12px;
   display:flex;
   align-items:center;
   gap:8px;
 }
-.export-bar h3 i{color:var(--primary)}
-.export-buttons{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:10px;
+.control-group h4 i{color:var(--primary)}
+.slider-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
 }
-.export-btn{
-  padding:14px 12px;
-  background:var(--card);
-  border:1.5px solid var(--border);
+.slider-row label{
+  font-size:12px;
+  font-weight:600;
+  min-width:90px;
+  color:var(--text);
+}
+.slider-row input[type="range"]{
+  flex:1;
+  height:6px;
+  -webkit-appearance:none;
+  background:var(--border);
+  border-radius:3px;
+  cursor:pointer;
+}
+.slider-row input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:18px;
+  height:18px;
+  background:var(--primary);
+  border-radius:50%;
+  box-shadow:0 2px 6px rgba(99,102,241,0.5);
+}
+.slider-row .value{
+  font-size:12px;
+  font-weight:700;
+  color:var(--primary);
+  min-width:45px;
+  text-align:right;
+  font-family:monospace;
+}
+.toggle-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-size:12.5px;
+  font-weight:600;
+}
+.toggle-switch{
+  position:relative;
+  width:44px;
+  height:24px;
+  background:var(--border);
   border-radius:12px;
   cursor:pointer;
-  font-family:inherit;
-  font-size:12.5px;
-  font-weight:600;
-  color:var(--text);
-  transition:0.25s;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:8px;
+  transition:0.3s;
 }
-.export-btn i{font-size:20px;color:var(--primary)}
-.export-btn:hover{
-  border-color:var(--primary);
-  transform:translateY(-2px);
-  box-shadow:0 8px 20px rgba(99,102,241,0.15);
+.toggle-switch::after{
+  content:'';
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:20px;
+  height:20px;
+  background:white;
+  border-radius:50%;
+  transition:0.3s;
+  box-shadow:0 2px 4px rgba(0,0,0,0.2);
 }
-.export-btn small{
-  font-size:10.5px;
-  color:var(--text-muted);
-  font-weight:500;
-}
+.toggle-switch.active{background:var(--primary)}
+.toggle-switch.active::after{left:22px}
 
-.info-box{
-  margin-top:30px;
+/* ============================================================
+   EXPORT BAR
+   ============================================================ */
+.export-bar{
   padding:20px;
-  background:var(--bg);
-  border-radius:14px;
-  border:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));
   display:flex;
-  gap:16px;
-  align-items:flex-start;
-}
-.info-box .info-icon{
-  color:var(--primary);
-  font-size:22px;
-  flex-shrink:0;
-  margin-top:2px;
-}
-.info-box .info-content h4{
-  font-size:14px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-.info-box .info-content p{
-  font-size:12.5px;
-  color:var(--text-muted);
-  line-height:1.6;
-}
-
-.toast{
-  position:fixed;
-  bottom:30px;
-  left:50%;
-  transform:translateX(-50%) translateY(150px);
-  background:var(--card);
-  color:var(--text);
-  padding:14px 22px;
-  border-radius:12px;
-  box-shadow:0 10px 40px rgba(0,0,0,0.3);
-  font-size:13px;
-  font-weight:600;
-  z-index:2000;
-  transition:0.35s cubic-bezier(0.4,0,0.2,1);
-  display:flex;
-  align-items:center;
   gap:10px;
-  border-left:4px solid var(--success);
-  opacity:0;
-  max-width:90vw;
+  flex-wrap:wrap;
+  justify-content:center;
 }
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.toast.error{border-left-color:var(--danger)}
-.toast.error i{color:var(--danger)}
-.toast.success i{color:var(--success)}
-.toast.info{border-left-color:var(--info)}
-.toast.info i{color:var(--info)}
-.toast.warning{border-left-color:var(--warning)}
-.toast.warning i{color:var(--warning)}
 
+/* ============================================================
+   BATCH MODE
+   ============================================================ */
 .batch-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
   gap:16px;
-  margin-top:24px;
+  padding:20px;
 }
 .batch-item{
   background:var(--bg);
@@ -809,40 +759,223 @@ body{
 .batch-item.done .batch-download{display:flex}
 .batch-item .batch-download:hover{background:var(--primary);transform:scale(1.1)}
 
+/* ============================================================
+   PROCESSING OVERLAY
+   ============================================================ */
+.processing-overlay{
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(10px);
+  z-index:999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.processing-overlay.active{display:flex}
+.processing-box{
+  background:var(--card);
+  border-radius:20px;
+  padding:40px 50px;
+  max-width:500px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,0.5);
+  animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55);
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+.processing-box .spinner{
+  width:70px;height:70px;
+  border:5px solid var(--border);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  margin:0 auto 24px;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.processing-box h3{font-size:19px;font-weight:700;margin-bottom:10px}
+.processing-box p{font-size:13px;color:var(--text-muted);margin-bottom:24px;line-height:1.6}
+.progress-bar-wrapper{
+  width:100%;height:8px;
+  background:var(--bg);
+  border-radius:20px;
+  overflow:hidden;
+  margin-bottom:12px;
+  border:1px solid var(--border);
+}
+.progress-bar-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  border-radius:20px;
+  transition:width 0.3s;
+  position:relative;
+  overflow:hidden;
+}
+.progress-bar-fill::after{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
+  animation:shimmer 1.5s infinite;
+}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.progress-text{font-size:12px;color:var(--text-muted);font-weight:500;font-family:monospace}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast{
+  position:fixed;bottom:30px;left:50%;
+  transform:translateX(-50%) translateY(150px);
+  background:var(--card);color:var(--text);
+  padding:14px 22px;border-radius:12px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  font-size:13px;font-weight:600;
+  z-index:2000;
+  transition:0.35s cubic-bezier(0.4,0,0.2,1);
+  display:flex;align-items:center;gap:10px;
+  border-left:4px solid var(--success);
+  opacity:0;max-width:90vw;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.error{border-left-color:var(--danger)}
+.toast.error i{color:var(--danger)}
+.toast.success i{color:var(--success)}
+.toast.info{border-left-color:var(--info)}
+.toast.info i{color:var(--info)}
+.toast.warning{border-left-color:var(--warning)}
+.toast.warning i{color:var(--warning)}
+
+/* ============================================================
+   INFO BOX
+   ============================================================ */
+.info-box{
+  margin-top:30px;
+  padding:20px;
+  background:var(--bg);
+  border-radius:14px;
+  border:1px solid var(--border);
+  display:flex;
+  gap:16px;
+  align-items:flex-start;
+}
+.info-box .info-icon{
+  color:var(--primary);
+  font-size:22px;
+  flex-shrink:0;
+  margin-top:2px;
+}
+.info-box .info-content h4{font-size:14px;font-weight:700;margin-bottom:6px}
+.info-box .info-content p{font-size:12.5px;color:var(--text-muted);line-height:1.6}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
 @media(max-width:768px){
-  .upload-section{padding:20px}
+  .upload-section{padding:16px}
   .dropzone{padding:40px 20px}
   .dropzone-icon{font-size:48px}
   .dropzone h3{font-size:17px}
   .processing-box{padding:30px 24px}
   .result-header{flex-direction:column;align-items:flex-start}
-  .export-buttons{grid-template-columns:repeat(2,1fr)}
+  .export-bar{flex-direction:column}
+  .export-bar .btn{width:100%}
   .url-input-group{flex-direction:column}
-  .url-input-group input{width:100%}
+  .advanced-controls{grid-template-columns:1fr}
+  .brush-tools{padding:12px}
+  .brush-btn{padding:8px 12px;font-size:11px}
 }
 @media(max-width:480px){
-  .export-buttons{grid-template-columns:1fr}
-  .upload-actions{flex-direction:column;width:100%}
-  .upload-actions .btn{width:100%}
-  .compare-handle::after{width:40px;height:40px;font-size:14px}
+  .slider-row{flex-wrap:wrap}
+  .slider-row label{min-width:100%}
 }
 </style>
 </head>
 <body>
 
+<!-- ==================== HEADER ==================== -->
 <header class="top-header">
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-    <i class="fas fa-moon"></i>
-  </button>
+  <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
   <div class="badge">
-    <i class="fas fa-bolt"></i> 100% Automatic • Free • No Signup
+    <i class="fas fa-bolt"></i> 6 AI Models • Alpha Matting • Manual Brush
   </div>
-  <h1>🎨 AI Background Remover</h1>
-  <p>Remove image backgrounds automatically in seconds. Powered by AI — runs entirely in your browser. No upload to servers, complete privacy.</p>
+  <h1>🎨 Pro AI Background Remover</h1>
+  <p>Professional-grade background removal with 6 AI models, alpha matting, manual brush refinement, and batch processing. 100% client-side.</p>
 </header>
 
 <div class="main-container">
 
+  <!-- ==================== MODEL SELECTOR ==================== -->
+  <div class="card">
+    <div class="card-header">
+      <h2><i class="fas fa-brain"></i> Select AI Model</h2>
+    </div>
+    <div class="model-grid" id="modelGrid">
+      <div class="model-card active" data-model="isnet" onclick="selectModel('isnet', this)">
+        <div class="badge balanced">Balanced</div>
+        <h4><i class="fas fa-star"></i> ISNet General</h4>
+        <p>Best all-rounder. Works for people, products, animals, and objects.</p>
+        <div class="model-meta">
+          <span><i class="fas fa-database"></i> 40MB</span>
+          <span><i class="fas fa-clock"></i> ~5s</span>
+          <span><i class="fas fa-expand"></i> 1024px</span>
+        </div>
+      </div>
+      <div class="model-card" data-model="isnet_fp16" onclick="selectModel('isnet_fp16', this)">
+        <div class="badge fast">Fastest</div>
+        <h4><i class="fas fa-bolt"></i> ISNet FP16</h4>
+        <p>Half precision version. Smaller size, faster processing.</p>
+        <div class="model-meta">
+          <span><i class="fas fa-database"></i> 20MB</span>
+          <span><i class="fas fa-clock"></i> ~3s</span>
+          <span><i class="fas fa-expand"></i> 1024px</span>
+        </div>
+      </div>
+      <div class="model-card" data-model="isnet_quint8" onclick="selectModel('isnet_quint8', this)">
+        <div class="badge fast">Smallest</div>
+        <h4><i class="fas fa-feather"></i> ISNet Quantized</h4>
+        <p>8-bit quantized. Smallest download, good for slow connections.</p>
+        <div class="model-meta">
+          <span><i class="fas fa-database"></i> 10MB</span>
+          <span><i class="fas fa-clock"></i> ~4s</span>
+          <span><i class="fas fa-expand"></i> 1024px</span>
+        </div>
+      </div>
+      <div class="model-card" data-model="u2net_human" onclick="selectModel('u2net_human', this)">
+        <div class="badge quality">Best Portraits</div>
+        <h4><i class="fas fa-user"></i> U2Net Human</h4>
+        <p>Specialized for human portraits. Better hair detail.</p>
+        <div class="model-meta">
+          <span><i class="fas fa-database"></i> 168MB</span>
+          <span><i class="fas fa-clock"></i> ~15s</span>
+          <span><i class="fas fa-expand"></i> 320px</span>
+        </div>
+      </div>
+      <div class="model-card" data-model="bria_rmbg" onclick="selectModel('bria_rmbg', this)">
+        <div class="badge pro">Professional</div>
+        <h4><i class="fas fa-crown"></i> BRIA RMBG 2.0</h4>
+        <p>Professional-grade, highest quality. Best for commercial use.</p>
+        <div class="model-meta">
+          <span><i class="fas fa-database"></i> 176MB</span>
+          <span><i class="fas fa-clock"></i> ~45s</span>
+          <span><i class="fas fa-expand"></i> 1024px</span>
+        </div>
+      </div>
+      <div class="model-card" data-model="silueta" onclick="selectModel('silueta', this)">
+        <div class="badge fast">Lightweight</div>
+        <h4><i class="fas fa-leaf"></i> Silueta</h4>
+        <p>Lightweight silhouette model. Great for simple subjects.</p>
+        <div class="model-meta">
+          <span><i class="fas fa-database"></i> 42MB</span>
+          <span><i class="fas fa-clock"></i> ~6s</span>
+          <span><i class="fas fa-expand"></i> 320px</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODE TABS ==================== -->
   <div class="mode-tabs">
     <button class="mode-tab active" onclick="switchMode('single',this)">
       <i class="fas fa-image"></i> Single
@@ -852,10 +985,10 @@ body{
     </button>
   </div>
 
+  <!-- ==================== SINGLE MODE ==================== -->
   <div id="singleMode">
     <div class="card">
       <div class="upload-section" id="uploadSection">
-
         <div class="dropzone" id="dropzone">
           <div class="dropzone-icon">
             <i class="fas fa-cloud-upload-alt"></i>
@@ -874,100 +1007,145 @@ body{
             </button>
           </div>
         </div>
-
         <input type="file" id="fileInput" accept="image/*" style="display:none">
-
         <div class="url-input-group">
           <input type="url" id="urlInput" placeholder="Or paste image URL here..." onkeydown="if(event.key==='Enter') loadFromURL()">
           <button class="btn btn-primary" onclick="loadFromURL()">
             <i class="fas fa-link"></i> Load
           </button>
         </div>
-
-        <div class="samples-section">
-          <div class="samples-title">No image? Try one of these:</div>
-          <div class="samples-grid" id="samplesGrid"></div>
-        </div>
-
       </div>
 
+      <!-- RESULT -->
       <div class="result-section" id="resultSection">
-        <div style="padding:24px">
+        <div class="result-header">
+          <h2><i class="fas fa-check-circle"></i> Background Removed</h2>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" onclick="resetAll()">
+              <i class="fas fa-redo"></i> New Image
+            </button>
+          </div>
+        </div>
 
-          <div class="result-header">
-            <h2><i class="fas fa-check-circle"></i> Background Removed</h2>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="btn btn-outline btn-sm" onclick="resetAll()">
-                <i class="fas fa-redo"></i> New Image
-              </button>
+        <!-- Brush Tools -->
+        <div class="brush-tools">
+          <button class="brush-btn active" onclick="setBrushMode('none', this)">
+            <i class="fas fa-mouse-pointer"></i> None
+          </button>
+          <button class="brush-btn" onclick="setBrushMode('erase', this)">
+            <i class="fas fa-eraser"></i> Eraser
+          </button>
+          <button class="brush-btn" onclick="setBrushMode('restore', this)">
+            <i class="fas fa-paint-brush"></i> Restore
+          </button>
+          <div class="brush-size-control">
+            <i class="fas fa-circle" style="font-size:8px"></i>
+            <input type="range" id="brushSize" min="5" max="150" value="40" oninput="document.getElementById('brushSizeVal').textContent=this.value">
+            <span id="brushSizeVal" style="color:var(--primary);font-weight:700;min-width:30px">40</span>
+          </div>
+        </div>
+
+        <!-- Background Swatches -->
+        <div class="bg-swatches">
+          <div class="bg-swatch transparent active" title="Transparent" onclick="setBg('transparent', this)"></div>
+          <div class="bg-swatch white" title="White" onclick="setBg('#ffffff', this)"></div>
+          <div class="bg-swatch black" title="Black" onclick="setBg('#000000', this)"></div>
+          <div class="bg-swatch blue" title="Blue" onclick="setBg('#2563eb', this)"></div>
+          <div class="bg-swatch red" title="Red" onclick="setBg('#dc2626', this)"></div>
+          <div class="bg-swatch green" title="Green" onclick="setBg('#16a34a', this)"></div>
+          <div class="bg-swatch gradient" title="Gradient" onclick="setBg('gradient', this)"></div>
+          <div class="bg-custom-wrapper" title="Custom Color">
+            <div class="bg-swatch"></div>
+            <input type="color" id="customColorInput" value="#6366f1" onchange="setBg(this.value, document.querySelector('.bg-custom-wrapper .bg-swatch'))">
+          </div>
+        </div>
+
+        <!-- Advanced Controls -->
+        <div class="advanced-controls">
+          <div class="control-group">
+            <h4><i class="fas fa-sliders-h"></i> Edge Refinement</h4>
+            <div class="slider-row">
+              <label>Feather</label>
+              <input type="range" id="featherAmount" min="0" max="10" value="0" step="0.5" oninput="document.getElementById('featherVal').textContent=this.value;applyEdgeRefinement()">
+              <span class="value" id="featherVal">0</span>
+            </div>
+            <div class="slider-row">
+              <label>Edge Shift</label>
+              <input type="range" id="edgeShift" min="-10" max="10" value="0" step="1" oninput="document.getElementById('edgeShiftVal').textContent=this.value;applyEdgeRefinement()">
+              <span class="value" id="edgeShiftVal">0</span>
+            </div>
+            <div class="slider-row">
+              <label>Threshold</label>
+              <input type="range" id="alphaThreshold" min="0" max="255" value="128" step="1" oninput="document.getElementById('thresholdVal').textContent=this.value;applyThreshold()">
+              <span class="value" id="thresholdVal">128</span>
             </div>
           </div>
 
-          <div class="compare-slider" id="compareSlider">
-            <div class="compare-before">
-              <img id="beforeImg" alt="Before" draggable="false">
+          <div class="control-group">
+            <h4><i class="fas fa-magic"></i> Alpha Matting</h4>
+            <div class="toggle-row">
+              <span>Enable Alpha Matting</span>
+              <div class="toggle-switch" id="alphaMattingToggle" onclick="toggleAlphaMatting()"></div>
             </div>
-            <div class="compare-after" id="afterWrapper">
-              <img id="afterImg" alt="After" draggable="false">
+            <div class="slider-row">
+              <label>Erode Size</label>
+              <input type="range" id="erodeSize" min="0" max="30" value="10" oninput="document.getElementById('erodeVal').textContent=this.value">
+              <span class="value" id="erodeVal">10</span>
             </div>
-            <div class="compare-handle" id="compareHandle"></div>
-            <div class="compare-label before">Original</div>
-            <div class="compare-label after">Removed BG</div>
-          </div>
-
-          <div class="bg-options">
-            <div class="bg-options-header">
-              <i class="fas fa-palette"></i>
-              Change Background Color
+            <div class="slider-row">
+              <label>Foreground</label>
+              <input type="range" id="fgThreshold" min="0" max="255" value="240" oninput="document.getElementById('fgThreshVal').textContent=this.value">
+              <span class="value" id="fgThreshVal">240</span>
             </div>
-            <div class="bg-swatches">
-              <div class="bg-swatch transparent active" data-color="transparent" title="Transparent" onclick="setBackground('transparent',this)"></div>
-              <div class="bg-swatch white" data-color="#ffffff" title="White" onclick="setBackground('#ffffff',this)"></div>
-              <div class="bg-swatch black" data-color="#000000" title="Black" onclick="setBackground('#000000',this)"></div>
-              <div class="bg-swatch blue" data-color="#2563eb" title="Blue" onclick="setBackground('#2563eb',this)"></div>
-              <div class="bg-swatch red" data-color="#dc2626" title="Red" onclick="setBackground('#dc2626',this)"></div>
-              <div class="bg-swatch green" data-color="#16a34a" title="Green" onclick="setBackground('#16a34a',this)"></div>
-              <div class="bg-swatch gradient" data-color="gradient" title="Gradient" onclick="setBackground('gradient',this)"></div>
-              <div class="bg-custom-wrapper" title="Custom Color">
-                <div class="bg-swatch" id="customSwatchPreview" style="background: linear-gradient(135deg,#6366f1,#ec4899);">
-                  <i class="fas fa-eye-dropper"></i>
-                </div>
-                <input type="color" id="customColorInput" value="#6366f1" onchange="setBackground(this.value, document.getElementById('customSwatchPreview'))">
-              </div>
+            <div class="slider-row">
+              <label>Background</label>
+              <input type="range" id="bgThreshold" min="0" max="255" value="10" oninput="document.getElementById('bgThreshVal').textContent=this.value">
+              <span class="value" id="bgThreshVal">10</span>
             </div>
           </div>
 
-          <div class="export-bar">
-            <h3><i class="fas fa-download"></i> Download Your Image</h3>
-            <div class="export-buttons">
-              <button class="export-btn" onclick="download('png')">
-                <i class="fas fa-file-image"></i>
-                <span>Download PNG</span>
-                <small>Transparent • Best</small>
-              </button>
-              <button class="export-btn" onclick="download('jpeg')">
-                <i class="fas fa-file-image"></i>
-                <span>Download JPG</span>
-                <small>Smaller size</small>
-              </button>
-              <button class="export-btn" onclick="download('webp')">
-                <i class="fas fa-file-image"></i>
-                <span>Download WebP</span>
-                <small>Modern format</small>
-              </button>
-              <button class="export-btn" onclick="copyToClipboard()">
-                <i class="fas fa-copy"></i>
-                <span>Copy Image</span>
-                <small>To clipboard</small>
-              </button>
+          <div class="control-group">
+            <h4><i class="fas fa-cog"></i> Post-Processing</h4>
+            <div class="toggle-row">
+              <span>Smooth Edges</span>
+              <div class="toggle-switch active" id="smoothToggle" onclick="toggleSmooth()"></div>
+            </div>
+            <div class="toggle-row">
+              <span>Despill Color</span>
+              <div class="toggle-switch active" id="despillToggle" onclick="toggleDespill()"></div>
+            </div>
+            <div class="toggle-row">
+              <span>Remove Shadows</span>
+              <div class="toggle-switch" id="shadowToggle" onclick="toggleShadow()"></div>
             </div>
           </div>
+        </div>
 
+        <!-- Canvas -->
+        <div class="canvas-wrapper" id="canvasWrapper">
+          <canvas id="editCanvas"></canvas>
+        </div>
+
+        <!-- Export -->
+        <div class="export-bar">
+          <button class="btn btn-primary" onclick="downloadResult('png')">
+            <i class="fas fa-file-image"></i> Download PNG
+          </button>
+          <button class="btn btn-outline" onclick="downloadResult('jpeg')">
+            <i class="fas fa-file-image"></i> Download JPG
+          </button>
+          <button class="btn btn-outline" onclick="downloadResult('webp')">
+            <i class="fas fa-file-image"></i> Download WebP
+          </button>
+          <button class="btn btn-outline" onclick="copyToClipboard()">
+            <i class="fas fa-copy"></i> Copy
+          </button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- ==================== BATCH MODE ==================== -->
   <div id="batchMode" style="display:none">
     <div class="card">
       <div class="upload-section">
@@ -976,7 +1154,7 @@ body{
             <i class="fas fa-layer-group"></i>
           </div>
           <h3>Drop multiple images here</h3>
-          <p>Process up to 20 images at once. Each will be removed one by one.</p>
+          <p>Process up to 10 images at once with the selected AI model.</p>
           <div class="upload-actions">
             <button class="btn btn-primary" onclick="document.getElementById('batchFileInput').click()">
               <i class="fas fa-folder-open"></i> Choose Files
@@ -986,8 +1164,8 @@ body{
         <input type="file" id="batchFileInput" accept="image/*" multiple style="display:none">
       </div>
 
-      <div id="batchResults" style="padding:0 24px 24px;display:none">
-        <div class="result-header" style="padding-top:20px">
+      <div id="batchResults" style="display:none">
+        <div class="card-header">
           <h2><i class="fas fa-layer-group"></i> Batch Results</h2>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn btn-success btn-sm" onclick="downloadAllBatch()">
@@ -1003,21 +1181,23 @@ body{
     </div>
   </div>
 
+  <!-- INFO -->
   <div class="info-box">
     <i class="fas fa-shield-alt info-icon"></i>
     <div class="info-content">
       <h4>🔒 100% Private & Free</h4>
-      <p>All processing happens directly in your browser using WebAssembly + AI. Your images never leave your device — no server uploads, no tracking, no signup required. Pehli baar use karne par ~40MB ka AI model download hoga (cached for future).</p>
+      <p>All processing happens directly in your browser. Your images never leave your device. Pehli baar 20-180MB ka AI model download hoga (cached for future). Alpha matting aur manual brush se remove.bg jaisa result milega.</p>
     </div>
   </div>
 
 </div>
 
+<!-- PROCESSING OVERLAY -->
 <div class="processing-overlay" id="processingOverlay">
   <div class="processing-box">
     <div class="spinner"></div>
     <h3 id="processingTitle">Loading AI Model...</h3>
-    <p id="processingMsg">This may take 30-60 seconds on first use. Please wait.</p>
+    <p id="processingMsg">Please wait...</p>
     <div class="progress-bar-wrapper">
       <div class="progress-bar-fill" id="progressFill"></div>
     </div>
@@ -1025,658 +1205,16 @@ body{
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toastMsg">Success</span>
 </div>
 
-<script type="module">
-/* ============================================================
-   IMPORT AI LIBRARY (ES Module)
-   ============================================================ */
-import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
-
-// Expose globally for onclick handlers and other functions
-window.removeBackgroundAI = removeBackground;
-
-/* ============================================================
-   THEME
-   ============================================================ */
-window.toggleTheme = function(){
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  document.querySelector('.theme-toggle i').className =
-    next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-};
-
-if(localStorage.getItem('theme') === 'light'){
-  document.querySelector('.theme-toggle i').className = 'fas fa-sun';
-}
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-let toastTimer;
-window.showToast = function(msg, type = 'success'){
-  const toast = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  toast.className = 'toast show ' + type;
-  const icon = toast.querySelector('i');
-  icon.className = type === 'error' ? 'fas fa-exclamation-circle'
-                 : type === 'info' ? 'fas fa-info-circle'
-                 : type === 'warning' ? 'fas fa-exclamation-triangle'
-                 : 'fas fa-check-circle';
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
-};
-
-/* ============================================================
-   STATE
-   ============================================================ */
-let removedBlob = null;
-let removedDataURL = null;
-let currentBgColor = 'transparent';
-let comparePercent = 50;
-
-/* ============================================================
-   MODE SWITCHING
-   ============================================================ */
-window.switchMode = function(mode, btn){
-  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('singleMode').style.display = mode === 'single' ? 'block' : 'none';
-  document.getElementById('batchMode').style.display = mode === 'batch' ? 'block' : 'none';
-};
-
-/* ============================================================
-   SAMPLE IMAGES
-   ============================================================ */
-const SAMPLE_IMAGES = [
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80',
-  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80',
-  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80',
-  'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&q=80',
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80'
-];
-
-function initSamples(){
-  const grid = document.getElementById('samplesGrid');
-  if(!grid) return;
-  grid.innerHTML = SAMPLE_IMAGES.map(url =>
-    `<img class="sample-img" src="${url}" onclick="loadFromURL('${url}')" alt="Sample">`
-  ).join('');
-}
-
-/* ============================================================
-   FILE INPUT
-   ============================================================ */
-document.getElementById('fileInput').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if(file) processFile(file);
-  e.target.value = '';
-});
-
-document.getElementById('batchFileInput').addEventListener('change', e => {
-  const files = Array.from(e.target.files);
-  if(files.length) processBatchFiles(files);
-  e.target.value = '';
-});
-
-/* ============================================================
-   DRAG & DROP
-   ============================================================ */
-const dropzone = document.getElementById('dropzone');
-['dragenter','dragover'].forEach(evt => {
-  dropzone.addEventListener(evt, e => {
-    e.preventDefault(); e.stopPropagation();
-    dropzone.classList.add('dragover');
-  });
-});
-['dragleave','drop'].forEach(evt => {
-  dropzone.addEventListener(evt, e => {
-    e.preventDefault(); e.stopPropagation();
-    dropzone.classList.remove('dragover');
-  });
-});
-dropzone.addEventListener('drop', e => {
-  const file = e.dataTransfer.files[0];
-  if(file && file.type.startsWith('image/')) processFile(file);
-  else showToast('Please drop an image file', 'error');
-});
-dropzone.addEventListener('click', e => {
-  if(e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-    document.getElementById('fileInput').click();
-  }
-});
-
-const batchDropzone = document.getElementById('batchDropzone');
-['dragenter','dragover'].forEach(evt => {
-  batchDropzone.addEventListener(evt, e => {
-    e.preventDefault();
-    batchDropzone.classList.add('dragover');
-  });
-});
-['dragleave','drop'].forEach(evt => {
-  batchDropzone.addEventListener(evt, e => {
-    e.preventDefault();
-    batchDropzone.classList.remove('dragover');
-  });
-});
-batchDropzone.addEventListener('drop', e => {
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-  if(files.length) processBatchFiles(files);
-  else showToast('Please drop image files', 'error');
-});
-batchDropzone.addEventListener('click', e => {
-  if(e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
-    document.getElementById('batchFileInput').click();
-  }
-});
-
-/* ============================================================
-   PASTE FROM CLIPBOARD
-   ============================================================ */
-document.addEventListener('paste', e => {
-  const items = e.clipboardData?.items;
-  if(!items) return;
-  for(let item of items){
-    if(item.type.startsWith('image/')){
-      const file = item.getAsFile();
-      if(file){
-        processFile(file);
-        showToast('Image pasted from clipboard!');
-        break;
-      }
-    }
-  }
-});
-
-window.pasteFromClipboard = async function(){
-  try{
-    if(!navigator.clipboard || !navigator.clipboard.read){
-      showToast('Clipboard API not supported. Use Ctrl+V instead.', 'error');
-      return;
-    }
-    const items = await navigator.clipboard.read();
-    let found = false;
-    for(const item of items){
-      for(const type of item.types){
-        if(type.startsWith('image/')){
-          const blob = await item.getType(type);
-          const file = new File([blob], 'pasted.png', { type });
-          processFile(file);
-          found = true;
-          break;
-        }
-      }
-      if(found) break;
-    }
-    if(!found) showToast('No image found in clipboard', 'error');
-  } catch(err){
-    showToast('Please press Ctrl+V to paste', 'info');
-  }
-};
-
-/* ============================================================
-   LOAD FROM URL
-   ============================================================ */
-window.loadFromURL = async function(url){
-  if(!url){
-    url = document.getElementById('urlInput').value.trim();
-  }
-  if(!url){
-    showToast('Please enter a URL', 'warning');
-    return;
-  }
-
-  try {
-    showToast('Loading image...', 'info');
-    const response = await fetch(url, { mode: 'cors' });
-    const blob = await response.blob();
-    if(!blob.type.startsWith('image/')){
-      throw new Error('Not an image');
-    }
-    processFile(new File([blob], 'from-url.jpg', { type: blob.type }));
-  } catch(err){
-    console.warn('Fetch failed, trying direct load:', err);
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      canvas.toBlob(blob => {
-        if(blob) processFile(new File([blob], 'from-url.png', { type: 'image/png' }));
-        else showToast('Failed to load image', 'error');
-      }, 'image/png');
-    };
-    img.onerror = () => showToast('Failed to load image (CORS blocked?)', 'error');
-    img.src = url;
-  }
-};
-
-/* ============================================================
-   PROCESS FILE
-   ============================================================ */
-window.processFile = async function(file){
-  if(!file.type.startsWith('image/')){
-    showToast('Please select an image file', 'error');
-    return;
-  }
-  if(file.size > 20 * 1024 * 1024){
-    showToast('Image too large (max 20MB)', 'error');
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const dataURL = e.target.result;
-    const img = new Image();
-    img.onload = async () => {
-      document.getElementById('beforeImg').src = dataURL;
-      await runBackgroundRemoval(file);
-    };
-    img.src = dataURL;
-  };
-  reader.readAsDataURL(file);
-};
-
-/* ============================================================
-   AI BACKGROUND REMOVAL
-   ============================================================ */
-async function runBackgroundRemoval(fileOrBlob){
-  showProcessing(true, 'Loading AI Model...', 'First-time use downloads ~40MB. Please wait.');
-
-  try {
-    if(typeof window.removeBackgroundAI === 'undefined'){
-      throw new Error('AI library not loaded. Please wait a moment and try again.');
-    }
-
-    const blob = await window.removeBackgroundAI(fileOrBlob, {
-      progress: (key, current, total) => {
-        const percent = total > 0 ? Math.round((current / total) * 100) : 0;
-        updateProgress(percent);
-        if(key.includes('fetch')) updateProcessingText('Downloading AI model...', `Fetching: ${key.split('/').pop()}`);
-        else if(key.includes('compute')) updateProcessingText('Removing background...', 'AI is analyzing your image');
-        else updateProcessingText('Processing...', key);
-      },
-      output: {
-        format: 'image/png',
-        quality: 1.0
-      }
-    });
-
-    removedBlob = blob;
-    removedDataURL = URL.createObjectURL(blob);
-
-    const afterImg = document.getElementById('afterImg');
-    afterImg.onload = () => {
-      showProcessing(false);
-      showResult();
-      showToast('✅ Background removed successfully!');
-    };
-    afterImg.onerror = () => {
-      showProcessing(false);
-      showToast('Failed to load result image', 'error');
-    };
-    afterImg.src = removedDataURL;
-
-  } catch(err){
-    console.error('Background removal error:', err);
-    showProcessing(false);
-    showToast('Error: ' + (err.message || 'Failed to process image'), 'error');
-  }
-}
-
-function updateProgress(percent){
-  document.getElementById('progressFill').style.width = percent + '%';
-  document.getElementById('progressText').textContent = percent + '%';
-}
-
-function updateProcessingText(title, msg){
-  document.getElementById('processingTitle').textContent = title;
-  document.getElementById('processingMsg').textContent = msg;
-}
-
-function showProcessing(show, title, msg){
-  const overlay = document.getElementById('processingOverlay');
-  if(show){
-    overlay.classList.add('active');
-    if(title) document.getElementById('processingTitle').textContent = title;
-    if(msg) document.getElementById('processingMsg').textContent = msg;
-    updateProgress(0);
-  } else {
-    overlay.classList.remove('active');
-  }
-}
-
-/* ============================================================
-   SHOW RESULT
-   ============================================================ */
-function showResult(){
-  document.getElementById('uploadSection').style.display = 'none';
-  document.getElementById('resultSection').classList.add('active');
-  currentBgColor = 'transparent';
-  applyBackgroundToResult();
-  setComparePosition(50);
-}
-
-/* ============================================================
-   COMPARISON SLIDER
-   ============================================================ */
-const compareSlider = document.getElementById('compareSlider');
-const afterWrapper = document.getElementById('afterWrapper');
-const compareHandle = document.getElementById('compareHandle');
-
-let isDragging = false;
-
-function setComparePosition(percent){
-  percent = Math.max(0, Math.min(100, percent));
-  comparePercent = percent;
-  afterWrapper.style.clipPath = `inset(0 0 0 ${percent}%)`;
-  compareHandle.style.left = percent + '%';
-}
-
-function handleCompareMove(clientX){
-  const rect = compareSlider.getBoundingClientRect();
-  const x = clientX - rect.left;
-  const percent = (x / rect.width) * 100;
-  setComparePosition(percent);
-}
-
-compareSlider.addEventListener('mousedown', e => {
-  isDragging = true;
-  handleCompareMove(e.clientX);
-});
-document.addEventListener('mousemove', e => {
-  if(isDragging) handleCompareMove(e.clientX);
-});
-document.addEventListener('mouseup', () => { isDragging = false; });
-
-compareSlider.addEventListener('touchstart', e => {
-  isDragging = true;
-  handleCompareMove(e.touches[0].clientX);
-}, { passive: true });
-document.addEventListener('touchmove', e => {
-  if(isDragging) handleCompareMove(e.touches[0].clientX);
-}, { passive: true });
-document.addEventListener('touchend', () => { isDragging = false; });
-
-/* ============================================================
-   BACKGROUND COLOR
-   ============================================================ */
-window.setBackground = function(color, swatchEl){
-  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
-  if(swatchEl) swatchEl.classList.add('active');
-  currentBgColor = color;
-  applyBackgroundToResult();
-};
-
-function applyBackgroundToResult(){
-  const afterWrapperEl = document.getElementById('afterWrapper');
-  const afterImg = document.getElementById('afterImg');
-
-  if(currentBgColor === 'transparent'){
-    afterWrapperEl.style.background = '';
-    afterWrapperEl.style.backgroundImage = '';
-    afterWrapperEl.style.backgroundColor = '';
-    afterWrapperEl.classList.remove('no-checker');
-  } else if(currentBgColor === 'gradient'){
-    afterWrapperEl.classList.add('no-checker');
-    afterWrapperEl.style.background = 'linear-gradient(135deg,#6366f1,#ec4899)';
-    afterWrapperEl.style.backgroundImage = '';
-    afterWrapperEl.style.backgroundColor = '';
-  } else {
-    afterWrapperEl.classList.add('no-checker');
-    afterWrapperEl.style.background = currentBgColor;
-    afterWrapperEl.style.backgroundImage = 'none';
-    afterWrapperEl.style.backgroundColor = currentBgColor;
-  }
-  afterImg.style.position = 'relative';
-  afterImg.style.zIndex = '1';
-}
-
-/* ============================================================
-   DOWNLOAD / COPY
-   ============================================================ */
-async function generateFinalImage(format = 'png'){
-  if(!removedBlob) throw new Error('No image to process');
-
-  const img = await new Promise((resolve, reject) => {
-    const i = new Image();
-    i.onload = () => resolve(i);
-    i.onerror = reject;
-    i.src = removedDataURL;
-  });
-
-  const canvas = document.createElement('canvas');
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  const ctx = canvas.getContext('2d');
-
-  if(format !== 'png' || (currentBgColor !== 'transparent')){
-    if(currentBgColor === 'gradient'){
-      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      grad.addColorStop(0, '#6366f1');
-      grad.addColorStop(1, '#ec4899');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    } else if(currentBgColor !== 'transparent'){
-      ctx.fillStyle = currentBgColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    } else if(format === 'jpeg'){
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-  }
-
-  ctx.drawImage(img, 0, 0);
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(blob => {
-      if(blob) resolve(blob);
-      else reject(new Error('Failed to create blob'));
-    }, 'image/' + format, 0.95);
-  });
-}
-
-window.download = async function(format){
-  try{
-    showToast('Preparing download...', 'info');
-    const blob = await generateFinalImage(format);
-    const ext = format === 'jpeg' ? 'jpg' : format;
-    const filename = `bg-removed-${Date.now()}.${ext}`;
-    downloadBlob(blob, filename);
-    showToast('✅ Downloaded: ' + filename);
-  } catch(err){
-    console.error(err);
-    showToast('Download failed: ' + err.message, 'error');
-  }
-};
-
-window.copyToClipboard = async function(){
-  try{
-    const blob = await generateFinalImage('png');
-    if(navigator.clipboard && window.ClipboardItem){
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob })
-      ]);
-      showToast('✅ Copied to clipboard!');
-    } else {
-      showToast('Clipboard not supported — download instead', 'error');
-    }
-  } catch(err){
-    console.error(err);
-    showToast('Copy failed: ' + err.message, 'error');
-  }
-};
-
-function downloadBlob(blob, filename){
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-}
-
-/* ============================================================
-   RESET
-   ============================================================ */
-window.resetAll = function(){
-  if(removedDataURL) URL.revokeObjectURL(removedDataURL);
-  removedBlob = null;
-  removedDataURL = null;
-  currentBgColor = 'transparent';
-
-  document.getElementById('uploadSection').style.display = 'block';
-  document.getElementById('resultSection').classList.remove('active');
-  document.getElementById('urlInput').value = '';
-
-  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
-  const tSwatch = document.querySelector('.bg-swatch.transparent');
-  if(tSwatch) tSwatch.classList.add('active');
-
-  document.getElementById('beforeImg').src = '';
-  document.getElementById('afterImg').src = '';
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-/* ============================================================
-   BATCH PROCESSING
-   ============================================================ */
-let batchItems = [];
-let batchResults = [];
-
-window.processBatchFiles = async function(files){
-  if(files.length > 20){
-    showToast('Max 20 images per batch', 'warning');
-    files = files.slice(0, 20);
-  }
-
-  batchItems = files.map(f => ({ file: f, blob: null, status: 'pending' }));
-  batchResults = [];
-
-  const grid = document.getElementById('batchGrid');
-  document.getElementById('batchResults').style.display = 'block';
-  grid.innerHTML = '';
-
-  for(let i = 0; i < files.length; i++){
-    const item = document.createElement('div');
-    item.className = 'batch-item';
-    item.id = 'batch-item-' + i;
-
-    const url = URL.createObjectURL(files[i]);
-    item.innerHTML = `
-      <img class="batch-thumb" src="${url}" alt="Image ${i+1}">
-      <button class="batch-download" onclick="downloadBatchItem(${i})" title="Download">
-        <i class="fas fa-download"></i>
-      </button>
-      <div class="batch-info">
-        <div class="batch-name">${files[i].name}</div>
-        <div class="batch-status pending"><i class="fas fa-clock"></i> Pending</div>
-      </div>
-    `;
-    grid.appendChild(item);
-  }
-
-  showProcessing(true, 'Batch Processing...', `0 of ${files.length} images done`);
-
-  for(let i = 0; i < files.length; i++){
-    const item = document.getElementById('batch-item-' + i);
-    const statusEl = item.querySelector('.batch-status');
-    statusEl.className = 'batch-status processing';
-    statusEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-    updateProcessingText(`Batch ${i+1} of ${files.length}`, `Processing: ${files[i].name}`);
-    updateProgress(0);
-
-    try{
-      const blob = await window.removeBackgroundAI(files[i], {
-        progress: (key, current, total) => {
-          const percent = total > 0 ? Math.round((current / total) * 100) : 0;
-          updateProgress(percent);
-        },
-        output: { format: 'image/png', quality: 1.0 }
-      });
-
-      batchItems[i].blob = blob;
-      batchItems[i].status = 'done';
-
-      const resultURL = URL.createObjectURL(blob);
-      item.classList.add('done');
-      item.querySelector('.batch-thumb').src = resultURL;
-      statusEl.className = 'batch-status done';
-      statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Done';
-
-      batchResults.push({ name: files[i].name, blob });
-    } catch(err){
-      console.error(err);
-      statusEl.className = 'batch-status error';
-      statusEl.innerHTML = '<i class="fas fa-times-circle"></i> Failed';
-      batchItems[i].status = 'error';
-    }
-  }
-
-  showProcessing(false);
-  showToast(`✅ Batch complete: ${batchResults.length} of ${files.length} processed`);
-};
-
-window.downloadBatchItem = function(index){
-  const item = batchItems[index];
-  if(!item || !item.blob) return;
-  const filename = 'bg-removed-' + (item.file.name.replace(/\.[^.]+$/, '') || index) + '.png';
-  downloadBlob(item.blob, filename);
-  showToast('Downloaded: ' + filename);
-};
-
-window.downloadAllBatch = async function(){
-  if(batchResults.length === 0){
-    showToast('No results to download', 'error');
-    return;
-  }
-  showToast(`Downloading ${batchResults.length} files...`, 'info');
-  for(let i = 0; i < batchResults.length; i++){
-    const r = batchResults[i];
-    const filename = 'bg-removed-' + (r.name.replace(/\.[^.]+$/, '') || i) + '.png';
-    downloadBlob(r.blob, filename);
-    await new Promise(res => setTimeout(res, 300));
-  }
-  showToast(`✅ Downloaded ${batchResults.length} files`);
-};
-
-window.clearBatch = function(){
-  batchItems = [];
-  batchResults = [];
-  document.getElementById('batchResults').style.display = 'none';
-  document.getElementById('batchGrid').innerHTML = '';
-};
-
-/* ============================================================
-   INIT
-   ============================================================ */
-window.addEventListener('DOMContentLoaded', () => {
-  initSamples();
-  setTimeout(() => {
-    if(typeof window.removeBackgroundAI === 'undefined'){
-      showToast('AI library is still loading. Please wait...', 'info');
-    } else {
-      showToast('AI library ready! Upload an image to begin.', 'success');
-    }
-  }, 1500);
-});
-
-window.addEventListener('dragover', e => e.preventDefault());
-window.addEventListener('drop', e => e.preventDefault());
-</script>
+<!-- ============================================================
+     MAIN SCRIPT
+     ============================================================ -->
+<script src="bg-remover-core.js" type="module"></script>
 
 </body>
 </html>
