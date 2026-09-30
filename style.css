@@ -172,39 +172,88 @@ body {
   opacity: 0.6;
 }
 
-/* Category filter chips */
-.category-chips {
+/* ============================================================
+   CATEGORY FILTER — Beautiful centered chips
+   ============================================================ */
+.category-wrapper {
   max-width: 1100px;
-  margin: 0 auto 24px;
+  margin: 0 auto 32px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.category-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+  opacity: 0.6;
+}
+
+.category-chips {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .chip {
-  padding: 8px 16px;
+  padding: 11px 22px;
   border-radius: 999px;
   background: var(--surface);
   border: 1.5px solid var(--border);
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition);
   user-select: none;
   font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
 }
+
+.chip .chip-emoji {
+  font-size: 16px;
+  line-height: 1;
+  transition: transform var(--transition);
+  display: inline-block;
+}
+
 .chip:hover {
   border-color: var(--primary);
   color: var(--primary);
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.15);
 }
+
+.chip:hover .chip-emoji {
+  transform: scale(1.2) rotate(-8deg);
+}
+
 .chip.active {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: white;
   border-color: transparent;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+  transform: translateY(-2px);
+}
+
+.chip.active .chip-emoji {
+  transform: scale(1.15);
 }
 
 /* ============================================================
@@ -470,11 +519,19 @@ footer a {
   .tool-card .tool-category { display: none; }
   .tool-container { padding: 22px; }
   .feedback-section { padding: 22px; }
+  .category-wrapper {
+    padding: 14px 12px;
+    margin-bottom: 24px;
+  }
+  .category-chips { gap: 8px; }
+  .chip { padding: 9px 16px; font-size: 13px; }
+  .chip .chip-emoji { font-size: 14px; }
 }
 
 @media (max-width: 480px) {
   .dashboard-grid { grid-template-columns: 1fr; }
-  .chip { font-size: 12px; padding: 6px 12px; }
+  .chip { padding: 8px 14px; font-size: 12px; gap: 6px; }
+  .chip .chip-emoji { font-size: 13px; }
 }
 
 /* ============================================================
