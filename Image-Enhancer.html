@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Image Enhancer — Real-Time Adjustment Studio</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+</script>
+
+<style>
+:root{
+  --primary:#6366f1; --secondary:#8b5cf6; --success:#10b981;
+  --danger:#ef4444; --warning:#f59e0b; --info:#0ea5e9;
+  --bg:#f5f7fb; --card:#ffffff; --border:#e5e7eb;
+  --text:#111827; --text-muted:#6b7280;
+  --shadow:0 4px 20px rgba(0,0,0,0.06);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.12);
+  --checker-1:#f0f0f0; --checker-2:#e0e0e0;
+}
+[data-theme="dark"]{
+  --bg:#0f172a; --card:#1e293b; --border:#334155;
+  --text:#f1f5f9; --text-muted:#94a3b8;
+  --shadow:0 4px 20px rgba(0,0,0,0.4);
+  --shadow-lg:0 20px 50px rgba(0,0,0,0.6);
+  --checker-1:#1a1f2e; --checker-2:#0f172a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px;transition:background 0.3s,color 0.3s}
+
+.top-header{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;padding:32px 20px 26px;text-align:center;position:relative;overflow:hidden}
+.top-header::before{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);border-radius:50%}
+.top-header h1{font-size:clamp(22px,4vw,32px);font-weight:800;margin-bottom:8px;position:relative;z-index:1}
+.top-header p{font-size:clamp(12px,1.5vw,14px);opacity:0.92;max-width:700px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
+.top-header .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:600;margin-bottom:12px;position:relative;z-index:1;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25)}
+.theme-toggle{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;z-index:2;backdrop-filter:blur(10px)}
+
+.main-container{max-width:1600px;margin:20px auto;padding:0 16px}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(99,102,241,0.04),transparent);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.card-header h2{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-header h2 i{color:var(--primary)}
+
+.upload-section{padding:22px}
+.dropzone{border:2.5px dashed var(--border);border-radius:16px;padding:55px 30px;text-align:center;cursor:pointer;transition:0.3s;background:var(--bg)}
+.dropzone:hover{border-color:var(--primary);background:rgba(99,102,241,0.04)}
+.dropzone.dragover{border-color:var(--primary);background:rgba(99,102,241,0.08)}
+.dropzone-icon{font-size:60px;color:var(--text-muted);margin-bottom:18px;opacity:0.6}
+.dropzone h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.dropzone p{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.dropzone kbd{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;font-family:monospace;font-weight:600}
+.upload-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.btn{padding:10px 18px;border:none;border-radius:10px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:0.2s;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 14px rgba(99,102,241,0.4)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,0.5)}
+.btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
+.btn-sm{padding:7px 12px;font-size:11.5px}
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
+
+.editor-card{display:none}
+.editor-card.active{display:block}
+
+/* BULLETPROOF LAYOUT: Flexbox ensures tools panel stays fixed */
+.editor-layout{display:flex;gap:16px;padding:16px;align-items:flex-start;width:100%}
+.editor-canvas-col{flex:1 1 0;min-width:0;overflow:hidden;display:flex;flex-direction:column}
+.side-panel{width:380px;flex:0 0 380px;display:flex;flex-direction:column;gap:12px;max-height:calc(100vh - 200px);overflow-y:auto;padding-right:4px}
+.side-panel::-webkit-scrollbar{width:6px}
+.side-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:1100px){
+  .editor-layout{flex-direction:column}
+  .editor-canvas-col{width:100%;flex:0 0 auto}
+  .side-panel{width:100%;flex:0 0 auto;max-height:none;overflow:visible}
+}
+
+.editor-card.fullscreen{position:fixed;inset:0;z-index:100;margin:0;border-radius:0;max-width:none;display:flex;flex-direction:column}
+.editor-card.fullscreen .editor-layout{flex:1;overflow:hidden;min-height:0}
+.editor-card.fullscreen .editor-canvas-col{height:100%}
+.editor-card.fullscreen .canvas-scroll-container{height:100%;max-height:none}
+.editor-card.fullscreen .side-panel{max-height:calc(100vh - 130px);overflow-y:auto}
+@media(max-width:1100px){
+  .editor-card.fullscreen .editor-layout{flex-direction:column}
+  .editor-card.fullscreen .editor-canvas-col{flex:1 1 auto;min-height:0}
+  .editor-card.fullscreen .side-panel{flex:0 0 auto;max-height:45vh;overflow-y:auto}
+}
+
+.canvas-scroll-container{
+  overflow:auto;
+  max-height:calc(100vh - 220px);
+  min-height:440px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  padding:24px;
+  position:relative;
+  resize:vertical;
+  width:100%;
+}
+
+.canvas-scroll-inner{display:flex;justify-content:center;align-items:flex-start;width:max-content;min-width:100%;min-height:100%}
+
+.canvas-wrapper{
+  position:relative;
+  background-color:var(--checker-2);
+  background-image:
+    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),
+    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);
+  background-size:20px 20px;
+  background-position:0 0,10px 10px;
+  border-radius:4px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.15);
+  display:block;
+  line-height:0;
+  flex:0 0 auto;
+}
+
+.canvas-wrapper canvas{display:block;image-rendering:auto;touch-action:none}
+
+.compare-badge{
+  position:absolute;
+  top:12px;left:12px;
+  background:rgba(0,0,0,0.75);color:white;
+  padding:5px 12px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
+  z-index:5;backdrop-filter:blur(6px);
+  pointer-events:none;
+  display:none;
+}
+.compare-badge.show{display:block}
+
+.tool-section{background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border)}
+.tool-section h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.tool-section h4 i{color:var(--primary)}
+
+.zoom-row{display:flex;gap:6px;align-items:center}
+.zoom-row button{background:var(--card);border:1.5px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:0.2s;font-family:inherit;font-weight:600}
+.zoom-row button:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
+.zoom-row button.wide{width:auto;padding:0 12px;font-size:11.5px}
+.zoom-level{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--primary);font-family:monospace;padding:0 8px;background:var(--card);border-radius:8px;border:1.5px solid var(--border);height:36px;display:flex;align-items:center;justify-content:center}
+
+/* Presets */
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.preset-btn{
+  padding:8px 6px;border:1.5px solid var(--border);border-radius:9px;
+  background:var(--card);cursor:pointer;font-family:inherit;
+  font-size:10.5px;font-weight:600;transition:0.2s;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--text);text-align:center;line-height:1.15;
+}
+.preset-btn:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}
+.preset-btn.active{border-color:var(--primary);background:rgba(99,102,241,0.1);color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.preset-btn i{font-size:13px;margin-bottom:2px}
+
+/* Sliders */
+.slider-block{margin-bottom:10px}
+.slider-block:last-child{margin-bottom:0}
+.slider-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.slider-head label{font-size:11.5px;font-weight:600;color:var(--text);cursor:pointer}
+.slider-head .slider-val{font-size:11px;font-weight:700;color:var(--primary);font-family:monospace;min-width:40px;text-align:right}
+.slider-head .slider-val.neg{color:var(--danger)}
+.slider-head .slider-val.pos{color:var(--success)}
+.slider-track{
+  position:relative;width:100%;height:6px;
+  background:var(--border);border-radius:3px;cursor:pointer;
+  touch-action:none;
+}
+.slider-fill{
+  position:absolute;top:0;bottom:0;
+  background:linear-gradient(90deg,var(--primary),var(--secondary));
+  border-radius:3px;
+  pointer-events:none;
+  transition:left 0.05s linear, right 0.05s linear;
+}
+.slider-thumb{
+  position:absolute;top:50%;width:16px;height:16px;
+  background:white;border:2px solid var(--primary);
+  border-radius:50%;transform:translate(-50%,-50%);
+  pointer-events:none;
+  box-shadow:0 2px 6px rgba(99,102,241,0.5);
+  transition:left 0.05s linear;
+}
+
+.download-wrapper{position:relative}
+.download-main-btn{width:100%;padding:12px 18px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(99,102,241,0.4);transition:0.25s}
+.download-main-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,0.5)}
+.download-menu{position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;display:none;z-index:50;animation:slideUp 0.2s ease}
+.download-menu.open{display:block}
+@keyframes slideUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.download-menu-item{padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:10px;transition:0.15s;color:var(--text);border:none;background:transparent;width:100%;text-align:left;font-family:inherit}
+.download-menu-item:hover{background:rgba(99,102,241,0.1);color:var(--primary)}
+.download-menu-item i{width:18px;color:var(--primary);font-size:14px}
+.download-menu-divider{height:1px;background:var(--border);margin:4px 0}
+
+.info-box{padding:14px 18px;background:var(--bg);border-radius:14px;border:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;margin-top:8px}
+.info-box .info-icon{color:var(--primary);font-size:18px;flex-shrink:0;margin-top:2px}
+.info-box h4{font-size:12.5px;font-weight:700;margin-bottom:4px}
+.info-box p{font-size:11.5px;color:var(--text-muted);line-height:1.6}
+
+.hardware-warning{display:flex;gap:12px;padding:12px 16px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:12px;margin-bottom:12px;align-items:flex-start}
+.hardware-warning i{color:var(--warning);font-size:18px;flex-shrink:0;margin-top:2px}
+.hardware-warning h5{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--warning)}
+.hardware-warning p{font-size:11.5px;color:var(--text-muted);line-height:1.55}
+
+.kbd-hint{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;background:var(--card);border:1px solid var(--border);border-radius:5px;font-size:10.5px;font-family:monospace;font-weight:600}
+
+.processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+.processing-overlay.active{display:flex !important}
+.processing-box{background:var(--card);border-radius:20px;padding:36px 44px;max-width:500px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5);animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)}
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+.processing-box .spinner{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 20px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.processing-box h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.processing-box p{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;line-height:1.5;min-height:18px}
+.progress-bar-wrapper{width:100%;height:8px;background:var(--bg);border-radius:20px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border)}
+.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:20px;transition:width 0.3s;position:relative;overflow:hidden}
+.progress-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shimmer 1.5s infinite}
+@keyframes shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+.progress-text{font-size:12px;color:var(--text-muted);font-family:monospace;font-weight:600}
+.processing-hint{margin-top:14px;padding:10px 14px;background:rgba(99,102,241,0.08);border-radius:8px;font-size:11.5px;color:var(--text-muted);line-height:1.5}
+.processing-hint i{color:var(--primary);margin-right:4px}
+
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(150px);background:var(--card);color:var(--text);padding:13px 20px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-size:12.5px;font-weight:600;z-index:2000;transition:0.35s;display:flex;align-items:center;gap:10px;border-left:4px solid var(--success);opacity:0;max-width:90vw}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.error{border-left-color:var(--danger)}.toast.error i{color:var(--danger)}
+.toast.info{border-left-color:var(--info)}.toast.info i{color:var(--info)}
+.toast.warning{border-left-color:var(--warning)}.toast.warning i{color:var(--warning)}
+
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.status-badge.loading{background:rgba(245,158,11,0.15);color:#f59e0b}
+.status-badge.ready{background:rgba(16,185,129,0.15);color:#10b981}
+.status-badge.processing{background:rgba(99,102,241,0.15);color:#6366f1}
+
+/* Compare toggle button */
+.compare-toggle-btn{
+  padding:6px 12px;border:1.5px solid var(--border);border-radius:8px;
+  background:var(--card);color:var(--text);font-family:inherit;
+  font-size:11.5px;font-weight:600;cursor:pointer;transition:0.2s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.compare-toggle-btn:hover{border-color:var(--primary);color:var(--primary)}
+.compare-toggle-btn.active{background:var(--warning);border-color:var(--warning);color:white}
+
+@media(max-width:768px){
+  .upload-section{padding:14px}
+  .dropzone{padding:36px 20px}
+  .processing-box{padding:26px 22px}
+  .editor-layout{padding:12px;gap:12px}
+  .preset-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+    <i class="fas fa-moon"></i>
+  </button>
+  <div class="badge">
+    <i class="fas fa-wand-magic-sparkles"></i> Smart-Enhanced &middot; Real-Time Preview &middot; Full Zoom
+  </div>
+  <h1>Pro Image Enhancer</h1>
+  <p>Enhance photos instantly with professional-grade adjustments. Auto-enhance, manual sliders, and presets — everything runs locally in your browser.</p>
+</header>
+
+<div class="main-container">
+
+  <div class="card" id="uploadCard">
+    <div class="upload-section">
+      <div class="dropzone" id="dropzone">
+        <div class="dropzone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+        <h3>Drop image here or click to upload</h3>
+        <p>Click to browse, press <kbd>Ctrl</kbd>+<kbd>V</kbd> to paste, or drag &amp; drop</p>
+        <div class="upload-actions">
+          <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+            <i class="fas fa-folder-open"></i> Choose File
+          </button>
+          <button class="btn btn-outline" onclick="pasteFromClipboard()">
+            <i class="fas fa-paste"></i> Paste
+          </button>
+        </div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" style="display:none">
+    </div>
+  </div>
+
+  <div class="card editor-card" id="editorCard">
+    <div class="card-header">
+      <h2>
+        <i class="fas fa-magic"></i> Enhancement Studio
+        <span class="status-badge ready" id="statusBadge"><i class="fas fa-check-circle"></i> Ready</span>
+      </h2>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)">
+          <i class="fas fa-undo"></i> Undo
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)">
+          <i class="fas fa-redo"></i> Redo
+        </button>
+        <button class="compare-toggle-btn" onclick="toggleCompare()" id="compareBtn" title="Hold or click to view original">
+          <i class="fas fa-eye"></i> Compare
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()" id="fullscreenBtn" title="Toggle fullscreen editor">
+          <i class="fas fa-expand"></i> Fullscreen
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="resetAll()">
+          <i class="fas fa-times"></i> New Image
+        </button>
+      </div>
+    </div>
+
+    <div class="editor-layout">
+      <div class="editor-canvas-col">
+        <div class="canvas-scroll-container" id="canvasScrollContainer">
+          <div class="canvas-scroll-inner">
+            <div class="canvas-wrapper" id="canvasWrapper">
+              <canvas id="editCanvas"></canvas>
+              <div class="compare-badge" id="compareBadge">Original</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-panel">
+
+        <!-- Zoom & Navigation -->
+        <div class="tool-section">
+          <h4><i class="fas fa-search"></i> Zoom &amp; Navigation</h4>
+          <div class="zoom-row">
+            <button onclick="zoomOut()" title="Zoom out (Ctrl+-)"><i class="fas fa-minus"></i></button>
+            <div class="zoom-level" id="zoomLevel">100%</div>
+            <button onclick="zoomIn()" title="Zoom in (Ctrl++)"><i class="fas fa-plus"></i></button>
+            <button class="wide" onclick="fitToScreen()" title="Fit image to view (Ctrl+F)">
+              <i class="fas fa-expand"></i> Fit
+            </button>
+            <button class="wide" onclick="resetZoom()" title="Reset to 100% (Ctrl+0)">1:1</button>
+          </div>
+          <p style="font-size:10.5px;color:var(--text-muted);line-height:1.5;margin-top:8px">
+            Hold <span class="kbd-hint">Ctrl</span> and scroll to zoom. Drag scrollbars to pan. Zoom only affects the image.
+          </p>
+        </div>
+
+        <!-- Auto Enhance & Presets -->
+        <div class="tool-section">
+          <h4><i class="fas fa-magic"></i> One-Click &amp; Presets</h4>
+          <button class="btn btn-primary" onclick="autoEnhance()" style="width:100%;margin-bottom:10px">
+            <i class="fas fa-wand-magic-sparkles"></i> Auto Enhance
+          </button>
+          <div class="preset-grid" id="presetGrid">
+            <button class="preset-btn active" data-preset="original" onclick="applyPreset('original', this)">
+              <i class="fas fa-image"></i> Original
+            </button>
+            <button class="preset-btn" data-preset="auto" onclick="applyPreset('auto', this)">
+              <i class="fas fa-wand-magic-sparkles"></i> Auto
+            </button>
+            <button class="preset-btn" data-preset="portrait" onclick="applyPreset('portrait', this)">
+              <i class="fas fa-user"></i> Portrait
+            </button>
+            <button class="preset-btn" data-preset="landscape" onclick="applyPreset('landscape', this)">
+              <i class="fas fa-mountain"></i> Landscape
+            </button>
+            <button class="preset-btn" data-preset="night" onclick="applyPreset('night', this)">
+              <i class="fas fa-moon"></i> Night
+            </button>
+            <button class="preset-btn" data-preset="vivid" onclick="applyPreset('vivid', this)">
+              <i class="fas fa-palette"></i> Vivid
+            </button>
+            <button class="preset-btn" data-preset="soft" onclick="applyPreset('soft', this)">
+              <i class="fas fa-feather"></i> Soft
+            </button>
+            <button class="preset-btn" data-preset="warm" onclick="applyPreset('warm', this)">
+              <i class="fas fa-sun"></i> Warm
+            </button>
+            <button class="preset-btn" data-preset="cool" onclick="applyPreset('cool', this)">
+              <i class="fas fa-snowflake"></i> Cool
+            </button>
+            <button class="preset-btn" data-preset="vintage" onclick="applyPreset('vintage', this)">
+              <i class="fas fa-camera-retro"></i> Vintage
+            </button>
+            <button class="preset-btn" data-preset="sepia" onclick="applyPreset('sepia', this)">
+              <i class="fas fa-scroll"></i> Sepia
+            </button>
+            <button class="preset-btn" data-preset="bw" onclick="applyPreset('bw', this)">
+              <i class="fas fa-circle-half-stroke"></i> B&amp;W
+            </button>
+          </div>
+        </div>
+
+        <!-- Light -->
+        <div class="tool-section">
+          <h4><i class="fas fa-sun"></i> Light</h4>
+          <div id="slidersLight"></div>
+        </div>
+
+        <!-- Color -->
+        <div class="tool-section">
+          <h4><i class="fas fa-palette"></i> Color</h4>
+          <div id="slidersColor"></div>
+        </div>
+
+        <!-- Detail -->
+        <div class="tool-section">
+          <h4><i class="fas fa-sliders-h"></i> Detail &amp; Effects</h4>
+          <div id="slidersDetail"></div>
+        </div>
+
+        <!-- Reset & Download -->
+        <button class="btn btn-outline" onclick="resetAdjustments()" style="width:100%">
+          <i class="fas fa-rotate-left"></i> Reset Adjustments
+        </button>
+
+        <div class="download-wrapper">
+          <button class="download-main-btn" onclick="toggleDownloadMenu(event)">
+            <i class="fas fa-download"></i> Download Image
+            <i class="fas fa-chevron-up" style="margin-left:auto;font-size:11px"></i>
+          </button>
+          <div class="download-menu" id="downloadMenu">
+            <button class="download-menu-item" onclick="download('png')">
+              <i class="fas fa-file-image"></i> PNG (lossless)
+            </button>
+            <button class="download-menu-item" onclick="download('jpeg')">
+              <i class="fas fa-file-image"></i> JPG (smaller file)
+            </button>
+            <button class="download-menu-item" onclick="download('webp')">
+              <i class="fas fa-file-image"></i> WebP (modern format)
+            </button>
+            <div class="download-menu-divider"></div>
+            <button class="download-menu-item" onclick="copyToClipboard()">
+              <i class="fas fa-copy"></i> Copy to clipboard
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="hardware-warning">
+    <i class="fas fa-microchip"></i>
+    <div>
+      <h5>Hardware Requirements for Real-Time Enhancement</h5>
+      <p>Fine-grained adjustments on high-resolution images are processed per pixel on the CPU. For smooth, real-time slider feedback we recommend at least 4 GB of free RAM, a modern browser (Chrome, Edge, Firefox), and a device from the last 4–5 years. Older or low-RAM devices may experience a slight delay while dragging sliders on very large photos.</p>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <i class="fas fa-shield-alt info-icon"></i>
+    <div>
+      <h4>100% Private &amp; Free</h4>
+      <p>Everything runs locally in your browser. Your images are never uploaded to any server. The enhancer uses fast, GPU-accelerated canvas algorithms — no model download required. All adjustments render instantly and you can compare with the original at any time.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Processing overlay -->
+<div class="processing-overlay" id="processingOverlay">
+  <div class="processing-box">
+    <div class="spinner"></div>
+    <h3 id="processingTitle">Analyzing Image...</h3>
+    <p id="processingMsg">Please wait...</p>
+    <div class="progress-bar-wrapper"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0%</div>
+    <div class="processing-hint" id="processingHint">
+      <i class="fas fa-info-circle"></i> Smart analysis is calibrating optimal values for your photo.
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toastMsg">Success</span>
+</div>
+
+<script>
+console.log('Pro Image Enhancer — version 1 loaded');
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function toggleTheme(){
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  document.querySelector('.theme-toggle i').className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+if(localStorage.getItem('theme') === 'light'){
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.querySelector('.theme-toggle i').className = 'fas fa-sun';
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const DEFAULT_ADJ = {
+  brightness: 0, contrast: 0, exposure: 0, highlights: 0, shadows: 0,
+  saturation: 0, vibrance: 0, temperature: 0, tint: 0,
+  sharpness: 0, clarity: 0, gamma: 1.0, vignette: 0
+};
+
+let adjustments = { ...DEFAULT_ADJ };
+let originalAdjustments = { ...DEFAULT_ADJ };
+
+let originalFile = null;
+let sourceImage = null;
+let sourceImageData = null;      // ImageData of original (full resolution)
+let editCanvas = null;
+let editCtx = null;
+let canvasWrapper = null;
+let currentRender = null;        // ImageData of currently rendered result
+let zoom = 1;
+let isFullscreen = false;
+let showingOriginal = false;
+
+let undoStack = [];
+let redoStack = [];
+const MAX_HISTORY = 20;
+
+let renderScheduled = false;
+let autoEnhanceBusy = false;
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastTimer;
+function showToast(msg, type = 'success'){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.className = 'toast show ' + type;
+  const icon = toast.querySelector('i');
+  icon.className = type === 'error' ? 'fas fa-exclamation-circle'
+                 : type === 'info' ? 'fas fa-info-circle'
+                 : type === 'warning' ? 'fas fa-exclamation-triangle'
+                 : 'fas fa-check-circle';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+/* ============================================================
+   STATUS BADGE
+   ============================================================ */
+function setStatus(status, text){
+  const badge = document.getElementById('statusBadge');
+  badge.className = 'status-badge ' + status;
+  const icons = { loading: 'fas fa-spinner fa-spin', ready: 'fas fa-check-circle', processing: 'fas fa-cog fa-spin' };
+  badge.innerHTML = `<i class="${icons[status] || 'fas fa-check-circle'}"></i> ${text}`;
+}
+
+/* ============================================================
+   PROCESSING OVERLAY
+   ============================================================ */
+function updateProgress(pct){
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+}
+function showProcessing(show, title, msg, hint){
+  const overlay = document.getElementById('processingOverlay');
+  if(show){
+    overlay.classList.add('active');
+    if(title) document.getElementById('processingTitle').textContent = title;
+    if(msg) document.getElementById('processingMsg').textContent = msg;
+    if(hint !== undefined) document.getElementById('processingHint').innerHTML = hint;
+    updateProgress(0);
+  } else {
+    overlay.classList.remove('active');
+  }
+}
+
+/* ============================================================
+   SLIDER DEFINITIONS
+   ============================================================ */
+const SLIDERS = {
+  light: [
+    { key: 'exposure',    label: 'Exposure',    min: -100, max: 100, step: 1 },
+    { key: 'brightness',  label: 'Brightness',  min: -100, max: 100, step: 1 },
+    { key: 'contrast',    label: 'Contrast',    min: -100, max: 100, step: 1 },
+    { key: 'highlights',  label: 'Highlights',  min: -100, max: 100, step: 1 },
+    { key: 'shadows',     label: 'Shadows',     min: -100, max: 100, step: 1 }
+  ],
+  color: [
+    { key: 'saturation',  label: 'Saturation',  min: -100, max: 100, step: 1 },
+    { key: 'vibrance',    label: 'Vibrance',    min: -100, max: 100, step: 1 },
+    { key: 'temperature', label: 'Temperature', min: -100, max: 100, step: 1 },
+    { key: 'tint',        label: 'Tint',        min: -100, max: 100, step: 1 }
+  ],
+  detail: [
+    { key: 'sharpness',   label: 'Sharpness',   min: 0,    max: 100, step: 1 },
+    { key: 'clarity',     label: 'Clarity',     min: 0,    max: 100, step: 1 },
+    { key: 'gamma',       label: 'Gamma',       min: 0.2,  max: 3,   step: 0.05 },
+    { key: 'vignette',    label: 'Vignette',    min: 0,    max: 100, step: 1 }
+  ]
+};
+
+function buildSliders(container, defs){
+  container.innerHTML = defs.map(def => {
+    const isGamma = def.key === 'gamma';
+    return `
+      <div class="slider-block" data-key="${def.key}">
+        <div class="slider-head">
+          <label for="slider-${def.key}">${def.label}</label>
+          <span class="slider-val" id="val-${def.key}">${isGamma ? '1.00' : '0'}</span>
+        </div>
+        <div class="slider-track" id="track-${def.key}">
+          <div class="slider-fill" id="fill-${def.key}"></div>
+          <div class="slider-thumb" id="thumb-${def.key}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  defs.forEach(def => {
+    const track = document.getElementById('track-' + def.key);
+    const onStart = (e) => startDrag(e, def);
+    track.addEventListener('mousedown', onStart);
+    track.addEventListener('touchstart', onStart, { passive: false });
+
+    // Double click resets this slider
+    track.addEventListener('dblclick', () => {
+      saveHistory();
+      adjustments[def.key] = def.key === 'gamma' ? 1.0 : 0;
+      updateSliderVisual(def);
+      scheduleRender();
+    });
+  });
+
+  defs.forEach(def => updateSliderVisual(def));
+}
+
+function updateSliderVisual(def){
+  const value = adjustments[def.key];
+  const track = document.getElementById('track-' + def.key);
+  const fill = document.getElementById('fill-' + def.key);
+  const thumb = document.getElementById('thumb-' + def.key);
+  const valEl = document.getElementById('val-' + def.key);
+  const isGamma = def.key === 'gamma';
+
+  const range = def.max - def.min;
+  const pct = ((value - def.min) / range) * 100;
+
+  if(def.min < 0 && def.max > 0){
+    // Bipolar slider (center at 0)
+    const zeroPct = ((0 - def.min) / range) * 100;
+    const left = Math.min(pct, zeroPct);
+    const right = Math.max(pct, zeroPct);
+    fill.style.left = left + '%';
+    fill.style.right = (100 - right) + '%';
+  } else {
+    // Unipolar slider
+    fill.style.left = '0%';
+    fill.style.right = (100 - pct) + '%';
+  }
+
+  thumb.style.left = pct + '%';
+
+  if(isGamma){
+    valEl.textContent = value.toFixed(2);
+    valEl.className = 'slider-val ' + (value > 1.05 ? 'pos' : value < 0.95 ? 'neg' : '');
+  } else {
+    valEl.textContent = (value > 0 ? '+' : '') + Math.round(value);
+    valEl.className = 'slider-val ' + (value > 0 ? 'pos' : value < 0 ? 'neg' : '');
+  }
+}
+
+/* ============================================================
+   SLIDER DRAGGING
+   ============================================================ */
+let activeDrag = null;
+
+function startDrag(e, def){
+  e.preventDefault();
+  const track = document.getElementById('track-' + def.key);
+  const rect = track.getBoundingClientRect();
+
+  // Save history once at start of drag
+  saveHistory();
+
+  activeDrag = { def, rect };
+  updateFromDrag(e);
+
+  document.addEventListener('mousemove', onDragMove);
+  document.addEventListener('mouseup', onDragEnd);
+  document.addEventListener('touchmove', onDragMove, { passive: false });
+  document.addEventListener('touchend', onDragEnd);
+}
+
+function onDragMove(e){
+  if(!activeDrag) return;
+  e.preventDefault();
+  updateFromDrag(e);
+}
+
+function onDragEnd(){
+  activeDrag = null;
+  document.removeEventListener('mousemove', onDragMove);
+  document.removeEventListener('mouseup', onDragEnd);
+  document.removeEventListener('touchmove', onDragMove);
+  document.removeEventListener('touchend', onDragEnd);
+}
+
+function updateFromDrag(e){
+  if(!activeDrag) return;
+  const { def, rect } = activeDrag;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  let pct = (clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+  let value = def.min + pct * (def.max - def.min);
+
+  // Snap for gamma
+  if(def.key === 'gamma'){
+    value = Math.round(value * 20) / 20;
+  } else {
+    value = Math.round(value);
+  }
+
+  adjustments[def.key] = value;
+  updateSliderVisual(def);
+  scheduleRender();
+}
+
+/* ============================================================
+   RENDER PIPELINE
+   ============================================================ */
+function scheduleRender(){
+  if(renderScheduled) return;
+  renderScheduled = true;
+  requestAnimationFrame(() => {
+    renderScheduled = false;
+    renderNow();
+  });
+}
+
+function renderNow(){
+  if(!sourceImageData) return;
+
+  const W = sourceImageData.width;
+  const H = sourceImageData.height;
+  const src = sourceImageData.data;
+  const out = new ImageData(W, H);
+  const dst = out.data;
+
+  // Precompute all transformation values outside the loop
+  const brightness = adjustments.brightness * 1.0;
+  const contrastRaw = adjustments.contrast / 100;
+  const cFactor = (259 * (contrastRaw * 255 + 255)) / (255 * (259 - contrastRaw * 255));
+  const saturation = 1 + adjustments.saturation / 100;
+  const vibrance = adjustments.vibrance / 100;
+  const exposure = Math.pow(2, adjustments.exposure / 100);
+  const gamma = adjustments.gamma;
+  const invGamma = 1 / gamma;
+  const temp = adjustments.temperature / 100;
+  const tint = adjustments.tint / 100;
+  const highlights = adjustments.highlights / 100;
+  const shadows = adjustments.shadows / 100;
+  const vignette = adjustments.vignette / 100;
+  const sharpness = adjustments.sharpness / 100;
+  const clarity = adjustments.clarity / 100;
+
+  // Gamma lookup table
+  const gammaLUT = new Uint8ClampedArray(256);
+  for(let i = 0; i < 256; i++){
+    gammaLUT[i] = Math.round(255 * Math.pow(i / 255, invGamma));
+  }
+
+  // Temperature / tint offsets
+  const tempROff = temp > 0 ? temp * 35 : 0;
+  const tempBOff = temp < 0 ? -temp * 35 : 0;
+  const tintROff = tint * 20;
+  const tintGOff = -tint * 15;
+
+  const applyColor = temp !== 0 || tint !== 0;
+
+  // Main color pass
+  for(let i = 0; i < src.length; i += 4){
+    let r = src[i];
+    let g = src[i + 1];
+    let b = src[i + 2];
+
+    // Exposure (multiplicative)
+    if(exposure !== 1){
+      r *= exposure; g *= exposure; b *= exposure;
+    }
+
+    // Brightness (additive)
+    if(brightness !== 0){
+      r += brightness; g += brightness; b += brightness;
+    }
+
+    // Temperature & tint
+    if(applyColor){
+      r += tempROff + tintROff;
+      g += tintGOff;
+      b += tempBOff + tintROff;
+    }
+
+    // Contrast
+    if(contrastRaw !== 0){
+      r = cFactor * (r - 128) + 128;
+      g = cFactor * (g - 128) + 128;
+      b = cFactor * (b - 128) + 128;
+    }
+
+    // Highlights / Shadows
+    if(highlights !== 0 || shadows !== 0){
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      if(highlights !== 0 && lum > 128){
+        const k = 1 - highlights * (lum - 128) / 127;
+        r *= k; g *= k; b *= k;
+      }
+      if(shadows !== 0 && lum < 128){
+        const k = 1 + shadows * (128 - lum) / 128;
+        r *= k; g *= k; b *= k;
+      }
+    }
+
+    // Gamma
+    if(gamma !== 1){
+      r = gammaLUT[Math.max(0, Math.min(255, r | 0))];
+      g = gammaLUT[Math.max(0, Math.min(255, g | 0))];
+      b = gammaLUT[Math.max(0, Math.min(255, b | 0))];
+    }
+
+    // Saturation & Vibrance
+    if(saturation !== 1 || vibrance !== 0){
+      const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+      let sat = saturation;
+      if(vibrance !== 0){
+        const maxC = Math.max(r, g, b);
+        const minC = Math.min(r, g, b);
+        const currentSat = (maxC - minC) / 255;
+        sat *= 1 + vibrance * (1 - currentSat) * 0.8;
+      }
+      r = lum + (r - lum) * sat;
+      g = lum + (g - lum) * sat;
+      b = lum + (b - lum) * sat;
+    }
+
+    dst[i] = r;
+    dst[i + 1] = g;
+    dst[i + 2] = b;
+    dst[i + 3] = src[i + 3];
+  }
+
+  // Sharpness & Clarity (unsharp mask)
+  if(sharpness > 0 || clarity > 0){
+    applyUnsharpMask(out, W, H, sharpness, clarity);
+  }
+
+  // Vignette
+  if(vignette > 0){
+    const cx = W / 2, cy = H / 2;
+    const maxDist = Math.sqrt(cx * cx + cy * cy);
+    for(let y = 0; y < H; y++){
+      for(let x = 0; x < W; x++){
+        const i = (y * W + x) * 4;
+        const dx = x - cx;
+        const dy = y - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy) / maxDist;
+        const k = 1 - vignette * Math.pow(dist, 1.8) * 0.85;
+        dst[i] *= k;
+        dst[i + 1] *= k;
+        dst[i + 2] *= k;
+      }
+    }
+  }
+
+  currentRender = out;
+
+  // Draw to display canvas
+  drawToDisplay();
+}
+
+/**
+ * Unsharp mask using a separable box blur approximation (fast).
+ * Sharpness uses a 3x3 radius, clarity uses a 5x5 radius.
+ * Both are combined in one pass.
+ */
+function applyUnsharpMask(imageData, W, H, sharpness, clarity){
+  const data = imageData.data;
+  const copy = new Uint8ClampedArray(data);
+
+  // Light blur (for sharpness)
+  if(sharpness > 0){
+    const radius = 1;
+    const blurred = boxBlur(copy, W, H, radius);
+    const amount = sharpness * 1.5;
+    for(let i = 0; i < data.length; i += 4){
+      data[i]     = copy[i]     + (copy[i]     - blurred[i])     * amount;
+      data[i + 1] = copy[i + 1] + (copy[i + 1] - blurred[i + 1]) * amount;
+      data[i + 2] = copy[i + 2] + (copy[i + 2] - blurred[i + 2]) * amount;
+    }
+  }
+
+  // Heavier blur (for clarity / local contrast)
+  if(clarity > 0){
+    const radius = 4;
+    const blurred = boxBlur(copy, W, H, radius);
+    const amount = clarity * 0.6;
+    for(let i = 0; i < data.length; i += 4){
+      data[i]     += (copy[i]     - blurred[i])     * amount;
+      data[i + 1] += (copy[i + 1] - blurred[i + 1]) * amount;
+      data[i + 2] += (copy[i + 2] - blurred[i + 2]) * amount;
+    }
+  }
+}
+
+/**
+ * Separable box blur (fast). Two passes — horizontal then vertical.
+ */
+function boxBlur(src, W, H, radius){
+  const dst = new Uint8ClampedArray(src.length);
+  const temp = new Uint8ClampedArray(src.length);
+
+  // Horizontal pass
+  for(let y = 0; y < H; y++){
+    for(let c = 0; c < 3; c++){
+      let sum = 0;
+      let count = 0;
+      // Initialize window
+      for(let x = -radius; x <= radius; x++){
+        const xx = Math.max(0, Math.min(W - 1, x));
+        sum += src[(y * W + xx) * 4 + c];
+        count++;
+      }
+      for(let x = 0; x < W; x++){
+        temp[(y * W + x) * 4 + c] = sum / count;
+        const outX = Math.max(0, Math.min(W - 1, x - radius));
+        const inX = Math.max(0, Math.min(W - 1, x + radius + 1));
+        sum -= src[(y * W + outX) * 4 + c];
+        sum += src[(y * W + inX) * 4 + c];
+      }
+    }
+  }
+
+  // Vertical pass
+  for(let x = 0; x < W; x++){
+    for(let c = 0; c < 3; c++){
+      let sum = 0;
+      let count = 0;
+      for(let y = -radius; y <= radius; y++){
+        const yy = Math.max(0, Math.min(H - 1, y));
+        sum += temp[(yy * W + x) * 4 + c];
+        count++;
+      }
+      for(let y = 0; y < H; y++){
+        dst[(y * W + x) * 4 + c] = sum / count;
+        const outY = Math.max(0, Math.min(H - 1, y - radius));
+        const inY = Math.max(0, Math.min(H - 1, y + radius + 1));
+        sum -= temp[(outY * W + x) * 4 + c];
+        sum += temp[(inY * W + x) * 4 + c];
+      }
+    }
+  }
+
+  // Alpha channel — just copy
+  for(let i = 3; i < src.length; i += 4){
+    dst[i] = src[i];
+  }
+
+  return dst;
+}
+
+/* ============================================================
+   DISPLAY
+   ============================================================ */
+function drawToDisplay(){
+  if(showingOriginal){
+    // Show original
+    editCtx.putImageData(sourceImageData, 0, 0);
+  } else if(currentRender){
+    editCtx.putImageData(currentRender, 0, 0);
+  }
+}
+
+/* ============================================================
+   ZOOM
+   ============================================================ */
+function applyZoom(){
+  if(!editCanvas || !canvasWrapper) return;
+  const displayW = Math.round(editCanvas.width * zoom);
+  const displayH = Math.round(editCanvas.height * zoom);
+  editCanvas.style.width = displayW + 'px';
+  editCanvas.style.height = displayH + 'px';
+  canvasWrapper.style.width = displayW + 'px';
+  canvasWrapper.style.height = displayH + 'px';
+  document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
+}
+function zoomIn(){ zoom = Math.min(10, zoom * 1.25); applyZoom(); }
+function zoomOut(){ zoom = Math.max(0.05, zoom / 1.25); applyZoom(); }
+function resetZoom(){ zoom = 1; applyZoom(); }
+
+function fitToScreen(){
+  if(!editCanvas) return;
+  const container = document.getElementById('canvasScrollContainer');
+  const availW = container.clientWidth - 48;
+  const availH = container.clientHeight - 48;
+  const scaleX = availW / editCanvas.width;
+  const scaleY = availH / editCanvas.height;
+  zoom = Math.min(scaleX, scaleY, 1);
+  applyZoom();
+  requestAnimationFrame(() => {
+    container.scrollLeft = (container.scrollWidth - container.clientWidth) / 2;
+    container.scrollTop = (container.scrollHeight - container.clientHeight) / 2;
+  });
+}
+
+/* ============================================================
+   FULLSCREEN
+   ============================================================ */
+function toggleFullscreen(){
+  const card = document.getElementById('editorCard');
+  isFullscreen = !isFullscreen;
+  card.classList.toggle('fullscreen', isFullscreen);
+  const btn = document.getElementById('fullscreenBtn');
+  btn.innerHTML = isFullscreen
+    ? '<i class="fas fa-compress"></i> Exit Fullscreen'
+    : '<i class="fas fa-expand"></i> Fullscreen';
+  setTimeout(fitToScreen, 150);
+}
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && isFullscreen) toggleFullscreen();
+});
+
+/* ============================================================
+   COMPARE
+   ============================================================ */
+function toggleCompare(){
+  showingOriginal = !showingOriginal;
+  document.getElementById('compareBtn').classList.toggle('active', showingOriginal);
+  document.getElementById('compareBadge').classList.toggle('show', showingOriginal);
+  drawToDisplay();
+}
+
+/* ============================================================
+   FILE INPUT
+   ============================================================ */
+const dropzone = document.getElementById('dropzone');
+['dragenter','dragover'].forEach(evt => dropzone.addEventListener(evt, e => {
+  e.preventDefault(); dropzone.classList.add('dragover');
+}));
+['dragleave','drop'].forEach(evt => dropzone.addEventListener(evt, e => {
+  e.preventDefault(); dropzone.classList.remove('dragover');
+}));
+dropzone.addEventListener('drop', e => {
+  const file = e.dataTransfer.files[0];
+  if(file && file.type.startsWith('image/')) processFile(file);
+  else showToast('Please drop an image file', 'error');
+});
+dropzone.addEventListener('click', e => {
+  if(!e.target.closest('button')) document.getElementById('fileInput').click();
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(file) processFile(file);
+  e.target.value = '';
+});
+
+document.addEventListener('paste', e => {
+  const items = e.clipboardData?.items;
+  if(!items) return;
+  for(let item of items){
+    if(item.type.startsWith('image/')){
+      const file = item.getAsFile();
+      if(file){ processFile(file); break; }
+    }
+  }
+});
+
+async function pasteFromClipboard(){
+  try {
+    if(!navigator.clipboard || !navigator.clipboard.read){ showToast('Press Ctrl+V to paste', 'info'); return; }
+    const items = await navigator.clipboard.read();
+    for(const item of items){
+      for(const type of item.types){
+        if(type.startsWith('image/')){
+          const blob = await item.getType(type);
+          processFile(new File([blob], 'paste.png', { type }));
+          return;
+        }
+      }
+    }
+    showToast('No image found in clipboard', 'error');
+  } catch(err){
+    showToast('Press Ctrl+V to paste', 'info');
+  }
+}
+
+/* ============================================================
+   FILE PROCESS — preserve exact original resolution
+   ============================================================ */
+async function processFile(file){
+  if(!file.type.startsWith('image/')){ showToast('Please select an image file', 'error'); return; }
+  if(file.size > 50 * 1024 * 1024){ showToast('Maximum file size: 50 MB', 'error'); return; }
+
+  showProcessing(true, 'Loading Image...', 'Preparing your image...', '');
+  setStatus('loading', 'Loading');
+  originalFile = file;
+
+  const dataURL = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+
+  const img = await new Promise((res, rej) => {
+    const i = new Image();
+    i.onload = () => res(i);
+    i.onerror = rej;
+    i.src = dataURL;
+  });
+
+  sourceImage = img;
+  const W = img.naturalWidth;
+  const H = img.naturalHeight;
+
+  if(W * H > 12_000_000){
+    showToast(`Large image (${W}×${H}). Slider feedback may be slightly delayed.`, 'warning');
+  }
+
+  // Setup offscreen source canvas and cache ImageData
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = W;
+  offCanvas.height = H;
+  const offCtx = offCanvas.getContext('2d', { willReadFrequently: true });
+  offCtx.imageSmoothingQuality = 'high';
+  offCtx.drawImage(img, 0, 0);
+  sourceImageData = offCtx.getImageData(0, 0, W, H);
+
+  // Setup display canvas
+  editCanvas = document.getElementById('editCanvas');
+  editCanvas.width = W;
+  editCanvas.height = H;
+  editCtx = editCanvas.getContext('2d');
+  canvasWrapper = document.getElementById('canvasWrapper');
+
+  // Reset adjustments to default
+  adjustments = { ...DEFAULT_ADJ };
+  Object.keys(SLIDERS).forEach(cat => {
+    SLIDERS[cat].forEach(def => updateSliderVisual(def));
+  });
+
+  undoStack = [];
+  redoStack = [];
+  updateHistoryButtons();
+
+  document.getElementById('uploadCard').style.display = 'none';
+  document.getElementById('editorCard').classList.add('active');
+
+  // Initial render
+  renderNow();
+
+  showProcessing(false);
+  setStatus('ready', 'Ready');
+  applyZoom();
+  setTimeout(fitToScreen, 80);
+
+  // Auto-run enhance on first load for wow effect
+  setTimeout(() => {
+    autoEnhance(true);
+  }, 400);
+
+  showToast('Image loaded. Adjust the sliders to enhance.', 'success');
+}
+
+/* ============================================================
+   AUTO ENHANCE — Histogram analysis
+   ============================================================ */
+async function autoEnhance(silent){
+  if(!sourceImageData || autoEnhanceBusy) return;
+  autoEnhanceBusy = true;
+
+  if(!silent){
+    saveHistory();
+    showProcessing(true, 'Analyzing Image...', 'Calibrating optimal values...',
+      '<i class="fas fa-wand-magic-sparkles"></i> Smart analysis is computing the best enhancement for your photo.'
+    );
+    setStatus('processing', 'Analyzing');
+  }
+
+  await new Promise(res => setTimeout(res, 100));
+
+  const W = sourceImageData.width;
+  const H = sourceImageData.height;
+  const data = sourceImageData.data;
+  const totalPixels = W * H;
+
+  // Sample every Nth pixel for speed
+  const step = Math.max(1, Math.floor(totalPixels / 100_000));
+  const stepBytes = step * 4;
+
+  // Histogram of luminance + color channels
+  const lumHist = new Uint32Array(256);
+  const rHist = new Uint32Array(256);
+  const gHist = new Uint32Array(256);
+  const bHist = new Uint32Array(256);
+  let sampled = 0;
+  let sumR = 0, sumG = 0, sumB = 0;
+  let lumSum = 0;
+  let satSum = 0;
+
+  for(let i = 0; i < data.length; i += stepBytes){
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    const lum = (0.299 * r + 0.587 * g + 0.114 * b) | 0;
+    lumHist[lum]++;
+    rHist[r]++; gHist[g]++; bHist[b]++;
+    sumR += r; sumG += g; sumB += b;
+    lumSum += lum;
+    const maxC = Math.max(r, g, b);
+    const minC = Math.min(r, g, b);
+    satSum += maxC > 0 ? (maxC - minC) / maxC : 0;
+    sampled++;
+
+    if(sampled >= 100_000) break;
+  }
+
+  updateProgress(35);
+  await new Promise(res => setTimeout(res, 30));
+
+  // 1. Find 0.5% and 99.5% luminance percentiles
+  const clipAmount = sampled * 0.005;
+  let loLum = 0, hiLum = 255;
+  let cum = 0;
+  for(let i = 0; i < 256; i++){ cum += lumHist[i]; if(cum >= clipAmount){ loLum = i; break; } }
+  cum = 0;
+  for(let i = 255; i >= 0; i--){ cum += lumHist[i]; if(cum >= clipAmount){ hiLum = i; break; } }
+
+  updateProgress(60);
+  await new Promise(res => setTimeout(res, 30));
+
+  // 2. Compute gray-world white balance
+  const avgR = sumR / sampled;
+  const avgG = sumG / sampled;
+  const avgB = sumB / sampled;
+  const grayAvg = (avgR + avgG + avgB) / 3;
+
+  // 3. Decide enhancement values
+  const newAdj = { ...DEFAULT_ADJ };
+
+  // Contrast stretch
+  const range = Math.max(20, hiLum - loLum);
+  if(range < 220){
+    // Image is low contrast — boost
+    const boostAmount = Math.min(45, Math.max(5, (220 - range) * 0.35));
+    newAdj.contrast = Math.round(boostAmount);
+  }
+
+  // Brightness / Exposure based on mean luminance
+  const meanLum = lumSum / sampled;
+  const targetLum = 128;
+  if(meanLum < targetLum - 15){
+    const delta = Math.min(35, (targetLum - meanLum) * 0.4);
+    newAdj.exposure = Math.round(delta);
+  } else if(meanLum > targetLum + 30){
+    const delta = Math.min(25, (targetLum - meanLum) * 0.35);
+    newAdj.exposure = Math.round(delta);
+  }
+
+  // Shadows / Highlights recovery
+  if(loLum > 30){
+    // Lots of dark pixels — open shadows
+    newAdj.shadows = Math.round(Math.min(40, (loLum - 20) * 0.8));
+  }
+  if(hiLum < 225){
+    // Lots of bright pixels — recover highlights
+    newAdj.highlights = -Math.round(Math.min(30, (240 - hiLum) * 0.6));
+  }
+
+  // Saturation based on average saturation
+  const avgSat = satSum / sampled;
+  if(avgSat < 0.22){
+    newAdj.saturation = Math.round(Math.min(20, (0.25 - avgSat) * 100));
+    newAdj.vibrance = Math.round(Math.min(25, (0.28 - avgSat) * 90));
+  } else if(avgSat < 0.35){
+    newAdj.vibrance = Math.round(Math.min(15, (0.35 - avgSat) * 60));
+  } else if(avgSat > 0.55){
+    // Very saturated — tone down slightly
+    newAdj.saturation = -Math.round(Math.min(10, (avgSat - 0.5) * 50));
+  }
+
+  // White balance
+  const rRatio = avgR / grayAvg;
+  const bRatio = avgB / grayAvg;
+  if(Math.abs(rRatio - 1) > 0.05 || Math.abs(bRatio - 1) > 0.05){
+    // Image has a color cast — compensate via temperature/tint
+    // Warmer image (rRatio high) → negative temperature
+    const tempAdj = Math.round(Math.max(-30, Math.min(30, (bRatio - rRatio) * 50)));
+    newAdj.temperature = tempAdj;
+  }
+
+  // Sharpness boost — always a small amount for digital photos
+  newAdj.sharpness = 22;
+  newAdj.clarity = 12;
+
+  updateProgress(85);
+  await new Promise(res => setTimeout(res, 30));
+
+  // 4. Apply the new adjustments
+  adjustments = newAdj;
+
+  // Update all sliders visually
+  Object.keys(SLIDERS).forEach(cat => {
+    SLIDERS[cat].forEach(def => updateSliderVisual(def));
+  });
+
+  updateProgress(100);
+
+  // Re-render
+  renderNow();
+
+  // Clear preset active states (none should be highlighted since we customized)
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+
+  autoEnhanceBusy = false;
+
+  if(!silent){
+    showProcessing(false);
+    setStatus('ready', 'Enhanced');
+    showToast('Auto enhance applied. Fine-tune with the sliders.', 'success');
+  } else {
+    setStatus('ready', 'Ready');
+  }
+}
+
+/* ============================================================
+   PRESETS
+   ============================================================ */
+const PRESETS = {
+  original: { ...DEFAULT_ADJ },
+  auto: null, // special — triggers autoEnhance()
+  portrait: {
+    ...DEFAULT_ADJ,
+    exposure: 5, brightness: 4, contrast: 12,
+    highlights: -15, shadows: 18,
+    saturation: -3, vibrance: 15, temperature: 6,
+    sharpness: 18, clarity: 6, gamma: 1.02
+  },
+  landscape: {
+    ...DEFAULT_ADJ,
+    exposure: 3, contrast: 22, highlights: -18, shadows: 15,
+    saturation: 12, vibrance: 28, temperature: -4,
+    sharpness: 25, clarity: 22, gamma: 1.0
+  },
+  night: {
+    ...DEFAULT_ADJ,
+    exposure: 22, contrast: 8, highlights: -25, shadows: 40,
+    saturation: -5, vibrance: 18, temperature: -8,
+    sharpness: 12, clarity: 10, gamma: 1.08
+  },
+  vivid: {
+    ...DEFAULT_ADJ,
+    contrast: 18, saturation: 30, vibrance: 25,
+    sharpness: 20, clarity: 15, gamma: 1.0
+  },
+  soft: {
+    ...DEFAULT_ADJ,
+    brightness: 6, contrast: -8, highlights: 12, shadows: 10,
+    saturation: -5, vibrance: 8, sharpness: 0, clarity: 0, gamma: 1.05
+  },
+  warm: {
+    ...DEFAULT_ADJ,
+    temperature: 28, saturation: 8, contrast: 8, gamma: 1.02
+  },
+  cool: {
+    ...DEFAULT_ADJ,
+    temperature: -28, saturation: 4, contrast: 10, gamma: 0.98
+  },
+  vintage: {
+    ...DEFAULT_ADJ,
+    contrast: 15, highlights: -12, shadows: 20,
+    saturation: -18, vibrance: 8,
+    temperature: 18, tint: 8, vignette: 35, gamma: 1.05
+  },
+  sepia: {
+    ...DEFAULT_ADJ,
+    saturation: -100, temperature: 30, tint: 5,
+    contrast: 8, vignette: 15
+  },
+  bw: {
+    ...DEFAULT_ADJ,
+    saturation: -100, contrast: 20, clarity: 15, sharpness: 15
+  }
+};
+
+function applyPreset(name, btn){
+  saveHistory();
+
+  if(name === 'auto'){
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    autoEnhance(false);
+    return;
+  }
+
+  const preset = PRESETS[name];
+  if(!preset) return;
+
+  adjustments = { ...preset };
+
+  Object.keys(SLIDERS).forEach(cat => {
+    SLIDERS[cat].forEach(def => updateSliderVisual(def));
+  });
+
+  renderNow();
+
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  showToast(`Preset applied: ${name.charAt(0).toUpperCase() + name.slice(1)}`, 'success');
+}
+
+/* ============================================================
+   RESET ADJUSTMENTS
+   ============================================================ */
+function resetAdjustments(){
+  saveHistory();
+  adjustments = { ...DEFAULT_ADJ };
+  Object.keys(SLIDERS).forEach(cat => {
+    SLIDERS[cat].forEach(def => updateSliderVisual(def));
+  });
+  renderNow();
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.preset-btn[data-preset="original"]').classList.add('active');
+  showToast('All adjustments reset', 'info');
+}
+
+/* ============================================================
+   UNDO / REDO
+   ============================================================ */
+function saveHistory(){
+  undoStack.push(JSON.parse(JSON.stringify(adjustments)));
+  if(undoStack.length > MAX_HISTORY) undoStack.shift();
+  redoStack = [];
+  updateHistoryButtons();
+}
+
+function undo(){
+  if(undoStack.length === 0){ showToast('Nothing to undo', 'info'); return; }
+  redoStack.push(JSON.parse(JSON.stringify(adjustments)));
+  if(redoStack.length > MAX_HISTORY) redoStack.shift();
+
+  adjustments = undoStack.pop();
+  Object.keys(SLIDERS).forEach(cat => {
+    SLIDERS[cat].forEach(def => updateSliderVisual(def));
+  });
+  renderNow();
+  updateHistoryButtons();
+}
+
+function redo(){
+  if(redoStack.length === 0){ showToast('Nothing to redo', 'info'); return; }
+  undoStack.push(JSON.parse(JSON.stringify(adjustments)));
+  if(undoStack.length > MAX_HISTORY) undoStack.shift();
+
+  adjustments = redoStack.pop();
+  Object.keys(SLIDERS).forEach(cat => {
+    SLIDERS[cat].forEach(def => updateSliderVisual(def));
+  });
+  renderNow();
+  updateHistoryButtons();
+}
+
+function updateHistoryButtons(){
+  document.getElementById('undoBtn').disabled = undoStack.length === 0;
+  document.getElementById('redoBtn').disabled = redoStack.length === 0;
+}
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+   ============================================================ */
+document.addEventListener('keydown', e => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if(!ctrl) return;
+  const key = e.key.toLowerCase();
+  if(key === 'z' && !e.shiftKey){ e.preventDefault(); undo(); }
+  else if(key === 'y' || (key === 'z' && e.shiftKey)){ e.preventDefault(); redo(); }
+  else if(key === '=' || key === '+'){ e.preventDefault(); zoomIn(); }
+  else if(key === '-'){ e.preventDefault(); zoomOut(); }
+  else if(key === '0'){ e.preventDefault(); resetZoom(); }
+  else if(key === 'f'){ e.preventDefault(); fitToScreen(); }
+});
+
+/* ============================================================
+   DOWNLOAD MENU
+   ============================================================ */
+function toggleDownloadMenu(e){
+  e.stopPropagation();
+  document.getElementById('downloadMenu').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const menu = document.getElementById('downloadMenu');
+  if(menu.classList.contains('open') && !e.target.closest('.download-wrapper')){
+    menu.classList.remove('open');
+  }
+});
+
+async function generateFinalImage(format){
+  // Render at full resolution from current adjustments
+  const canvas = document.createElement('canvas');
+  canvas.width = sourceImageData.width;
+  canvas.height = sourceImageData.height;
+  const ctx = canvas.getContext('2d');
+
+  // Use the last full-resolution render (currentRender)
+  ctx.putImageData(currentRender, 0, 0);
+
+  return new Promise((res, rej) => {
+    canvas.toBlob(blob => blob ? res(blob) : rej(new Error('Blob creation failed')), 'image/' + format, 0.95);
+  });
+}
+
+async function download(format){
+  document.getElementById('downloadMenu').classList.remove('open');
+  try {
+    showToast('Preparing download...', 'info');
+    const blob = await generateFinalImage(format);
+    const ext = format === 'jpeg' ? 'jpg' : format;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `enhanced-${Date.now()}.${ext}`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Downloaded successfully', 'success');
+  } catch(err){
+    showToast('Download failed: ' + err.message, 'error');
+  }
+}
+
+async function copyToClipboard(){
+  document.getElementById('downloadMenu').classList.remove('open');
+  try {
+    const blob = await generateFinalImage('png');
+    if(navigator.clipboard && window.ClipboardItem){
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      showToast('Copied to clipboard', 'success');
+    } else {
+      showToast('Clipboard not supported. Please download instead.', 'error');
+    }
+  } catch(err){
+    showToast('Copy failed: ' + err.message, 'error');
+  }
+}
+
+/* ============================================================
+   RESET ALL
+   ============================================================ */
+function resetAll(){
+  if(isFullscreen) toggleFullscreen();
+  originalFile = null;
+  sourceImage = null;
+  sourceImageData = null;
+  currentRender = null;
+  adjustments = { ...DEFAULT_ADJ };
+  undoStack = [];
+  redoStack = [];
+  zoom = 1;
+  showingOriginal = false;
+
+  document.getElementById('uploadCard').style.display = 'block';
+  document.getElementById('editorCard').classList.remove('active');
+  updateHistoryButtons();
+
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.preset-btn[data-preset="original"]').classList.add('active');
+  document.getElementById('compareBtn').classList.remove('active');
+  document.getElementById('compareBadge').classList.remove('show');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+buildSliders(document.getElementById('slidersLight'), SLIDERS.light);
+buildSliders(document.getElementById('slidersColor'), SLIDERS.color);
+buildSliders(document.getElementById('slidersDetail'), SLIDERS.detail);
+
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => e.preventDefault());
+
+window.addEventListener('resize', () => {
+  if(isFullscreen) fitToScreen();
+});
+
+setTimeout(() => {
+  showToast('Image Enhancer ready. Upload an image to begin.', 'success');
+}, 500);
+</script>
+
+</body>
+</html>
