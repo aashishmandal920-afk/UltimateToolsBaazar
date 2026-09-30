@@ -3,10 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Background Remover — No AI, 100% Offline</title>
+<title>Hybrid Background Remover — AI + Manual</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+</script>
 
 <style>
 :root{
@@ -36,24 +40,24 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:60px;transition:background 0.3s,color 0.3s}
 
-.top-header{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;padding:36px 20px 28px;text-align:center;position:relative}
+.top-header{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;padding:36px 20px 28px;text-align:center;position:relative;overflow:hidden}
+.top-header::before{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);border-radius:50%}
 .top-header h1{font-size:clamp(22px,4vw,34px);font-weight:800;margin-bottom:8px;position:relative;z-index:1}
-.top-header p{font-size:clamp(12px,1.5vw,14px);opacity:0.92;max-width:700px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
+.top-header p{font-size:clamp(12px,1.5vw,14px);opacity:0.92;max-width:750px;margin:0 auto;line-height:1.6;position:relative;z-index:1}
 .top-header .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);padding:5px 14px;border-radius:20px;font-size:11.5px;font-weight:600;margin-bottom:12px;position:relative;z-index:1;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25)}
 .theme-toggle{position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:white;width:42px;height:42px;border-radius:50%;cursor:pointer;font-size:16px;z-index:2;backdrop-filter:blur(10px)}
 
-.main-container{max-width:1400px;margin:24px auto;padding:0 20px}
-
+.main-container{max-width:1500px;margin:24px auto;padding:0 20px}
 .card{background:var(--card);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(99,102,241,0.04),transparent);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
 .card-header h2{font-size:15px;font-weight:700;display:flex;align-items:center;gap:10px}
 .card-header h2 i{color:var(--primary)}
 
-/* Mode tabs */
-.mode-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:20px;background:var(--card);padding:6px;border-radius:14px;box-shadow:var(--shadow);max-width:600px;margin-left:auto;margin-right:auto;border:1px solid var(--border)}
-.mode-tab{flex:1;padding:10px 14px;border:none;background:transparent;color:var(--text-muted);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:10px;transition:0.25s;display:flex;align-items:center;justify-content:center;gap:6px}
-.mode-tab:hover{color:var(--text);background:rgba(99,102,241,0.08)}
-.mode-tab.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
+/* Mode Tabs */
+.engine-tabs{display:flex;justify-content:center;gap:8px;margin-bottom:20px;background:var(--card);padding:6px;border-radius:14px;box-shadow:var(--shadow);max-width:640px;margin-left:auto;margin-right:auto;border:1px solid var(--border)}
+.engine-tab{flex:1;padding:11px 14px;border:none;background:transparent;color:var(--text-muted);font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border-radius:10px;transition:0.25s;display:flex;align-items:center;justify-content:center;gap:6px}
+.engine-tab:hover{color:var(--text);background:rgba(99,102,241,0.08)}
+.engine-tab.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 12px rgba(99,102,241,0.4)}
 
 /* Dropzone */
 .upload-section{padding:24px}
@@ -77,75 +81,80 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
 .btn-block{width:100%}
 .btn-sm{padding:8px 14px;font-size:12px}
-
-/* Method selector */
-.method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;padding:20px}
-.method-card{padding:16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:0.25s;background:var(--card);position:relative}
-.method-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.15)}
-.method-card.active{border-color:var(--primary);background:rgba(99,102,241,0.06);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
-.method-card h4{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.method-card h4 i{color:var(--primary)}
-.method-card p{font-size:11px;color:var(--text-muted);line-height:1.5}
-.method-card .method-icon{position:absolute;top:12px;right:12px;font-size:22px;opacity:0.15}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
 
 /* Editor Layout */
-.editor-layout{display:grid;grid-template-columns:1fr 380px;gap:20px;padding:20px}
+.editor-layout{display:grid;grid-template-columns:1fr 400px;gap:20px;padding:20px}
 @media(max-width:1024px){.editor-layout{grid-template-columns:1fr}}
 
-.canvas-area{position:relative;background:linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);background-size:20px 20px;background-position:0 0,10px 10px;background-color:var(--checker-2);border-radius:14px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:500px}
-.canvas-area canvas{max-width:100%;max-height:70vh;display:block;cursor:crosshair}
-.canvas-area.brush-none canvas{cursor:default}
+.canvas-wrapper{position:relative;background:linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);background-size:20px 20px;background-position:0 0,10px 10px;background-color:var(--checker-2);border-radius:14px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:500px;position:relative}
+.canvas-wrapper canvas{max-width:100%;max-height:70vh;display:block;cursor:crosshair;position:relative;z-index:1}
+.canvas-wrapper.brush-none canvas{cursor:default}
 
 /* Side Panel */
-.side-panel{display:flex;flex-direction:column;gap:16px}
-
+.side-panel{display:flex;flex-direction:column;gap:14px}
 .tool-section{background:var(--bg);border-radius:12px;padding:16px;border:1px solid var(--border)}
 .tool-section h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .tool-section h4 i{color:var(--primary)}
 
+/* Brush */
 .brush-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .brush-btn{padding:10px 8px;border:2px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text)}
 .brush-btn:hover{border-color:var(--primary);color:var(--primary)}
 .brush-btn.active{border-color:var(--primary);background:rgba(99,102,241,0.1);color:var(--primary)}
 .brush-btn i{font-size:14px}
 
+/* Slider */
 .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.slider-row label{font-size:11.5px;font-weight:600;min-width:80px}
+.slider-row label{font-size:11.5px;font-weight:600;min-width:85px}
 .slider-row input[type="range"]{flex:1;height:6px;-webkit-appearance:none;background:var(--border);border-radius:3px;cursor:pointer}
 .slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--primary);border-radius:50%;box-shadow:0 2px 6px rgba(99,102,241,0.5)}
-.slider-row .value{font-size:11px;font-weight:700;color:var(--primary);min-width:40px;text-align:right;font-family:monospace}
+.slider-row .value{font-size:11px;font-weight:700;color:var(--primary);min-width:42px;text-align:right;font-family:monospace}
 
-.color-pickers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.color-item{display:flex;flex-direction:column;align-items:center;gap:6px}
-.color-item label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase}
-.color-item input[type="color"]{width:100%;height:36px;border:2px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:var(--card)}
-
-.bg-swatches{display:flex;gap:8px;flex-wrap:wrap}
-.bg-swatch{width:36px;height:36px;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:0.2s;position:relative;overflow:hidden}
-.bg-swatch:hover{transform:scale(1.1);border-color:var(--primary)}
-.bg-swatch.active{border-color:var(--primary);border-width:3px;box-shadow:0 0 0 3px rgba(99,102,241,0.2)}
-.bg-swatch.transparent{background:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:12px 12px;background-position:0 0,6px 6px;background-color:#fff}
-.bg-swatch.white{background:#fff}.bg-swatch.black{background:#000}.bg-swatch.blue{background:#2563eb}.bg-swatch.red{background:#dc2626}.bg-swatch.green{background:#16a34a}.bg-swatch.gray{background:#6b7280}
-
-.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px;background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));border-radius:12px}
-.export-btn{padding:12px 8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text);transition:0.25s;display:flex;flex-direction:column;align-items:center;gap:6px}
-.export-btn i{font-size:16px;color:var(--primary)}
-.export-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
-
+/* Toggle */
 .toggle-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:12px;font-weight:600}
 .toggle{position:relative;width:40px;height:22px;background:var(--border);border-radius:11px;cursor:pointer;transition:0.3s}
 .toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
 .toggle.active{background:var(--primary)}
 .toggle.active::after{left:20px}
 
+/* Color picker section */
+.color-pickers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end}
+.color-item{display:flex;flex-direction:column;gap:6px}
+.color-item label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase}
+.color-item input[type="color"]{width:100%;height:40px;border:2px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:var(--card)}
+
+/* BG swatches */
+.bg-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.bg-swatch{width:38px;height:38px;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:0.2s;position:relative;overflow:hidden}
+.bg-swatch:hover{transform:scale(1.1);border-color:var(--primary)}
+.bg-swatch.active{border-color:var(--primary);border-width:3px;box-shadow:0 0 0 3px rgba(99,102,241,0.2)}
+.bg-swatch.transparent{background:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:12px 12px;background-position:0 0,6px 6px;background-color:#fff}
+.bg-swatch.white{background:#fff}.bg-swatch.black{background:#000}.bg-swatch.blue{background:#2563eb}.bg-swatch.red{background:#dc2626}.bg-swatch.green{background:#16a34a}.bg-swatch.gray{background:#6b7280}.bg-swatch.gradient{background:linear-gradient(135deg,#6366f1,#ec4899)}
+
+/* Export */
+.export-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:16px;background:linear-gradient(135deg,rgba(99,102,241,0.05),rgba(139,92,246,0.05));border-radius:12px}
+.export-btn{padding:12px 8px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--text);transition:0.25s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.export-btn i{font-size:16px;color:var(--primary)}
+.export-btn:hover{border-color:var(--primary);transform:translateY(-2px)}
+
+/* Mode indicator */
+.mode-indicator{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.mode-indicator.ai{background:rgba(139,92,246,0.15);color:#8b5cf6}
+.mode-indicator.noai{background:rgba(16,185,129,0.15);color:#10b981}
+
 /* Processing */
-.processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+.processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
 .processing-overlay.active{display:flex}
-.processing-box{background:var(--card);border-radius:20px;padding:36px 44px;max-width:440px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)}
-.processing-box .spinner{width:60px;height:60px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 20px;animation:spin 1s linear infinite}
+.processing-box{background:var(--card);border-radius:20px;padding:40px 50px;max-width:500px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5);animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)}
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+.processing-box .spinner{width:64px;height:64px;border:5px solid var(--border);border-top-color:var(--primary);border-radius:50%;margin:0 auto 22px;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .processing-box h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.processing-box p{font-size:12.5px;color:var(--text-muted)}
+.processing-box p{font-size:12.5px;color:var(--text-muted);margin-bottom:18px;line-height:1.5}
+.progress-bar-wrapper{width:100%;height:8px;background:var(--bg);border-radius:20px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border)}
+.progress-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--secondary));border-radius:20px;transition:width 0.3s}
+.progress-text{font-size:12px;color:var(--text-muted);font-family:monospace}
 
 /* Toast */
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(150px);background:var(--card);color:var(--text);padding:14px 22px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-size:13px;font-weight:600;z-index:2000;transition:0.35s;display:flex;align-items:center;gap:10px;border-left:4px solid var(--success);opacity:0;max-width:90vw}
@@ -154,16 +163,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .toast.info{border-left-color:var(--info)}.toast.info i{color:var(--info)}
 .toast.warning{border-left-color:var(--warning)}.toast.warning i{color:var(--warning)}
 
-/* Auto detect panel */
-.autodetect-info{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:12px;font-size:11.5px;color:var(--text-muted);line-height:1.5;margin-top:10px}
-.autodetect-info strong{color:var(--success);font-weight:700}
-
-.preview-mini{max-width:100%;border-radius:8px;margin-top:10px;border:1px solid var(--border)}
+/* Info Box */
+.info-box{margin-top:20px;padding:16px 20px;background:var(--bg);border-radius:14px;border:1px solid var(--border);display:flex;gap:14px;align-items:flex-start}
+.info-box .info-icon{color:var(--primary);font-size:20px;flex-shrink:0;margin-top:2px}
+.info-box h4{font-size:13px;font-weight:700;margin-bottom:4px}
+.info-box p{font-size:12px;color:var(--text-muted);line-height:1.6}
 
 @media(max-width:768px){
   .editor-layout{grid-template-columns:1fr}
   .upload-section{padding:16px}
   .dropzone{padding:40px 20px}
+  .color-pickers{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -171,16 +181,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <header class="top-header">
   <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-  <div class="badge">
-    <i class="fas fa-bolt"></i> 100% Offline • No AI • No Download • Instant
-  </div>
-  <h1>🎨 Smart Background Remover</h1>
-  <p>Traditional algorithms se background remove karein — bilkul offline, bina kisi AI model ke. Color-based detection, chromakey, aur manual brush ke saath.</p>
+  <div class="badge"><i class="fas fa-bolt"></i> AI + Manual • Best of Both Worlds</div>
+  <h1>🎨 Hybrid Background Remover</h1>
+  <p>AI ka accuracy aur manual chromakey ka speed — dono ek hi tool mein. AI se auto-remove karein ya khud color pick karke background hatayein.</p>
 </header>
 
 <div class="main-container">
 
-  <!-- Upload -->
+  <!-- Engine Selector -->
+  <div class="engine-tabs">
+    <button class="engine-tab active" onclick="switchEngine('ai', this)">
+      <i class="fas fa-brain"></i> AI Mode (Auto)
+    </button>
+    <button class="engine-tab" onclick="switchEngine('manual', this)">
+      <i class="fas fa-hand-pointer"></i> Manual Mode (Offline)
+    </button>
+  </div>
+
+  <!-- Upload Card -->
   <div class="card" id="uploadCard">
     <div class="upload-section">
       <div class="dropzone" id="dropzone">
@@ -200,43 +218,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Editor -->
+  <!-- Editor Card -->
   <div class="card" id="editorCard" style="display:none">
     <div class="card-header">
-      <h2><i class="fas fa-magic"></i> Background Editor</h2>
-      <button class="btn btn-outline btn-sm" onclick="resetAll()">
-        <i class="fas fa-redo"></i> New Image
-      </button>
-    </div>
-
-    <!-- Method Selector -->
-    <div class="method-grid">
-      <div class="method-card active" data-method="auto" onclick="selectMethod('auto', this)">
-        <div class="method-icon">🤖</div>
-        <h4><i class="fas fa-wand-magic-sparkles"></i> Auto Detect</h4>
-        <p>Corner pixels se background color detect karke remove karta hai. Solid backgrounds ke liye best.</p>
-      </div>
-      <div class="method-card" data-method="chromakey" onclick="selectMethod('chromakey', this)">
-        <div class="method-icon">🟢</div>
-        <h4><i class="fas fa-fill-drip"></i> Chromakey</h4>
-        <p>Manually color pick karein. Green screen, red, blue backgrounds ke liye perfect.</p>
-      </div>
-      <div class="method-card" data-method="threshold" onclick="selectMethod('threshold', this)">
-        <div class="method-icon">⚡</div>
-        <h4><i class="fas fa-sliders-h"></i> Brightness Threshold</h4>
-        <p>Light/dark backgrounds ke liye. White ya black background instantly remove.</p>
-      </div>
-      <div class="method-card" data-method="magic" onclick="selectMethod('magic', this)">
-        <div class="method-icon">✨</div>
-        <h4><i class="fas fa-magic"></i> Magic Edge</h4>
-        <p>Edge detection + color flood. Complex backgrounds ke liye advanced.</p>
+      <h2><i class="fas fa-magic"></i> Background Editor
+        <span class="mode-indicator ai" id="modeIndicator"><i class="fas fa-brain"></i> AI Mode</span>
+      </h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-outline btn-sm" onclick="rerunCurrentEngine()" title="Re-run with current settings">
+          <i class="fas fa-sync-alt"></i> Re-run
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="resetAll()">
+          <i class="fas fa-redo"></i> New Image
+        </button>
       </div>
     </div>
 
     <div class="editor-layout">
       <!-- Canvas -->
       <div>
-        <div class="canvas-area" id="canvasArea">
+        <div class="canvas-wrapper" id="canvasWrapper">
           <canvas id="editCanvas"></canvas>
         </div>
       </div>
@@ -265,8 +266,32 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
         </div>
 
-        <!-- Detection Settings -->
-        <div class="tool-section">
+        <!-- Manual Mode Color Picker -->
+        <div class="tool-section" id="colorPickerSection" style="display:none">
+          <h4><i class="fas fa-eye-dropper"></i> Manual Chromakey</h4>
+          <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">
+            Image par <strong>click</strong> karein background color pick karne ke liye.
+          </p>
+          <div class="color-pickers">
+            <div class="color-item">
+              <label>Picked</label>
+              <input type="color" id="pickedColor" value="#ff0000">
+            </div>
+            <div class="color-item">
+              <label>Tolerance: <span id="chromaTolVal">60</span></label>
+              <input type="range" id="chromaTolerance" min="10" max="200" value="60" oninput="document.getElementById('chromaTolVal').textContent=this.value">
+            </div>
+            <div class="color-item">
+              <label>&nbsp;</label>
+              <button class="btn btn-primary btn-sm" onclick="applyChromaKey()" style="width:100%;padding:10px">
+                <i class="fas fa-check"></i> Apply
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detection Settings (shown in manual mode) -->
+        <div class="tool-section" id="detectionSettings" style="display:none">
           <h4><i class="fas fa-sliders-h"></i> Detection Settings</h4>
           <div class="slider-row">
             <label>Tolerance</label>
@@ -292,42 +317,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
         </div>
 
-        <!-- Manual Color Picker -->
-        <div class="tool-section" id="colorPickerSection" style="display:none">
-          <h4><i class="fas fa-eye-dropper"></i> Pick Background Color</h4>
-          <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.5">
-            Image par <strong>click</strong> karein background color pick karne ke liye, phir Remove dabayein.
-          </p>
-          <div class="color-pickers">
-            <div class="color-item">
-              <label>Picked</label>
-              <input type="color" id="pickedColor" value="#ff0000">
-            </div>
-            <div class="color-item">
-              <label>Tolerance</label>
-              <input type="range" id="chromaTolerance" min="10" max="200" value="60" oninput="document.getElementById('chromaTolVal').textContent=this.value">
-            </div>
-            <div class="color-item">
-              <label>Value: <span id="chromaTolVal">60</span></label>
-              <button class="btn btn-primary btn-sm" onclick="applyChromaKey()" style="width:100%;padding:6px;font-size:11px">
-                <i class="fas fa-check"></i> Apply
-              </button>
-            </div>
-          </div>
-        </div>
-
         <!-- Background Swatches -->
         <div class="tool-section">
           <h4><i class="fas fa-fill-drip"></i> Background Color</h4>
           <div class="bg-swatches">
-            <div class="bg-swatch transparent active" title="Transparent" onclick="setBg('transparent', this)"></div>
-            <div class="bg-swatch white" title="White" onclick="setBg('#ffffff', this)"></div>
-            <div class="bg-swatch black" title="Black" onclick="setBg('#000000', this)"></div>
-            <div class="bg-swatch blue" title="Blue" onclick="setBg('#2563eb', this)"></div>
-            <div class="bg-swatch red" title="Red" onclick="setBg('#dc2626', this)"></div>
-            <div class="bg-swatch green" title="Green" onclick="setBg('#16a34a', this)"></div>
-            <div class="bg-swatch gray" title="Gray" onclick="setBg('#6b7280', this)"></div>
-            <div class="bg-swatch" style="background:linear-gradient(135deg,#6366f1,#ec4899)" title="Gradient" onclick="setBg('gradient', this)"></div>
+            <div class="bg-swatch transparent active" onclick="setBg('transparent', this)"></div>
+            <div class="bg-swatch white" onclick="setBg('#ffffff', this)"></div>
+            <div class="bg-swatch black" onclick="setBg('#000000', this)"></div>
+            <div class="bg-swatch blue" onclick="setBg('#2563eb', this)"></div>
+            <div class="bg-swatch red" onclick="setBg('#dc2626', this)"></div>
+            <div class="bg-swatch green" onclick="setBg('#16a34a', this)"></div>
+            <div class="bg-swatch gray" onclick="setBg('#6b7280', this)"></div>
+            <div class="bg-swatch gradient" onclick="setBg('gradient', this)"></div>
           </div>
         </div>
 
@@ -351,6 +352,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
+  <!-- Info -->
+  <div class="info-box">
+    <i class="fas fa-info-circle info-icon"></i>
+    <div class="info-content">
+      <h4>💡 Hybrid Approach</h4>
+      <p><strong>AI Mode:</strong> Best quality, sab backgrounds ke liye. Pehli baar 40MB download hoga.<br>
+      <strong>Manual Mode:</strong> Instant, offline, solid color backgrounds (red/green/blue/white) ke liye perfect.<br>
+      <strong>Dono mein:</strong> Result ke baad manual brush se refine kar sakte hain.</p>
+    </div>
+  </div>
+
 </div>
 
 <!-- Processing Overlay -->
@@ -359,6 +371,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="spinner"></div>
     <h3 id="processingTitle">Processing...</h3>
     <p id="processingMsg">Please wait...</p>
+    <div class="progress-bar-wrapper"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">0%</div>
   </div>
 </div>
 
@@ -368,6 +382,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
   <span id="toastMsg">Success</span>
 </div>
 
+<!-- ============================================================
+     AI LIBRARY IMPORT (ES Module)
+     ============================================================ -->
+<script type="module">
+  import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
+  window.removeBackgroundAI = removeBackground;
+  window.dispatchEvent(new Event('ai-ready'));
+</script>
+
+<!-- ============================================================
+     MAIN SCRIPT
+     ============================================================ -->
 <script>
 /* ============================================================
    THEME
@@ -377,8 +403,7 @@ function toggleTheme(){
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
-  document.querySelector('.theme-toggle i').className =
-    next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  document.querySelector('.theme-toggle i').className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
 if(localStorage.getItem('theme') === 'light'){
   document.documentElement.setAttribute('data-theme', 'light');
@@ -388,20 +413,19 @@ if(localStorage.getItem('theme') === 'light'){
 /* ============================================================
    STATE
    ============================================================ */
+let currentEngine = 'ai'; // 'ai' or 'manual'
 let sourceImage = null;
 let sourceCanvas = null;
 let sourceImageData = null;
-let workingAlpha = null;   // Uint8ClampedArray (per-pixel alpha 0-255)
+let workingAlpha = null;
 let editorCanvas = null;
 let editorCtx = null;
+let aiResultBlob = null;    // For AI mode
+let aiResultDataURL = null;
 let currentBg = 'transparent';
 let brushMode = 'none';
 let isDrawing = false;
-let currentMethod = 'auto';
-let tolerance = 40;
-let softness = 2;
 let settings = { shadow: false, despill: true, despeckle: true };
-let lastAutoDetectResult = null;
 
 /* ============================================================
    TOAST
@@ -429,8 +453,48 @@ function showProcessing(show, title, msg){
     overlay.classList.add('active');
     if(title) document.getElementById('processingTitle').textContent = title;
     if(msg) document.getElementById('processingMsg').textContent = msg;
+    updateProgress(0);
   } else {
     overlay.classList.remove('active');
+  }
+}
+function updateProgress(pct){
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = pct + '%';
+}
+
+/* ============================================================
+   ENGINE SWITCH
+   ============================================================ */
+function switchEngine(engine, btn){
+  currentEngine = engine;
+  document.querySelectorAll('.engine-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const indicator = document.getElementById('modeIndicator');
+  if(engine === 'ai'){
+    indicator.className = 'mode-indicator ai';
+    indicator.innerHTML = '<i class="fas fa-brain"></i> AI Mode';
+    document.getElementById('colorPickerSection').style.display = 'none';
+    document.getElementById('detectionSettings').style.display = 'none';
+  } else {
+    indicator.className = 'mode-indicator noai';
+    indicator.innerHTML = '<i class="fas fa-hand-pointer"></i> Manual Mode';
+    document.getElementById('colorPickerSection').style.display = 'block';
+    document.getElementById('detectionSettings').style.display = 'block';
+  }
+
+  if(sourceImage){
+    rerunCurrentEngine();
+  }
+}
+
+function rerunCurrentEngine(){
+  if(!sourceImage) return;
+  if(currentEngine === 'ai'){
+    runAIMode();
+  } else {
+    runManualMode();
   }
 }
 
@@ -520,7 +584,7 @@ async function processFile(file){
   sCtx.drawImage(img, 0, 0);
   sourceImageData = sCtx.getImageData(0, 0, sourceCanvas.width, sourceCanvas.height);
 
-  // Initialize alpha channel (all opaque)
+  // Initialize alpha
   workingAlpha = new Uint8ClampedArray(sourceCanvas.width * sourceCanvas.height);
   workingAlpha.fill(255);
 
@@ -530,6 +594,9 @@ async function processFile(file){
   editorCanvas.height = sourceCanvas.height;
   editorCtx = editorCanvas.getContext('2d');
 
+  // Store original file for AI
+  window._originalFile = file;
+
   // Show editor
   document.getElementById('uploadCard').style.display = 'none';
   document.getElementById('editorCard').style.display = 'block';
@@ -537,15 +604,98 @@ async function processFile(file){
   // Init canvas events
   initCanvasEvents();
 
-  // Run auto-detect
-  await autoDetect();
+  // Run current engine
+  await rerunCurrentEngine();
 
   showProcessing(false);
-  showToast('✅ Image loaded! Auto-detect chala.');
 }
 
 /* ============================================================
-   AUTO DETECT — Corner pixels se background color nikalta hai
+   AI MODE
+   ============================================================ */
+async function runAIMode(){
+  if(!window.removeBackgroundAI){
+    showToast('AI library load ho rahi hai...', 'warning');
+    // Wait for it
+    await new Promise(res => window.addEventListener('ai-ready', res, { once: true }));
+  }
+
+  if(!window._originalFile){
+    showToast('No file to process', 'error');
+    return;
+  }
+
+  showProcessing(true, 'AI Processing...', 'Background remove ho raha hai...');
+
+  try {
+    const blob = await window.removeBackgroundAI(window._originalFile, {
+      progress: (key, current, total) => {
+        const percent = total > 0 ? Math.round((current / total) * 100) : 0;
+        updateProgress(percent);
+        if(key.includes('fetch')) {
+          document.getElementById('processingTitle').textContent = 'Loading AI Model...';
+          document.getElementById('processingMsg').textContent = `Fetching: ${key.split('/').pop()}`;
+        } else if(key.includes('compute')) {
+          document.getElementById('processingTitle').textContent = 'Removing Background...';
+          document.getElementById('processingMsg').textContent = 'AI analyzing image';
+        }
+      },
+      output: { format: 'image/png', quality: 1.0 }
+    });
+
+    aiResultBlob = blob;
+    aiResultDataURL = URL.createObjectURL(blob);
+
+    // Load AI result into image
+    const img = await new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = rej;
+      i.src = aiResultDataURL;
+    });
+
+    // Draw AI result to editor canvas
+    editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+    editorCtx.drawImage(img, 0, 0, editorCanvas.width, editorCanvas.height);
+
+    // Extract alpha from AI result for brush editing
+    const aiData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
+    workingAlpha = new Uint8ClampedArray(editorCanvas.width * editorCanvas.height);
+    for(let i = 0; i < workingAlpha.length; i++){
+      workingAlpha[i] = aiData.data[i * 4 + 3];
+    }
+
+    showProcessing(false);
+    showToast('✅ AI ne background remove kar diya!');
+    applyBackground();
+  } catch(err){
+    console.error('AI error:', err);
+    showProcessing(false);
+    showToast('AI error: ' + (err.message || 'Failed'), 'error');
+    // Suggest manual mode
+    setTimeout(() => {
+      showToast('💡 Manual Mode try karein — instant aur offline hai', 'info');
+    }, 2000);
+  }
+}
+
+/* ============================================================
+   MANUAL MODE (Auto Detect)
+   ============================================================ */
+async function runManualMode(){
+  if(!sourceImageData) return;
+  showProcessing(true, 'Analyzing...', 'Background color detect kar raha hai...');
+  await new Promise(res => setTimeout(res, 100));
+
+  autoDetect();
+  renderResult();
+
+  showProcessing(false);
+  showToast('✅ Manual detection complete!');
+}
+
+/* ============================================================
+   AUTO DETECT — Corner-based
    ============================================================ */
 function autoDetect(){
   if(!sourceImageData) return;
@@ -554,10 +704,7 @@ function autoDetect(){
   const H = sourceCanvas.height;
   const data = sourceImageData.data;
 
-  // Sample 4 corners (each 20x20 region)
   const sampleSize = Math.min(20, Math.floor(Math.min(W, H) * 0.05));
-  const bgColors = [];
-
   const corners = [
     { x: 0, y: 0 },
     { x: W - sampleSize, y: 0 },
@@ -565,55 +712,51 @@ function autoDetect(){
     { x: W - sampleSize, y: H - sampleSize }
   ];
 
-  for(const corner of corners){
-    let r = 0, g = 0, b = 0, count = 0;
-    for(let y = corner.y; y < corner.y + sampleSize; y++){
-      for(let x = corner.x; x < corner.x + sampleSize; x++){
+  let rTotal = 0, gTotal = 0, bTotal = 0, count = 0;
+  for(const c of corners){
+    for(let y = c.y; y < c.y + sampleSize; y++){
+      for(let x = c.x; x < c.x + sampleSize; x++){
         const idx = (y * W + x) * 4;
-        r += data[idx];
-        g += data[idx + 1];
-        b += data[idx + 2];
+        rTotal += data[idx];
+        gTotal += data[idx + 1];
+        bTotal += data[idx + 2];
         count++;
       }
     }
-    bgColors.push({ r: r / count, g: g / count, b: b / count });
   }
+  const avgColor = { r: rTotal / count, g: gTotal / count, b: bTotal / count };
 
-  // Average of 4 corners
-  const avgColor = {
-    r: bgColors.reduce((s, c) => s + c.r, 0) / 4,
-    g: bgColors.reduce((s, c) => s + c.g, 0) / 4,
-    b: bgColors.reduce((s, c) => s + c.b, 0) / 4
-  };
+  const tol = parseInt(document.getElementById('tolerance').value);
+  const soft = parseInt(document.getElementById('softness').value);
 
-  // Apply color removal
-  applyColorRemoval(avgColor, tolerance);
-
-  // Render
-  renderResult();
+  applyColorRemoval(avgColor, tol, soft);
+  if(settings.despeckle) despeckleAlpha(W, H);
+  if(settings.shadow) removeShadows(W, H);
 }
 
 /* ============================================================
-   CHROMAKEY — Manual color pick
+   CHROMAKEY
    ============================================================ */
 function applyChromaKey(){
   const color = hexToRgb(document.getElementById('pickedColor').value);
   const tol = parseInt(document.getElementById('chromaTolerance').value);
-  applyColorRemoval(color, tol);
+  const soft = parseInt(document.getElementById('softness').value);
+
+  applyColorRemoval(color, tol, soft);
+  if(settings.despeckle) despeckleAlpha(sourceCanvas.width, sourceCanvas.height);
   renderResult();
   showToast('✅ Chromakey applied!');
 }
 
 /* ============================================================
-   COLOR REMOVAL — Distance-based alpha
+   COLOR REMOVAL
    ============================================================ */
-function applyColorRemoval(targetColor, toleranceValue){
+function applyColorRemoval(targetColor, toleranceValue, softnessValue){
   const W = sourceCanvas.width;
   const H = sourceCanvas.height;
   const data = sourceImageData.data;
-  const tol = toleranceValue * toleranceValue * 3; // Squared for faster computation
-
-  const softnessFactor = softness * 0.15;
+  const tol = toleranceValue * toleranceValue * 3;
+  const softnessFactor = (softnessValue || 0) * 0.15;
 
   for(let i = 0; i < W * H; i++){
     const idx = i * 4;
@@ -621,7 +764,6 @@ function applyColorRemoval(targetColor, toleranceValue){
     const g = data[idx + 1];
     const b = data[idx + 2];
 
-    // Euclidean distance squared
     const dr = r - targetColor.r;
     const dg = g - targetColor.g;
     const db = b - targetColor.b;
@@ -629,32 +771,24 @@ function applyColorRemoval(targetColor, toleranceValue){
 
     let alpha;
     if(distSq < tol * 0.6){
-      // Definitely background
       alpha = 0;
     } else if(distSq < tol * 1.4){
-      // Transition zone (edge)
       const t = (distSq - tol * 0.6) / (tol * 0.8);
       alpha = Math.round(t * 255);
     } else {
-      // Definitely foreground
       alpha = 255;
     }
 
-    // Apply softness
     if(softnessFactor > 0 && alpha > 0 && alpha < 255){
       alpha = Math.round(255 * Math.pow(alpha / 255, 1 - softnessFactor * 0.5));
     }
 
     workingAlpha[i] = alpha;
   }
-
-  // Post-processing
-  if(settings.despeckle) despeckleAlpha(W, H);
-  if(settings.shadow) removeShadows(W, H);
 }
 
 /* ============================================================
-   DESPECKLE — Chhote noise dots hatata hai
+   DESPECKLE & SHADOW
    ============================================================ */
 function despeckleAlpha(W, H){
   const copy = new Uint8ClampedArray(workingAlpha);
@@ -667,29 +801,20 @@ function despeckleAlpha(W, H){
           sum += copy[(y + dy) * W + (x + dx)];
         }
       }
-      // Median-ish smoothing
       const avg = sum / 9;
-      if(Math.abs(copy[idx] - avg) > 100){
-        workingAlpha[idx] = avg;
-      }
+      if(Math.abs(copy[idx] - avg) > 100) workingAlpha[idx] = avg;
     }
   }
 }
 
-/* ============================================================
-   REMOVE SHADOWS — Semi-transparent pixels ko clear karta hai
-   ============================================================ */
 function removeShadows(W, H){
   for(let i = 0; i < W * H; i++){
-    if(workingAlpha[i] < 200 && workingAlpha[i] > 30){
-      // Semi-transparent = likely shadow
-      workingAlpha[i] = 0;
-    }
+    if(workingAlpha[i] < 200 && workingAlpha[i] > 30) workingAlpha[i] = 0;
   }
 }
 
 /* ============================================================
-   RENDER — Alpha apply karke canvas par draw karta hai
+   RENDER
    ============================================================ */
 function renderResult(){
   if(!sourceImageData || !workingAlpha) return;
@@ -706,12 +831,9 @@ function renderResult(){
     let b = srcData[idx + 2];
     const a = workingAlpha[i];
 
-    // Despill (green fringe removal)
     if(settings.despill && a < 255 && a > 0){
       const maxRB = Math.max(r, b);
-      if(g > maxRB + 20){
-        g = maxRB;
-      }
+      if(g > maxRB + 20) g = maxRB;
     }
 
     resultData.data[idx] = r;
@@ -735,94 +857,20 @@ function setBg(bg, swatch){
 }
 
 function applyBackground(){
-  const area = document.getElementById('canvasArea');
-  if(!area) return;
+  const wrapper = document.getElementById('canvasWrapper');
+  if(!wrapper) return;
 
   if(currentBg === 'transparent'){
-    area.style.background = '';
-    area.style.backgroundImage = '';
-    area.style.backgroundColor = '';
+    wrapper.style.background = '';
+    wrapper.style.backgroundImage = '';
+    wrapper.style.backgroundColor = '';
   } else if(currentBg === 'gradient'){
-    area.style.background = 'linear-gradient(135deg,#6366f1,#ec4899)';
+    wrapper.style.background = 'linear-gradient(135deg,#6366f1,#ec4899)';
+    wrapper.style.backgroundImage = 'none';
   } else {
-    area.style.background = currentBg;
+    wrapper.style.background = currentBg;
+    wrapper.style.backgroundImage = 'none';
   }
-}
-
-/* ============================================================
-   METHOD SELECTOR
-   ============================================================ */
-function selectMethod(method, card){
-  currentMethod = method;
-  document.querySelectorAll('.method-card').forEach(c => c.classList.remove('active'));
-  card.classList.add('active');
-
-  const colorSection = document.getElementById('colorPickerSection');
-  colorSection.style.display = (method === 'chromakey') ? 'block' : 'none';
-
-  if(method === 'auto'){
-    autoDetect();
-  } else if(method === 'threshold'){
-    applyThresholdMethod();
-  } else if(method === 'magic'){
-    applyMagicEdge();
-  }
-}
-
-/* ============================================================
-   THRESHOLD METHOD — Brightness-based
-   ============================================================ */
-function applyThresholdMethod(){
-  const W = sourceCanvas.width;
-  const H = sourceCanvas.height;
-  const data = sourceImageData.data;
-
-  // Determine if background is light or dark
-  let cornerBrightness = 0, cornerCount = 0;
-  const sampleSize = Math.min(20, Math.floor(Math.min(W, H) * 0.05));
-  const corners = [[0,0], [W-sampleSize, 0], [0, H-sampleSize], [W-sampleSize, H-sampleSize]];
-
-  for(const [cx, cy] of corners){
-    for(let y = cy; y < cy + sampleSize; y++){
-      for(let x = cx; x < cx + sampleSize; x++){
-        const idx = (y * W + x) * 4;
-        cornerBrightness += (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-        cornerCount++;
-      }
-    }
-  }
-  const avgBrightness = cornerBrightness / cornerCount;
-  const threshold = avgBrightness > 128 ? 200 : 55; // If bg is light, remove light; else remove dark
-
-  for(let i = 0; i < W * H; i++){
-    const idx = i * 4;
-    const brightness = (data[idx] + data[idx + 1] + data[idx + 2]) / 3;
-    if(avgBrightness > 128){
-      workingAlpha[i] = brightness > threshold ? 0 : 255;
-    } else {
-      workingAlpha[i] = brightness < threshold ? 0 : 255;
-    }
-  }
-
-  if(settings.despeckle) despeckleAlpha(W, H);
-  renderResult();
-}
-
-/* ============================================================
-   MAGIC EDGE — Combined approach
-   ============================================================ */
-function applyMagicEdge(){
-  // First run auto-detect
-  autoDetect();
-  // Then sharpen edges via additional pass
-  const W = sourceCanvas.width;
-  const H = sourceCanvas.height;
-  for(let i = 0; i < W * H; i++){
-    if(workingAlpha[i] > 100 && workingAlpha[i] < 200){
-      workingAlpha[i] = workingAlpha[i] < 128 ? 0 : 255;
-    }
-  }
-  renderResult();
 }
 
 /* ============================================================
@@ -832,9 +880,9 @@ function setBrush(mode, btn){
   brushMode = mode;
   document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  const area = document.getElementById('canvasArea');
-  if(mode === 'none') area.classList.add('brush-none');
-  else area.classList.remove('brush-none');
+  const wrapper = document.getElementById('canvasWrapper');
+  if(mode === 'none') wrapper.classList.add('brush-none');
+  else wrapper.classList.remove('brush-none');
 }
 
 function initCanvasEvents(){
@@ -850,11 +898,9 @@ function initCanvasEvents(){
   editorCanvas.addEventListener('mouseup', () => { isDrawing = false; });
   editorCanvas.addEventListener('mouseleave', () => { isDrawing = false; });
 
-  // Touch
   editorCanvas.addEventListener('touchstart', e => {
     if(brushMode === 'none') return;
-    e.preventDefault();
-    isDrawing = true;
+    e.preventDefault(); isDrawing = true;
     applyBrush(e.touches[0]);
   }, { passive: false });
   editorCanvas.addEventListener('touchmove', e => {
@@ -864,9 +910,9 @@ function initCanvasEvents(){
   }, { passive: false });
   editorCanvas.addEventListener('touchend', () => { isDrawing = false; });
 
-  // Color pick for chromakey
+  // Click for color pick (manual mode)
   editorCanvas.addEventListener('click', e => {
-    if(currentMethod !== 'chromakey') return;
+    if(currentEngine !== 'manual') return;
     const rect = editorCanvas.getBoundingClientRect();
     const scaleX = editorCanvas.width / rect.width;
     const scaleY = editorCanvas.height / rect.height;
@@ -907,20 +953,44 @@ function applyBrush(e){
       }
     }
   }
-  renderResult();
+
+  // Re-render from source
+  if(currentEngine === 'manual'){
+    renderResult();
+  } else {
+    // AI mode: render from AI result + brush alpha
+    renderAIWithBrush();
+  }
+}
+
+function renderAIWithBrush(){
+  if(!aiResultDataURL || !workingAlpha) return;
+
+  // Reload AI result
+  const img = new Image();
+  img.onload = () => {
+    editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
+    editorCtx.drawImage(img, 0, 0, editorCanvas.width, editorCanvas.height);
+
+    const imgData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
+    for(let i = 0; i < workingAlpha.length; i++){
+      imgData.data[i * 4 + 3] = workingAlpha[i];
+    }
+    editorCtx.putImageData(imgData, 0, 0);
+    applyBackground();
+  };
+  img.src = aiResultDataURL;
 }
 
 /* ============================================================
-   SETTINGS TOGGLES
+   TOGGLES
    ============================================================ */
 function toggleSetting(key){
   settings[key] = !settings[key];
   const toggle = document.getElementById(key + 'Toggle');
   toggle.classList.toggle('active', settings[key]);
 
-  if(currentMethod === 'auto') autoDetect();
-  else if(currentMethod === 'threshold') applyThresholdMethod();
-  else renderResult();
+  if(currentEngine === 'manual') autoDetect(), renderResult();
 }
 
 /* ============================================================
@@ -1011,6 +1081,10 @@ function resetAll(){
   sourceCanvas = null;
   sourceImageData = null;
   workingAlpha = null;
+  aiResultBlob = null;
+  if(aiResultDataURL) URL.revokeObjectURL(aiResultDataURL);
+  aiResultDataURL = null;
+  window._originalFile = null;
   currentBg = 'transparent';
 
   document.getElementById('uploadCard').style.display = 'block';
@@ -1029,7 +1103,19 @@ function resetAll(){
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => e.preventDefault());
 
-showToast('Ready! Image upload karein.', 'info');
+// Wait for AI library
+window.addEventListener('ai-ready', () => {
+  console.log('AI library ready');
+});
+
+setTimeout(() => {
+  if(window.removeBackgroundAI){
+    showToast('✅ Ready! Image upload karein.', 'success');
+  } else {
+    showToast('AI library load ho rahi hai...', 'info');
+  }
+}, 1000);
 </script>
+
 </body>
 </html>
