@@ -123,108 +123,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .zoom-row button.wide{width:auto;padding:0 12px;font-size:11.5px}
 .zoom-level{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--primary);font-family:monospace;padding:0 8px;background:var(--card);border-radius:8px;border:1.5px solid var(--border);height:36px;display:flex;align-items:center;justify-content:center}
 
-/* Category tabs */
-.cat-tabs{
-  display:flex;
-  gap:5px;
-  flex-wrap:wrap;
-  margin-bottom:10px;
-}
-.cat-tab{
-  padding:5px 10px;
-  border:1px solid var(--border);
-  background:var(--card);
-  color:var(--text-muted);
-  font-family:inherit;
-  font-size:10.5px;
-  font-weight:600;
-  cursor:pointer;
-  border-radius:14px;
-  transition:0.2s;
-  white-space:nowrap;
-}
+.cat-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.cat-tab{padding:5px 10px;border:1px solid var(--border);background:var(--card);color:var(--text-muted);font-family:inherit;font-size:10.5px;font-weight:600;cursor:pointer;border-radius:14px;transition:0.2s;white-space:nowrap}
 .cat-tab:hover{color:var(--text);border-color:var(--primary)}
 .cat-tab.active{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;border-color:transparent}
 
-/* Filter grid */
-.filter-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  max-height:440px;
-  overflow-y:auto;
-  padding:2px;
-}
+.filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-height:440px;overflow-y:auto;padding:2px}
 .filter-grid::-webkit-scrollbar{width:5px}
 .filter-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.filter-item{
-  cursor:pointer;
-  border-radius:8px;
-  overflow:hidden;
-  border:2px solid var(--border);
-  transition:0.2s;
-  background:var(--card);
-  text-align:center;
-  padding:0;
-  position:relative;
-}
+.filter-item{cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid var(--border);transition:0.2s;background:var(--card);text-align:center;padding:0;position:relative}
 .filter-item:hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:0 6px 18px rgba(99,102,241,0.2)}
 .filter-item.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.15)}
-.filter-thumb{
-  width:100%;
-  aspect-ratio:1;
-  object-fit:cover;
-  display:block;
-  background:#e5e7eb;
-}
-.filter-name{
-  font-size:9.5px;
-  font-weight:600;
-  padding:5px 2px;
-  color:var(--text);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  line-height:1.2;
-}
+.filter-thumb{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#e5e7eb}
+.filter-name{font-size:9.5px;font-weight:600;padding:5px 2px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
 .filter-item.active .filter-name{color:var(--primary);font-weight:700}
 
-/* Preset grid */
-.preset-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  max-height:400px;
-  overflow-y:auto;
-  padding:2px;
-}
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:400px;overflow-y:auto;padding:2px}
 .preset-grid::-webkit-scrollbar{width:5px}
 .preset-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.preset-btn{
-  padding:9px 6px;
-  border:1.5px solid var(--border);
-  border-radius:9px;
-  background:var(--card);
-  cursor:pointer;
-  font-family:inherit;
-  font-size:10px;
-  font-weight:600;
-  transition:0.2s;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-  color:var(--text);
-  text-align:center;
-  line-height:1.2;
-  min-height:58px;
-  justify-content:center;
-}
+.preset-btn{padding:9px 6px;border:1.5px solid var(--border);border-radius:9px;background:var(--card);cursor:pointer;font-family:inherit;font-size:10px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text);text-align:center;line-height:1.2;min-height:58px;justify-content:center}
 .preset-btn:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}
 .preset-btn.active{border-color:var(--primary);background:rgba(99,102,241,0.1);color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
 .preset-btn i{font-size:12px;margin-bottom:1px}
 
-/* Intensity */
 .intensity-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 .intensity-row label{font-size:11.5px;font-weight:600;min-width:60px}
 .intensity-track{flex:1;position:relative;height:6px;background:var(--border);border-radius:3px;cursor:pointer;touch-action:none}
@@ -232,25 +153,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .intensity-thumb{position:absolute;top:50%;width:16px;height:16px;background:white;border:2px solid var(--primary);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 2px 6px rgba(99,102,241,0.5);left:100%}
 .intensity-val{font-size:11px;font-weight:700;color:var(--primary);font-family:monospace;min-width:40px;text-align:right}
 
-/* Auto enhance */
-.btn-auto{
-  width:100%;
-  padding:14px 18px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;
-  font-family:inherit;
-  font-size:13.5px;
-  font-weight:700;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  box-shadow:0 6px 18px rgba(99,102,241,0.4);
-  transition:0.25s;
-}
+.btn-auto{width:100%;padding:14px 18px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;font-family:inherit;font-size:13.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 18px rgba(99,102,241,0.4);transition:0.25s}
 .btn-auto:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,0.5)}
 
 .slider-block{margin-bottom:10px}
@@ -461,7 +364,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 </div>
 
 <script>
-console.log('Pro Photo Studio v2 — 100 filters + 100 presets');
+console.log('Pro Photo Studio v3 — thumbnails fix');
 
 /* ============================================================
    THEME
@@ -495,10 +398,9 @@ function expand(adj){
 
 /* ============================================================
    100 FILTERS
-   Categories: insta, cinema, film, portrait, landscape, moody, modern
    ============================================================ */
 const FILTERS = {
-  // ===================== INSTAGRAM CLASSICS (32) =====================
+  // Instagram Classics (32)
   original: { name: 'Original', cat: 'insta', adj: {} },
   clarendon: { name: 'Clarendon', cat: 'insta', adj: { b:5, c:22, t:18, w:-8, h:-8, s:10, l:8, v:15 } },
   gingham: { name: 'Gingham', cat: 'insta', adj: { b:14, t:-30, c:-10, f:12, g:1.05 } },
@@ -532,7 +434,7 @@ const FILTERS = {
   sutro: { name: 'Sutro', cat: 'insta', adj: { b:5, c:20, t:-20, w:25, n:12, o:35, g:1.05 } },
   vesper: { name: 'Vesper', cat: 'insta', adj: { b:10, c:15, t:8, w:22, n:6, f:10 } },
 
-  // ===================== CINEMATIC (16) =====================
+  // Cinematic (16)
   teal_orange: { name: 'Teal & Orange', cat: 'cinema', adj: { c:25, w:15, n:-15, t:15, h:-15, s:10, l:12 } },
   bleach_bypass: { name: 'Bleach Bypass', cat: 'cinema', adj: { c:35, t:-40, b:5, l:20, h:-10 } },
   matrix_green: { name: 'Matrix Green', cat: 'cinema', adj: { t:-20, n:-25, c:15, b:-5, g:0.95 } },
@@ -550,7 +452,7 @@ const FILTERS = {
   stranger_things: { name: 'Stranger Things', cat: 'cinema', adj: { w:20, t:15, n:20, c:25, o:30, g:0.95 } },
   inception: { name: 'Inception', cat: 'cinema', adj: { t:-15, c:25, b:-5, w:-10, o:20 } },
 
-  // ===================== FILM STOCKS (16) =====================
+  // Film Stocks (16)
   kodak_portra: { name: 'Kodak Portra', cat: 'film', adj: { b:5, w:15, t:8, s:5, f:8, g:1.02 } },
   kodak_gold: { name: 'Kodak Gold', cat: 'film', adj: { b:8, w:25, t:20, v:15, f:10 } },
   kodak_e100: { name: 'Kodak E100', cat: 'film', adj: { b:6, w:8, t:15, v:20, l:10 } },
@@ -568,7 +470,7 @@ const FILTERS = {
   disposable: { name: 'Disposable', cat: 'film', adj: { w:15, f:25, t:-8, c:-15, o:15, r:8 } },
   kodachrome: { name: 'Kodachrome', cat: 'film', adj: { t:20, c:20, v:25, w:15, l:12 } },
 
-  // ===================== PORTRAIT (12) =====================
+  // Portrait (12)
   beauty_glow: { name: 'Beauty Glow', cat: 'portrait', adj: { b:10, t:8, v:15, w:8, g:1.05, l:-5 } },
   soft_portrait: { name: 'Soft Portrait', cat: 'portrait', adj: { b:8, c:-8, h:15, s:12, t:-5, g:1.06, p:-5 } },
   warm_skin: { name: 'Warm Skin', cat: 'portrait', adj: { w:22, t:12, v:15, b:8, h:-8 } },
@@ -582,7 +484,7 @@ const FILTERS = {
   studio_portrait: { name: 'Studio', cat: 'portrait', adj: { c:15, t:5, v:12, w:8, l:10 } },
   natural_skin: { name: 'Natural Skin', cat: 'portrait', adj: { b:5, c:5, t:-3, v:10, w:8 } },
 
-  // ===================== LANDSCAPE (12) =====================
+  // Landscape (12)
   golden_landscape: { name: 'Golden Landscape', cat: 'landscape', adj: { w:30, t:20, v:25, c:18, h:-10 } },
   forest: { name: 'Forest', cat: 'landscape', adj: { w:-8, n:-15, t:15, v:25, c:20, l:15 } },
   ocean: { name: 'Ocean', cat: 'landscape', adj: { w:-15, n:15, c:20, t:15, v:25, l:12 } },
@@ -596,7 +498,7 @@ const FILTERS = {
   long_exposure: { name: 'Long Exposure', cat: 'landscape', adj: { c:20, w:-8, v:20, l:15, f:12 } },
   sunset_glow: { name: 'Sunset Glow', cat: 'landscape', adj: { w:30, v:25, t:18, c:12, h:-8 } },
 
-  // ===================== MOODY (8) =====================
+  // Moody (8)
   dark_moody: { name: 'Dark & Moody', cat: 'moody', adj: { b:-8, c:25, t:-15, v:15, o:35, h:-15 } },
   intense_drama: { name: 'Intense Drama', cat: 'moody', adj: { c:35, t:-10, l:20, o:25, h:-20 } },
   low_key: { name: 'Low Key', cat: 'moody', adj: { b:-12, c:30, t:-8, g:0.92, o:30 } },
@@ -606,7 +508,7 @@ const FILTERS = {
   romance: { name: 'Romance', cat: 'moody', adj: { b:8, w:18, v:20, c:-5, f:15, g:1.05 } },
   fantasy: { name: 'Fantasy', cat: 'moody', adj: { t:15, v:30, w:20, c:15, g:1.05 } },
 
-  // ===================== MODERN / TRENDY (4) =====================
+  // Modern (4)
   aesthetic: { name: 'Aesthetic', cat: 'modern', adj: { b:8, v:20, c:5, w:12, f:8, g:1.04 } },
   korean_soft: { name: 'Korean Soft', cat: 'modern', adj: { b:12, t:8, v:18, w:-5, f:12, g:1.06 } },
   y2k: { name: 'Y2K', cat: 'modern', adj: { t:30, v:30, c:15, w:-8, n:20, l:12 } },
@@ -615,10 +517,8 @@ const FILTERS = {
 
 /* ============================================================
    100 PRESETS
-   Categories: portrait, landscape, food, night, wedding, product, street, travel, mono, special
    ============================================================ */
 const PRESETS = {
-  // ============= PORTRAIT (15) =============
   original: { name: 'Original', cat: 'portrait', adj: {} },
   portrait_soft: { name: 'Soft', cat: 'portrait', adj: { b:5, c:-8, h:15, s:12, t:-3, g:1.06 } },
   portrait_clear: { name: 'Clear', cat: 'portrait', adj: { c:15, l:12, p:15, h:-8, s:10 } },
@@ -635,7 +535,6 @@ const PRESETS = {
   portrait_airy: { name: 'Airy', cat: 'portrait', adj: { b:15, c:-10, h:12, s:20, g:1.08 } },
   portrait_rich: { name: 'Rich', cat: 'portrait', adj: { c:22, t:15, v:22, w:15, l:12 } },
 
-  // ============= LANDSCAPE (15) =============
   landscape_vivid: { name: 'Vivid', cat: 'landscape', adj: { t:28, v:35, c:22, l:20, h:-15 } },
   landscape_natural: { name: 'Natural', cat: 'landscape', adj: { c:15, v:20, l:12, h:-8 } },
   landscape_golden: { name: 'Golden Hour', cat: 'landscape', adj: { w:30, t:18, v:25, c:15, h:-10 } },
@@ -652,7 +551,6 @@ const PRESETS = {
   landscape_ocean: { name: 'Ocean', cat: 'landscape', adj: { w:-15, n:15, c:22, t:18, v:25 } },
   landscape_hdr: { name: 'HDR', cat: 'landscape', adj: { c:38, l:32, v:32, h:-28, s:32 } },
 
-  // ============= FOOD (12) =============
   food_bright: { name: 'Bright', cat: 'food', adj: { b:12, c:12, t:15, v:20, p:12 } },
   food_warm: { name: 'Warm', cat: 'food', adj: { w:20, t:15, v:18, b:8, c:10 } },
   food_fresh: { name: 'Fresh', cat: 'food', adj: { b:8, t:18, v:25, c:12, w:-5 } },
@@ -666,7 +564,6 @@ const PRESETS = {
   food_breakfast: { name: 'Breakfast', cat: 'food', adj: { b:12, w:18, t:12, v:20, c:8 } },
   food_healthy: { name: 'Healthy', cat: 'food', adj: { b:10, t:15, v:22, c:10, w:-3 } },
 
-  // ============= NIGHT (10) =============
   night_city: { name: 'City Lights', cat: 'night', adj: { e:15, c:15, h:-25, s:25, t:15, v:25 } },
   night_stars: { name: 'Starfield', cat: 'night', adj: { e:20, c:20, h:-30, s:35, l:20, o:25 } },
   night_neon: { name: 'Neon', cat: 'night', adj: { e:10, t:40, v:35, w:-15, n:18, l:18 } },
@@ -678,7 +575,6 @@ const PRESETS = {
   night_fire: { name: 'Fire Light', cat: 'night', adj: { e:12, w:40, t:20, v:25, c:12 } },
   night_lowlight: { name: 'Low Light', cat: 'night', adj: { e:22, s:35, h:-25, c:10, g:1.10 } },
 
-  // ============= WEDDING (10) =============
   wedding_classic: { name: 'Classic', cat: 'wedding', adj: { b:8, c:10, w:15, t:5, v:15, g:1.04 } },
   wedding_modern: { name: 'Modern', cat: 'wedding', adj: { c:15, w:10, v:18, t:8, l:10 } },
   wedding_romantic: { name: 'Romantic', cat: 'wedding', adj: { b:10, w:18, t:-3, v:18, f:12, g:1.05 } },
@@ -690,7 +586,6 @@ const PRESETS = {
   wedding_reception: { name: 'Reception', cat: 'wedding', adj: { w:25, t:12, v:22, c:15, h:-10 } },
   wedding_couple: { name: 'Couple', cat: 'wedding', adj: { b:8, w:15, t:10, v:18, g:1.04 } },
 
-  // ============= PRODUCT (10) =============
   product_clean: { name: 'Clean', cat: 'product', adj: { b:8, c:15, l:12, p:15 } },
   product_warm: { name: 'Warm', cat: 'product', adj: { w:20, c:12, v:15, b:5 } },
   product_dramatic: { name: 'Dramatic', cat: 'product', adj: { c:30, l:22, o:25, h:-20 } },
@@ -702,7 +597,6 @@ const PRESETS = {
   product_fashion: { name: 'Fashion', cat: 'product', adj: { c:22, t:15, v:22, l:18, h:-10 } },
   product_food: { name: 'Food', cat: 'product', adj: { w:22, c:15, v:22, l:15, b:5 } },
 
-  // ============= STREET (10) =============
   street_classic: { name: 'Classic', cat: 'street', adj: { c:22, v:18, l:12, h:-12 } },
   street_punchy: { name: 'Punchy', cat: 'street', adj: { c:35, t:20, v:28, l:20, h:-18 } },
   street_moody: { name: 'Moody', cat: 'street', adj: { c:25, t:-18, w:-12, l:15, o:22 } },
@@ -714,7 +608,6 @@ const PRESETS = {
   street_suburban: { name: 'Suburban', cat: 'street', adj: { c:15, w:10, v:18, l:10 } },
   street_night: { name: 'Night Street', cat: 'street', adj: { e:12, c:18, w:15, t:15, v:22, o:22 } },
 
-  // ============= TRAVEL (10) =============
   travel_vivid: { name: 'Vivid', cat: 'travel', adj: { t:25, v:32, c:20, l:18, h:-12 } },
   travel_natural: { name: 'Natural', cat: 'travel', adj: { c:15, v:22, l:12, h:-8 } },
   travel_warm: { name: 'Warm', cat: 'travel', adj: { w:25, t:18, v:25, c:12 } },
@@ -726,7 +619,6 @@ const PRESETS = {
   travel_summer: { name: 'Summer', cat: 'travel', adj: { w:22, v:28, t:15, c:15, h:-10 } },
   travel_vintage: { name: 'Vintage', cat: 'travel', adj: { w:20, v:22, f:18, t:-8, c:10 } },
 
-  // ============= MONOCHROME (8) =============
   bw_soft: { name: 'B&W Soft', cat: 'mono', adj: { t:-100, c:12, b:8, g:1.05 } },
   bw_contrast: { name: 'B&W Contrast', cat: 'mono', adj: { t:-100, c:38, l:15, h:-15 } },
   bw_high_key: { name: 'High Key B&W', cat: 'mono', adj: { t:-100, b:18, c:-8, h:18, g:1.08 } },
@@ -736,7 +628,6 @@ const PRESETS = {
   bw_cinematic: { name: 'Cinematic B&W', cat: 'mono', adj: { t:-100, c:30, l:18, g:0.95, o:20 } },
   bw_vintage: { name: 'Vintage B&W', cat: 'mono', adj: { t:-100, c:18, f:20, r:15, w:12 } },
 
-  // ============= SPECIAL (10) =============
   hdr: { name: 'HDR Look', cat: 'special', adj: { c:45, s:55, h:-35, l:45, v:35, p:25 } },
   infrared: { name: 'Infrared', cat: 'special', adj: { t:15, v:35, n:-30, c:25, w:-20 } },
   cross_process: { name: 'Cross Process', cat: 'special', adj: { c:30, n:25, w:-15, t:25, h:-15 } },
@@ -798,6 +689,7 @@ let originalFile = null;
 let sourceImg = null;
 let sourceImageData = null;
 let currentRender = null;
+let cachedBaseThumb = null;   // Cached 100x100 base thumbnail for filter preview
 
 let viewMode = 'split';
 let zoom = 1;
@@ -975,7 +867,7 @@ function updateIntensityVisual(){
 }
 
 /* ============================================================
-   FILTER GRID + CATS
+   FILTER GRID + CATS  (patched — thumbnails now refresh on cat switch)
    ============================================================ */
 function buildFilterCats(){
   const box = document.getElementById('filterCats');
@@ -988,6 +880,8 @@ function setFilterCat(cat, btn){
   document.querySelectorAll('#filterCats .cat-tab').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   buildFilterGrid();
+  // FIX: regenerate thumbnails for the newly built canvases
+  updateFilterThumbnails();
 }
 function buildFilterGrid(){
   const grid = document.getElementById('filterGrid');
@@ -999,8 +893,15 @@ function buildFilterGrid(){
     </div>
   `).join('');
 }
-function updateFilterThumbnails(){
-  if(!sourceImageData) return;
+
+/**
+ * Cache the base 100x100 thumbnail from source image so we don't
+ * recompute the crop on every category switch.
+ */
+function computeBaseThumb(){
+  if(!sourceImageData) return null;
+  if(cachedBaseThumb) return cachedBaseThumb;
+
   const THUMB = 100;
   const tempCanvas = document.createElement('canvas');
   tempCanvas.width = sourceImageData.width;
@@ -1014,22 +915,38 @@ function updateFilterThumbnails(){
   const baseCanvas = document.createElement('canvas');
   baseCanvas.width = THUMB;
   baseCanvas.height = THUMB;
-  baseCanvas.getContext('2d').drawImage(tempCanvas, sx, sy, s, s, 0, 0, THUMB, THUMB);
-  const baseThumb = baseCanvas.getContext('2d').getImageData(0, 0, THUMB, THUMB);
+  const bCtx = baseCanvas.getContext('2d');
+  bCtx.drawImage(tempCanvas, sx, sy, s, s, 0, 0, THUMB, THUMB);
+  cachedBaseThumb = bCtx.getImageData(0, 0, THUMB, THUMB);
+  return cachedBaseThumb;
+}
 
-  // Generate thumbnails in batches so UI stays responsive
-  const keys = Object.keys(FILTERS);
+/**
+ * Fill all filter thumbnails currently in the DOM.
+ * Called on image load AND on category switch.
+ */
+function updateFilterThumbnails(){
+  if(!sourceImageData) return;
+  const baseThumb = computeBaseThumb();
+  if(!baseThumb) return;
+
+  // Only process canvases that exist in the DOM right now
+  const canvases = document.querySelectorAll('.filter-thumb');
+  const keys = [];
+  canvases.forEach(c => keys.push(c.id.replace('thumb-','')));
+
   let i = 0;
   function processBatch(){
-    const end = Math.min(i + 10, keys.length);
+    const end = Math.min(i + 8, keys.length);
     for(; i < end; i++){
       const key = keys[i];
-      const thumbCanvas = document.getElementById('thumb-' + key);
-      if(!thumbCanvas) continue;
+      const canvas = document.getElementById('thumb-' + key);
+      if(!canvas) continue;
       const filter = FILTERS[key];
+      if(!filter) continue;
       const adj = expand(filter.adj);
       const filtered = applyFilterToImageData(baseThumb, adj, 100, {});
-      thumbCanvas.getContext('2d').putImageData(filtered, 0, 0);
+      canvas.getContext('2d').putImageData(filtered, 0, 0);
     }
     if(i < keys.length) requestAnimationFrame(processBatch);
   }
@@ -1085,14 +1002,12 @@ function applyPreset(name, btn){
   const preset = PRESETS[name];
   if(!preset) return;
 
-  // Reset filter to none, apply preset adjustments
   activeFilter = 'original';
   filterAdjustments = { ...DEFAULT_ADJ };
   filterIntensity = 0;
   updateIntensityVisual();
   document.querySelectorAll('.filter-item').forEach(i => i.classList.toggle('active', i.dataset.filter === 'original'));
 
-  // Apply preset adjustments to base
   baseAdjustments = { ...DEFAULT_ADJ, ...preset.adj };
   Object.keys(SLIDERS).forEach(cat => SLIDERS[cat].forEach(def => updateSliderVisual(def)));
   scheduleRender();
@@ -1558,6 +1473,9 @@ async function processFile(file){
   offCtx.drawImage(img, 0, 0);
   sourceImageData = offCtx.getImageData(0, 0, W, H);
 
+  // Clear cached base thumbnail for new image
+  cachedBaseThumb = null;
+
   baseAdjustments = { ...DEFAULT_ADJ };
   filterAdjustments = { ...DEFAULT_ADJ };
   filterIntensity = 100;
@@ -1574,7 +1492,9 @@ async function processFile(file){
   document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'split'));
   splitPercent = 50;
 
-  // Rebuild grids with current state
+  // Reset active category to "All" and rebuild grids
+  activeFilterCat = 'all';
+  buildFilterCats();
   buildFilterGrid();
   buildPresetGrid();
 
@@ -1583,12 +1503,13 @@ async function processFile(file){
   setTimeout(fitToScreen, 60);
   setStatus('ready', 'Ready');
 
+  // Generate thumbnails after render settles
   setTimeout(updateFilterThumbnails, 150);
   showToast('Image loaded. Browse 100 filters below.', 'success');
 }
 
 /* ============================================================
-   AUTO ENHANCE — subtle and natural
+   AUTO ENHANCE
    ============================================================ */
 function autoEnhance(){
   if(!sourceImageData){ showToast('Load an image first', 'error'); return; }
@@ -1780,6 +1701,7 @@ async function copyToClipboard(){
 function resetAll(){
   if(isFullscreen) toggleFullscreen();
   originalFile = null; sourceImg = null; sourceImageData = null; currentRender = null;
+  cachedBaseThumb = null;
   baseAdjustments = { ...DEFAULT_ADJ };
   filterAdjustments = { ...DEFAULT_ADJ };
   filterIntensity = 100;
