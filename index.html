@@ -50,9 +50,7 @@
         }
     </script>
 
-    <!-- ============================================
-         STRUCTURED DATA — Google Rich Results
-         ============================================ -->
+    <!-- Structured Data — Google Rich Results -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -82,13 +80,33 @@
         <input type="text" id="searchInput" placeholder="Search tools… e.g., age calculator, pdf editor, typing test" oninput="searchTools()" autocomplete="off">
     </div>
 
-    <div class="category-chips" id="categoryChips">
-        <button class="chip active" data-cat="all">All</button>
-        <button class="chip" data-cat="pdf">📄 PDF</button>
-        <button class="chip" data-cat="image">🎨 Image</button>
-        <button class="chip" data-cat="calculate">🧮 Calculators</button>
-        <button class="chip" data-cat="text">📝 Text</button>
-        <button class="chip" data-cat="utility">🛠️ Utility</button>
+    <div class="category-wrapper">
+        <div class="category-chips" id="categoryChips">
+            <button class="chip active" data-cat="all">
+                <span class="chip-emoji">✨</span>
+                <span>All Tools</span>
+            </button>
+            <button class="chip" data-cat="pdf">
+                <span class="chip-emoji">📄</span>
+                <span>PDF</span>
+            </button>
+            <button class="chip" data-cat="image">
+                <span class="chip-emoji">🎨</span>
+                <span>Image</span>
+            </button>
+            <button class="chip" data-cat="calculate">
+                <span class="chip-emoji">🧮</span>
+                <span>Calculators</span>
+            </button>
+            <button class="chip" data-cat="text">
+                <span class="chip-emoji">📝</span>
+                <span>Text</span>
+            </button>
+            <button class="chip" data-cat="utility">
+                <span class="chip-emoji">🛠️</span>
+                <span>Utility</span>
+            </button>
+        </div>
     </div>
 
     <main class="dashboard-grid" id="toolsGrid">
@@ -173,6 +191,7 @@
             <p>Project future value and returns of your monthly SIP investments with year-wise breakdown.</p>
         </a>
 
+        <!-- TEXT -->
         <a href="number-converter.html" class="tool-card" data-name="number to word convertor indian rupees international currency" data-cat="text">
             <span class="tool-category">Text</span>
             <div class="tool-icon">🔢</div>
@@ -187,6 +206,7 @@
             <p>Count words, characters, sentences, and reading time. Ideal for essays, blogs, and social posts.</p>
         </a>
 
+        <!-- UTILITY -->
         <a href="Typing-Master.html" class="tool-card" data-name="typing master typing test speed wpm lessons practice games" data-cat="utility">
             <span class="tool-category">Utility</span>
             <div class="tool-icon">⌨️</div>
@@ -222,9 +242,7 @@
         <p>No tools match your search. Try "age", "pdf", "image", or "typing".</p>
     </div>
 
-    <!-- ============================================
-         FEEDBACK SECTION
-         ============================================ -->
+    <!-- FEEDBACK SECTION -->
     <section class="feedback-section">
         <h3>💬 Send Feedback or Contact Us</h3>
         <p>Share your suggestions, request a new tool, or report a bug. Your message goes straight to our team.</p>
@@ -341,9 +359,7 @@
     </footer>
 
     <script>
-        /* ============================================================
-           SEARCH + CATEGORY FILTER
-           ============================================================ */
+        /* SEARCH + CATEGORY FILTER */
         let activeCategory = 'all';
 
         function searchTools() {
@@ -381,9 +397,7 @@
             });
         });
 
-        /* ============================================================
-           FEEDBACK FORM PLUGINS
-           ============================================================ */
+        /* FEEDBACK FORM PLUGINS */
         let phoneInput;
         document.addEventListener('DOMContentLoaded', function() {
             phoneInput = window.intlTelInput(document.querySelector("#userContact"), {
@@ -398,9 +412,7 @@
             });
         });
 
-        /* ============================================================
-           FORM SUBMISSION
-           ============================================================ */
+        /* FORM SUBMISSION */
         function submitFeedback(e) {
             e.preventDefault();
             const form = document.getElementById('feedbackForm');
