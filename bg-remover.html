@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Background Remover — Pro Edition v3</title>
+<title>AI Background Remover — Pro Edition v4</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -45,7 +45,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .card-header h2{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .card-header h2 i{color:var(--primary)}
 
-/* Dropzone */
 .upload-section{padding:22px}
 .dropzone{border:2.5px dashed var(--border);border-radius:16px;padding:55px 30px;text-align:center;cursor:pointer;transition:0.3s;background:var(--bg)}
 .dropzone:hover{border-color:var(--primary);background:rgba(99,102,241,0.04)}
@@ -56,7 +55,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .dropzone kbd{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:11px;font-family:monospace;font-weight:600}
 .upload-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
-/* Buttons */
 .btn{padding:10px 18px;border:none;border-radius:10px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:0.2s;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
 .btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;box-shadow:0 4px 14px rgba(99,102,241,0.4)}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,0.5)}
@@ -64,45 +62,37 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
 .btn-sm{padding:7px 12px;font-size:11.5px}
 .btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important}
-.btn-icon-only{padding:8px;width:34px;height:34px}
 
-/* Editor */
 .editor-card{display:none}
 .editor-card.active{display:block}
 
-.editor-layout{display:grid;grid-template-columns:1fr 380px;gap:16px;padding:16px}
+.editor-layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px;padding:16px;align-items:start}
 @media(max-width:1100px){.editor-layout{grid-template-columns:1fr}}
 
-/* Fullscreen mode */
-.editor-card.fullscreen{
-  position:fixed;inset:0;z-index:100;margin:0;border-radius:0;max-width:none;
-  display:flex;flex-direction:column;
-}
-.editor-card.fullscreen .editor-layout{
-  flex:1;overflow:hidden;grid-template-columns:1fr 380px;
-}
-.editor-card.fullscreen .canvas-scroll-container{
-  max-height:none;height:calc(100vh - 130px);
-}
-@media(max-width:1100px){
-  .editor-card.fullscreen .editor-layout{grid-template-columns:1fr;grid-template-rows:1fr auto}
-  .editor-card.fullscreen .canvas-scroll-container{height:calc(100vh - 420px)}
-}
+.editor-card.fullscreen{position:fixed;inset:0;z-index:100;margin:0;border-radius:0;max-width:none;display:flex;flex-direction:column}
+.editor-card.fullscreen .editor-layout{flex:1;overflow:hidden;min-height:0}
+.editor-card.fullscreen .canvas-scroll-container{height:100%;max-height:none}
+@media(max-width:1100px){.editor-card.fullscreen .editor-layout{grid-template-columns:1fr;grid-template-rows:1fr auto}}
 
 .canvas-scroll-container{
   overflow:auto;
   max-height:calc(100vh - 220px);
-  min-height:400px;
+  min-height:440px;
   border-radius:14px;
   border:1px solid var(--border);
   background:var(--bg);
   padding:24px;
+  display:block;
+  position:relative;
+  resize:vertical;
+}
+
+.canvas-scroll-inner{
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  position:relative;
-  resize:vertical;
-  overflow:auto;
+  min-width:min-content;
+  min-height:min-content;
 }
 
 .canvas-wrapper{
@@ -113,70 +103,51 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);
   background-size:20px 20px;
   background-position:0 0,10px 10px;
-  border-radius:6px;
+  border-radius:4px;
   box-shadow:0 4px 20px rgba(0,0,0,0.15);
   display:inline-block;
   line-height:0;
   flex-shrink:0;
 }
 
-.canvas-wrapper canvas{display:block;transform-origin:top left;touch-action:none}
+.canvas-wrapper canvas{
+  display:block;
+  image-rendering:auto;
+  touch-action:none;
+}
 .canvas-wrapper.brush-active canvas{cursor:none}
 
 .brush-cursor{
-  position:absolute;pointer-events:none;border:1.5px solid #fff;
-  border-radius:50%;
+  position:absolute;pointer-events:none;
+  border:1.5px solid #fff;border-radius:50%;
   box-shadow:0 0 0 1px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(0,0,0,0.4);
   z-index:10;display:none;transform:translate(-50%,-50%);
   mix-blend-mode:difference;
 }
 
-/* Side panel */
 .side-panel{display:flex;flex-direction:column;gap:12px}
 .tool-section{background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border)}
 .tool-section h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .tool-section h4 i{color:var(--primary)}
 
-/* Zoom */
 .zoom-row{display:flex;gap:6px;align-items:center}
-.zoom-row button{
-  background:var(--card);border:1.5px solid var(--border);
-  color:var(--text);width:36px;height:36px;border-radius:8px;
-  cursor:pointer;font-size:13px;
-  display:flex;align-items:center;justify-content:center;
-  transition:0.2s;font-family:inherit;font-weight:600;
-}
+.zoom-row button{background:var(--card);border:1.5px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:0.2s;font-family:inherit;font-weight:600}
 .zoom-row button:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
 .zoom-row button.wide{width:auto;padding:0 12px;font-size:11.5px}
-.zoom-level{
-  flex:1;text-align:center;font-size:12.5px;font-weight:700;
-  color:var(--primary);font-family:monospace;
-  padding:0 8px;background:var(--card);border-radius:8px;
-  border:1.5px solid var(--border);height:36px;
-  display:flex;align-items:center;justify-content:center;
-}
+.zoom-level{flex:1;text-align:center;font-size:12.5px;font-weight:700;color:var(--primary);font-family:monospace;padding:0 8px;background:var(--card);border-radius:8px;border:1.5px solid var(--border);height:36px;display:flex;align-items:center;justify-content:center}
 
-/* Brush */
 .brush-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.brush-btn{
-  padding:10px 6px;border:2px solid var(--border);border-radius:10px;
-  background:var(--card);cursor:pointer;font-family:inherit;
-  font-size:11px;font-weight:600;transition:0.2s;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  color:var(--text);
-}
+.brush-btn{padding:10px 6px;border:2px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text)}
 .brush-btn:hover{border-color:var(--primary);color:var(--primary)}
 .brush-btn.active{border-color:var(--primary);background:rgba(99,102,241,0.1);color:var(--primary)}
 .brush-btn i{font-size:14px}
 
-/* Slider */
 .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .slider-row label{font-size:11.5px;font-weight:600;min-width:80px}
 .slider-row input[type="range"]{flex:1;height:6px;-webkit-appearance:none;background:var(--border);border-radius:3px;cursor:pointer}
 .slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--primary);border-radius:50%;box-shadow:0 2px 6px rgba(99,102,241,0.5)}
 .slider-row .value{font-size:11px;font-weight:700;color:var(--primary);min-width:42px;text-align:right;font-family:monospace}
 
-/* BG swatches */
 .bg-swatches{display:flex;gap:6px;flex-wrap:wrap}
 .bg-swatch{width:34px;height:34px;border-radius:8px;cursor:pointer;border:2px solid var(--border);transition:0.2s;position:relative;overflow:hidden}
 .bg-swatch:hover{transform:scale(1.08);border-color:var(--primary)}
@@ -187,45 +158,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .bg-custom-wrapper input[type="color"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .bg-custom-wrapper .bg-swatch{display:flex;align-items:center;justify-content:center;color:white;font-size:13px;background:linear-gradient(135deg,#6366f1,#ec4899)}
 
-/* Download dropdown */
 .download-wrapper{position:relative}
-.download-main-btn{
-  width:100%;padding:12px 18px;border:none;border-radius:10px;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:white;font-family:inherit;font-size:13px;font-weight:700;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:0 4px 14px rgba(99,102,241,0.4);transition:0.25s;
-}
+.download-main-btn{width:100%;padding:12px 18px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:white;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(99,102,241,0.4);transition:0.25s}
 .download-main-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(99,102,241,0.5)}
-.download-menu{
-  position:absolute;bottom:calc(100% + 8px);left:0;right:0;
-  background:var(--card);border:1px solid var(--border);
-  border-radius:12px;box-shadow:var(--shadow-lg);
-  padding:6px;display:none;z-index:50;
-  animation:slideUp 0.2s ease;
-}
+.download-menu{position:absolute;bottom:calc(100% + 8px);left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:6px;display:none;z-index:50;animation:slideUp 0.2s ease}
 .download-menu.open{display:block}
 @keyframes slideUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.download-menu-item{
-  padding:10px 14px;border-radius:8px;cursor:pointer;
-  font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:10px;
-  transition:0.15s;color:var(--text);border:none;background:transparent;
-  width:100%;text-align:left;font-family:inherit;
-}
+.download-menu-item{padding:10px 14px;border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:10px;transition:0.15s;color:var(--text);border:none;background:transparent;width:100%;text-align:left;font-family:inherit}
 .download-menu-item:hover{background:rgba(99,102,241,0.1);color:var(--primary)}
 .download-menu-item i{width:18px;color:var(--primary);font-size:14px}
 .download-menu-divider{height:1px;background:var(--border);margin:4px 0}
 
-/* Info box */
 .info-box{padding:14px 18px;background:var(--bg);border-radius:14px;border:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;margin-top:8px}
 .info-box .info-icon{color:var(--primary);font-size:18px;flex-shrink:0;margin-top:2px}
 .info-box h4{font-size:12.5px;font-weight:700;margin-bottom:4px}
 .info-box p{font-size:11.5px;color:var(--text-muted);line-height:1.6}
 
-/* Keyboard hint */
+.hardware-warning{display:flex;gap:12px;padding:12px 16px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:12px;margin-bottom:12px;align-items:flex-start}
+.hardware-warning i{color:var(--warning);font-size:18px;flex-shrink:0;margin-top:2px}
+.hardware-warning h5{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--warning)}
+.hardware-warning p{font-size:11.5px;color:var(--text-muted);line-height:1.55}
+
 .kbd-hint{display:inline-flex;align-items:center;gap:4px;padding:2px 6px;background:var(--card);border:1px solid var(--border);border-radius:5px;font-size:10.5px;font-family:monospace;font-weight:600}
 
-/* Processing */
 .processing-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
 .processing-overlay.active{display:flex !important}
 .processing-box{background:var(--card);border-radius:20px;padding:36px 44px;max-width:500px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5);animation:popIn 0.4s cubic-bezier(0.68,-0.55,0.27,1.55)}
@@ -242,24 +197,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .processing-hint{margin-top:14px;padding:10px 14px;background:rgba(99,102,241,0.08);border-radius:8px;font-size:11.5px;color:var(--text-muted);line-height:1.5}
 .processing-hint i{color:var(--primary);margin-right:4px}
 
-/* Toast */
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(150px);background:var(--card);color:var(--text);padding:13px 20px;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-size:12.5px;font-weight:600;z-index:2000;transition:0.35s;display:flex;align-items:center;gap:10px;border-left:4px solid var(--success);opacity:0;max-width:90vw}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.error{border-left-color:var(--danger)}.toast.error i{color:var(--danger)}
 .toast.info{border-left-color:var(--info)}.toast.info i{color:var(--info)}
 .toast.warning{border-left-color:var(--warning)}.toast.warning i{color:var(--warning)}
 
-/* Status badge */
 .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
 .status-badge.loading{background:rgba(245,158,11,0.15);color:#f59e0b}
 .status-badge.ready{background:rgba(16,185,129,0.15);color:#10b981}
 .status-badge.processing{background:rgba(99,102,241,0.15);color:#6366f1}
-
-/* Hardware warning */
-.hardware-warning{display:flex;gap:12px;padding:12px 16px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:12px;margin-bottom:12px;align-items:flex-start}
-.hardware-warning i{color:var(--warning);font-size:18px;flex-shrink:0;margin-top:2px}
-.hardware-warning h5{font-size:12px;font-weight:700;margin-bottom:3px;color:var(--warning)}
-.hardware-warning p{font-size:11.5px;color:var(--text-muted);line-height:1.55}
 
 @media(max-width:768px){
   .upload-section{padding:14px}
@@ -272,10 +219,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 <body>
 
 <header class="top-header">
-  <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-  <div class="badge"><i class="fas fa-bolt"></i> AI-Powered &middot; Fast Brush &middot; Full Zoom</div>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+    <i class="fas fa-moon"></i>
+  </button>
+  <div class="badge">
+    <i class="fas fa-bolt"></i> AI-Powered &middot; Fast Brush &middot; Full Zoom
+  </div>
   <h1>AI Background Remover</h1>
-  <p>Remove background automatically with AI. Refine with fast brush. Zoom to perfection. 100% client-side.</p>
+  <p>Remove backgrounds automatically with AI. Refine with a fast brush. Zoom in for pixel-perfect work. Everything runs locally in your browser.</p>
 </header>
 
 <div class="main-container">
@@ -314,7 +265,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
         <button class="btn btn-outline btn-sm" onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)">
           <i class="fas fa-redo"></i> Redo
         </button>
-        <button class="btn btn-outline btn-sm" onclick="reRunAI()" title="Re-run AI from original">
+        <button class="btn btn-outline btn-sm" onclick="reRunAI()" title="Run AI again from original">
           <i class="fas fa-sync-alt"></i> Re-run AI
         </button>
         <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()" id="fullscreenBtn" title="Toggle fullscreen editor">
@@ -329,31 +280,36 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="editor-layout">
       <div>
         <div class="canvas-scroll-container" id="canvasScrollContainer">
-          <div class="canvas-wrapper" id="canvasWrapper">
-            <canvas id="editCanvas"></canvas>
-            <div class="brush-cursor" id="brushCursor"></div>
+          <div class="canvas-scroll-inner">
+            <div class="canvas-wrapper" id="canvasWrapper">
+              <canvas id="editCanvas"></canvas>
+              <div class="brush-cursor" id="brushCursor"></div>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="side-panel">
 
-        <!-- Zoom -->
+        <!-- Zoom & Navigation -->
         <div class="tool-section">
           <h4><i class="fas fa-search"></i> Zoom &amp; Navigation</h4>
           <div class="zoom-row">
-            <button onclick="zoomOut()" title="Zoom Out (Ctrl+-)"><i class="fas fa-minus"></i></button>
+            <button onclick="zoomOut()" title="Zoom out (Ctrl+-)"><i class="fas fa-minus"></i></button>
             <div class="zoom-level" id="zoomLevel">100%</div>
-            <button onclick="zoomIn()" title="Zoom In (Ctrl++)"><i class="fas fa-plus"></i></button>
-            <button class="wide" onclick="fitToScreen()" title="Fit image to view"><i class="fas fa-expand"></i> Fit</button>
-            <button class="wide" onclick="resetZoom()" title="Reset to 100%">1:1</button>
+            <button onclick="zoomIn()" title="Zoom in (Ctrl++)"><i class="fas fa-plus"></i></button>
+            <button class="wide" onclick="fitToScreen()" title="Fit image to view (Ctrl+F)">
+              <i class="fas fa-expand"></i> Fit
+            </button>
+            <button class="wide" onclick="resetZoom()" title="Reset to 100% (Ctrl+0)">1:1</button>
           </div>
           <p style="font-size:10.5px;color:var(--text-muted);line-height:1.5;margin-top:8px">
-            Use <span class="kbd-hint">Ctrl</span> + scroll wheel to zoom. Drag scrollbars to pan.
+            Hold <span class="kbd-hint">Ctrl</span> and scroll to zoom. Drag scrollbars to pan.
+            Zoom only affects the image, not this panel.
           </p>
         </div>
 
-        <!-- Brush -->
+        <!-- Brush Tools -->
         <div class="tool-section">
           <h4><i class="fas fa-paint-brush"></i> Brush Tools</h4>
           <div class="brush-buttons">
@@ -369,15 +325,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
           <div class="slider-row" style="margin-top:10px">
             <label>Brush Size</label>
-            <input type="range" id="brushSize" min="5" max="400" value="50" oninput="updateBrushSize()">
+            <input type="range" id="brushSize" min="5" max="500" value="50" oninput="updateBrushSize()">
             <span class="value" id="brushSizeVal">50</span>
           </div>
           <p style="font-size:10.5px;color:var(--text-muted);line-height:1.55;margin-top:4px">
-            <strong>Eraser:</strong> Remove background details &middot; <strong>Restore:</strong> Bring back AI result
+            <strong>Eraser:</strong> remove remaining background &middot; <strong>Restore:</strong> bring back pixels from the AI result
           </p>
         </div>
 
-        <!-- BG Color -->
+        <!-- Background Color -->
         <div class="tool-section">
           <h4><i class="fas fa-fill-drip"></i> Background Color</h4>
           <div class="bg-swatches">
@@ -407,7 +363,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
               <i class="fas fa-file-image"></i> PNG (transparent)
             </button>
             <button class="download-menu-item" onclick="download('jpeg')">
-              <i class="fas fa-file-image"></i> JPG (smaller size)
+              <i class="fas fa-file-image"></i> JPG (smaller file)
             </button>
             <button class="download-menu-item" onclick="download('webp')">
               <i class="fas fa-file-image"></i> WebP (modern format)
@@ -423,12 +379,12 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Info -->
+  <!-- Hardware info -->
   <div class="hardware-warning">
     <i class="fas fa-microchip"></i>
     <div>
       <h5>Hardware Requirements for Manual Touch-up</h5>
-      <p>Fine-grained manual brush editing on high-resolution images requires a reasonably capable device. Recommended: 4 GB+ free RAM, a modern browser (Chrome, Edge, Firefox), and a device from the last 4-5 years. Older or low-RAM devices may experience lag when using the brush on large photos.</p>
+      <p>Fine-grained manual editing on high-resolution images requires a reasonably capable device. For smooth brush performance we recommend at least 4 GB of free RAM, a modern browser (Chrome, Edge, Firefox), and a device from the last 4–5 years. Older or low-RAM devices may lag when brushing over very large photos.</p>
     </div>
   </div>
 
@@ -499,12 +455,10 @@ let lastPoint = null;
 let zoom = 1;
 let isFullscreen = false;
 
-// Undo/Redo stacks — store canvases (fast)
 let undoStack = [];
 let redoStack = [];
 const MAX_HISTORY = 10;
 
-// Pre-rendered brush stamps for performance
 let eraseStampCanvas = null;
 let eraseStampSize = 0;
 let scratchCanvas = null;
@@ -527,7 +481,7 @@ function showToast(msg, type = 'success'){
 }
 
 /* ============================================================
-   STATUS
+   STATUS BADGE
    ============================================================ */
 function setStatus(status, text){
   const badge = document.getElementById('statusBadge');
@@ -604,18 +558,18 @@ async function pasteFromClipboard(){
         }
       }
     }
-    showToast('No image in clipboard', 'error');
+    showToast('No image found in clipboard', 'error');
   } catch(err){
     showToast('Press Ctrl+V to paste', 'info');
   }
 }
 
 /* ============================================================
-   FILE PROCESS
+   FILE PROCESS — NO downscaling, original resolution preserved
    ============================================================ */
 async function processFile(file){
   if(!file.type.startsWith('image/')){ showToast('Please select an image file', 'error'); return; }
-  if(file.size > 30 * 1024 * 1024){ showToast('Max file size: 30 MB', 'error'); return; }
+  if(file.size > 40 * 1024 * 1024){ showToast('Maximum file size: 40 MB', 'error'); return; }
 
   showProcessing(true, 'Loading Image...', 'Preparing your image...', '');
   setStatus('loading', 'Loading');
@@ -635,14 +589,12 @@ async function processFile(file){
     i.src = dataURL;
   });
 
-  // Downscale very large images for performance
-  const MAX_DIM = 2400;
-  let finalW = img.naturalWidth, finalH = img.naturalHeight;
-  if(finalW > MAX_DIM || finalH > MAX_DIM){
-    const scale = MAX_DIM / Math.max(finalW, finalH);
-    finalW = Math.round(finalW * scale);
-    finalH = Math.round(finalH * scale);
-    showToast(`Image resized to ${finalW}×${finalH} for performance`, 'info');
+  // NO downscaling — preserve exact original dimensions
+  const finalW = img.naturalWidth;
+  const finalH = img.naturalHeight;
+
+  if(finalW * finalH > 12_000_000){
+    showToast(`Large image (${finalW}×${finalH}). Brush may be slow on older devices.`, 'warning');
   }
 
   sourceCanvas = document.createElement('canvas');
@@ -650,12 +602,12 @@ async function processFile(file){
   sourceCanvas.height = finalH;
   const sCtx = sourceCanvas.getContext('2d');
   sCtx.imageSmoothingQuality = 'high';
-  sCtx.drawImage(img, 0, 0, finalW, finalH);
+  sCtx.drawImage(img, 0, 0);
 
   editCanvas = document.getElementById('editCanvas');
   editCanvas.width = finalW;
   editCanvas.height = finalH;
-  editCtx = editCanvas.getContext('2d', { alpha: true, willReadFrequently: false });
+  editCtx = editCanvas.getContext('2d', { alpha: true });
   canvasWrapper = document.getElementById('canvasWrapper');
 
   document.getElementById('uploadCard').style.display = 'none';
@@ -678,7 +630,7 @@ async function runAI(){
 
   setStatus('processing', 'Removing Background');
   showProcessing(true, 'Removing Background...', 'AI is analyzing your image...',
-    '<i class="fas fa-info-circle"></i> First use downloads ~40 MB model. Subsequent uses are 3-5 seconds.'
+    '<i class="fas fa-info-circle"></i> First use downloads ~40 MB model. Later runs take 3-5 seconds.'
   );
 
   try {
@@ -745,13 +697,14 @@ async function reRunAI(){
 }
 
 /* ============================================================
-   ZOOM & PAN
+   ZOOM — Only affects the canvas, not the toolbar
    ============================================================ */
 function applyZoom(){
   if(!editCanvas || !canvasWrapper) return;
-  editCanvas.style.transform = `scale(${zoom})`;
-  canvasWrapper.style.width = (editCanvas.width * zoom) + 'px';
-  canvasWrapper.style.height = (editCanvas.height * zoom) + 'px';
+  // Set canvas CSS size directly (no transform). This preserves layout
+  // so the side panel and toolbar are unaffected.
+  editCanvas.style.width = (editCanvas.width * zoom) + 'px';
+  editCanvas.style.height = (editCanvas.height * zoom) + 'px';
   document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
   updateBrushSize();
 }
@@ -768,7 +721,6 @@ function fitToScreen(){
   const scaleY = availH / editCanvas.height;
   zoom = Math.min(scaleX, scaleY, 1);
   applyZoom();
-  // Center scroll
   requestAnimationFrame(() => {
     container.scrollLeft = (container.scrollWidth - container.clientWidth) / 2;
     container.scrollTop = (container.scrollHeight - container.clientHeight) / 2;
@@ -839,10 +791,6 @@ function updateBrushSize(){
   cursor.style.height = visualSize + 'px';
 }
 
-/**
- * Get or create the pre-rendered erase stamp (soft radial circle).
- * Reused across strokes for maximum performance.
- */
 function getEraseStamp(size){
   if(eraseStampCanvas && eraseStampSize === size) return eraseStampCanvas;
   const c = document.createElement('canvas');
@@ -878,11 +826,7 @@ function initCanvasEvents(){
   });
 
   editCanvas.addEventListener('mouseup', () => {
-    if(isDrawing) {
-      saveHistory();
-      isDrawing = false;
-      lastPoint = null;
-    }
+    if(isDrawing) { saveHistory(); isDrawing = false; lastPoint = null; }
   });
   editCanvas.addEventListener('mouseleave', () => {
     if(isDrawing) saveHistory();
@@ -902,7 +846,6 @@ function initCanvasEvents(){
     lastPoint = getCanvasPoint(e.touches[0]);
     paintAt(lastPoint.x, lastPoint.y);
   }, { passive: false });
-
   editCanvas.addEventListener('touchmove', e => {
     if(!isDrawing || brushMode === 'none') return;
     e.preventDefault();
@@ -910,14 +853,13 @@ function initCanvasEvents(){
     if(lastPoint) paintSegment(lastPoint, pt);
     lastPoint = pt;
   }, { passive: false });
-
   editCanvas.addEventListener('touchend', () => {
     if(isDrawing) saveHistory();
     isDrawing = false;
     lastPoint = null;
   });
 
-  // Zoom with Ctrl+wheel
+  // Ctrl+wheel zoom
   document.getElementById('canvasScrollContainer').addEventListener('wheel', e => {
     if(e.ctrlKey || e.metaKey){
       e.preventDefault();
@@ -947,9 +889,6 @@ function getCanvasPoint(e){
   };
 }
 
-/**
- * Paint a single brush dot at (x, y) — very fast thanks to pre-rendered stamps.
- */
 function paintAt(x, y){
   const size = parseInt(document.getElementById('brushSize').value);
   const r = size / 2;
@@ -960,7 +899,13 @@ function paintAt(x, y){
     editCtx.drawImage(getEraseStamp(size), x - r, y - r);
     editCtx.restore();
   } else if(brushMode === 'restore'){
-    // Restore: draw AI result through brush mask
+    // Step 1: clear brush area
+    editCtx.save();
+    editCtx.globalCompositeOperation = 'destination-out';
+    editCtx.drawImage(getEraseStamp(size), x - r, y - r);
+    editCtx.restore();
+
+    // Step 2: prepare masked AI result in scratch
     if(!scratchCanvas) scratchCanvas = document.createElement('canvas');
     if(scratchCanvas.width !== size || scratchCanvas.height !== size){
       scratchCanvas.width = size;
@@ -974,6 +919,7 @@ function paintAt(x, y){
     sCtx.drawImage(getEraseStamp(size), 0, 0);
     sCtx.globalCompositeOperation = 'source-over';
 
+    // Step 3: draw the masked AI result back on canvas
     editCtx.save();
     editCtx.globalCompositeOperation = 'source-over';
     editCtx.drawImage(scratchCanvas, x - r, y - r);
@@ -998,26 +944,18 @@ function paintSegment(p1, p2){
    UNDO / REDO
    ============================================================ */
 function saveHistory(){
-  // Push a snapshot of the current canvas onto the undo stack.
-  // Using canvas copies (not getImageData) is much faster.
   const snap = document.createElement('canvas');
   snap.width = editCanvas.width;
   snap.height = editCanvas.height;
   snap.getContext('2d').drawImage(editCanvas, 0, 0);
-
   undoStack.push(snap);
   if(undoStack.length > MAX_HISTORY) undoStack.shift();
-  // Any new action clears the redo stack
   redoStack = [];
   updateHistoryButtons();
 }
 
 function undo(){
-  if(undoStack.length === 0){
-    showToast('Nothing to undo', 'info');
-    return;
-  }
-  // Push current state to redo before restoring
+  if(undoStack.length === 0){ showToast('Nothing to undo', 'info'); return; }
   const current = document.createElement('canvas');
   current.width = editCanvas.width;
   current.height = editCanvas.height;
@@ -1025,7 +963,6 @@ function undo(){
   redoStack.push(current);
   if(redoStack.length > MAX_HISTORY) redoStack.shift();
 
-  // Pop from undo and restore
   const prev = undoStack.pop();
   editCtx.clearRect(0, 0, editCanvas.width, editCanvas.height);
   editCtx.drawImage(prev, 0, 0);
@@ -1033,12 +970,8 @@ function undo(){
 }
 
 function redo(){
-  if(redoStack.length === 0){
-    showToast('Nothing to redo', 'info');
-    return;
-  }
+  if(redoStack.length === 0){ showToast('Nothing to redo', 'info'); return; }
   const next = redoStack.pop();
-  // Save current to undo
   const current = document.createElement('canvas');
   current.width = editCanvas.width;
   current.height = editCanvas.height;
@@ -1064,7 +997,7 @@ document.addEventListener('keydown', e => {
   if(!ctrl) return;
   const key = e.key.toLowerCase();
   if(key === 'z' && !e.shiftKey){ e.preventDefault(); undo(); }
-  else if((key === 'y') || (key === 'z' && e.shiftKey)){ e.preventDefault(); redo(); }
+  else if(key === 'y' || (key === 'z' && e.shiftKey)){ e.preventDefault(); redo(); }
   else if(key === '=' || key === '+'){ e.preventDefault(); zoomIn(); }
   else if(key === '-'){ e.preventDefault(); zoomOut(); }
   else if(key === '0'){ e.preventDefault(); resetZoom(); }
@@ -1076,8 +1009,7 @@ document.addEventListener('keydown', e => {
    ============================================================ */
 function toggleDownloadMenu(e){
   e.stopPropagation();
-  const menu = document.getElementById('downloadMenu');
-  menu.classList.toggle('open');
+  document.getElementById('downloadMenu').classList.toggle('open');
 }
 document.addEventListener('click', e => {
   const menu = document.getElementById('downloadMenu');
@@ -1142,7 +1074,7 @@ async function copyToClipboard(){
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       showToast('Copied to clipboard', 'success');
     } else {
-      showToast('Clipboard not supported — download instead', 'error');
+      showToast('Clipboard not supported. Please download instead.', 'error');
     }
   } catch(err){
     showToast('Copy failed: ' + err.message, 'error');
