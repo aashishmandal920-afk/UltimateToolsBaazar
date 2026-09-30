@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Background Remover — Pro Edition</title>
+<title>AI Background Remover — Pro Edition v2</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,21 +14,13 @@
 
 <style>
 :root{
-  --primary:#6366f1;
-  --secondary:#8b5cf6;
-  --success:#10b981;
-  --danger:#ef4444;
-  --warning:#f59e0b;
-  --info:#0ea5e9;
-  --bg:#f5f7fb;
-  --card:#ffffff;
-  --border:#e5e7eb;
-  --text:#111827;
-  --text-muted:#6b7280;
+  --primary:#6366f1; --secondary:#8b5cf6; --success:#10b981;
+  --danger:#ef4444; --warning:#f59e0b; --info:#0ea5e9;
+  --bg:#f5f7fb; --card:#ffffff; --border:#e5e7eb;
+  --text:#111827; --text-muted:#6b7280;
   --shadow:0 4px 20px rgba(0,0,0,0.06);
   --shadow-lg:0 20px 50px rgba(0,0,0,0.12);
-  --checker-1:#f0f0f0;
-  --checker-2:#e0e0e0;
+  --checker-1:#f0f0f0; --checker-2:#e0e0e0;
 }
 [data-theme="dark"]{
   --bg:#0f172a; --card:#1e293b; --border:#334155;
@@ -70,40 +62,85 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(99,102,241,0.5)}
 .btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}
 .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(99,102,241,0.06)}
-.btn-block{width:100%}
 .btn-sm{padding:8px 14px;font-size:12px}
 .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none!important}
 
-/* Editor Layout */
+/* Editor */
 .editor-layout{display:grid;grid-template-columns:1fr 400px;gap:20px;padding:20px}
 @media(max-width:1024px){.editor-layout{grid-template-columns:1fr}}
 
-.canvas-wrapper{position:relative;background-color:var(--checker-2);background-image:linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);background-size:20px 20px;background-position:0 0,10px 10px;border-radius:14px;overflow:hidden;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;min-height:500px;position:relative}
-.canvas-wrapper canvas{max-width:100%;max-height:70vh;display:block;position:relative;z-index:1;touch-action:none}
+.canvas-scroll-container{
+  overflow:auto;
+  max-height:70vh;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  padding:20px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  position:relative;
+}
+
+.canvas-wrapper{
+  position:relative;
+  background-color:var(--checker-2);
+  background-image:
+    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),
+    linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%);
+  background-size:20px 20px;
+  background-position:0 0,10px 10px;
+  border-radius:8px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
+  display:inline-block;
+  line-height:0;
+  flex-shrink:0;
+}
+
+.canvas-wrapper canvas{
+  display:block;
+  transform-origin:top left;
+  image-rendering:auto;
+  touch-action:none;
+}
+
 .canvas-wrapper.brush-active canvas{cursor:none}
 
-/* Brush cursor */
-.brush-cursor{position:absolute;pointer-events:none;border:2px solid white;border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,0.8),inset 0 0 0 1px rgba(0,0,0,0.3);z-index:10;display:none;transform:translate(-50%,-50%);mix-blend-mode:difference}
+.brush-cursor{
+  position:absolute;
+  pointer-events:none;
+  border:2px solid #fff;
+  border-radius:50%;
+  box-shadow:0 0 0 1px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(0,0,0,0.5);
+  z-index:10;
+  display:none;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+}
 
-/* Side Panel */
+/* Side panel */
 .side-panel{display:flex;flex-direction:column;gap:14px}
 .tool-section{background:var(--bg);border-radius:12px;padding:16px;border:1px solid var(--border)}
 .tool-section h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .tool-section h4 i{color:var(--primary)}
 
-/* Brush buttons */
 .brush-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .brush-btn{padding:10px 8px;border:2px solid var(--border);border-radius:10px;background:var(--card);cursor:pointer;font-family:inherit;font-size:11.5px;font-weight:600;transition:0.2s;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text)}
 .brush-btn:hover{border-color:var(--primary);color:var(--primary)}
 .brush-btn.active{border-color:var(--primary);background:rgba(99,102,241,0.1);color:var(--primary)}
 .brush-btn i{font-size:14px}
 
-/* Slider */
 .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .slider-row label{font-size:11.5px;font-weight:600;min-width:85px}
 .slider-row input[type="range"]{flex:1;height:6px;-webkit-appearance:none;background:var(--border);border-radius:3px;cursor:pointer}
 .slider-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--primary);border-radius:50%;box-shadow:0 2px 6px rgba(99,102,241,0.5)}
 .slider-row .value{font-size:11px;font-weight:700;color:var(--primary);min-width:42px;text-align:right;font-family:monospace}
+
+/* Zoom controls */
+.zoom-controls{display:flex;gap:6px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:6px}
+.zoom-btn{background:transparent;border:none;color:var(--text);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:0.2s}
+.zoom-btn:hover{background:rgba(99,102,241,0.1);color:var(--primary)}
+.zoom-level{font-size:11.5px;font-weight:700;color:var(--primary);font-family:monospace;min-width:48px;text-align:center}
 
 /* BG swatches */
 .bg-swatches{display:flex;gap:8px;flex-wrap:wrap}
@@ -112,8 +149,6 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .bg-swatch.active{border-color:var(--primary);border-width:3px;box-shadow:0 0 0 3px rgba(99,102,241,0.2)}
 .bg-swatch.transparent{background:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:12px 12px;background-position:0 0,6px 6px;background-color:#fff}
 .bg-swatch.white{background:#fff}.bg-swatch.black{background:#000}.bg-swatch.blue{background:#2563eb}.bg-swatch.red{background:#dc2626}.bg-swatch.green{background:#16a34a}.bg-swatch.gray{background:#6b7280}.bg-swatch.gradient{background:linear-gradient(135deg,#6366f1,#ec4899)}
-
-/* Custom color */
 .bg-custom-wrapper{position:relative}
 .bg-custom-wrapper input[type="color"]{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
 .bg-custom-wrapper .bg-swatch{display:flex;align-items:center;justify-content:center;color:white;font-size:14px;background:linear-gradient(135deg,#6366f1,#ec4899)}
@@ -172,14 +207,14 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <header class="top-header">
   <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
-  <div class="badge"><i class="fas fa-bolt"></i> AI-Powered • 100% Client-Side</div>
+  <div class="badge"><i class="fas fa-bolt"></i> AI-Powered • Fast Brush • Zoom</div>
   <h1>🎨 AI Background Remover</h1>
-  <p>Ek click mein background remove karein. AI model browser mein chalta hai — koi upload nahi, complete privacy.</p>
+  <p>Ek click mein background remove karein. Fast brush se refine karein. Zoom karke bariki se kaam karein.</p>
 </header>
 
 <div class="main-container">
 
-  <!-- Upload Card -->
+  <!-- Upload -->
   <div class="card" id="uploadCard">
     <div class="upload-section">
       <div class="dropzone" id="dropzone">
@@ -199,17 +234,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Editor Card -->
+  <!-- Editor -->
   <div class="card" id="editorCard" style="display:none">
     <div class="card-header">
       <h2><i class="fas fa-magic"></i> Background Editor
         <span class="status-badge ready" id="statusBadge"><i class="fas fa-check-circle"></i> Ready</span>
       </h2>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-outline btn-sm" onclick="undo()" id="undoBtn" disabled title="Undo last brush stroke">
+        <button class="btn btn-outline btn-sm" onclick="undo()" id="undoBtn" disabled>
           <i class="fas fa-undo"></i> Undo
         </button>
-        <button class="btn btn-outline btn-sm" onclick="reRunAI()" id="rerunBtn" title="Re-run AI from scratch">
+        <button class="btn btn-outline btn-sm" onclick="reRunAI()">
           <i class="fas fa-sync-alt"></i> Re-run AI
         </button>
         <button class="btn btn-outline btn-sm" onclick="resetAll()">
@@ -219,18 +254,37 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
 
     <div class="editor-layout">
-      <!-- Canvas -->
       <div>
-        <div class="canvas-wrapper" id="canvasWrapper">
-          <canvas id="editCanvas"></canvas>
-          <div class="brush-cursor" id="brushCursor"></div>
+        <div class="canvas-scroll-container" id="canvasScrollContainer">
+          <div class="canvas-wrapper" id="canvasWrapper">
+            <canvas id="editCanvas"></canvas>
+            <div class="brush-cursor" id="brushCursor"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Side Panel -->
       <div class="side-panel">
 
-        <!-- Brush Tools -->
+        <!-- Zoom -->
+        <div class="tool-section">
+          <h4><i class="fas fa-search"></i> Zoom & Pan</h4>
+          <div class="zoom-controls" style="justify-content:center;width:100%">
+            <button class="zoom-btn" onclick="zoomOut()" title="Zoom Out"><i class="fas fa-minus"></i></button>
+            <span class="zoom-level" id="zoomLevel">100%</span>
+            <button class="zoom-btn" onclick="zoomIn()" title="Zoom In"><i class="fas fa-plus"></i></button>
+            <button class="zoom-btn" onclick="fitToScreen()" title="Fit to Screen" style="width:auto;padding:0 10px;font-size:11px;font-weight:600">
+              <i class="fas fa-expand"></i>
+            </button>
+            <button class="zoom-btn" onclick="resetZoom()" title="Reset 100%" style="width:auto;padding:0 10px;font-size:11px;font-weight:600">
+              1:1
+            </button>
+          </div>
+          <p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:10px">
+            <i class="fas fa-info-circle"></i> Zoom karke bariki se background hataayein. Pan ke liye scroll karein.
+          </p>
+        </div>
+
+        <!-- Brush -->
         <div class="tool-section">
           <h4><i class="fas fa-paint-brush"></i> Brush Tools</h4>
           <div class="brush-buttons">
@@ -246,27 +300,27 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
           </div>
           <div class="slider-row" style="margin-top:12px">
             <label>Brush Size</label>
-            <input type="range" id="brushSize" min="5" max="200" value="40" oninput="updateBrushSize()">
-            <span class="value" id="brushSizeVal">40</span>
+            <input type="range" id="brushSize" min="5" max="300" value="50" oninput="updateBrushSize()">
+            <span class="value" id="brushSizeVal">50</span>
           </div>
-          <p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:8px">
-            <strong>Eraser:</strong> Background hataayein · <strong>Restore:</strong> Subject wapas laayein
+          <p style="font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:6px">
+            <strong>Eraser:</strong> Background hataayein · <strong>Restore:</strong> AI result wapas laayein
           </p>
         </div>
 
-        <!-- Background Color -->
+        <!-- BG Color -->
         <div class="tool-section">
           <h4><i class="fas fa-fill-drip"></i> Background Color</h4>
           <div class="bg-swatches">
-            <div class="bg-swatch transparent active" title="Transparent" onclick="setBg('transparent', this)"></div>
-            <div class="bg-swatch white" title="White" onclick="setBg('#ffffff', this)"></div>
-            <div class="bg-swatch black" title="Black" onclick="setBg('#000000', this)"></div>
-            <div class="bg-swatch blue" title="Blue" onclick="setBg('#2563eb', this)"></div>
-            <div class="bg-swatch red" title="Red" onclick="setBg('#dc2626', this)"></div>
-            <div class="bg-swatch green" title="Green" onclick="setBg('#16a34a', this)"></div>
-            <div class="bg-swatch gray" title="Gray" onclick="setBg('#6b7280', this)"></div>
-            <div class="bg-swatch gradient" title="Gradient" onclick="setBg('gradient', this)"></div>
-            <div class="bg-custom-wrapper" title="Custom Color">
+            <div class="bg-swatch transparent active" onclick="setBg('transparent', this)"></div>
+            <div class="bg-swatch white" onclick="setBg('#ffffff', this)"></div>
+            <div class="bg-swatch black" onclick="setBg('#000000', this)"></div>
+            <div class="bg-swatch blue" onclick="setBg('#2563eb', this)"></div>
+            <div class="bg-swatch red" onclick="setBg('#dc2626', this)"></div>
+            <div class="bg-swatch green" onclick="setBg('#16a34a', this)"></div>
+            <div class="bg-swatch gray" onclick="setBg('#6b7280', this)"></div>
+            <div class="bg-swatch gradient" onclick="setBg('gradient', this)"></div>
+            <div class="bg-custom-wrapper">
               <div class="bg-swatch"><i class="fas fa-eye-dropper"></i></div>
               <input type="color" id="customColorInput" value="#6366f1" onchange="setBg(this.value, document.querySelector('.bg-custom-wrapper .bg-swatch'))">
             </div>
@@ -275,36 +329,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 
         <!-- Export -->
         <div class="export-grid">
-          <button class="export-btn" onclick="download('png')">
-            <i class="fas fa-file-image"></i> PNG
-          </button>
-          <button class="export-btn" onclick="download('jpeg')">
-            <i class="fas fa-file-image"></i> JPG
-          </button>
-          <button class="export-btn" onclick="download('webp')">
-            <i class="fas fa-file-image"></i> WebP
-          </button>
-          <button class="export-btn" onclick="copyToClipboard()">
-            <i class="fas fa-copy"></i> Copy
-          </button>
+          <button class="export-btn" onclick="download('png')"><i class="fas fa-file-image"></i> PNG</button>
+          <button class="export-btn" onclick="download('jpeg')"><i class="fas fa-file-image"></i> JPG</button>
+          <button class="export-btn" onclick="download('webp')"><i class="fas fa-file-image"></i> WebP</button>
+          <button class="export-btn" onclick="copyToClipboard()"><i class="fas fa-copy"></i> Copy</button>
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- Info -->
   <div class="info-box">
     <i class="fas fa-shield-alt info-icon"></i>
     <div class="info-content">
       <h4>🔒 100% Private & Free</h4>
-      <p>Sab kuch aapke browser mein hota hai. Image kabhi server par upload nahi hoti. Pehli baar ~40MB AI model download hoga, uske baad instant.</p>
+      <p>Sab kuch aapke browser mein hota hai. Image kabhi upload nahi hoti. Pehli baar ~40MB AI model download hoga.</p>
     </div>
   </div>
 
 </div>
 
-<!-- Processing Overlay -->
 <div class="processing-overlay" id="processingOverlay">
   <div class="processing-box">
     <div class="spinner"></div>
@@ -313,37 +357,28 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="progress-bar-wrapper"><div class="progress-bar-fill" id="progressFill"></div></div>
     <div class="progress-text" id="progressText">0%</div>
     <div class="processing-hint" id="processingHint">
-      <i class="fas fa-info-circle"></i>
-      Pehli baar use karne par ~40MB AI model download hoga. Ye sirf ek baar hota hai.
+      <i class="fas fa-info-circle"></i> Pehli baar use karne par ~40MB model download hoga.
     </div>
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">
   <i class="fas fa-check-circle"></i>
   <span id="toastMsg">Success</span>
 </div>
 
-<!-- ============================================================
-     AI LIBRARY (ES Module)
-     ============================================================ -->
 <script type="module">
   import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm";
   window.removeBackgroundAI = removeBackground;
   window.dispatchEvent(new Event('ai-ready'));
 </script>
 
-<!-- ============================================================
-     MAIN LOGIC
-     ============================================================ -->
 <script>
 /* ============================================================
    THEME
    ============================================================ */
 function toggleTheme(){
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
   document.querySelector('.theme-toggle i').className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
@@ -357,17 +392,18 @@ if(localStorage.getItem('theme') === 'light'){
    STATE
    ============================================================ */
 let originalFile = null;
-let sourceImage = null;
-let aiResultImageData = null;   // ImageData from AI result (RGB channels)
-let workingAlpha = null;        // Uint8ClampedArray of alpha per pixel
-let editorCanvas = null;
-let editorCtx = null;
+let sourceCanvas = null;      // original image canvas
+let aiResultCanvas = null;    // AI result canvas (never modified)
+let editCanvas = null;        // visible canvas - brush modifies this
+let editCtx = null;
+let canvasWrapper = null;
 let currentBg = 'transparent';
 let brushMode = 'none';
 let isDrawing = false;
-let lastBrushPoint = null;
-let undoStack = [];             // For undo functionality
-let cursorCanvasBounds = null;
+let lastPoint = null;
+let zoom = 1;
+let undoStack = [];
+const MAX_UNDO = 8;
 
 /* ============================================================
    TOAST
@@ -387,16 +423,12 @@ function showToast(msg, type = 'success'){
 }
 
 /* ============================================================
-   STATUS BADGE
+   STATUS
    ============================================================ */
 function setStatus(status, text){
   const badge = document.getElementById('statusBadge');
   badge.className = 'status-badge ' + status;
-  const icons = {
-    loading: 'fas fa-spinner fa-spin',
-    ready: 'fas fa-check-circle',
-    processing: 'fas fa-cog fa-spin'
-  };
+  const icons = { loading: 'fas fa-spinner fa-spin', ready: 'fas fa-check-circle', processing: 'fas fa-cog fa-spin' };
   badge.innerHTML = `<i class="${icons[status] || 'fas fa-check-circle'}"></i> ${text}`;
 }
 
@@ -457,10 +489,7 @@ document.addEventListener('paste', e => {
 
 async function pasteFromClipboard(){
   try {
-    if(!navigator.clipboard || !navigator.clipboard.read){
-      showToast('Ctrl+V dabayein paste ke liye', 'info');
-      return;
-    }
+    if(!navigator.clipboard || !navigator.clipboard.read){ showToast('Ctrl+V dabayein', 'info'); return; }
     const items = await navigator.clipboard.read();
     for(const item of items){
       for(const type of item.types){
@@ -473,24 +502,21 @@ async function pasteFromClipboard(){
     }
     showToast('Clipboard mein image nahi hai', 'error');
   } catch(err){
-    showToast('Ctrl+V dabayein paste ke liye', 'info');
+    showToast('Ctrl+V dabayein', 'info');
   }
 }
 
 /* ============================================================
-   MAIN PROCESS
+   PROCESS FILE — Load + Downscale if too large
    ============================================================ */
 async function processFile(file){
   if(!file.type.startsWith('image/')){ showToast('Image select karein', 'error'); return; }
-  if(file.size > 30 * 1024 * 1024){ showToast('Image 30MB se choti honi chahiye', 'error'); return; }
+  if(file.size > 30 * 1024 * 1024){ showToast('Max 30MB', 'error'); return; }
 
-  // Show loading state
   showProcessing(true, 'Loading Image...', 'Please wait...', '');
   setStatus('loading', 'Loading');
-
   originalFile = file;
 
-  // Load image
   const dataURL = await new Promise((res, rej) => {
     const r = new FileReader();
     r.onload = e => res(e.target.result);
@@ -505,19 +531,34 @@ async function processFile(file){
     i.src = dataURL;
   });
 
-  sourceImage = img;
+  // Downscale if too large (for performance)
+  const MAX_DIM = 2500;
+  let finalW = img.naturalWidth, finalH = img.naturalHeight;
+  if(finalW > MAX_DIM || finalH > MAX_DIM){
+    const scale = MAX_DIM / Math.max(finalW, finalH);
+    finalW = Math.round(finalW * scale);
+    finalH = Math.round(finalH * scale);
+    showToast(`Image downscaled to ${finalW}×${finalH} for performance`, 'info');
+  }
+
+  sourceCanvas = document.createElement('canvas');
+  sourceCanvas.width = finalW;
+  sourceCanvas.height = finalH;
+  const sCtx = sourceCanvas.getContext('2d');
+  sCtx.imageSmoothingQuality = 'high';
+  sCtx.drawImage(img, 0, 0, finalW, finalH);
 
   // Setup editor canvas
-  editorCanvas = document.getElementById('editCanvas');
-  editorCanvas.width = img.naturalWidth;
-  editorCanvas.height = img.naturalHeight;
-  editorCtx = editorCanvas.getContext('2d', { willReadFrequently: true });
+  editCanvas = document.getElementById('editCanvas');
+  editCanvas.width = finalW;
+  editCanvas.height = finalH;
+  editCtx = editCanvas.getContext('2d');
+  canvasWrapper = document.getElementById('canvasWrapper');
 
   // Show editor
   document.getElementById('uploadCard').style.display = 'none';
   document.getElementById('editorCard').style.display = 'block';
 
-  // Init events
   initCanvasEvents();
   updateBrushSize();
 
@@ -529,26 +570,24 @@ async function processFile(file){
    AI PROCESSING
    ============================================================ */
 async function runAI(){
-  // Wait for AI library
   if(!window.removeBackgroundAI){
     showProcessing(true, 'Loading AI Library...', 'Ek second...', '');
     await new Promise(res => window.addEventListener('ai-ready', res, { once: true }));
   }
 
-  setStatus('processing', 'Removing Background');
-  showProcessing(true, 'Removing Background...', 'AI aapki image analyze kar raha hai...',
-    '<i class="fas fa-info-circle"></i> Pehli baar 40MB model download hoga (~30 seconds). Uske baad 3-5 seconds.'
+  setStatus('processing', 'Processing');
+  showProcessing(true, 'Removing Background...', 'AI image analyze kar raha hai...',
+    '<i class="fas fa-info-circle"></i> Pehli baar ~40MB model download hoga. Uske baad 3-5 seconds.'
   );
 
   try {
     const blob = await window.removeBackgroundAI(originalFile, {
       progress: (key, current, total) => {
-        const percent = total > 0 ? Math.round((current / total) * 100) : 0;
-        updateProgress(percent);
-
+        const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+        updateProgress(pct);
         if(key.includes('fetch') || key.includes('download')){
           document.getElementById('processingTitle').textContent = 'Downloading AI Model...';
-          document.getElementById('processingMsg').textContent = `File: ${key.split('/').pop()} — ${percent}%`;
+          document.getElementById('processingMsg').textContent = `${key.split('/').pop()} — ${pct}%`;
           document.getElementById('processingHint').innerHTML = '<i class="fas fa-download"></i> Pehli baar ~40MB download ho raha hai. Please wait...';
         } else if(key.includes('compute') || key.includes('inference')){
           document.getElementById('processingTitle').textContent = 'Removing Background...';
@@ -559,7 +598,7 @@ async function runAI(){
       output: { format: 'image/png', quality: 1.0 }
     });
 
-    // Convert to ImageData
+    // Load result image
     const resultURL = URL.createObjectURL(blob);
     const resultImg = await new Promise((res, rej) => {
       const i = new Image();
@@ -568,24 +607,25 @@ async function runAI(){
       i.src = resultURL;
     });
 
-    // Draw to canvas at original size
-    editorCtx.clearRect(0, 0, editorCanvas.width, editorCanvas.height);
-    editorCtx.drawImage(resultImg, 0, 0, editorCanvas.width, editorCanvas.height);
-
-    // Extract ImageData (RGB) and alpha
-    aiResultImageData = editorCtx.getImageData(0, 0, editorCanvas.width, editorCanvas.height);
-    workingAlpha = new Uint8ClampedArray(editorCanvas.width * editorCanvas.height);
-    for(let i = 0; i < workingAlpha.length; i++){
-      workingAlpha[i] = aiResultImageData.data[i * 4 + 3];
-    }
+    // Create aiResultCanvas (permanent, never modified)
+    aiResultCanvas = document.createElement('canvas');
+    aiResultCanvas.width = sourceCanvas.width;
+    aiResultCanvas.height = sourceCanvas.height;
+    const arCtx = aiResultCanvas.getContext('2d');
+    arCtx.drawImage(resultImg, 0, 0, aiResultCanvas.width, aiResultCanvas.height);
 
     URL.revokeObjectURL(resultURL);
 
-    // Reset undo stack
-    undoStack = [];
+    // Copy to edit canvas
+    editCtx.clearRect(0, 0, editCanvas.width, editCanvas.height);
+    editCtx.drawImage(aiResultCanvas, 0, 0);
 
-    // Apply current background
-    applyBackground();
+    // Reset undo
+    undoStack = [];
+    document.getElementById('undoBtn').disabled = true;
+
+    // Fit to screen
+    setTimeout(fitToScreen, 100);
 
     showProcessing(false);
     setStatus('ready', 'Ready');
@@ -595,7 +635,7 @@ async function runAI(){
     console.error('AI error:', err);
     showProcessing(false);
     setStatus('ready', 'Error');
-    showToast('Error: ' + (err.message || 'Failed to process'), 'error');
+    showToast('Error: ' + (err.message || 'Failed'), 'error');
   }
 }
 
@@ -606,25 +646,30 @@ async function reRunAI(){
 }
 
 /* ============================================================
-   RENDER — Builds canvas from aiResultImageData + workingAlpha
+   ZOOM & PAN
    ============================================================ */
-function render(){
-  if(!aiResultImageData || !workingAlpha) return;
+function applyZoom(){
+  if(!editCanvas || !canvasWrapper) return;
+  editCanvas.style.transform = `scale(${zoom})`;
+  canvasWrapper.style.width = (editCanvas.width * zoom) + 'px';
+  canvasWrapper.style.height = (editCanvas.height * zoom) + 'px';
+  document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
+}
 
-  const W = editorCanvas.width;
-  const H = editorCanvas.height;
-  const out = new ImageData(W, H);
-  const src = aiResultImageData.data;
+function zoomIn(){ zoom = Math.min(8, zoom * 1.25); applyZoom(); }
+function zoomOut(){ zoom = Math.max(0.1, zoom / 1.25); applyZoom(); }
+function resetZoom(){ zoom = 1; applyZoom(); }
 
-  for(let i = 0; i < W * H; i++){
-    const idx = i * 4;
-    out.data[idx] = src[idx];
-    out.data[idx + 1] = src[idx + 1];
-    out.data[idx + 2] = src[idx + 2];
-    out.data[idx + 3] = workingAlpha[i];
-  }
-
-  editorCtx.putImageData(out, 0, 0);
+function fitToScreen(){
+  if(!editCanvas) return;
+  const container = document.getElementById('canvasScrollContainer');
+  const padding = 40;
+  const availW = container.clientWidth - padding;
+  const availH = window.innerHeight * 0.7 - padding;
+  const scaleX = availW / editCanvas.width;
+  const scaleY = availH / editCanvas.height;
+  zoom = Math.min(scaleX, scaleY, 1); // Don't upscale above 100%
+  applyZoom();
 }
 
 /* ============================================================
@@ -634,205 +679,201 @@ function setBg(bg, swatch){
   currentBg = bg;
   document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
   if(swatch) swatch.classList.add('active');
-  applyBackground();
-}
 
-function applyBackground(){
-  const wrapper = document.getElementById('canvasWrapper');
-
-  if(currentBg === 'transparent'){
-    wrapper.style.backgroundColor = '';
-    wrapper.style.backgroundImage = '';
-  } else if(currentBg === 'gradient'){
-    wrapper.style.backgroundColor = '';
-    wrapper.style.backgroundImage = 'linear-gradient(135deg,#6366f1,#ec4899)';
+  if(bg === 'transparent'){
+    canvasWrapper.style.backgroundColor = '';
+    canvasWrapper.style.backgroundImage = `linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%),linear-gradient(45deg,var(--checker-1) 25%,transparent 25%,transparent 75%,var(--checker-1) 75%)`;
+    canvasWrapper.style.backgroundSize = '20px 20px';
+    canvasWrapper.style.backgroundPosition = '0 0,10px 10px';
+  } else if(bg === 'gradient'){
+    canvasWrapper.style.backgroundImage = 'linear-gradient(135deg,#6366f1,#ec4899)';
+    canvasWrapper.style.backgroundColor = '';
   } else {
-    wrapper.style.backgroundImage = 'none';
-    wrapper.style.backgroundColor = currentBg;
+    canvasWrapper.style.backgroundImage = 'none';
+    canvasWrapper.style.backgroundColor = bg;
   }
 }
 
 /* ============================================================
-   BRUSH
+   BRUSH — FAST with composite ops
    ============================================================ */
 function setBrush(mode, btn){
   brushMode = mode;
   document.querySelectorAll('.brush-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
 
-  const wrapper = document.getElementById('canvasWrapper');
-  const cursor = document.getElementById('brushCursor');
-
   if(mode === 'none'){
-    wrapper.classList.remove('brush-active');
-    cursor.style.display = 'none';
+    canvasWrapper.classList.remove('brush-active');
+    document.getElementById('brushCursor').style.display = 'none';
   } else {
-    wrapper.classList.add('brush-active');
+    canvasWrapper.classList.add('brush-active');
   }
 }
 
 function updateBrushSize(){
-  const size = document.getElementById('brushSize').value;
+  const size = parseInt(document.getElementById('brushSize').value);
   document.getElementById('brushSizeVal').textContent = size;
   const cursor = document.getElementById('brushCursor');
-  cursor.style.width = size + 'px';
-  cursor.style.height = size + 'px';
+  const visualSize = size * zoom;
+  cursor.style.width = visualSize + 'px';
+  cursor.style.height = visualSize + 'px';
 }
 
 function initCanvasEvents(){
-  // Mouse events
-  editorCanvas.addEventListener('mousedown', e => {
+  // Mouse
+  editCanvas.addEventListener('mousedown', e => {
     if(brushMode === 'none') return;
     e.preventDefault();
+    saveUndo();
     isDrawing = true;
-    // Save state for undo (only once per stroke)
-    saveUndoState();
-    lastBrushPoint = getCanvasPoint(e);
-    applyBrushAt(lastBrushPoint.x, lastBrushPoint.y);
+    lastPoint = getCanvasPoint(e);
+    drawBrushDot(lastPoint.x, lastPoint.y);
   });
 
-  editorCanvas.addEventListener('mousemove', e => {
-    // Brush cursor follow
-    updateBrushCursor(e);
-
+  editCanvas.addEventListener('mousemove', e => {
+    updateCursor(e);
     if(!isDrawing || brushMode === 'none') return;
-    const point = getCanvasPoint(e);
-    if(lastBrushPoint){
-      // Interpolate between last and current point for smooth strokes
-      interpolateBrush(lastBrushPoint, point);
-    }
-    lastBrushPoint = point;
+    const pt = getCanvasPoint(e);
+    if(lastPoint) drawBrushSegment(lastPoint, pt);
+    lastPoint = pt;
   });
 
-  editorCanvas.addEventListener('mouseup', () => {
-    isDrawing = false;
-    lastBrushPoint = null;
-  });
-  editorCanvas.addEventListener('mouseleave', () => {
-    isDrawing = false;
-    lastBrushPoint = null;
+  editCanvas.addEventListener('mouseup', () => { isDrawing = false; lastPoint = null; });
+  editCanvas.addEventListener('mouseleave', () => {
+    isDrawing = false; lastPoint = null;
     document.getElementById('brushCursor').style.display = 'none';
   });
-  editorCanvas.addEventListener('mouseenter', () => {
-    if(brushMode !== 'none'){
-      document.getElementById('brushCursor').style.display = 'block';
-    }
+  editCanvas.addEventListener('mouseenter', () => {
+    if(brushMode !== 'none') document.getElementById('brushCursor').style.display = 'block';
   });
 
   // Touch
-  editorCanvas.addEventListener('touchstart', e => {
+  editCanvas.addEventListener('touchstart', e => {
     if(brushMode === 'none') return;
     e.preventDefault();
+    saveUndo();
     isDrawing = true;
-    saveUndoState();
-    const t = e.touches[0];
-    lastBrushPoint = getCanvasPoint(t);
-    applyBrushAt(lastBrushPoint.x, lastBrushPoint.y);
+    lastPoint = getCanvasPoint(e.touches[0]);
+    drawBrushDot(lastPoint.x, lastPoint.y);
   }, { passive: false });
 
-  editorCanvas.addEventListener('touchmove', e => {
+  editCanvas.addEventListener('touchmove', e => {
     if(!isDrawing || brushMode === 'none') return;
     e.preventDefault();
-    const t = e.touches[0];
-    const point = getCanvasPoint(t);
-    if(lastBrushPoint){
-      interpolateBrush(lastBrushPoint, point);
-    }
-    lastBrushPoint = point;
+    const pt = getCanvasPoint(e.touches[0]);
+    if(lastPoint) drawBrushSegment(lastPoint, pt);
+    lastPoint = pt;
   }, { passive: false });
 
-  editorCanvas.addEventListener('touchend', () => {
-    isDrawing = false;
-    lastBrushPoint = null;
-  });
+  editCanvas.addEventListener('touchend', () => { isDrawing = false; lastPoint = null; });
+
+  // Wheel zoom with Ctrl
+  document.getElementById('canvasScrollContainer').addEventListener('wheel', e => {
+    if(e.ctrlKey || e.metaKey){
+      e.preventDefault();
+      zoom = Math.max(0.1, Math.min(8, zoom + (e.deltaY > 0 ? -0.1 : 0.1)));
+      applyZoom();
+    }
+  }, { passive: false });
 }
 
-function updateBrushCursor(e){
+function updateCursor(e){
   if(brushMode === 'none') return;
   const cursor = document.getElementById('brushCursor');
-  const wrapper = document.getElementById('canvasWrapper');
-  const wrapperRect = wrapper.getBoundingClientRect();
-  const size = parseInt(document.getElementById('brushSize').value);
-
+  const wrapperRect = canvasWrapper.getBoundingClientRect();
+  const visualSize = parseInt(document.getElementById('brushSize').value) * zoom;
   cursor.style.display = 'block';
-  cursor.style.width = size + 'px';
-  cursor.style.height = size + 'px';
+  cursor.style.width = visualSize + 'px';
+  cursor.style.height = visualSize + 'px';
   cursor.style.left = (e.clientX - wrapperRect.left) + 'px';
   cursor.style.top = (e.clientY - wrapperRect.top) + 'px';
 }
 
 function getCanvasPoint(e){
-  const rect = editorCanvas.getBoundingClientRect();
-  const scaleX = editorCanvas.width / rect.width;
-  const scaleY = editorCanvas.height / rect.height;
+  const rect = editCanvas.getBoundingClientRect();
   return {
-    x: (e.clientX - rect.left) * scaleX,
-    y: (e.clientY - rect.top) * scaleY
+    x: (e.clientX - rect.left) / rect.width * editCanvas.width,
+    y: (e.clientY - rect.top) / rect.height * editCanvas.height
   };
 }
 
-function interpolateBrush(p1, p2){
+/**
+ * Erase dot — uses destination-out composite (GPU accelerated)
+ */
+function drawBrushDot(x, y){
+  const size = parseInt(document.getElementById('brushSize').value);
+  const radius = size / 2;
+
+  editCtx.save();
+  if(brushMode === 'erase'){
+    editCtx.globalCompositeOperation = 'destination-out';
+  } else {
+    editCtx.globalCompositeOperation = 'source-over';
+  }
+
+  // Soft radial gradient for edge feathering
+  const gradient = editCtx.createRadialGradient(x, y, radius * 0.4, x, y, radius);
+  gradient.addColorStop(0, 'rgba(0,0,0,1)');
+  gradient.addColorStop(0.7, 'rgba(0,0,0,0.85)');
+  gradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+  editCtx.beginPath();
+  editCtx.arc(x, y, radius, 0, Math.PI * 2);
+
+  if(brushMode === 'erase'){
+    editCtx.fillStyle = gradient;
+    editCtx.fill();
+  } else {
+    // Restore: clip to circle, draw AI result
+    editCtx.clip();
+    editCtx.drawImage(aiResultCanvas, 0, 0);
+  }
+  editCtx.restore();
+}
+
+/**
+ * Brush segment — interpolate between two points
+ */
+function drawBrushSegment(p1, p2){
+  const size = parseInt(document.getElementById('brushSize').value);
   const dx = p2.x - p1.x;
   const dy = p2.y - p1.y;
   const dist = Math.sqrt(dx * dx + dy * dy);
-  const size = parseInt(document.getElementById('brushSize').value);
-  const step = Math.max(1, size / 4);
+  const step = Math.max(1, size / 8);
   const steps = Math.ceil(dist / step);
+
+  if(steps <= 1){
+    drawBrushDot(p2.x, p2.y);
+    return;
+  }
 
   for(let i = 1; i <= steps; i++){
     const t = i / steps;
-    applyBrushAt(p1.x + dx * t, p1.y + dy * t);
+    drawBrushDot(p1.x + dx * t, p1.y + dy * t);
   }
-}
-
-function applyBrushAt(x, y){
-  const W = editorCanvas.width;
-  const H = editorCanvas.height;
-  const size = parseInt(document.getElementById('brushSize').value);
-  const radius = size / 2;
-  const radiusSq = radius * radius;
-
-  const startX = Math.max(0, Math.floor(x - radius));
-  const endX = Math.min(W, Math.ceil(x + radius));
-  const startY = Math.max(0, Math.floor(y - radius));
-  const endY = Math.min(H, Math.ceil(y + radius));
-
-  for(let py = startY; py < endY; py++){
-    for(let px = startX; px < endX; px++){
-      const dx = px - x;
-      const dy = py - y;
-      const distSq = dx * dx + dy * dy;
-      if(distSq <= radiusSq){
-        const idx = py * W + px;
-        const falloff = 1 - Math.sqrt(distSq) / radius;
-        if(brushMode === 'erase'){
-          workingAlpha[idx] = Math.max(0, workingAlpha[idx] - falloff * 255);
-        } else if(brushMode === 'restore'){
-          workingAlpha[idx] = Math.min(255, workingAlpha[idx] + falloff * 255);
-        }
-      }
-    }
-  }
-
-  render();
 }
 
 /* ============================================================
-   UNDO
+   UNDO — store canvas snapshots as blobs (memory-efficient)
    ============================================================ */
-function saveUndoState(){
-  // Save max 20 states
-  if(undoStack.length >= 20) undoStack.shift();
-  undoStack.push(new Uint8ClampedArray(workingAlpha));
-  document.getElementById('undoBtn').disabled = false;
+function saveUndo(){
+  // Save as image bitmap for memory efficiency
+  try {
+    const snapshot = editCtx.getImageData(0, 0, editCanvas.width, editCanvas.height);
+    if(undoStack.length >= MAX_UNDO) undoStack.shift();
+    undoStack.push(snapshot);
+    document.getElementById('undoBtn').disabled = false;
+  } catch(e) {
+    console.warn('Undo save failed:', e);
+  }
 }
 
 function undo(){
   if(undoStack.length === 0) return;
-  workingAlpha = undoStack.pop();
-  render();
+  const snapshot = undoStack.pop();
+  editCtx.putImageData(snapshot, 0, 0);
   document.getElementById('undoBtn').disabled = undoStack.length === 0;
-  showToast('Undo ho gaya', 'info');
+  showToast('Undo', 'info');
 }
 
 /* ============================================================
@@ -840,11 +881,10 @@ function undo(){
    ============================================================ */
 async function generateFinalImage(format){
   const canvas = document.createElement('canvas');
-  canvas.width = editorCanvas.width;
-  canvas.height = editorCanvas.height;
+  canvas.width = editCanvas.width;
+  canvas.height = editCanvas.height;
   const ctx = canvas.getContext('2d');
 
-  // Fill background if needed
   if(format !== 'png' || currentBg !== 'transparent'){
     if(currentBg === 'gradient'){
       const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -859,7 +899,7 @@ async function generateFinalImage(format){
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
-  ctx.drawImage(editorCanvas, 0, 0);
+  ctx.drawImage(editCanvas, 0, 0);
 
   return new Promise((res, rej) => {
     canvas.toBlob(blob => blob ? res(blob) : rej(new Error('Blob fail')), 'image/' + format, 0.95);
@@ -888,9 +928,9 @@ async function copyToClipboard(){
     const blob = await generateFinalImage('png');
     if(navigator.clipboard && window.ClipboardItem){
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      showToast('✅ Copied to clipboard!');
+      showToast('✅ Copied!');
     } else {
-      showToast('Copy support nahi hai — download karein', 'error');
+      showToast('Copy support nahi hai', 'error');
     }
   } catch(err){
     showToast('Copy fail: ' + err.message, 'error');
@@ -902,11 +942,11 @@ async function copyToClipboard(){
    ============================================================ */
 function resetAll(){
   originalFile = null;
-  sourceImage = null;
-  aiResultImageData = null;
-  workingAlpha = null;
+  sourceCanvas = null;
+  aiResultCanvas = null;
   undoStack = [];
   currentBg = 'transparent';
+  zoom = 1;
 
   document.getElementById('uploadCard').style.display = 'block';
   document.getElementById('editorCard').style.display = 'none';
@@ -930,11 +970,10 @@ window.addEventListener('ai-ready', () => {
   showToast('✅ AI ready! Image upload karein.', 'success');
 });
 
-setTimeout(() => {
-  if(!window.removeBackgroundAI){
-    showToast('AI library load ho rahi hai...', 'info');
-  }
-}, 1000);
+// Resize handler
+window.addEventListener('resize', () => {
+  // No auto action - user can click Fit button
+});
 </script>
 
 </body>
