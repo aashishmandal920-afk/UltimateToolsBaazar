@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Resume Maker Pro — With Crop Studio</title>
+<title>Ultimate Resume Maker Pro — MS Office Style Studio</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -115,8 +115,16 @@
 /* ============================================================
    RESET & BASE
    ============================================================ */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-*::before, *::after { box-sizing: border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
 html {
     font-size: 16px;
@@ -137,14 +145,33 @@ body {
     transition: background 0.25s, color 0.25s;
 }
 
-[data-theme="light"] body {
+body[data-theme="light"] {
     background: #f3f2f1;
     color: #323130;
 }
 
-button { font-family: inherit; font-size: inherit; border: none; background: none; cursor: pointer; color: inherit; }
-input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
-input:focus, textarea:focus, select:focus { outline: none; }
+button {
+    font-family: inherit;
+    font-size: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: inherit;
+}
+
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
 
 /* ============================================================
    THEME VARIABLES
@@ -152,12 +179,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
 :root {
     --resume-primary: #2563eb;
     --resume-primary-rgb: 37, 99, 235;
+    --resume-accent: #f59e0b;
     --resume-font: 'Inter', sans-serif;
     --resume-heading-font: 'Inter', sans-serif;
     --resume-font-size: 13.5px;
     --resume-text-color: #333333;
-    --resume-line-height: 1.5;
+    --resume-bg-color: #ffffff;
     --resume-padding: 35px;
+    --resume-line-height: 1.5;
 
     --ribbon-bg: #23262b;
     --ribbon-tab-active: #1a1c20;
@@ -233,11 +262,13 @@ input:focus, textarea:focus, select:focus { outline: none; }
     background: linear-gradient(135deg, var(--ribbon-accent), #7c3aed);
     border-radius: 6px;
     box-shadow: 0 2px 8px rgba(var(--ribbon-accent-rgb), 0.4);
+    flex-shrink: 0;
 }
 
 .custom-logo svg {
     width: 16px;
     height: 16px;
+    color: white;
     stroke: white;
 }
 
@@ -246,13 +277,15 @@ input:focus, textarea:focus, select:focus { outline: none; }
     font-weight: 500;
     color: var(--ribbon-text-muted);
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.3s, color 0.3s;
     padding: 2px 8px;
     border-radius: 10px;
     background: rgba(0,0,0,0.05);
 }
 
-.saving-indicator.show { opacity: 1; }
+.saving-indicator.show {
+    opacity: 1;
+}
 
 .quick-access-toolbar {
     display: flex;
@@ -272,17 +305,41 @@ input:focus, textarea:focus, select:focus { outline: none; }
     display: flex;
     align-items: center;
     gap: 5px;
-    transition: background 0.15s;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
     white-space: nowrap;
     height: 30px;
 }
 
-.qat-btn > i { font-size: 12px; }
-.qat-btn:hover { background: var(--ribbon-hover); border-color: var(--ribbon-border); }
-.qat-btn:active { transform: scale(0.96); }
-.qat-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.qat-btn:disabled:hover { background: transparent; border-color: transparent; }
-.qat-btn.active { background: var(--ribbon-accent); color: white; border-color: var(--ribbon-accent); }
+.qat-btn > i {
+    font-size: 12px;
+}
+
+.qat-btn:hover {
+    background: var(--ribbon-hover);
+    border-color: var(--ribbon-border);
+}
+
+.qat-btn:active {
+    transform: scale(0.96);
+}
+
+.qat-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.qat-btn:disabled:hover {
+    background: transparent;
+    border-color: transparent;
+}
+
+.qat-btn.active {
+    background: var(--ribbon-accent);
+    color: white;
+    border-color: var(--ribbon-accent);
+}
 
 .qat-divider {
     width: 1px;
@@ -291,7 +348,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     margin: 0 4px;
 }
 
-/* Ribbon Tabs */
+/* ============================================================
+   RIBBON TABS
+   ============================================================ */
 .ribbon-tabs {
     display: flex;
     padding: 0 12px;
@@ -301,16 +360,20 @@ input:focus, textarea:focus, select:focus { outline: none; }
     scrollbar-width: none;
 }
 
-.ribbon-tabs::-webkit-scrollbar { display: none; }
+.ribbon-tabs::-webkit-scrollbar {
+    display: none;
+}
 
 .ribbon-tab {
     padding: 8px 18px;
     background: transparent;
+    border: none;
     color: var(--ribbon-text);
+    font-family: inherit;
     font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, color 0.15s;
     position: relative;
     white-space: nowrap;
     border-radius: 4px 4px 0 0;
@@ -320,13 +383,25 @@ input:focus, textarea:focus, select:focus { outline: none; }
     height: 36px;
 }
 
-.ribbon-tab > i { font-size: 12px; }
-.ribbon-tab:hover { background: var(--ribbon-hover); }
-.ribbon-tab.active { background: var(--ribbon-tab-active); color: var(--ribbon-accent); }
+.ribbon-tab > i {
+    font-size: 12px;
+}
+
+.ribbon-tab:hover {
+    background: var(--ribbon-hover);
+}
+
+.ribbon-tab.active {
+    background: var(--ribbon-tab-active);
+    color: var(--ribbon-accent);
+}
+
 .ribbon-tab.active::after {
     content: '';
     position: absolute;
-    left: 8px; right: 8px; bottom: -1px;
+    left: 8px;
+    right: 8px;
+    bottom: -1px;
     height: 3px;
     background: var(--ribbon-accent);
     border-radius: 2px 2px 0 0;
@@ -342,8 +417,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
     border-bottom: 1px solid var(--ribbon-border);
 }
 
-.ribbon-panels::-webkit-scrollbar { height: 6px; }
-.ribbon-panels::-webkit-scrollbar-thumb { background: var(--ribbon-border); border-radius: 3px; }
+.ribbon-panels::-webkit-scrollbar {
+    height: 6px;
+}
+
+.ribbon-panels::-webkit-scrollbar-thumb {
+    background: var(--ribbon-border);
+    border-radius: 3px;
+}
 
 .ribbon-panel {
     display: none;
@@ -352,7 +433,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     min-width: max-content;
 }
 
-.ribbon-panel.active { display: flex; }
+.ribbon-panel.active {
+    display: flex;
+}
 
 .ribbon-group {
     display: flex;
@@ -367,7 +450,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .ribbon-group:not(:last-child)::after {
     content: '';
     position: absolute;
-    right: 0; top: 8px; bottom: 8px;
+    right: 0;
+    top: 8px;
+    bottom: 8px;
     width: 1px;
     background: var(--ribbon-border);
     opacity: 0.6;
@@ -377,6 +462,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     font-size: 10.5px;
     color: var(--ribbon-text-muted);
     font-weight: 500;
+    letter-spacing: 0.3px;
     margin-top: auto;
     padding-top: 4px;
     white-space: nowrap;
@@ -388,6 +474,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 4px;
     flex-wrap: wrap;
     justify-content: center;
+    align-content: center;
     flex: 1;
 }
 
@@ -398,6 +485,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     padding: 6px 8px;
     border-radius: 3px;
     cursor: pointer;
+    font-family: inherit;
     font-size: 11.5px;
     display: flex;
     flex-direction: column;
@@ -406,17 +494,37 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 3px;
     min-width: 46px;
     min-height: 52px;
-    transition: background 0.15s;
+    transition: background 0.15s, border-color 0.15s;
     text-align: center;
     line-height: 1.15;
 }
 
-.ribbon-btn > i { font-size: 16px; }
-.ribbon-btn > span { font-size: 11px; white-space: nowrap; max-width: 70px; overflow: hidden; text-overflow: ellipsis; }
-.ribbon-btn:hover { background: var(--ribbon-hover); border-color: var(--ribbon-border); }
-.ribbon-btn:active { transform: scale(0.95); }
-.ribbon-btn.active { background: var(--ribbon-accent); color: white; border-color: var(--ribbon-accent); }
-.ribbon-btn.active > i, .ribbon-btn.active > span { color: white; }
+.ribbon-btn > i {
+    font-size: 16px;
+}
+
+.ribbon-btn > span {
+    font-size: 11px;
+    white-space: nowrap;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ribbon-btn:hover {
+    background: var(--ribbon-hover);
+    border-color: var(--ribbon-border);
+}
+
+.ribbon-btn:active {
+    transform: scale(0.95);
+}
+
+.ribbon-btn.active {
+    background: var(--ribbon-accent);
+    color: white;
+    border-color: var(--ribbon-accent);
+}
 
 .ribbon-btn-sm {
     flex-direction: row;
@@ -427,13 +535,16 @@ input:focus, textarea:focus, select:focus { outline: none; }
     font-size: 12px;
 }
 
-.ribbon-btn-sm > i { font-size: 12px; }
+.ribbon-btn-sm > i {
+    font-size: 12px;
+}
 
 .ribbon-select {
     padding: 5px 8px;
     background: var(--office-panel);
     border: 1px solid var(--ribbon-border);
     color: var(--ribbon-text);
+    font-family: inherit;
     font-size: 12px;
     border-radius: 3px;
     cursor: pointer;
@@ -442,18 +553,27 @@ input:focus, textarea:focus, select:focus { outline: none; }
     height: 30px;
 }
 
-.ribbon-select:focus { outline: 2px solid var(--ribbon-accent); outline-offset: -1px; }
+.ribbon-select:focus {
+    outline: 2px solid var(--ribbon-accent);
+    outline-offset: -1px;
+}
 
 .ribbon-input {
     padding: 5px 8px;
     background: var(--office-panel);
     border: 1px solid var(--ribbon-border);
     color: var(--ribbon-text);
+    font-family: inherit;
     font-size: 12px;
     border-radius: 3px;
     height: 30px;
     min-width: 50px;
     max-width: 90px;
+}
+
+.ribbon-input:focus {
+    outline: 2px solid var(--ribbon-accent);
+    outline-offset: -1px;
 }
 
 .ribbon-color {
@@ -481,6 +601,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     justify-content: space-between;
     align-items: center;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .ribbon-slider-group > label > span {
@@ -493,6 +614,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     width: 100%;
     height: 4px;
     -webkit-appearance: none;
+    appearance: none;
     background: var(--ribbon-border);
     border-radius: 2px;
     outline: none;
@@ -501,6 +623,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
 .ribbon-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
+    appearance: none;
     width: 14px;
     height: 14px;
     background: var(--ribbon-accent);
@@ -510,6 +633,15 @@ input:focus, textarea:focus, select:focus { outline: none; }
     box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
 
+.ribbon-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--ribbon-accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
 /* ============================================================
    MAIN APP LAYOUT
    ============================================================ */
@@ -517,8 +649,12 @@ input:focus, textarea:focus, select:focus { outline: none; }
     display: flex;
     height: calc(100vh - 210px);
     overflow: hidden;
+    position: relative;
 }
 
+/* ============================================================
+   LEFT PANEL — FORM
+   ============================================================ */
 .resume-form-panel {
     width: 420px;
     background: var(--office-panel);
@@ -530,8 +666,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
     scrollbar-width: thin;
 }
 
-.resume-form-panel::-webkit-scrollbar { width: 8px; }
-.resume-form-panel::-webkit-scrollbar-thumb { background: var(--ribbon-border); border-radius: 4px; }
+.resume-form-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.resume-form-panel::-webkit-scrollbar-thumb {
+    background: var(--ribbon-border);
+    border-radius: 4px;
+}
 
 .form-header {
     padding: 15px 20px;
@@ -547,6 +689,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
 .form-header h2 {
     font-size: 15px;
+    margin: 0;
     color: var(--ribbon-accent);
     font-weight: 700;
     display: flex;
@@ -557,18 +700,28 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .btn-sm {
     font-size: 11px;
     padding: 6px 12px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
     font-weight: 600;
+    transition: background 0.2s, transform 0.1s;
     display: inline-flex;
     align-items: center;
     gap: 5px;
 }
 
-.btn-danger { background: #ef4444; color: white; }
-.btn-danger:hover { background: #dc2626; }
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
 
-.accordion-item { border-bottom: 1px solid var(--office-border); }
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.accordion-item {
+    border-bottom: 1px solid var(--office-border);
+}
 
 .accordion-header {
     padding: 14px 20px;
@@ -579,17 +732,44 @@ input:focus, textarea:focus, select:focus { outline: none; }
     align-items: center;
     font-weight: 600;
     font-size: 13px;
+    transition: background 0.2s;
     user-select: none;
     color: var(--office-text);
 }
 
-.accordion-header > span { display: flex; align-items: center; gap: 10px; }
-.accordion-header > span > i { color: var(--ribbon-accent); width: 16px; text-align: center; }
-.accordion-header:hover { background: rgba(0,0,0,0.05); }
-[data-theme="dark"] .accordion-header { background: rgba(255,255,255,0.02); }
-[data-theme="dark"] .accordion-header:hover { background: rgba(255,255,255,0.06); }
-.accordion-header i.chev { transition: transform 0.3s; font-size: 12px; color: var(--ribbon-text-muted); }
-.accordion-header.active i.chev { transform: rotate(180deg); }
+.accordion-header > span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.accordion-header > span > i {
+    color: var(--ribbon-accent);
+    width: 16px;
+    text-align: center;
+}
+
+.accordion-header:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] .accordion-header {
+    background: rgba(255,255,255,0.02);
+}
+
+[data-theme="dark"] .accordion-header:hover {
+    background: rgba(255,255,255,0.06);
+}
+
+.accordion-header i.chev {
+    transition: transform 0.3s;
+    font-size: 12px;
+    color: var(--ribbon-text-muted);
+}
+
+.accordion-header.active i.chev {
+    transform: rotate(180deg);
+}
 
 .accordion-content {
     padding: 20px;
@@ -597,9 +777,13 @@ input:focus, textarea:focus, select:focus { outline: none; }
     background: var(--office-panel);
 }
 
-.accordion-content.active { display: block; }
+.accordion-content.active {
+    display: block;
+}
 
-.form-group { margin-bottom: 14px; }
+.form-group {
+    margin-bottom: 14px;
+}
 
 .form-group label {
     display: block;
@@ -620,20 +804,34 @@ input:focus, textarea:focus, select:focus { outline: none; }
     border-radius: 6px;
     background: var(--office-bg);
     color: var(--office-text);
+    font-family: inherit;
     font-size: 13px;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
+    outline: none;
     border-color: var(--ribbon-accent);
     box-shadow: 0 0 0 3px rgba(var(--ribbon-accent-rgb), 0.15);
 }
 
-.form-group textarea { resize: vertical; min-height: 70px; }
+.form-group textarea {
+    resize: vertical;
+    min-height: 70px;
+    font-family: inherit;
+    line-height: 1.5;
+}
 
-.form-row { display: flex; gap: 10px; }
-.form-row .form-group { flex: 1; min-width: 0; }
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 0;
+}
 
 .dynamic-item {
     background: rgba(0,0,0,0.02);
@@ -644,11 +842,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
     position: relative;
 }
 
-[data-theme="dark"] .dynamic-item { background: rgba(255,255,255,0.02); }
+[data-theme="dark"] .dynamic-item {
+    background: rgba(255,255,255,0.02);
+}
 
 .dynamic-item .remove-btn {
     position: absolute;
-    top: 8px; right: 10px;
+    top: 8px;
+    right: 10px;
     color: #ef4444;
     cursor: pointer;
     font-size: 13px;
@@ -656,7 +857,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     border-radius: 4px;
 }
 
-.dynamic-item .remove-btn:hover { background: rgba(239,68,68,0.15); }
+.dynamic-item .remove-btn:hover {
+    background: rgba(239,68,68,0.15);
+}
 
 .add-btn {
     width: 100%;
@@ -674,10 +877,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 6px;
 }
 
-.add-btn:hover { background: var(--ribbon-accent); color: white; border-style: solid; }
+.add-btn:hover {
+    background: var(--ribbon-accent);
+    color: white;
+    border-style: solid;
+}
 
 /* ============================================================
-   RIGHT PANEL
+   RIGHT PANEL — PREVIEW
    ============================================================ */
 .resume-preview-panel {
     flex: 1;
@@ -687,7 +894,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     overflow: hidden;
 }
 
-[data-theme="light"] .resume-preview-panel { background: #e5e5e5; }
+[data-theme="light"] .resume-preview-panel {
+    background: #e5e5e5;
+}
 
 .preview-scroll-area {
     flex: 1;
@@ -698,8 +907,15 @@ input:focus, textarea:focus, select:focus { outline: none; }
     align-items: flex-start;
 }
 
-.preview-scroll-area::-webkit-scrollbar { width: 12px; height: 12px; }
-.preview-scroll-area::-webkit-scrollbar-thumb { background: #555; border-radius: 6px; }
+.preview-scroll-area::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.preview-scroll-area::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 6px;
+}
 
 /* ============================================================
    A4 PAGE
@@ -747,7 +963,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     background-size: 15px 15px;
 }
 
-.a4-page.bg-gradient { background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%); }
+.a4-page.bg-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+}
 
 .a4-page.bg-subtle-lines {
     background-color: #ffffff;
@@ -777,6 +995,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     position: relative;
 }
 
+/* ============================================================
+   PHOTO CONTAINER — CLEAN VERSION
+   ============================================================ */
 .header-photo-container {
     flex-shrink: 0;
     background: #f0f0f0;
@@ -784,16 +1005,19 @@ input:focus, textarea:focus, select:focus { outline: none; }
     cursor: default;
     overflow: hidden;
     transition: box-shadow 0.2s;
+    /* Width, height, border, shape applied inline */
 }
 
 .header-photo-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: 50% 50%;
     display: block;
     user-select: none;
     -webkit-user-drag: none;
     pointer-events: none;
+    /* object-position, transform, filter applied inline */
 }
 
 .header-photo-container.photo-edit-mode {
@@ -818,36 +1042,135 @@ input:focus, textarea:focus, select:focus { outline: none; }
     font-weight: 600;
 }
 
-/* Shapes */
+/* ============================================================
+   PHOTO SHAPES
+   ============================================================ */
 .shape-circle { border-radius: 50%; }
 .shape-square { border-radius: 0; }
 .shape-rounded { border-radius: 16px; }
 .shape-rounded-lg { border-radius: 24px; }
 .shape-rounded-xl { border-radius: 32px; }
-.shape-ellipse { border-radius: 50%; }
-.shape-hexagon { border-radius: 0; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
-.shape-hexagon-flat { border-radius: 0; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
-.shape-octagon { border-radius: 0; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
-.shape-diamond { border-radius: 0; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
-.shape-pentagon { border-radius: 0; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
-.shape-heptagon { border-radius: 0; clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%); }
-.shape-triangle { border-radius: 0; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
-.shape-triangle-down { border-radius: 0; clip-path: polygon(0% 0%, 100% 0%, 50% 100%); }
-.shape-star { border-radius: 0; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
-.shape-star-6 { border-radius: 0; clip-path: polygon(50% 0%, 61% 26%, 93% 25%, 68% 50%, 93% 75%, 61% 74%, 50% 100%, 39% 74%, 7% 75%, 32% 50%, 7% 25%, 39% 26%); }
-.shape-heart { border-radius: 0; clip-path: path('M 50 88 C 20 65 5 45 5 30 C 5 15 15 5 30 5 C 40 5 47 12 50 20 C 53 12 60 5 70 5 C 85 5 95 15 95 30 C 95 45 80 65 50 88 Z'); }
-.shape-shield { border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); }
-.shape-frame { border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%); }
-.shape-arch { border-radius: 50% 50% 0 0 / 60% 60% 0 0; }
-.shape-arch-down { border-radius: 0 0 50% 50% / 0 0 60% 60%; }
-.shape-blob { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-.shape-blob-2 { border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%; }
-.shape-blob-3 { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
-.shape-blob-4 { border-radius: 67% 33% 47% 53% / 37% 20% 80% 63%; }
-.shape-blob-5 { border-radius: 25% 75% 35% 65% / 55% 35% 65% 45%; }
-.shape-blob-6 { border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%; }
 
-.header-info { flex: 1; min-width: 0; }
+.shape-ellipse {
+    border-radius: 50%;
+}
+.shape-ellipse-v {
+    border-radius: 50%;
+}
+
+.shape-hexagon {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.shape-hexagon-flat {
+    border-radius: 0;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.shape-octagon {
+    border-radius: 0;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+.shape-diamond {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.shape-pentagon {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+}
+
+.shape-heptagon {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+}
+
+.shape-triangle {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.shape-triangle-down {
+    border-radius: 0;
+    clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+}
+
+.shape-star {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.shape-star-6 {
+    border-radius: 0;
+    clip-path: polygon(50% 0%, 61% 26%, 93% 25%, 68% 50%, 93% 75%, 61% 74%, 50% 100%, 39% 74%, 7% 75%, 32% 50%, 7% 25%, 39% 26%);
+}
+
+.shape-heart {
+    border-radius: 0;
+    clip-path: path('M 50 88 C 20 65 5 45 5 30 C 5 15 15 5 30 5 C 40 5 47 12 50 20 C 53 12 60 5 70 5 C 85 5 95 15 95 30 C 95 45 80 65 50 88 Z');
+}
+
+.shape-shield {
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+}
+
+.shape-frame {
+    border-radius: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%);
+}
+
+.shape-arch {
+    border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+}
+
+.shape-arch-down {
+    border-radius: 0 0 50% 50% / 0 0 60% 60%;
+}
+
+.shape-blob {
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+}
+
+.shape-blob-2 {
+    border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+}
+
+.shape-blob-3 {
+    border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
+}
+
+.shape-blob-4 {
+    border-radius: 67% 33% 47% 53% / 37% 20% 80% 63%;
+}
+
+.shape-blob-5 {
+    border-radius: 25% 75% 35% 65% / 55% 35% 65% 45%;
+}
+
+.shape-blob-6 {
+    border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
+}
+
+.shape-diamond-rounded {
+    border-radius: 20px;
+    transform: rotate(45deg);
+}
+
+.shape-diamond-rounded img {
+    transform: rotate(-45deg);
+}
+
+/* ============================================================
+   RESUME HEADER TEXT
+   ============================================================ */
+.header-info {
+    flex: 1;
+    min-width: 0;
+}
 
 .resume-header h1 {
     font-size: 32px;
@@ -877,13 +1200,26 @@ input:focus, textarea:focus, select:focus { outline: none; }
     color: #666666;
 }
 
-.resume-header .contact-info > span { display: flex; align-items: center; gap: 5px; }
-.resume-header .contact-info > span > i { color: var(--resume-primary); font-size: 11px; width: 12px; text-align: center; }
+.resume-header .contact-info > span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.resume-header .contact-info > span > i {
+    color: var(--resume-primary);
+    font-size: 11px;
+    width: 12px;
+    text-align: center;
+}
 
 /* ============================================================
    SECTIONS
    ============================================================ */
-.resume-section { margin-bottom: 18px; position: relative; }
+.resume-section {
+    margin-bottom: 18px;
+    position: relative;
+}
 
 .resume-section h2 {
     font-size: 14px;
@@ -900,10 +1236,17 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 8px;
 }
 
-.resume-section h2 > i { font-size: 13px; }
+.resume-section h2 > i {
+    font-size: 13px;
+}
 
-.resume-item { margin-bottom: 14px; }
-.resume-item:last-child { margin-bottom: 0; }
+.resume-item {
+    margin-bottom: 14px;
+}
+
+.resume-item:last-child {
+    margin-bottom: 0;
+}
 
 .resume-item-header {
     display: flex;
@@ -913,14 +1256,52 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 10px;
 }
 
-.resume-item-header h3 { font-size: 13.5px; margin: 0; font-weight: 700; color: #222222; }
-.resume-item-header .date { font-size: 11.5px; color: #666666; font-style: italic; white-space: nowrap; }
-.resume-item-sub { font-size: 12.5px; font-weight: 600; color: #444444; margin-bottom: 4px; font-style: italic; }
-.resume-item p { font-size: 12.5px; margin: 0 0 4px 0; color: #555555; line-height: 1.5; }
-.resume-item ul { margin: 4px 0 0 0; padding-left: 18px; font-size: 12.5px; color: #555555; }
-.resume-item ul li { margin-bottom: 3px; line-height: 1.5; }
+.resume-item-header h3 {
+    font-size: 13.5px;
+    margin: 0;
+    font-weight: 700;
+    color: #222222;
+}
 
-.skills-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.resume-item-header .date {
+    font-size: 11.5px;
+    color: #666666;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.resume-item-sub {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #444444;
+    margin-bottom: 4px;
+    font-style: italic;
+}
+
+.resume-item p {
+    font-size: 12.5px;
+    margin: 0 0 4px 0;
+    color: #555555;
+    line-height: 1.5;
+}
+
+.resume-item ul {
+    margin: 4px 0 0 0;
+    padding-left: 18px;
+    font-size: 12.5px;
+    color: #555555;
+}
+
+.resume-item ul li {
+    margin-bottom: 3px;
+    line-height: 1.5;
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
 
 .skill-tag {
     background: rgba(var(--resume-primary-rgb), 0.1);
@@ -932,39 +1313,96 @@ input:focus, textarea:focus, select:focus { outline: none; }
     border: 1px solid rgba(var(--resume-primary-rgb), 0.2);
 }
 
-.skill-bar-item { margin-bottom: 10px; }
-.skill-bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; font-weight: 600; }
-.skill-bar-track { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
-.skill-bar-fill { height: 100%; background: var(--resume-primary); border-radius: 3px; }
+.skill-bar-item {
+    margin-bottom: 10px;
+}
 
-.lang-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12.5px; }
+.skill-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.skill-bar-track {
+    height: 6px;
+    background: #e5e7eb;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.skill-bar-fill {
+    height: 100%;
+    background: var(--resume-primary);
+    border-radius: 3px;
+}
+
+.lang-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+}
+
 .lang-name { font-weight: 600; }
 .lang-level { color: #666666; font-style: italic; font-size: 11.5px; }
 
 /* ============================================================
    LAYOUTS
    ============================================================ */
-.layout-modern .resume-header { border-bottom: 2px solid var(--resume-primary); }
-.layout-modern .resume-header h1 { color: var(--resume-primary); }
+.layout-modern .resume-header {
+    border-bottom: 2px solid var(--resume-primary);
+}
+
+.layout-modern .resume-header h1 {
+    color: var(--resume-primary);
+}
 
 .layout-classic .resume-header {
     text-align: left;
     border-bottom: 3px double #333333;
     justify-content: flex-start;
 }
-.layout-classic .resume-header h1 { color: #1a1a1a; }
-.layout-classic .resume-header .contact-info { justify-content: flex-start; }
+
+.layout-classic .resume-header h1 {
+    color: #1a1a1a;
+}
+
+.layout-classic .resume-header .contact-info {
+    justify-content: flex-start;
+}
+
 .layout-classic .resume-section h2 {
     color: #1a1a1a;
     border-bottom: 2px solid #1a1a1a;
     text-align: center;
     letter-spacing: 2px;
 }
-.layout-classic .skill-tag { background: transparent; color: #1a1a1a; border: 1px solid #1a1a1a; }
 
-.layout-minimal .resume-header { border-bottom: 1px solid #e5e5e5; text-align: left; }
-.layout-minimal .resume-header h1 { font-size: 36px; color: #111111; letter-spacing: -0.5px; font-weight: 300; }
-.layout-minimal .resume-header .contact-info { justify-content: flex-start; }
+.layout-classic .skill-tag {
+    background: transparent;
+    color: #1a1a1a;
+    border: 1px solid #1a1a1a;
+}
+
+.layout-minimal .resume-header {
+    border-bottom: 1px solid #e5e5e5;
+    text-align: left;
+}
+
+.layout-minimal .resume-header h1 {
+    font-size: 36px;
+    color: #111111;
+    letter-spacing: -0.5px;
+    font-weight: 300;
+}
+
+.layout-minimal .resume-header .contact-info {
+    justify-content: flex-start;
+}
+
 .layout-minimal .resume-section h2 {
     color: #111111;
     border-bottom: 1px solid #e5e5e5;
@@ -972,7 +1410,12 @@ input:focus, textarea:focus, select:focus { outline: none; }
     letter-spacing: 3px;
     font-size: 12px;
 }
-.layout-minimal .skill-tag { background: #f5f5f5; color: #333333; border: none; }
+
+.layout-minimal .skill-tag {
+    background: #f5f5f5;
+    color: #333333;
+    border: none;
+}
 
 .layout-executive .resume-header {
     text-align: center;
@@ -982,10 +1425,20 @@ input:focus, textarea:focus, select:focus { outline: none; }
     background: var(--resume-primary);
     color: white;
 }
-.layout-executive .resume-header h1 { color: white; letter-spacing: 3px; }
+
+.layout-executive .resume-header h1 {
+    color: white;
+    letter-spacing: 3px;
+}
+
 .layout-executive .resume-header .job-title,
-.layout-executive .resume-header .contact-info { color: rgba(255,255,255,0.9); }
-.layout-executive .resume-header .contact-info > span > i { color: white; }
+.layout-executive .resume-header .contact-info {
+    color: rgba(255,255,255,0.9);
+}
+
+.layout-executive .resume-header .contact-info > span > i {
+    color: white;
+}
 
 .layout-elegant .resume-header {
     text-align: center;
@@ -994,7 +1447,13 @@ input:focus, textarea:focus, select:focus { outline: none; }
     padding: 20px 0;
     margin-bottom: 25px;
 }
-.layout-elegant .resume-header h1 { color: #1a1a1a; letter-spacing: 4px; font-weight: 400; }
+
+.layout-elegant .resume-header h1 {
+    color: #1a1a1a;
+    letter-spacing: 4px;
+    font-weight: 400;
+}
+
 .layout-elegant .resume-section h2 {
     color: #c9a96a;
     border-bottom: 1px solid #c9a96a;
@@ -1010,7 +1469,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
     margin: -35px -35px 25px -35px;
     border-bottom: 6px solid var(--resume-primary);
 }
-.layout-bold .resume-header h1 { color: white; font-weight: 800; letter-spacing: 3px; font-size: 34px; }
+
+.layout-bold .resume-header h1 {
+    color: white;
+    font-weight: 800;
+    letter-spacing: 3px;
+    font-size: 34px;
+}
+
 .layout-bold .resume-header .job-title {
     color: var(--resume-primary);
     font-weight: 700;
@@ -1018,92 +1484,193 @@ input:focus, textarea:focus, select:focus { outline: none; }
     text-transform: uppercase;
     font-size: 12px;
 }
-.layout-bold .resume-header .contact-info { color: rgba(255,255,255,0.8); }
-.layout-bold .resume-header .contact-info > span > i { color: var(--resume-primary); }
-.layout-bold .resume-section h2 { color: #111111; border-bottom: 3px solid #111111; letter-spacing: 3px; font-weight: 800; }
 
-.layout-compact { padding: 22px; font-size: 12px; line-height: 1.35; }
-.layout-compact .resume-header { border-bottom: 1px solid #333333; padding-bottom: 10px; margin-bottom: 15px; }
-.layout-compact .resume-header h1 { font-size: 26px; letter-spacing: 1px; }
-.layout-compact .resume-section { margin-bottom: 12px; }
-.layout-compact .resume-section h2 { font-size: 12px; margin-bottom: 8px; padding-bottom: 3px; }
+.layout-bold .resume-header .contact-info {
+    color: rgba(255,255,255,0.8);
+}
 
-.layout-timeline .resume-header { text-align: left; border-bottom: 1px solid #dddddd; }
-.layout-timeline .resume-header .contact-info { justify-content: flex-start; }
-.layout-timeline .resume-section { position: relative; padding-left: 30px; }
+.layout-bold .resume-header .contact-info > span > i {
+    color: var(--resume-primary);
+}
+
+.layout-bold .resume-section h2 {
+    color: #111111;
+    border-bottom: 3px solid #111111;
+    letter-spacing: 3px;
+    font-weight: 800;
+}
+
+.layout-compact {
+    padding: 22px;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.layout-compact .resume-header {
+    border-bottom: 1px solid #333333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.layout-compact .resume-header h1 {
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+.layout-compact .resume-section {
+    margin-bottom: 12px;
+}
+
+.layout-compact .resume-section h2 {
+    font-size: 12px;
+    margin-bottom: 8px;
+    padding-bottom: 3px;
+}
+
+.layout-compact .resume-item {
+    margin-bottom: 10px;
+}
+
+.layout-timeline .resume-header {
+    text-align: left;
+    border-bottom: 1px solid #dddddd;
+}
+
+.layout-timeline .resume-header .contact-info {
+    justify-content: flex-start;
+}
+
+.layout-timeline .resume-section {
+    position: relative;
+    padding-left: 30px;
+}
+
 .layout-timeline .resume-section::before {
     content: '';
     position: absolute;
-    left: 8px; top: 25px; bottom: 0;
+    left: 8px;
+    top: 25px;
+    bottom: 0;
     width: 2px;
     background: var(--resume-primary);
     opacity: 0.3;
 }
+
 .layout-timeline .resume-section h2 {
     border-bottom: none;
     padding-bottom: 0;
     position: relative;
     margin-left: -22px;
 }
+
 .layout-timeline .resume-section h2::before {
     content: '';
     position: absolute;
-    left: 0; top: 5px;
-    width: 12px; height: 12px;
+    left: 0;
+    top: 5px;
+    width: 12px;
+    height: 12px;
     background: var(--resume-primary);
     border-radius: 50%;
     border: 3px solid white;
     box-shadow: 0 0 0 2px var(--resume-primary);
 }
+
 .layout-timeline .resume-item-header h3::before {
     content: '▸ ';
     color: var(--resume-primary);
     font-weight: bold;
+    margin-right: 2px;
 }
 
-.layout-twocolumn { display: grid; grid-template-columns: 1fr 32%; gap: 30px; padding: 35px 30px; }
+.layout-twocolumn {
+    display: grid;
+    grid-template-columns: 1fr 32%;
+    gap: 30px;
+    padding: 35px 30px;
+}
+
 .layout-twocolumn .resume-header {
     grid-column: 1 / -1;
     border-bottom: 2px solid var(--resume-primary);
     text-align: left;
     padding-bottom: 15px;
 }
-.layout-twocolumn .resume-header .contact-info { justify-content: flex-start; }
-.layout-twocolumn .main-column { grid-column: 1 / 2; }
+
+.layout-twocolumn .resume-header .contact-info {
+    justify-content: flex-start;
+}
+
+.layout-twocolumn .main-column {
+    grid-column: 1 / 2;
+}
+
 .layout-twocolumn .side-column {
     grid-column: 2 / 3;
     background: rgba(var(--resume-primary-rgb), 0.05);
     padding: 15px;
     border-radius: 8px;
 }
-.layout-twocolumn .side-column .resume-section h2 { font-size: 12px; letter-spacing: 1px; }
 
-.layout-creative { display: grid; grid-template-columns: 32% 1fr; padding: 0; gap: 0; }
-.layout-creative .resume-header { display: none; }
+.layout-twocolumn .side-column .resume-section h2 {
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.layout-creative {
+    display: grid;
+    grid-template-columns: 32% 1fr;
+    padding: 0;
+    gap: 0;
+}
+
+.layout-creative .resume-header {
+    display: none;
+}
+
 .layout-creative .resume-sidebar {
     background: var(--resume-primary);
     color: white;
     padding: 30px 20px;
     min-height: 297mm;
 }
-.layout-creative .resume-main { padding: 30px 25px; }
+
+.layout-creative .resume-main {
+    padding: 30px 25px;
+}
+
 .layout-creative .resume-sidebar h2 {
     color: white;
     border-bottom: 1px solid rgba(255,255,255,0.3);
     font-size: 12px;
     letter-spacing: 1.5px;
 }
+
 .layout-creative .resume-sidebar .resume-item,
 .layout-creative .resume-sidebar p,
-.layout-creative .resume-sidebar span { color: rgba(255,255,255,0.92); }
+.layout-creative .resume-sidebar span {
+    color: rgba(255,255,255,0.92);
+}
+
 .layout-creative .resume-sidebar .skill-tag {
     background: rgba(255,255,255,0.15);
     color: white;
     border: 1px solid rgba(255,255,255,0.3);
 }
-.layout-creative .resume-sidebar .skill-bar-track { background: rgba(255,255,255,0.2); }
-.layout-creative .resume-sidebar .skill-bar-fill { background: white; }
-.layout-creative .resume-main h2 { color: var(--resume-primary); border-bottom: 2px solid var(--resume-primary); }
+
+.layout-creative .resume-sidebar .skill-bar-track {
+    background: rgba(255,255,255,0.2);
+}
+
+.layout-creative .resume-sidebar .skill-bar-fill {
+    background: white;
+}
+
+.layout-creative .resume-main h2 {
+    color: var(--resume-primary);
+    border-bottom: 2px solid var(--resume-primary);
+}
+
 .layout-creative .sidebar-photo {
     margin: 0 auto 20px;
     border: 3px solid rgba(255,255,255,0.5);
@@ -1112,13 +1679,28 @@ input:focus, textarea:focus, select:focus { outline: none; }
     background: #f0f0f0;
     cursor: default;
 }
+
 .layout-creative .sidebar-photo img {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: 50% 50%;
     display: block;
     pointer-events: none;
 }
-.layout-creative .sidebar-name { font-size: 22px; font-weight: 700; margin-bottom: 5px; line-height: 1.2; }
+
+.layout-creative .sidebar-photo.photo-edit-mode {
+    box-shadow: 0 0 0 3px var(--ribbon-accent), 0 0 25px rgba(var(--ribbon-accent-rgb), 0.5);
+    cursor: move;
+}
+
+.layout-creative .sidebar-name {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
 .layout-creative .sidebar-title {
     font-size: 12px;
     opacity: 0.85;
@@ -1126,6 +1708,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
 .layout-creative .sidebar-contact {
     font-size: 11px;
     margin-bottom: 6px;
@@ -1134,9 +1717,19 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 8px;
     align-items: flex-start;
 }
-.layout-creative .sidebar-contact > i { margin-top: 3px; flex-shrink: 0; }
 
-.sortable-ghost { opacity: 0.4; background: rgba(var(--ribbon-accent-rgb), 0.1); }
+.layout-creative .sidebar-contact > i {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   SORTABLE
+   ============================================================ */
+.sortable-ghost {
+    opacity: 0.4;
+    background: rgba(var(--ribbon-accent-rgb), 0.1);
+}
 
 /* ============================================================
    PHOTO EDIT HINT
@@ -1159,10 +1752,12 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 8px;
 }
 
-.photo-edit-hint.active { display: flex; }
+.photo-edit-hint.active {
+    display: flex;
+}
 
 /* ============================================================
-   PICKER POPOVERS
+   PICKER POPOVER
    ============================================================ */
 .picker-popover {
     position: absolute;
@@ -1180,7 +1775,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     overflow-y: auto;
 }
 
-.picker-popover.show { display: block; }
+.picker-popover.show {
+    display: block;
+}
 
 .picker-popover-title {
     font-size: 11px;
@@ -1190,7 +1787,11 @@ input:focus, textarea:focus, select:focus { outline: none; }
     margin-bottom: 10px;
 }
 
-.shape-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.shape-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
 
 .shape-item {
     width: 100%;
@@ -1199,12 +1800,20 @@ input:focus, textarea:focus, select:focus { outline: none; }
     cursor: pointer;
     border: 2px solid transparent;
     border-radius: 6px;
-    transition: transform 0.15s;
+    transition: transform 0.15s, border-color 0.15s;
 }
 
-.shape-item:hover { border-color: var(--ribbon-accent); transform: scale(1.08); }
-.shape-item.active { border-color: var(--ribbon-accent); box-shadow: 0 0 0 3px rgba(var(--ribbon-accent-rgb), 0.25); }
+.shape-item:hover {
+    border-color: var(--ribbon-accent);
+    transform: scale(1.08);
+}
 
+.shape-item.active {
+    border-color: var(--ribbon-accent);
+    box-shadow: 0 0 0 3px rgba(var(--ribbon-accent-rgb), 0.25);
+}
+
+/* Shape item CSS previews */
 .shape-item.shape-circle { border-radius: 50%; }
 .shape-item.shape-square { border-radius: 0; }
 .shape-item.shape-rounded { border-radius: 8px; }
@@ -1234,7 +1843,11 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .shape-item.shape-blob-6 { border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%; }
 .shape-item.shape-heart { clip-path: path('M 50 88 C 20 65 5 45 5 30 C 5 15 15 5 30 5 C 40 5 47 12 50 20 C 53 12 60 5 70 5 C 85 5 95 15 95 30 C 95 45 80 65 50 88 Z'); }
 
-.border-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.border-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
 
 .border-item {
     padding: 10px 6px;
@@ -1254,8 +1867,16 @@ input:focus, textarea:focus, select:focus { outline: none; }
     gap: 3px;
 }
 
-.border-item:hover { border-color: var(--ribbon-accent); background: rgba(var(--ribbon-accent-rgb), 0.05); }
-.border-item.active { border-color: var(--ribbon-accent); background: rgba(var(--ribbon-accent-rgb), 0.1); color: var(--ribbon-accent); }
+.border-item:hover {
+    border-color: var(--ribbon-accent);
+    background: rgba(var(--ribbon-accent-rgb), 0.05);
+}
+
+.border-item.active {
+    border-color: var(--ribbon-accent);
+    background: rgba(var(--ribbon-accent-rgb), 0.1);
+    color: var(--ribbon-accent);
+}
 
 .border-preview {
     width: 100%;
@@ -1279,366 +1900,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .border-preview.none { border: none; background: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%); background-size: 6px 6px; }
 
 /* ============================================================
-   CROP MODAL — NEW!
-   ============================================================ */
-.crop-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    z-index: 2000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.crop-overlay.active { display: flex; }
-
-.crop-modal {
-    background: var(--office-panel);
-    border-radius: 16px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-    width: 100%;
-    max-width: 900px;
-    max-height: 95vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: cropPop 0.3s ease;
-}
-
-@keyframes cropPop {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-.crop-header {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--office-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.crop-header h2 {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--ribbon-accent);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.crop-close-btn {
-    background: transparent;
-    color: var(--ribbon-text-muted);
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-
-.crop-close-btn:hover {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-}
-
-.crop-body {
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-}
-
-/* --- Left: Canvas --- */
-.crop-canvas-area {
-    flex: 1;
-    min-width: 0;
-    background: #0f1015;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 30px;
-    position: relative;
-    overflow: hidden;
-}
-
-.crop-canvas-wrapper {
-    position: relative;
-    width: 400px;
-    height: 400px;
-    max-width: 100%;
-    max-height: 100%;
-    background: #1a1c20;
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: grab;
-    user-select: none;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-.crop-canvas-wrapper:active { cursor: grabbing; }
-
-.crop-canvas-wrapper.shape-circle { border-radius: 50%; }
-.crop-canvas-wrapper.shape-rounded { border-radius: 24px; }
-.crop-canvas-wrapper.shape-rounded-lg { border-radius: 40px; }
-.crop-canvas-wrapper.shape-hexagon { border-radius: 0; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
-.crop-canvas-wrapper.shape-octagon { border-radius: 0; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
-.crop-canvas-wrapper.shape-diamond { border-radius: 0; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
-.crop-canvas-wrapper.shape-star { border-radius: 0; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
-.crop-canvas-wrapper.shape-heart { border-radius: 0; clip-path: path('M 50 88 C 20 65 5 45 5 30 C 5 15 15 5 30 5 C 40 5 47 12 50 20 C 53 12 60 5 70 5 C 85 5 95 15 95 30 C 95 45 80 65 50 88 Z'); }
-.crop-canvas-wrapper.shape-shield { border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); }
-.crop-canvas-wrapper.shape-pentagon { border-radius: 0; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
-.crop-canvas-wrapper.shape-triangle { border-radius: 0; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
-.crop-canvas-wrapper.shape-blob { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-.crop-canvas-wrapper.shape-blob-2 { border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%; }
-.crop-canvas-wrapper.shape-blob-3 { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
-.crop-canvas-wrapper.shape-arch { border-radius: 50% 50% 0 0 / 60% 60% 0 0; }
-.crop-canvas-wrapper.shape-frame { border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%); }
-
-#cropCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.crop-grid-overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s;
-    z-index: 3;
-}
-
-.crop-canvas-wrapper:hover .crop-grid-overlay { opacity: 0.5; }
-
-.crop-grid-overlay::before,
-.crop-grid-overlay::after {
-    content: '';
-    position: absolute;
-    background: rgba(255,255,255,0.4);
-}
-
-.crop-grid-overlay::before {
-    left: 33.33%; top: 0; bottom: 0;
-    width: 1px;
-    box-shadow: 133px 0 0 rgba(255,255,255,0.4);
-}
-
-.crop-grid-overlay::after {
-    top: 33.33%; left: 0; right: 0;
-    height: 1px;
-    box-shadow: 0 133px 0 rgba(255,255,255,0.4);
-}
-
-/* --- Right: Controls --- */
-.crop-controls {
-    width: 340px;
-    flex-shrink: 0;
-    background: var(--office-panel);
-    border-left: 1px solid var(--office-border);
-    padding: 20px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.crop-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.crop-section-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--ribbon-text-muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 4px;
-}
-
-.crop-section-title i {
-    color: var(--ribbon-accent);
-    font-size: 12px;
-}
-
-.crop-slider-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.crop-slider-row label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--office-text);
-    display: flex;
-    justify-content: space-between;
-}
-
-.crop-slider-row label span {
-    color: var(--ribbon-accent);
-    font-family: 'Courier New', monospace;
-    font-weight: 700;
-}
-
-.crop-slider {
-    width: 100%;
-    height: 6px;
-    -webkit-appearance: none;
-    background: var(--office-border);
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
-}
-
-.crop-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    background: var(--ribbon-accent);
-    border-radius: 50%;
-    cursor: pointer;
-    border: 3px solid white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-}
-
-/* Shape selector inside crop */
-.crop-shape-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-}
-
-.crop-shape-btn {
-    width: 100%;
-    aspect-ratio: 1;
-    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-    cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 6px;
-    transition: transform 0.15s, border-color 0.15s;
-    position: relative;
-}
-
-.crop-shape-btn:hover {
-    border-color: var(--ribbon-accent);
-    transform: scale(1.1);
-}
-
-.crop-shape-btn.active {
-    border-color: var(--ribbon-accent);
-    box-shadow: 0 0 0 3px rgba(var(--ribbon-accent-rgb), 0.3);
-}
-
-.crop-shape-btn.shape-circle { border-radius: 50%; }
-.crop-shape-btn.shape-square { border-radius: 0; }
-.crop-shape-btn.shape-rounded { border-radius: 8px; }
-.crop-shape-btn.shape-rounded-lg { border-radius: 12px; }
-.crop-shape-btn.shape-hexagon { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
-.crop-shape-btn.shape-octagon { clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
-.crop-shape-btn.shape-diamond { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
-.crop-shape-btn.shape-star { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
-.crop-shape-btn.shape-heart { clip-path: path('M 50 88 C 20 65 5 45 5 30 C 5 15 15 5 30 5 C 40 5 47 12 50 20 C 53 12 60 5 70 5 C 85 5 95 15 95 30 C 95 45 80 65 50 88 Z'); }
-.crop-shape-btn.shape-shield { clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); }
-.crop-shape-btn.shape-pentagon { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
-.crop-shape-btn.shape-triangle { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
-.crop-shape-btn.shape-blob { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-.crop-shape-btn.shape-blob-2 { border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%; }
-.crop-shape-btn.shape-blob-3 { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
-.crop-shape-btn.shape-arch { border-radius: 50% 50% 0 0 / 60% 60% 0 0; }
-.crop-shape-btn.shape-frame { clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%); }
-
-/* Crop info box */
-.crop-info {
-    background: rgba(var(--ribbon-accent-rgb), 0.08);
-    border-left: 3px solid var(--ribbon-accent);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 11.5px;
-    color: var(--office-text);
-    line-height: 1.5;
-}
-
-.crop-info i {
-    color: var(--ribbon-accent);
-    margin-right: 4px;
-}
-
-/* Crop footer */
-.crop-footer {
-    padding: 14px 24px;
-    border-top: 1px solid var(--office-border);
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    background: var(--office-panel);
-    flex-shrink: 0;
-}
-
-.crop-btn {
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
-    border: none;
-    font-family: inherit;
-}
-
-.crop-btn-cancel {
-    background: var(--office-border);
-    color: var(--office-text);
-}
-
-.crop-btn-cancel:hover { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-
-.crop-btn-reset {
-    background: transparent;
-    color: var(--office-text);
-    border: 1px solid var(--office-border);
-}
-
-.crop-btn-reset:hover { border-color: var(--ribbon-accent); color: var(--ribbon-accent); }
-
-.crop-btn-confirm {
-    background: linear-gradient(135deg, var(--ribbon-accent), #7c3aed);
-    color: white;
-    box-shadow: 0 4px 14px rgba(var(--ribbon-accent-rgb), 0.4);
-}
-
-.crop-btn-confirm:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 22px rgba(var(--ribbon-accent-rgb), 0.5);
-}
-
-.crop-btn-confirm:active { transform: translateY(0); }
-
-@media (max-width: 768px) {
-    .crop-body { flex-direction: column; }
-    .crop-canvas-area { padding: 16px; min-height: 320px; }
-    .crop-canvas-wrapper { width: 280px; height: 280px; }
-    .crop-controls { width: 100%; border-left: none; border-top: 1px solid var(--office-border); }
-    .crop-shape-grid { grid-template-columns: repeat(6, 1fr); }
-}
-
-/* ============================================================
    TOAST
    ============================================================ */
 .toast {
@@ -1653,7 +1914,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     box-shadow: 0 12px 40px rgba(0,0,0,0.4);
     font-size: 13px;
     font-weight: 600;
-    z-index: 3000;
+    z-index: 1000;
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
     display: flex;
     align-items: center;
@@ -1663,7 +1924,11 @@ input:focus, textarea:focus, select:focus { outline: none; }
     pointer-events: none;
 }
 
-.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
 .toast.error { border-left-color: #ef4444; }
 .toast.error i { color: #ef4444; }
 .toast.info { border-left-color: #3b82f6; }
@@ -1679,8 +1944,10 @@ input:focus, textarea:focus, select:focus { outline: none; }
     .resume-preview-panel, .resume-preview-panel * { visibility: visible; }
     .resume-preview-panel {
         position: absolute;
-        left: 0; top: 0;
-        width: 100%; height: auto;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
         background: white;
         overflow: visible;
     }
@@ -1688,8 +1955,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     .resume-form-panel,
     .photo-edit-hint,
     .toast,
-    .picker-popover,
-    .crop-overlay {
+    .picker-popover {
         display: none !important;
     }
     .preview-scroll-area {
@@ -1712,7 +1978,10 @@ input:focus, textarea:focus, select:focus { outline: none; }
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1100px) {
-    .resume-app-container { flex-direction: column; height: auto; }
+    .resume-app-container {
+        flex-direction: column;
+        height: auto;
+    }
     .resume-form-panel {
         width: 100%;
         max-height: 500px;
@@ -1736,17 +2005,21 @@ input:focus, textarea:focus, select:focus { outline: none; }
     .ribbon-group { padding: 2px 6px; min-height: 60px; }
     .ribbon-group-label { font-size: 9.5px; }
     .form-row { flex-direction: column; gap: 0; }
+    .shape-grid { grid-template-columns: repeat(4, 1fr); }
+    .border-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
 <body>
 
 <!-- ============================================================
-     RIBBON
+     OFFICE RIBBON
      ============================================================ -->
 <div class="office-ribbon">
+
     <div class="ribbon-top">
         <div class="ribbon-title">
+            <!-- Custom Logo (SVG) - replaces MS Word icon -->
             <div class="custom-logo">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -1762,25 +2035,31 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
         <div class="quick-access-toolbar">
             <button class="qat-btn" onclick="undoAction()" id="qatUndo" title="Undo (Ctrl+Z)" disabled>
-                <i class="fas fa-undo"></i><span>Undo</span>
+                <i class="fas fa-undo"></i>
+                <span>Undo</span>
             </button>
             <button class="qat-btn" onclick="redoAction()" id="qatRedo" title="Redo (Ctrl+Y)" disabled>
-                <i class="fas fa-redo"></i><span>Redo</span>
+                <i class="fas fa-redo"></i>
+                <span>Redo</span>
             </button>
             <span class="qat-divider"></span>
-            <button class="qat-btn" onclick="window.print()" title="Save PDF">
-                <i class="fas fa-file-pdf"></i><span>Save PDF</span>
+            <button class="qat-btn" onclick="window.print()" title="Save PDF (Ctrl+P)">
+                <i class="fas fa-file-pdf"></i>
+                <span>Save PDF</span>
             </button>
-            <button class="qat-btn" onclick="exportJSON()" title="Export">
-                <i class="fas fa-download"></i><span>Export</span>
+            <button class="qat-btn" onclick="exportJSON()" title="Export Resume">
+                <i class="fas fa-download"></i>
+                <span>Export</span>
             </button>
-            <button class="qat-btn" onclick="document.getElementById('importFileInput').click()" title="Import">
-                <i class="fas fa-upload"></i><span>Import</span>
+            <button class="qat-btn" onclick="document.getElementById('importFileInput').click()" title="Import Resume">
+                <i class="fas fa-upload"></i>
+                <span>Import</span>
             </button>
             <input type="file" id="importFileInput" accept=".json" style="display:none;" onchange="importJSON(event)">
             <span class="qat-divider"></span>
             <button class="qat-btn" onclick="resetResume()" title="Reset">
-                <i class="fas fa-trash-alt"></i><span>Reset</span>
+                <i class="fas fa-trash-alt"></i>
+                <span>Reset</span>
             </button>
         </div>
     </div>
@@ -1811,24 +2090,32 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
     <div class="ribbon-panels">
 
-        <!-- HOME -->
+        <!-- ============ HOME TAB ============ -->
         <div class="ribbon-panel active" data-panel="home">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <select class="ribbon-select" id="ribbonFontFamily" onchange="changeFont(this.value)" style="min-width:160px;">
+                    <select class="ribbon-select" id="ribbonFontFamily" onchange="changeFont(this.value)" style="min-width:160px;" title="Font Family">
                         <option>Inter</option>
                     </select>
-                    <input type="number" class="ribbon-input" id="ribbonFontSize" min="8" max="32" step="0.5" value="13.5" onchange="changeFontSize(this.value + 'px')">
+                    <input type="number" class="ribbon-input" id="ribbonFontSize" min="8" max="32" step="0.5" value="13.5" onchange="changeFontSize(this.value + 'px')" style="min-width:55px;">
                 </div>
                 <div class="ribbon-group-label">Font</div>
             </div>
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="toggleTextStyle('bold')" id="btnBold"><i class="fas fa-bold"></i></button>
-                    <button class="ribbon-btn" onclick="toggleTextStyle('italic')" id="btnItalic"><i class="fas fa-italic"></i></button>
-                    <button class="ribbon-btn" onclick="toggleTextStyle('underline')" id="btnUnderline"><i class="fas fa-underline"></i></button>
-                    <button class="ribbon-btn" onclick="toggleTextStyle('uppercase')" id="btnUppercase"><i class="fas fa-font"></i></button>
+                    <button class="ribbon-btn" onclick="toggleTextStyle('bold')" id="btnBold" title="Bold">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button class="ribbon-btn" onclick="toggleTextStyle('italic')" id="btnItalic" title="Italic">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button class="ribbon-btn" onclick="toggleTextStyle('underline')" id="btnUnderline" title="Underline">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                    <button class="ribbon-btn" onclick="toggleTextStyle('uppercase')" id="btnUppercase" title="Uppercase">
+                        <i class="fas fa-font"></i>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Style</div>
             </div>
@@ -1843,10 +2130,18 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="setAlign('left')" id="btnAlignLeft"><i class="fas fa-align-left"></i></button>
-                    <button class="ribbon-btn active" onclick="setAlign('center')" id="btnAlignCenter"><i class="fas fa-align-center"></i></button>
-                    <button class="ribbon-btn" onclick="setAlign('right')" id="btnAlignRight"><i class="fas fa-align-right"></i></button>
-                    <button class="ribbon-btn" onclick="setAlign('justify')" id="btnAlignJustify"><i class="fas fa-align-justify"></i></button>
+                    <button class="ribbon-btn" onclick="setAlign('left')" id="btnAlignLeft" title="Align Left">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+                    <button class="ribbon-btn active" onclick="setAlign('center')" id="btnAlignCenter" title="Center">
+                        <i class="fas fa-align-center"></i>
+                    </button>
+                    <button class="ribbon-btn" onclick="setAlign('right')" id="btnAlignRight" title="Align Right">
+                        <i class="fas fa-align-right"></i>
+                    </button>
+                    <button class="ribbon-btn" onclick="setAlign('justify')" id="btnAlignJustify" title="Justify">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Alignment</div>
             </div>
@@ -1863,60 +2158,106 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="togglePhotoEditMode()" id="btnQATPhotoEdit">
-                        <i class="fas fa-arrows-alt"></i><span>Photo Edit</span>
+                    <button class="ribbon-btn" onclick="togglePhotoEditMode()" id="btnQATPhotoEdit" title="Photo Edit Mode">
+                        <i class="fas fa-arrows-alt"></i>
+                        <span>Photo Edit</span>
                     </button>
                 </div>
                 <div class="ribbon-group-label">Quick Photo</div>
             </div>
         </div>
 
-        <!-- INSERT -->
+        <!-- ============ INSERT TAB ============ -->
         <div class="ribbon-panel" data-panel="insert">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
                     <button class="ribbon-btn" onclick="document.getElementById('input-photo').click()">
                         <i class="fas fa-camera"></i><span>Photo</span>
                     </button>
-                    <button class="ribbon-btn" onclick="openCropForExistingPhoto()">
-                        <i class="fas fa-crop-alt"></i><span>Crop Photo</span>
+                    <button class="ribbon-btn" onclick="openAccordion('personal')">
+                        <i class="fas fa-user"></i><span>Personal</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('summary')">
+                        <i class="fas fa-align-left"></i><span>Summary</span>
                     </button>
                 </div>
-                <div class="ribbon-group-label">Media</div>
+                <div class="ribbon-group-label">Media &amp; Content</div>
             </div>
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="openAccordion('personal')"><i class="fas fa-user"></i><span>Personal</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('summary')"><i class="fas fa-align-left"></i><span>Summary</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('experience')"><i class="fas fa-briefcase"></i><span>Experience</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('education')"><i class="fas fa-graduation-cap"></i><span>Education</span></button>
+                    <button class="ribbon-btn" onclick="openAccordion('experience')">
+                        <i class="fas fa-briefcase"></i><span>Experience</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('education')">
+                        <i class="fas fa-graduation-cap"></i><span>Education</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('skills')">
+                        <i class="fas fa-cogs"></i><span>Skills</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('languages')">
+                        <i class="fas fa-language"></i><span>Languages</span>
+                    </button>
                 </div>
-                <div class="ribbon-group-label">Sections</div>
+                <div class="ribbon-group-label">Core Sections</div>
             </div>
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="openAccordion('skills')"><i class="fas fa-cogs"></i><span>Skills</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('languages')"><i class="fas fa-language"></i><span>Languages</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('projects')"><i class="fas fa-project-diagram"></i><span>Projects</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('certifications')"><i class="fas fa-certificate"></i><span>Certs</span></button>
-                </div>
-                <div class="ribbon-group-label">More</div>
-            </div>
-
-            <div class="ribbon-group">
-                <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="openAccordion('awards')"><i class="fas fa-trophy"></i><span>Awards</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('hobbies')"><i class="fas fa-heart"></i><span>Hobbies</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('references')"><i class="fas fa-users"></i><span>References</span></button>
-                    <button class="ribbon-btn" onclick="openAccordion('interests')"><i class="fas fa-star"></i><span>Interests</span></button>
+                    <button class="ribbon-btn" onclick="openAccordion('projects')">
+                        <i class="fas fa-project-diagram"></i><span>Projects</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('certifications')">
+                        <i class="fas fa-certificate"></i><span>Certs</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('awards')">
+                        <i class="fas fa-trophy"></i><span>Awards</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('hobbies')">
+                        <i class="fas fa-heart"></i><span>Hobbies</span>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Additional</div>
             </div>
+
+            <div class="ribbon-group">
+                <div class="ribbon-group-content">
+                    <button class="ribbon-btn" onclick="openAccordion('references')">
+                        <i class="fas fa-users"></i><span>References</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('volunteer')">
+                        <i class="fas fa-hands-helping"></i><span>Volunteer</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('publications')">
+                        <i class="fas fa-book"></i><span>Publications</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('achievements')">
+                        <i class="fas fa-medal"></i><span>Achievements</span>
+                    </button>
+                </div>
+                <div class="ribbon-group-label">Extended</div>
+            </div>
+
+            <div class="ribbon-group">
+                <div class="ribbon-group-content">
+                    <button class="ribbon-btn" onclick="openAccordion('courses')">
+                        <i class="fas fa-book-open"></i><span>Courses</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('workshops')">
+                        <i class="fas fa-chalkboard-teacher"></i><span>Workshops</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('memberships')">
+                        <i class="fas fa-id-card"></i><span>Memberships</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openAccordion('interests')">
+                        <i class="fas fa-star"></i><span>Interests</span>
+                    </button>
+                </div>
+                <div class="ribbon-group-label">More</div>
+            </div>
         </div>
 
-        <!-- DESIGN -->
+        <!-- ============ DESIGN TAB ============ -->
         <div class="ribbon-panel" data-panel="design">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
@@ -1929,8 +2270,12 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="applyRandomTemplate()"><i class="fas fa-dice"></i><span>Random</span></button>
-                    <button class="ribbon-btn" onclick="applyTemplate(1)"><i class="fas fa-undo-alt"></i><span>Default</span></button>
+                    <button class="ribbon-btn" onclick="applyRandomTemplate()" title="Random Template">
+                        <i class="fas fa-dice"></i><span>Random</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="applyTemplate(1)" title="Reset to Default">
+                        <i class="fas fa-undo-alt"></i><span>Default</span>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Quick Actions</div>
             </div>
@@ -1970,7 +2315,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- LAYOUT -->
+        <!-- ============ LAYOUT TAB ============ -->
         <div class="ribbon-panel" data-panel="layout">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
@@ -2003,18 +2348,15 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- PHOTO -->
+        <!-- ============ PHOTO TAB ============ -->
         <div class="ribbon-panel" data-panel="photo">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
                     <button class="ribbon-btn ribbon-btn-sm" onclick="document.getElementById('input-photo').click()">
                         <i class="fas fa-camera"></i> Upload
                     </button>
-                    <button class="ribbon-btn ribbon-btn-sm" onclick="openCropForExistingPhoto()">
-                        <i class="fas fa-crop-alt"></i> Crop
-                    </button>
                     <button class="ribbon-btn ribbon-btn-sm" onclick="togglePhotoEditMode()" id="btnPhotoEdit">
-                        <i class="fas fa-arrows-alt"></i> Drag
+                        <i class="fas fa-arrows-alt"></i> Edit / Drag
                     </button>
                     <button class="ribbon-btn ribbon-btn-sm" onclick="removePhoto()">
                         <i class="fas fa-trash"></i> Remove
@@ -2040,6 +2382,20 @@ input:focus, textarea:focus, select:focus { outline: none; }
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
                     <div class="ribbon-slider-group">
+                        <label>Pos X <span id="photoPosXVal">50</span>%</label>
+                        <input type="range" class="ribbon-slider" id="ribbonPhotoPosX" min="0" max="100" value="50" oninput="changePhotoPosX(this.value)">
+                    </div>
+                    <div class="ribbon-slider-group">
+                        <label>Pos Y <span id="photoPosYVal">50</span>%</label>
+                        <input type="range" class="ribbon-slider" id="ribbonPhotoPosY" min="0" max="100" value="50" oninput="changePhotoPosY(this.value)">
+                    </div>
+                </div>
+                <div class="ribbon-group-label">Position</div>
+            </div>
+
+            <div class="ribbon-group">
+                <div class="ribbon-group-content">
+                    <div class="ribbon-slider-group">
                         <label>Zoom <span id="photoScaleVal">1.0</span>x</label>
                         <input type="range" class="ribbon-slider" id="ribbonPhotoScale" min="0.5" max="3" step="0.05" value="1" oninput="changePhotoScale(this.value)">
                     </div>
@@ -2053,14 +2409,20 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="openShapePicker()"><i class="fas fa-shapes"></i><span>Shape</span></button>
-                    <button class="ribbon-btn" onclick="openBorderPicker()"><i class="fas fa-border-all"></i><span>Border</span></button>
-                    <button class="ribbon-btn" onclick="cyclePhotoFilter()" id="btnPhotoFilter"><i class="fas fa-filter"></i><span>Filter</span></button>
+                    <button class="ribbon-btn" onclick="openShapePicker()">
+                        <i class="fas fa-shapes"></i><span>Shape</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="openBorderPicker()">
+                        <i class="fas fa-border-all"></i><span>Border</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="cyclePhotoFilter()" id="btnPhotoFilter">
+                        <i class="fas fa-filter"></i><span>Filter</span>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Style</div>
 
                 <div class="picker-popover" id="shapePicker">
-                    <div class="picker-popover-title">Choose Shape</div>
+                    <div class="picker-popover-title">Choose Shape (30 options)</div>
                     <div class="shape-grid" id="shapeGrid"></div>
                 </div>
 
@@ -2081,68 +2443,96 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn ribbon-btn-sm" onclick="resetPhotoSettings()"><i class="fas fa-redo"></i> Reset Photo</button>
+                    <button class="ribbon-btn ribbon-btn-sm" onclick="resetPhotoSettings()">
+                        <i class="fas fa-redo"></i> Reset Photo
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Reset</div>
             </div>
         </div>
 
-        <!-- VIEW -->
+        <!-- ============ VIEW TAB ============ -->
         <div class="ribbon-panel" data-panel="view">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="changeZoom(-10)"><i class="fas fa-search-minus"></i><span>Zoom Out</span></button>
-                    <div style="font-size:13px;font-weight:700;color:var(--ribbon-accent);min-width:55px;text-align:center;font-family:monospace;"><span id="zoomLevel">100%</span></div>
-                    <button class="ribbon-btn" onclick="changeZoom(10)"><i class="fas fa-search-plus"></i><span>Zoom In</span></button>
-                    <button class="ribbon-btn" onclick="resetZoom()"><i class="fas fa-expand"></i><span>Fit</span></button>
+                    <button class="ribbon-btn" onclick="changeZoom(-10)">
+                        <i class="fas fa-search-minus"></i><span>Zoom Out</span>
+                    </button>
+                    <div style="font-size:13px;font-weight:700;color:var(--ribbon-accent);min-width:55px;text-align:center;font-family:monospace;">
+                        <span id="zoomLevel">100%</span>
+                    </div>
+                    <button class="ribbon-btn" onclick="changeZoom(10)">
+                        <i class="fas fa-search-plus"></i><span>Zoom In</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="resetZoom()">
+                        <i class="fas fa-expand"></i><span>Fit</span>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Zoom</div>
             </div>
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="toggleFullscreen()"><i class="fas fa-expand-arrows-alt"></i><span>Fullscreen</span></button>
+                    <button class="ribbon-btn" onclick="toggleFullscreen()" id="btnFullscreen">
+                        <i class="fas fa-expand-arrows-alt"></i><span>Fullscreen</span>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Display</div>
             </div>
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i><span>Theme</span></button>
+                    <button class="ribbon-btn" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i><span>Theme</span>
+                    </button>
                 </div>
                 <div class="ribbon-group-label">Appearance</div>
             </div>
         </div>
 
-        <!-- HELP -->
+        <!-- ============ HELP TAB ============ -->
         <div class="ribbon-panel" data-panel="help">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="showShortcuts()"><i class="fas fa-keyboard"></i><span>Shortcuts</span></button>
-                    <button class="ribbon-btn" onclick="showAbout()"><i class="fas fa-info-circle"></i><span>About</span></button>
+                    <button class="ribbon-btn" onclick="showShortcuts()">
+                        <i class="fas fa-keyboard"></i><span>Shortcuts</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="showAbout()">
+                        <i class="fas fa-info-circle"></i><span>About</span>
+                    </button>
                 </div>
-                <div class="ribbon-group-label">Help</div>
+                <div class="ribbon-group-label">Help &amp; Info</div>
             </div>
 
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="loadSampleData()"><i class="fas fa-flask"></i><span>Load Sample</span></button>
-                    <button class="ribbon-btn" onclick="clearAllData()"><i class="fas fa-broom"></i><span>Clear All</span></button>
+                    <button class="ribbon-btn" onclick="loadSampleData()">
+                        <i class="fas fa-flask"></i><span>Load Sample</span>
+                    </button>
+                    <button class="ribbon-btn" onclick="clearAllData()">
+                        <i class="fas fa-broom"></i><span>Clear All</span>
+                    </button>
                 </div>
-                <div class="ribbon-group-label">Data</div>
+                <div class="ribbon-group-label">Sample &amp; Data</div>
             </div>
         </div>
+
     </div>
 </div>
 
 <!-- ============================================================
-     MAIN APP
+     MAIN APP CONTAINER
      ============================================================ -->
 <div class="resume-app-container">
+
+    <!-- LEFT PANEL: FORM -->
     <div class="resume-form-panel">
+
         <div class="form-header">
             <h2><i class="fas fa-pen-fancy"></i> Resume Editor</h2>
-            <button onclick="resetResume()" class="btn-sm btn-danger"><i class="fas fa-trash"></i> Reset</button>
+            <button onclick="resetResume()" class="btn-sm btn-danger">
+                <i class="fas fa-trash"></i> Reset
+            </button>
         </div>
 
         <div class="accordion-item" data-accordion="personal">
@@ -2155,20 +2545,47 @@ input:focus, textarea:focus, select:focus { outline: none; }
                     <label>Profile Photo</label>
                     <input type="file" id="input-photo" accept="image/*" onchange="handlePhotoUpload(event)">
                 </div>
-                <div class="form-group"><label>Full Name</label><input type="text" id="input-name" oninput="updateData('name', this.value)" placeholder="John Doe"></div>
-                <div class="form-group"><label>Job Title</label><input type="text" id="input-jobTitle" oninput="updateData('jobTitle', this.value)" placeholder="Senior Software Engineer"></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Email</label><input type="email" id="input-email" oninput="updateData('email', this.value)"></div>
-                    <div class="form-group"><label>Phone</label><input type="text" id="input-phone" oninput="updateData('phone', this.value)"></div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="input-name" oninput="updateData('name', this.value)" placeholder="John Doe">
                 </div>
-                <div class="form-group"><label>Location</label><input type="text" id="input-location" oninput="updateData('location', this.value)"></div>
-                <div class="form-row">
-                    <div class="form-group"><label>LinkedIn</label><input type="text" id="input-linkedin" oninput="updateData('linkedin', this.value)"></div>
-                    <div class="form-group"><label>Website</label><input type="text" id="input-website" oninput="updateData('website', this.value)"></div>
+                <div class="form-group">
+                    <label>Job Title</label>
+                    <input type="text" id="input-jobTitle" oninput="updateData('jobTitle', this.value)" placeholder="Senior Software Engineer">
                 </div>
                 <div class="form-row">
-                    <div class="form-group"><label>GitHub</label><input type="text" id="input-github" oninput="updateData('github', this.value)"></div>
-                    <div class="form-group"><label>Twitter</label><input type="text" id="input-twitter" oninput="updateData('twitter', this.value)"></div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="input-email" oninput="updateData('email', this.value)" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="input-phone" oninput="updateData('phone', this.value)" placeholder="+1 234 567 890">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="input-location" oninput="updateData('location', this.value)" placeholder="New York, USA">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>LinkedIn</label>
+                        <input type="text" id="input-linkedin" oninput="updateData('linkedin', this.value)" placeholder="linkedin.com/in/johndoe">
+                    </div>
+                    <div class="form-group">
+                        <label>Website</label>
+                        <input type="text" id="input-website" oninput="updateData('website', this.value)" placeholder="johndoe.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>GitHub</label>
+                        <input type="text" id="input-github" oninput="updateData('github', this.value)" placeholder="github.com/johndoe">
+                    </div>
+                    <div class="form-group">
+                        <label>Twitter / X</label>
+                        <input type="text" id="input-twitter" oninput="updateData('twitter', this.value)" placeholder="@johndoe">
+                    </div>
                 </div>
             </div>
         </div>
@@ -2179,7 +2596,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
                 <i class="fas fa-chevron-down chev"></i>
             </div>
             <div class="accordion-content">
-                <div class="form-group"><textarea id="input-summary" oninput="updateData('summary', this.value)"></textarea></div>
+                <div class="form-group">
+                    <textarea id="input-summary" oninput="updateData('summary', this.value)" placeholder="Results-driven professional..."></textarea>
+                </div>
             </div>
         </div>
 
@@ -2211,8 +2630,12 @@ input:focus, textarea:focus, select:focus { outline: none; }
                 <i class="fas fa-chevron-down chev"></i>
             </div>
             <div class="accordion-content">
-                <div class="form-group"><label>Skills (Comma separated)</label><textarea id="input-skills" oninput="updateData('skills', this.value)"></textarea></div>
-                <div class="form-group"><label>Display Style</label>
+                <div class="form-group">
+                    <label>Skills (Comma separated)</label>
+                    <textarea id="input-skills" oninput="updateData('skills', this.value)" placeholder="JavaScript, React, Node.js"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Display Style</label>
                     <select id="skillStyleMobile" onchange="updateData('skillStyle', this.value)">
                         <option value="tags">Tags</option>
                         <option value="bars">Progress Bars</option>
@@ -2271,7 +2694,10 @@ input:focus, textarea:focus, select:focus { outline: none; }
                 <i class="fas fa-chevron-down chev"></i>
             </div>
             <div class="accordion-content">
-                <div class="form-group"><label>Hobbies (Comma separated)</label><textarea id="input-hobbies" oninput="updateData('hobbies', this.value)"></textarea></div>
+                <div class="form-group">
+                    <label>Hobbies (Comma separated)</label>
+                    <textarea id="input-hobbies" oninput="updateData('hobbies', this.value)" placeholder="Photography, Reading"></textarea>
+                </div>
             </div>
         </div>
 
@@ -2286,101 +2712,94 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
+        <div class="accordion-item" data-accordion="volunteer">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span><i class="fas fa-hands-helping"></i> Volunteer Work</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <div class="accordion-content">
+                <div id="volunteer-container"></div>
+                <button class="add-btn" onclick="addVolunteer()"><i class="fas fa-plus"></i> Add Volunteer Work</button>
+            </div>
+        </div>
+
+        <div class="accordion-item" data-accordion="publications">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span><i class="fas fa-book"></i> Publications</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <div class="accordion-content">
+                <div id="publications-container"></div>
+                <button class="add-btn" onclick="addPublication()"><i class="fas fa-plus"></i> Add Publication</button>
+            </div>
+        </div>
+
+        <div class="accordion-item" data-accordion="achievements">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span><i class="fas fa-medal"></i> Achievements</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <div class="accordion-content">
+                <div id="achievements-container"></div>
+                <button class="add-btn" onclick="addAchievement()"><i class="fas fa-plus"></i> Add Achievement</button>
+            </div>
+        </div>
+
+        <div class="accordion-item" data-accordion="courses">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span><i class="fas fa-book-open"></i> Courses</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <div class="accordion-content">
+                <div id="courses-container"></div>
+                <button class="add-btn" onclick="addCourse()"><i class="fas fa-plus"></i> Add Course</button>
+            </div>
+        </div>
+
+        <div class="accordion-item" data-accordion="workshops">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span><i class="fas fa-chalkboard-teacher"></i> Workshops</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <div class="accordion-content">
+                <div id="workshops-container"></div>
+                <button class="add-btn" onclick="addWorkshop()"><i class="fas fa-plus"></i> Add Workshop</button>
+            </div>
+        </div>
+
+        <div class="accordion-item" data-accordion="memberships">
+            <div class="accordion-header" onclick="toggleAccordion(this)">
+                <span><i class="fas fa-id-card"></i> Memberships</span>
+                <i class="fas fa-chevron-down chev"></i>
+            </div>
+            <div class="accordion-content">
+                <div id="memberships-container"></div>
+                <button class="add-btn" onclick="addMembership()"><i class="fas fa-plus"></i> Add Membership</button>
+            </div>
+        </div>
+
         <div class="accordion-item" data-accordion="interests">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-star"></i> Interests</span>
                 <i class="fas fa-chevron-down chev"></i>
             </div>
             <div class="accordion-content">
-                <div class="form-group"><label>Interests (Comma separated)</label><textarea id="input-interests" oninput="updateData('interests', this.value)"></textarea></div>
+                <div class="form-group">
+                    <label>Interests (Comma separated)</label>
+                    <textarea id="input-interests" oninput="updateData('interests', this.value)" placeholder="Technology, Sports"></textarea>
+                </div>
             </div>
         </div>
+
     </div>
 
+    <!-- RIGHT PANEL: PREVIEW -->
     <div class="resume-preview-panel">
         <div class="preview-scroll-area" id="previewScrollArea">
             <div class="a4-page layout-modern bg-white" id="resumePreview"></div>
         </div>
     </div>
-</div>
 
-<!-- ============================================================
-     CROP MODAL — NEW!
-     ============================================================ -->
-<div class="crop-overlay" id="cropOverlay">
-    <div class="crop-modal">
-
-        <div class="crop-header">
-            <h2><i class="fas fa-crop-alt"></i> Crop &amp; Shape Your Photo</h2>
-            <button class="crop-close-btn" onclick="closeCropModal()" title="Close">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="crop-body">
-
-            <!-- LEFT: Canvas -->
-            <div class="crop-canvas-area">
-                <div class="crop-canvas-wrapper shape-circle" id="cropCanvasWrapper">
-                    <canvas id="cropCanvas" width="400" height="400"></canvas>
-                    <div class="crop-grid-overlay"></div>
-                </div>
-            </div>
-
-            <!-- RIGHT: Controls -->
-            <div class="crop-controls">
-
-                <div class="crop-info">
-                    <i class="fas fa-hand-pointer"></i>
-                    Drag the image to reposition. Use the slider below to zoom in/out.
-                </div>
-
-                <div class="crop-section">
-                    <div class="crop-section-title">
-                        <i class="fas fa-search"></i> Zoom
-                    </div>
-                    <div class="crop-slider-row">
-                        <label>Zoom Level <span id="cropZoomVal">1.00x</span></label>
-                        <input type="range" class="crop-slider" id="cropZoomSlider" min="1" max="3" step="0.01" value="1">
-                    </div>
-                </div>
-
-                <div class="crop-section">
-                    <div class="crop-section-title">
-                        <i class="fas fa-shapes"></i> Shape
-                    </div>
-                    <div class="crop-shape-grid" id="cropShapeGrid"></div>
-                </div>
-
-                <div class="crop-section">
-                    <div class="crop-section-title">
-                        <i class="fas fa-arrows-alt"></i> Position
-                    </div>
-                    <div class="crop-slider-row">
-                        <label>Horizontal <span id="cropPosXVal">50</span>%</label>
-                        <input type="range" class="crop-slider" id="cropPosXSlider" min="0" max="100" value="50">
-                    </div>
-                    <div class="crop-slider-row">
-                        <label>Vertical <span id="cropPosYVal">50</span>%</label>
-                        <input type="range" class="crop-slider" id="cropPosYSlider" min="0" max="100" value="50">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="crop-footer">
-            <button class="crop-btn crop-btn-cancel" onclick="closeCropModal()">
-                <i class="fas fa-times"></i> Cancel
-            </button>
-            <button class="crop-btn crop-btn-reset" onclick="resetCrop()">
-                <i class="fas fa-redo"></i> Reset
-            </button>
-            <button class="crop-btn crop-btn-confirm" onclick="confirmCrop()">
-                <i class="fas fa-check"></i> Apply Crop
-            </button>
-        </div>
-    </div>
 </div>
 
 <div class="photo-edit-hint" id="photoEditHint">
@@ -2397,12 +2816,12 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
 <script>
 /* ============================================================
-   ULTIMATE RESUME MAKER PRO v5.0
-   With Crop Studio
+   ULTIMATE RESUME MAKER PRO — v4.0
+   Fixed: Photo display, Drag, Position sliders, Style pickers
    ============================================================ */
 
 /* ============================================================
-   FONTS (100)
+   FONTS
    ============================================================ */
 const FONTS = [
     { name: 'Inter', stack: "'Inter', sans-serif", cat: 'Sans' },
@@ -2509,7 +2928,7 @@ const FONTS = [
 ];
 
 /* ============================================================
-   TEMPLATES (100)
+   TEMPLATES
    ============================================================ */
 const LAYOUTS = [
     { id: 'modern', name: 'Modern' },
@@ -2555,7 +2974,7 @@ LAYOUTS.forEach(layout => {
 });
 
 /* ============================================================
-   PHOTO SHAPES (30)
+   PHOTO SHAPES
    ============================================================ */
 const PHOTO_SHAPES = [
     { id: 'circle', label: 'Circle' },
@@ -2586,32 +3005,8 @@ const PHOTO_SHAPES = [
     { id: 'blob-4', label: 'Blob 4' },
     { id: 'blob-5', label: 'Blob 5' },
     { id: 'blob-6', label: 'Blob 6' },
-    { id: 'circle', label: 'Circle 2' },
-    { id: 'rounded', label: 'Rounded 2' }
-];
-
-/* Crop shapes (simpler set) */
-const CROP_SHAPES = [
-    { id: 'circle', label: 'Circle' },
-    { id: 'square', label: 'Square' },
-    { id: 'rounded', label: 'Rounded' },
-    { id: 'rounded-lg', label: 'Rounded LG' },
-    { id: 'hexagon', label: 'Hexagon' },
-    { id: 'octagon', label: 'Octagon' },
-    { id: 'diamond', label: 'Diamond' },
-    { id: 'pentagon', label: 'Pentagon' },
-    { id: 'star', label: 'Star' },
-    { id: 'heart', label: 'Heart' },
-    { id: 'shield', label: 'Shield' },
-    { id: 'triangle', label: 'Triangle' },
-    { id: 'blob', label: 'Blob 1' },
-    { id: 'blob-2', label: 'Blob 2' },
-    { id: 'blob-3', label: 'Blob 3' },
-    { id: 'arch', label: 'Arch' },
-    { id: 'frame', label: 'Frame' },
-    { id: 'rounded-xl', label: 'Round XL' },
-    { id: 'hexagon-flat', label: 'Hex Flat' },
-    { id: 'ellipse', label: 'Ellipse' }
+    { id: 'diamond-rounded', label: 'Diamond R' },
+    { id: 'circle', label: 'Circle 2' }
 ];
 
 /* ============================================================
@@ -2657,16 +3052,16 @@ let currentFilterIndex = 0;
    DEFAULT DATA
    ============================================================ */
 const defaultData = {
-    photo: '',
-    name: '', jobTitle: '', email: '', phone: '', location: '',
+    photo: '', name: '', jobTitle: '', email: '', phone: '', location: '',
     linkedin: '', website: '', github: '', twitter: '',
     summary: '', skills: '', skillStyle: 'tags', hobbies: '', interests: '',
     experience: [], education: [], projects: [], languages: [],
-    certifications: [], awards: [], references: [],
+    certifications: [], awards: [], references: [], volunteer: [],
+    publications: [], achievements: [], courses: [], workshops: [], memberships: [],
     photoWidth: 110, photoHeight: 110, photoPosX: 50, photoPosY: 50,
     photoScale: 1, photoOpacity: 1, photoShape: 'circle',
     photoBorderStyle: 'solid', photoBorderWidth: 3,
-    photoBorderColor: '#2563eb', photoFilter: 'none',
+    photoBorderColor: '#2563eb', photoFilter: 'none', photoRotate: 0,
     textColor: '#333333', lineHeight: 1.5, padding: 35, textAlign: 'center',
     textStyles: { bold: false, italic: false, underline: false, uppercase: false }
 };
@@ -2675,33 +3070,51 @@ const defaultData = {
    LOAD STATE
    ============================================================ */
 let resumeData;
-try { resumeData = JSON.parse(localStorage.getItem('omniResumeV5') || 'null'); }
-catch(e) { resumeData = null; }
+try {
+    resumeData = JSON.parse(localStorage.getItem('omniResumeV4') || 'null');
+} catch(e) {
+    resumeData = null;
+}
 
 if (!resumeData || typeof resumeData !== 'object') {
     resumeData = JSON.parse(JSON.stringify(defaultData));
 }
 
-Object.keys(defaultData).forEach(k => {
-    if (resumeData[k] === undefined || resumeData[k] === null) {
-        resumeData[k] = JSON.parse(JSON.stringify(defaultData[k]));
+Object.keys(defaultData).forEach(key => {
+    if (resumeData[key] === undefined || resumeData[key] === null) {
+        resumeData[key] = JSON.parse(JSON.stringify(defaultData[key]));
     }
 });
 
-if (!resumeData.experience || !resumeData.experience.length) resumeData.experience = [{ title: '', company: '', date: '', desc: '' }];
-if (!resumeData.education || !resumeData.education.length) resumeData.education = [{ degree: '', school: '', date: '', desc: '' }];
-if (!resumeData.projects || !resumeData.projects.length) resumeData.projects = [{ title: '', tech: '', desc: '' }];
+if (!resumeData.experience || !resumeData.experience.length) {
+    resumeData.experience = [{ title: '', company: '', date: '', desc: '' }];
+}
+if (!resumeData.education || !resumeData.education.length) {
+    resumeData.education = [{ degree: '', school: '', date: '', desc: '' }];
+}
+if (!resumeData.projects || !resumeData.projects.length) {
+    resumeData.projects = [{ title: '', tech: '', desc: '' }];
+}
 if (!resumeData.languages) resumeData.languages = [];
 if (!resumeData.certifications) resumeData.certifications = [];
 if (!resumeData.awards) resumeData.awards = [];
 if (!resumeData.references) resumeData.references = [];
+if (!resumeData.volunteer) resumeData.volunteer = [];
+if (!resumeData.publications) resumeData.publications = [];
+if (!resumeData.achievements) resumeData.achievements = [];
+if (!resumeData.courses) resumeData.courses = [];
+if (!resumeData.workshops) resumeData.workshops = [];
+if (!resumeData.memberships) resumeData.memberships = [];
 if (!resumeData.skillStyle) resumeData.skillStyle = 'tags';
 
-let currentTemplateId = parseInt(localStorage.getItem('omniTplV5') || '1');
-let currentFont = localStorage.getItem('omniFontV5') || 'Inter';
-let currentFontSize = localStorage.getItem('omniFontSizeV5') || '13.5px';
-let currentColor = localStorage.getItem('omniColorV5') || '#2563eb';
-let currentBg = localStorage.getItem('omniBgV5') || 'bg-white';
+/* ============================================================
+   UI STATE
+   ============================================================ */
+let currentTemplateId = parseInt(localStorage.getItem('omniTplV4') || '1');
+let currentFont = localStorage.getItem('omniFontV4') || 'Inter';
+let currentFontSize = localStorage.getItem('omniFontSizeV4') || '13.5px';
+let currentColor = localStorage.getItem('omniColorV4') || '#2563eb';
+let currentBg = localStorage.getItem('omniBgV4') || 'bg-white';
 let currentZoom = 100;
 let photoEditMode = false;
 
@@ -2742,22 +3155,22 @@ class HistoryManager {
         return true;
     }
     redo() {
-        if (!this.redoStack.length) return false;
+        if (this.redoStack.length === 0) return false;
         const next = this.redoStack.pop();
         this.undoStack.push(next);
         this.applyState(next);
         this.updateButtons();
         return true;
     }
-    applyState(s) {
+    applyState(stateStr) {
         this.suppress = true;
-        const st = JSON.parse(s);
-        resumeData = st.data;
-        currentTemplateId = st.templateId;
-        currentFont = st.font;
-        currentFontSize = st.fontSize;
-        currentColor = st.color;
-        currentBg = st.bg;
+        const state = JSON.parse(stateStr);
+        resumeData = state.data;
+        currentTemplateId = state.templateId;
+        currentFont = state.font;
+        currentFontSize = state.fontSize;
+        currentColor = state.color;
+        currentBg = state.bg;
         syncUIWithState();
         setTimeout(() => { this.suppress = false; }, 50);
     }
@@ -2786,19 +3199,19 @@ function syncUIWithState() {
     if (hFont) hFont.value = currentFont;
 
     const fs = parseFloat(currentFontSize);
-    const el1 = document.getElementById('fontSizeSelect');
-    const el2 = document.getElementById('ribbonFontSize');
-    const el3 = document.getElementById('ribbonFontSizeSlider');
-    const el4 = document.getElementById('fontSizeVal');
-    if (el1) el1.value = currentFontSize;
-    if (el2) el2.value = fs;
-    if (el3) el3.value = fs;
-    if (el4) el4.textContent = fs;
+    const fs1 = document.getElementById('fontSizeSelect');
+    const fs2 = document.getElementById('ribbonFontSize');
+    const fs3 = document.getElementById('ribbonFontSizeSlider');
+    const fs4 = document.getElementById('fontSizeVal');
+    if (fs1) fs1.value = currentFontSize;
+    if (fs2) fs2.value = fs;
+    if (fs3) fs3.value = fs;
+    if (fs4) fs4.textContent = fs;
 
     const cp = document.getElementById('colorPicker');
-    const ra = document.getElementById('ribbonAccentColor');
+    const rac = document.getElementById('ribbonAccentColor');
     if (cp) cp.value = currentColor;
-    if (ra) ra.value = currentColor;
+    if (rac) rac.value = currentColor;
 
     const bg = document.getElementById('bgSelect');
     if (bg) bg.value = currentBg;
@@ -2806,7 +3219,8 @@ function syncUIWithState() {
     const tpl = document.getElementById('templateSelect');
     if (tpl) tpl.value = currentTemplateId;
 
-    ['name','jobTitle','email','phone','location','linkedin','website','github','twitter','summary','skills','hobbies','interests'].forEach(f => {
+    const fields = ['name','jobTitle','email','phone','location','linkedin','website','github','twitter','summary','skills','hobbies','interests'];
+    fields.forEach(f => {
         const el = document.getElementById('input-' + f);
         if (el) el.value = resumeData[f] || '';
     });
@@ -2819,6 +3233,13 @@ function syncUIWithState() {
     renderCertificationForm();
     renderAwardForm();
     renderReferenceForm();
+    renderVolunteerForm();
+    renderPublicationForm();
+    renderAchievementForm();
+    renderCourseForm();
+    renderWorkshopForm();
+    renderMembershipForm();
+
     saveData();
     renderPreview();
 }
@@ -2830,19 +3251,20 @@ let toastTimer;
 function showToast(msg, type) {
     type = type || 'success';
     const t = document.getElementById('toast');
-    document.getElementById('toastMsg').textContent = msg;
+    const tm = document.getElementById('toastMsg');
+    tm.textContent = msg;
     t.className = 'toast show ' + type;
-    const i = t.querySelector('i');
-    i.className = type === 'error' ? 'fas fa-exclamation-circle'
-        : type === 'info' ? 'fas fa-info-circle'
-        : type === 'warning' ? 'fas fa-exclamation-triangle'
-        : 'fas fa-check-circle';
+    const icon = t.querySelector('i');
+    if (type === 'error') icon.className = 'fas fa-exclamation-circle';
+    else if (type === 'info') icon.className = 'fas fa-info-circle';
+    else if (type === 'warning') icon.className = 'fas fa-exclamation-triangle';
+    else icon.className = 'fas fa-check-circle';
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 /* ============================================================
-   SAVING
+   SAVING INDICATOR
    ============================================================ */
 let savingTimer;
 function showSaving() {
@@ -2876,7 +3298,8 @@ function switchRibbonTab(name, btn) {
    ============================================================ */
 function toggleAccordion(header) {
     header.classList.toggle('active');
-    if (header.nextElementSibling) header.nextElementSibling.classList.toggle('active');
+    const c = header.nextElementSibling;
+    if (c) c.classList.toggle('active');
 }
 
 function openAccordion(name) {
@@ -2895,28 +3318,16 @@ function openAccordion(name) {
    THEME
    ============================================================ */
 function toggleTheme() {
-    const c = document.documentElement.getAttribute('data-theme');
-    const n = c === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', n);
-    localStorage.setItem('theme', n);
+    const curr = document.documentElement.getAttribute('data-theme');
+    const next = curr === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.body.setAttribute('data-theme', next === 'dark' ? '' : 'light');
+    localStorage.setItem('theme', next);
 }
 
 /* ============================================================
-   CROP MODAL — NEW!
+   PHOTO HANDLING — FIXED
    ============================================================ */
-let cropState = {
-    image: null,
-    zoom: 1,
-    offsetX: 0,
-    offsetY: 0,
-    baseScale: 1,
-    isDragging: false,
-    dragStartX: 0,
-    dragStartY: 0,
-    shape: 'circle',
-    pendingFile: null
-};
-
 function handlePhotoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -2928,286 +3339,24 @@ function handlePhotoUpload(event) {
 
     const reader = new FileReader();
     reader.onload = e => {
-        cropState.pendingFile = file;
-        openCropModal(e.target.result);
+        resumeData.photo = e.target.result;
+        saveData();
+        renderPreview();
+        history.snapshot();
+        showToast('Photo uploaded successfully');
     };
-    reader.onerror = () => showToast('Failed to read file', 'error');
+    reader.onerror = () => {
+        showToast('Failed to read file', 'error');
+    };
     reader.readAsDataURL(file);
-
     event.target.value = '';
 }
 
-function openCropForExistingPhoto() {
+function removePhoto() {
     if (!resumeData.photo) {
-        showToast('No photo to crop. Upload first.', 'warning');
+        showToast('No photo to remove', 'info');
         return;
     }
-    openCropModal(resumeData.photo);
-}
-
-function openCropModal(dataUrl) {
-    const overlay = document.getElementById('cropOverlay');
-    overlay.classList.add('active');
-
-    const img = new Image();
-    img.onload = () => {
-        cropState.image = img;
-        cropState.zoom = 1;
-        cropState.offsetX = 0;
-        cropState.offsetY = 0;
-        cropState.shape = resumeData.photoShape || 'circle';
-
-        // Calculate base scale so image fits canvas
-        const canvasSize = 400;
-        const scaleX = canvasSize / img.naturalWidth;
-        const scaleY = canvasSize / img.naturalHeight;
-        cropState.baseScale = Math.max(scaleX, scaleY);
-
-        // Update UI
-        document.getElementById('cropZoomSlider').value = 1;
-        document.getElementById('cropZoomVal').textContent = '1.00x';
-        document.getElementById('cropPosXSlider').value = 50;
-        document.getElementById('cropPosYSlider').value = 50;
-        document.getElementById('cropPosXVal').textContent = '50';
-        document.getElementById('cropPosYVal').textContent = '50';
-
-        // Update shape
-        updateCropShapeClass();
-        buildCropShapeGrid();
-
-        // Draw
-        drawCrop();
-    };
-    img.onerror = () => {
-        showToast('Failed to load image', 'error');
-        closeCropModal();
-    };
-    img.src = dataUrl;
-}
-
-function closeCropModal() {
-    const overlay = document.getElementById('cropOverlay');
-    overlay.classList.remove('active');
-    cropState.image = null;
-    cropState.pendingFile = null;
-    detachCropListeners();
-}
-
-function resetCrop() {
-    cropState.zoom = 1;
-    cropState.offsetX = 0;
-    cropState.offsetY = 0;
-    document.getElementById('cropZoomSlider').value = 1;
-    document.getElementById('cropZoomVal').textContent = '1.00x';
-    document.getElementById('cropPosXSlider').value = 50;
-    document.getElementById('cropPosYSlider').value = 50;
-    document.getElementById('cropPosXVal').textContent = '50';
-    document.getElementById('cropPosYVal').textContent = '50';
-    drawCrop();
-}
-
-function drawCrop() {
-    if (!cropState.image) return;
-
-    const canvas = document.getElementById('cropCanvas');
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width;
-    const H = canvas.height;
-
-    // Clear
-    ctx.clearRect(0, 0, W, H);
-
-    // Fill background
-    ctx.fillStyle = '#1a1c20';
-    ctx.fillRect(0, 0, W, H);
-
-    // Calculate draw size
-    const drawScale = cropState.baseScale * cropState.zoom;
-    const drawW = cropState.image.naturalWidth * drawScale;
-    const drawH = cropState.image.naturalHeight * drawScale;
-
-    // Center + offset
-    const x = (W - drawW) / 2 + cropState.offsetX;
-    const y = (H - drawH) / 2 + cropState.offsetY;
-
-    ctx.drawImage(cropState.image, x, y, drawW, drawH);
-}
-
-function updateCropShapeClass() {
-    const wrapper = document.getElementById('cropCanvasWrapper');
-    CROP_SHAPES.forEach(s => wrapper.classList.remove('shape-' + s.id));
-    wrapper.classList.add('shape-' + cropState.shape);
-}
-
-function buildCropShapeGrid() {
-    const grid = document.getElementById('cropShapeGrid');
-    grid.innerHTML = CROP_SHAPES.map(s =>
-        '<div class="crop-shape-btn shape-' + s.id + (s.id === cropState.shape ? ' active' : '') + '" title="' + s.label + '" onclick="setCropShape(\'' + s.id + '\')"></div>'
-    ).join('');
-}
-
-function setCropShape(id) {
-    cropState.shape = id;
-    updateCropShapeClass();
-    buildCropShapeGrid();
-}
-
-function confirmCrop() {
-    if (!cropState.image) return;
-
-    // Create output canvas at higher resolution for quality
-    const OUTPUT_SIZE = 400;
-    const outCanvas = document.createElement('canvas');
-    outCanvas.width = OUTPUT_SIZE;
-    outCanvas.height = OUTPUT_SIZE;
-    const ctx = outCanvas.getContext('2d');
-
-    // Fill transparent
-    ctx.clearRect(0, 0, OUTPUT_SIZE, OUTPUT_SIZE);
-
-    // Scale factor: source canvas is 400, output is 400, so 1:1
-    const drawScale = cropState.baseScale * cropState.zoom;
-    const drawW = cropState.image.naturalWidth * drawScale;
-    const drawH = cropState.image.naturalHeight * drawScale;
-
-    const x = (OUTPUT_SIZE - drawW) / 2 + cropState.offsetX;
-    const y = (OUTPUT_SIZE - drawH) / 2 + cropState.offsetY;
-
-    ctx.drawImage(cropState.image, x, y, drawW, drawH);
-
-    // Convert to data URL
-    const croppedDataUrl = outCanvas.toDataURL('image/png');
-
-    // Save to resumeData
-    resumeData.photo = croppedDataUrl;
-    resumeData.photoShape = cropState.shape;
-    resumeData.photoPosX = 50;
-    resumeData.photoPosY = 50;
-    resumeData.photoScale = 1;
-
-    saveData();
-    renderPreview();
-    history.snapshot();
-    closeCropModal();
-
-    showToast('Photo cropped and applied!');
-}
-
-/* Crop canvas drag */
-function attachCropListeners() {
-    const wrapper = document.getElementById('cropCanvasWrapper');
-    if (!wrapper) return;
-
-    wrapper.addEventListener('mousedown', startCropDrag);
-    wrapper.addEventListener('touchstart', startCropDrag, { passive: false });
-    document.addEventListener('mousemove', onCropDrag);
-    document.addEventListener('mouseup', endCropDrag);
-    document.addEventListener('touchmove', onCropDrag, { passive: false });
-    document.addEventListener('touchend', endCropDrag);
-}
-
-function detachCropListeners() {
-    const wrapper = document.getElementById('cropCanvasWrapper');
-    if (!wrapper) return;
-
-    wrapper.removeEventListener('mousedown', startCropDrag);
-    wrapper.removeEventListener('touchstart', startCropDrag);
-    document.removeEventListener('mousemove', onCropDrag);
-    document.removeEventListener('mouseup', endCropDrag);
-    document.removeEventListener('touchmove', onCropDrag);
-    document.removeEventListener('touchend', endCropDrag);
-}
-
-function startCropDrag(e) {
-    if (!cropState.image) return;
-    e.preventDefault();
-    cropState.isDragging = true;
-
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    cropState.dragStartX = clientX - cropState.offsetX;
-    cropState.dragStartY = clientY - cropState.offsetY;
-
-    document.body.style.cursor = 'grabbing';
-}
-
-function onCropDrag(e) {
-    if (!cropState.isDragging) return;
-    e.preventDefault();
-
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    cropState.offsetX = clientX - cropState.dragStartX;
-    cropState.offsetY = clientY - cropState.dragStartY;
-
-    drawCrop();
-}
-
-function endCropDrag() {
-    cropState.isDragging = false;
-    document.body.style.cursor = '';
-}
-
-/* Crop sliders */
-document.addEventListener('DOMContentLoaded', () => {
-    const zoomSlider = document.getElementById('cropZoomSlider');
-    const posXSlider = document.getElementById('cropPosXSlider');
-    const posYSlider = document.getElementById('cropPosYSlider');
-
-    if (zoomSlider) {
-        zoomSlider.addEventListener('input', e => {
-            cropState.zoom = parseFloat(e.target.value);
-            document.getElementById('cropZoomVal').textContent = cropState.zoom.toFixed(2) + 'x';
-            drawCrop();
-        });
-    }
-
-    if (posXSlider) {
-        posXSlider.addEventListener('input', e => {
-            const val = parseFloat(e.target.value);
-            document.getElementById('cropPosXVal').textContent = Math.round(val);
-            cropState.offsetX = (50 - val) * 3;
-            drawCrop();
-        });
-    }
-
-    if (posYSlider) {
-        posYSlider.addEventListener('input', e => {
-            const val = parseFloat(e.target.value);
-            document.getElementById('cropPosYVal').textContent = Math.round(val);
-            cropState.offsetY = (50 - val) * 3;
-            drawCrop();
-        });
-    }
-
-    // Wheel zoom on crop canvas
-    const wrapper = document.getElementById('cropCanvasWrapper');
-    if (wrapper) {
-        wrapper.addEventListener('wheel', e => {
-            e.preventDefault();
-            const delta = e.deltaY > 0 ? -0.1 : 0.1;
-            cropState.zoom = Math.max(1, Math.min(3, cropState.zoom + delta));
-            document.getElementById('cropZoomSlider').value = cropState.zoom;
-            document.getElementById('cropZoomVal').textContent = cropState.zoom.toFixed(2) + 'x';
-            drawCrop();
-        }, { passive: false });
-    }
-});
-
-/* Attach crop listeners when modal opens */
-const originalOpenCropModal = openCropModal;
-openCropModal = function(dataUrl) {
-    originalOpenCropModal.call(this, dataUrl);
-    setTimeout(attachCropListeners, 100);
-};
-
-/* ============================================================
-   PHOTO MANAGEMENT
-   ============================================================ */
-function removePhoto() {
-    if (!resumeData.photo) { showToast('No photo to remove', 'info'); return; }
     resumeData.photo = '';
     saveData();
     renderPreview();
@@ -3215,6 +3364,9 @@ function removePhoto() {
     showToast('Photo removed', 'info');
 }
 
+/* ============================================================
+   PHOTO CONTROLS — FIXED
+   ============================================================ */
 function changePhotoWidth(v) {
     resumeData.photoWidth = parseInt(v) || 110;
     const l = document.getElementById('photoWidthVal');
@@ -3226,6 +3378,22 @@ function changePhotoWidth(v) {
 function changePhotoHeight(v) {
     resumeData.photoHeight = parseInt(v) || 110;
     const l = document.getElementById('photoHeightVal');
+    if (l) l.textContent = v;
+    applyPhotoSettings();
+    saveData();
+}
+
+function changePhotoPosX(v) {
+    resumeData.photoPosX = parseInt(v);
+    const l = document.getElementById('photoPosXVal');
+    if (l) l.textContent = v;
+    applyPhotoSettings();
+    saveData();
+}
+
+function changePhotoPosY(v) {
+    resumeData.photoPosY = parseInt(v);
+    const l = document.getElementById('photoPosYVal');
     if (l) l.textContent = v;
     applyPhotoSettings();
     saveData();
@@ -3261,30 +3429,44 @@ function changeBorderColor(v) {
     saveData();
 }
 
+/* ============================================================
+   APPLY PHOTO SETTINGS — FIXED (uses inline styles directly)
+   ============================================================ */
 function applyPhotoSettings() {
     const containers = document.querySelectorAll('.header-photo-container, .sidebar-photo');
     const filter = PHOTO_FILTERS.find(f => f.id === resumeData.photoFilter) || PHOTO_FILTERS[0];
 
     containers.forEach(c => {
+        // Size
         c.style.width = resumeData.photoWidth + 'px';
         c.style.height = resumeData.photoHeight + 'px';
+
+        // Border
         c.style.borderWidth = resumeData.photoBorderWidth + 'px';
         c.style.borderStyle = resumeData.photoBorderStyle;
         c.style.borderColor = resumeData.photoBorderColor;
+
+        // Opacity
         c.style.opacity = resumeData.photoOpacity;
 
+        // Remove all shape classes
         PHOTO_SHAPES.forEach(s => c.classList.remove('shape-' + s.id));
+        // Add current shape
         c.classList.add('shape-' + resumeData.photoShape);
 
+        // Update img
         const img = c.querySelector('img');
         if (img) {
-            img.style.filter = filter.css;
-            img.style.transform = 'scale(' + resumeData.photoScale + ')';
             img.style.objectPosition = resumeData.photoPosX + '% ' + resumeData.photoPosY + '%';
+            img.style.transform = 'scale(' + resumeData.photoScale + ')';
+            img.style.filter = filter.css;
         }
     });
 }
 
+/* ============================================================
+   SYNC PHOTO CONTROLS
+   ============================================================ */
 function syncPhotoControls() {
     const setVal = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
     const setText = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
@@ -3294,6 +3476,12 @@ function syncPhotoControls() {
 
     setVal('ribbonPhotoHeight', resumeData.photoHeight);
     setText('photoHeightVal', resumeData.photoHeight);
+
+    setVal('ribbonPhotoPosX', resumeData.photoPosX);
+    setText('photoPosXVal', resumeData.photoPosX);
+
+    setVal('ribbonPhotoPosY', resumeData.photoPosY);
+    setText('photoPosYVal', resumeData.photoPosY);
 
     setVal('ribbonPhotoScale', resumeData.photoScale);
     setText('photoScaleVal', resumeData.photoScale.toFixed(2));
@@ -3309,9 +3497,14 @@ function syncPhotoControls() {
     applyPhotoSettings();
 }
 
+/* ============================================================
+   RESET PHOTO
+   ============================================================ */
 function resetPhotoSettings() {
     resumeData.photoWidth = 110;
     resumeData.photoHeight = 110;
+    resumeData.photoPosX = 50;
+    resumeData.photoPosY = 50;
     resumeData.photoScale = 1;
     resumeData.photoOpacity = 1;
     resumeData.photoShape = 'circle';
@@ -3320,12 +3513,16 @@ function resetPhotoSettings() {
     resumeData.photoBorderColor = currentColor;
     resumeData.photoFilter = 'none';
     currentFilterIndex = 0;
+
     syncPhotoControls();
     renderPreview();
     history.snapshot();
     showToast('Photo settings reset');
 }
 
+/* ============================================================
+   CYCLE FILTER
+   ============================================================ */
 function cyclePhotoFilter() {
     currentFilterIndex = (currentFilterIndex + 1) % PHOTO_FILTERS.length;
     const filter = PHOTO_FILTERS[currentFilterIndex];
@@ -3342,7 +3539,9 @@ function cyclePhotoFilter() {
     showToast('Filter: ' + filter.label, 'info');
 }
 
-/* Shape picker */
+/* ============================================================
+   SHAPE PICKER
+   ============================================================ */
 function openShapePicker() {
     const p = document.getElementById('shapePicker');
     const bp = document.getElementById('borderPicker');
@@ -3358,18 +3557,23 @@ function openShapePicker() {
 
 function setPhotoShape(id) {
     resumeData.photoShape = id;
+
+    // Apply to all containers
     const containers = document.querySelectorAll('.header-photo-container, .sidebar-photo');
     containers.forEach(c => {
         PHOTO_SHAPES.forEach(s => c.classList.remove('shape-' + s.id));
         c.classList.add('shape-' + id);
     });
+
     saveData();
     history.snapshot();
     document.getElementById('shapePicker').classList.remove('show');
-    showToast('Shape: ' + id);
+    showToast('Shape applied: ' + id);
 }
 
-/* Border picker */
+/* ============================================================
+   BORDER PICKER
+   ============================================================ */
 function openBorderPicker() {
     const p = document.getElementById('borderPicker');
     const sp = document.getElementById('shapePicker');
@@ -3385,23 +3589,31 @@ function openBorderPicker() {
 
 function setPhotoBorder(id) {
     resumeData.photoBorderStyle = id;
+
     const containers = document.querySelectorAll('.header-photo-container, .sidebar-photo');
-    containers.forEach(c => { c.style.borderStyle = id; });
+    containers.forEach(c => {
+        c.style.borderStyle = id;
+    });
+
     saveData();
     history.snapshot();
     document.getElementById('borderPicker').classList.remove('show');
-    showToast('Border: ' + id);
+    showToast('Border applied: ' + id);
 }
 
+/* Close pickers on outside click */
 document.addEventListener('click', e => {
     if (!e.target.closest('.ribbon-group')) {
         document.querySelectorAll('.picker-popover').forEach(p => p.classList.remove('show'));
     }
 });
 
-/* Photo edit mode */
+/* ============================================================
+   PHOTO EDIT MODE — FIXED
+   ============================================================ */
 function togglePhotoEditMode() {
     photoEditMode = !photoEditMode;
+
     const btn = document.getElementById('btnPhotoEdit');
     const btnQ = document.getElementById('btnQATPhotoEdit');
     const hint = document.getElementById('photoEditHint');
@@ -3422,16 +3634,19 @@ function togglePhotoEditMode() {
 }
 
 function attachPhotoDragListeners() {
-    document.querySelectorAll('.header-photo-container, .sidebar-photo').forEach(c => {
+    const containers = document.querySelectorAll('.header-photo-container, .sidebar-photo');
+    containers.forEach(c => {
         c.classList.add('photo-edit-mode');
         c.removeEventListener('mousedown', startPhotoDrag);
+        c.removeEventListener('touchstart', startPhotoDrag);
         c.addEventListener('mousedown', startPhotoDrag);
         c.addEventListener('touchstart', startPhotoDrag, { passive: false });
     });
 }
 
 function detachPhotoDragListeners() {
-    document.querySelectorAll('.header-photo-container, .sidebar-photo').forEach(c => {
+    const containers = document.querySelectorAll('.header-photo-container, .sidebar-photo');
+    containers.forEach(c => {
         c.classList.remove('photo-edit-mode');
         c.removeEventListener('mousedown', startPhotoDrag);
         c.removeEventListener('touchstart', startPhotoDrag);
@@ -3451,8 +3666,10 @@ function startPhotoDrag(e) {
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
     dragState = {
-        container, rect,
-        startX: clientX, startY: clientY,
+        container: container,
+        rect: rect,
+        startX: clientX,
+        startY: clientY,
         startPosX: resumeData.photoPosX,
         startPosY: resumeData.photoPosY
     };
@@ -3461,6 +3678,7 @@ function startPhotoDrag(e) {
     document.addEventListener('mouseup', endPhotoDrag);
     document.addEventListener('touchmove', onPhotoDrag, { passive: false });
     document.addEventListener('touchend', endPhotoDrag);
+
     document.body.style.cursor = 'grabbing';
 }
 
@@ -3471,21 +3689,37 @@ function onPhotoDrag(e) {
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
 
+    // Percentage delta
     const dX = ((clientX - dragState.startX) / dragState.rect.width) * 100;
     const dY = ((clientY - dragState.startY) / dragState.rect.height) * 100;
 
-    let npX = dragState.startPosX - dX;
-    let npY = dragState.startPosY - dY;
-    npX = Math.max(0, Math.min(100, npX));
-    npY = Math.max(0, Math.min(100, npY));
+    // object-position: 0% means show left edge, 100% means show right edge
+    // Moving right → show more of left → decrease posX
+    let newPosX = dragState.startPosX - dX;
+    let newPosY = dragState.startPosY - dY;
 
-    resumeData.photoPosX = Math.round(npX);
-    resumeData.photoPosY = Math.round(npY);
+    // Clamp
+    newPosX = Math.max(0, Math.min(100, newPosX));
+    newPosY = Math.max(0, Math.min(100, newPosY));
 
+    resumeData.photoPosX = Math.round(newPosX);
+    resumeData.photoPosY = Math.round(newPosY);
+
+    // Update image object-position
     const img = dragState.container.querySelector('img');
     if (img) {
         img.style.objectPosition = resumeData.photoPosX + '% ' + resumeData.photoPosY + '%';
     }
+
+    // Update sliders
+    const sx = document.getElementById('ribbonPhotoPosX');
+    const sy = document.getElementById('ribbonPhotoPosY');
+    const lx = document.getElementById('photoPosXVal');
+    const ly = document.getElementById('photoPosYVal');
+    if (sx) sx.value = resumeData.photoPosX;
+    if (sy) sy.value = resumeData.photoPosY;
+    if (lx) lx.textContent = resumeData.photoPosX;
+    if (ly) ly.textContent = resumeData.photoPosY;
 }
 
 function endPhotoDrag() {
@@ -3496,6 +3730,7 @@ function endPhotoDrag() {
     document.removeEventListener('mouseup', endPhotoDrag);
     document.removeEventListener('touchmove', onPhotoDrag);
     document.removeEventListener('touchend', endPhotoDrag);
+
     document.body.style.cursor = '';
 
     saveData();
@@ -3503,18 +3738,20 @@ function endPhotoDrag() {
 }
 
 /* ============================================================
-   SAVE / UPDATE
+   SAVE DATA
    ============================================================ */
 function saveData() {
     try {
-        localStorage.setItem('omniResumeV5', JSON.stringify(resumeData));
-        localStorage.setItem('omniTplV5', currentTemplateId);
-        localStorage.setItem('omniFontV5', currentFont);
-        localStorage.setItem('omniFontSizeV5', currentFontSize);
-        localStorage.setItem('omniColorV5', currentColor);
-        localStorage.setItem('omniBgV5', currentBg);
+        localStorage.setItem('omniResumeV4', JSON.stringify(resumeData));
+        localStorage.setItem('omniTplV4', currentTemplateId);
+        localStorage.setItem('omniFontV4', currentFont);
+        localStorage.setItem('omniFontSizeV4', currentFontSize);
+        localStorage.setItem('omniColorV4', currentColor);
+        localStorage.setItem('omniBgV4', currentBg);
         showSaving();
-    } catch(e) { console.error(e); }
+    } catch(e) {
+        console.error('Save failed', e);
+    }
 }
 
 function updateData(field, value) {
@@ -3535,24 +3772,32 @@ function updateData(field, value) {
 function toggleTextStyle(style) {
     if (!resumeData.textStyles) resumeData.textStyles = {};
     resumeData.textStyles[style] = !resumeData.textStyles[style];
-    const b = document.getElementById('btn' + style.charAt(0).toUpperCase() + style.slice(1));
-    if (b) b.classList.toggle('active', resumeData.textStyles[style]);
+    const btnId = 'btn' + style.charAt(0).toUpperCase() + style.slice(1);
+    const btn = document.getElementById(btnId);
+    if (btn) btn.classList.toggle('active', resumeData.textStyles[style]);
     saveData();
     renderPreview();
     history.snapshot();
 }
 
-function changeTextColor(c) { resumeData.textColor = c; saveData(); renderPreview(); history.snapshot(); }
-function setAlign(a) {
-    resumeData.textAlign = a;
-    ['Left', 'Center', 'Right', 'Justify'].forEach(x => {
-        const b = document.getElementById('btnAlign' + x);
-        if (b) b.classList.toggle('active', x.toLowerCase() === a);
+function changeTextColor(color) {
+    resumeData.textColor = color;
+    saveData();
+    renderPreview();
+    history.snapshot();
+}
+
+function setAlign(align) {
+    resumeData.textAlign = align;
+    ['Left', 'Center', 'Right', 'Justify'].forEach(a => {
+        const btn = document.getElementById('btnAlign' + a);
+        if (btn) btn.classList.toggle('active', a.toLowerCase() === align);
     });
     saveData();
     renderPreview();
     history.snapshot();
 }
+
 function changeLineHeight(v) {
     resumeData.lineHeight = parseFloat(v);
     const l = document.getElementById('lineHeightVal');
@@ -3561,6 +3806,7 @@ function changeLineHeight(v) {
     renderPreview();
     history.snapshot();
 }
+
 function changePadding(v) {
     resumeData.padding = parseInt(v);
     const l = document.getElementById('paddingVal');
@@ -3583,11 +3829,11 @@ function applyTemplate(id) {
     resumeData.photoShape = t.photoShape;
 
     const cp = document.getElementById('colorPicker');
-    const ra = document.getElementById('ribbonAccentColor');
+    const rac = document.getElementById('ribbonAccentColor');
     const fs = document.getElementById('ribbonFontFamily');
     const bg = document.getElementById('bgSelect');
     if (cp) cp.value = t.color;
-    if (ra) ra.value = t.color;
+    if (rac) rac.value = t.color;
     if (fs) fs.value = t.font;
     if (bg) bg.value = t.bg;
 
@@ -3605,7 +3851,7 @@ function applyRandomTemplate() {
 }
 
 /* ============================================================
-   RENDER PREVIEW
+   RENDER PREVIEW — FIXED
    ============================================================ */
 function renderPreview() {
     const template = TEMPLATES.find(x => x.id === currentTemplateId) || TEMPLATES[0];
@@ -3615,12 +3861,14 @@ function renderPreview() {
     const fontObj = FONTS.find(f => f.name === currentFont) || FONTS[0];
     const fontStack = fontObj.stack;
 
+    // Apply font/color/padding
     preview.style.fontFamily = fontStack;
     preview.style.fontSize = currentFontSize;
     preview.style.color = resumeData.textColor || '#333333';
     preview.style.lineHeight = resumeData.lineHeight || 1.5;
     preview.style.padding = (resumeData.padding || 35) + 'px';
 
+    // CSS var for primary color (used by :root rules)
     document.documentElement.style.setProperty('--resume-primary', currentColor);
     document.documentElement.style.setProperty('--resume-primary-rgb', hexToRgb(currentColor));
     document.documentElement.style.setProperty('--resume-font', fontStack);
@@ -3629,8 +3877,10 @@ function renderPreview() {
     document.documentElement.style.setProperty('--resume-text-color', resumeData.textColor || '#333333');
     document.documentElement.style.setProperty('--resume-line-height', resumeData.lineHeight || 1.5);
 
+    // Set class
     preview.className = 'a4-page layout-' + template.layout + ' ' + currentBg;
 
+    // Text styles
     const ts = resumeData.textStyles || {};
     preview.style.fontWeight = ts.bold ? 'bold' : '';
     preview.style.fontStyle = ts.italic ? 'italic' : '';
@@ -3647,7 +3897,7 @@ function renderPreview() {
     if (resumeData.github) contacts.push('<span><i class="fab fa-github"></i> ' + esc(resumeData.github) + '</span>');
     if (resumeData.twitter) contacts.push('<span><i class="fab fa-twitter"></i> ' + esc(resumeData.twitter) + '</span>');
 
-    // Sections
+    // Build sections
     const summaryHtml = buildSummary();
     const expHtml = buildExperience();
     const eduHtml = buildEducation();
@@ -3658,53 +3908,72 @@ function renderPreview() {
     const awardsHtml = buildAwards();
     const hobHtml = buildHobbies();
     const refHtml = buildReferences();
+    const volHtml = buildVolunteer();
+    const pubHtml = buildPublications();
+    const achHtml = buildAchievements();
+    const courseHtml = buildCourses();
+    const workHtml = buildWorkshops();
+    const membHtml = buildMemberships();
     const intHtml = buildInterests();
 
+    // Build PHOTO HTML with INLINE STYLES (bulletproof)
     const photoHtml = buildPhotoHTMLInline();
-    const photoStyle = photoContainerStyle();
-    const shapeClass = 'shape-' + resumeData.photoShape;
 
+    // Render based on layout
     if (template.layout === 'creative') {
         preview.innerHTML = 
             '<div class="resume-sidebar">' +
-                (resumeData.photo ? '<div class="sidebar-photo ' + shapeClass + '" style="' + photoStyle + '">' + photoHtml + '</div>' : '') +
+                (resumeData.photo ? '<div class="sidebar-photo" style="' + photoContainerStyle() + '">' + photoHtml + '</div>' : '') +
                 '<div class="sidebar-name">' + (esc(resumeData.name) || 'Your Name') + '</div>' +
                 '<div class="sidebar-title">' + (esc(resumeData.jobTitle) || 'Job Title') + '</div>' +
                 '<div class="resume-section"><h2>Contact</h2>' +
                     contacts.map(c => '<div class="sidebar-contact">' + c.replace('<span>', '').replace('</span>', '') + '</div>').join('') +
                 '</div>' +
                 (skillHtml ? '<div class="resume-section">' + stripWrapper(skillHtml) + '</div>' : '') +
-                langHtml + hobHtml + intHtml +
+                langHtml + hobHtml + intHtml + membHtml +
             '</div>' +
             '<div class="resume-main">' +
-                summaryHtml + expHtml + eduHtml + projHtml + certHtml + awardsHtml + refHtml +
+                summaryHtml + expHtml + eduHtml + projHtml + certHtml +
+                awardsHtml + volHtml + pubHtml + achHtml + courseHtml + workHtml + refHtml +
             '</div>';
     } else if (template.layout === 'twocolumn') {
         preview.innerHTML = 
             '<div class="resume-header">' +
-                (resumeData.photo ? '<div class="header-photo-container ' + shapeClass + '" style="display:block;' + photoStyle + '">' + photoHtml + '</div>' : '') +
-                '<div class="header-info"><h1>' + (esc(resumeData.name) || 'Your Name') + '</h1>' +
-                '<div class="job-title">' + (esc(resumeData.jobTitle) || 'Job Title') + '</div>' +
-                '<div class="contact-info">' + contacts.join('') + '</div></div></div>' +
-            '<div class="main-column">' + summaryHtml + expHtml + eduHtml + projHtml + certHtml + awardsHtml + '</div>' +
-            '<div class="side-column">' + skillHtml + langHtml + hobHtml + intHtml + refHtml + '</div>';
+                (resumeData.photo ? '<div class="header-photo-container" style="display:block;' + photoContainerStyle() + '">' + photoHtml + '</div>' : '') +
+                '<div class="header-info">' +
+                    '<h1>' + (esc(resumeData.name) || 'Your Name') + '</h1>' +
+                    '<div class="job-title">' + (esc(resumeData.jobTitle) || 'Job Title') + '</div>' +
+                    '<div class="contact-info">' + contacts.join('') + '</div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="main-column">' + summaryHtml + expHtml + eduHtml + projHtml + certHtml + awardsHtml + volHtml + pubHtml + '</div>' +
+            '<div class="side-column">' + skillHtml + langHtml + achHtml + courseHtml + workHtml + membHtml + hobHtml + intHtml + refHtml + '</div>';
     } else {
         preview.innerHTML = 
             '<div class="resume-header">' +
-                (resumeData.photo ? '<div class="header-photo-container ' + shapeClass + '" style="display:block;' + photoStyle + '">' + photoHtml + '</div>' : '') +
-                '<div class="header-info"><h1>' + (esc(resumeData.name) || 'Your Name') + '</h1>' +
-                '<div class="job-title">' + (esc(resumeData.jobTitle) || 'Job Title') + '</div>' +
-                '<div class="contact-info">' + contacts.join('') + '</div></div></div>' +
+                (resumeData.photo ? '<div class="header-photo-container" style="display:block;' + photoContainerStyle() + '">' + photoHtml + '</div>' : '') +
+                '<div class="header-info">' +
+                    '<h1>' + (esc(resumeData.name) || 'Your Name') + '</h1>' +
+                    '<div class="job-title">' + (esc(resumeData.jobTitle) || 'Job Title') + '</div>' +
+                    '<div class="contact-info">' + contacts.join('') + '</div>' +
+                '</div>' +
+            '</div>' +
             summaryHtml + expHtml + eduHtml + skillHtml + langHtml + projHtml + certHtml +
-            awardsHtml + hobHtml + intHtml + refHtml;
+            awardsHtml + volHtml + pubHtml + achHtml + courseHtml + workHtml + membHtml + hobHtml + intHtml + refHtml;
     }
 
+    // Zoom
     preview.style.transform = 'scale(' + (currentZoom / 100) + ')';
 
-    if (photoEditMode) setTimeout(attachPhotoDragListeners, 50);
+    // Re-attach drag listeners if edit mode is active
+    if (photoEditMode) {
+        setTimeout(attachPhotoDragListeners, 50);
+    }
 
+    // Sortable
     if (window.Sortable) {
-        if (preview.querySelector('.resume-section') && !preview._sortable) {
+        const hasSections = preview.querySelector('.resume-section');
+        if (hasSections && !preview._sortable) {
             try {
                 preview._sortable = new Sortable(preview, {
                     animation: 150,
@@ -3718,29 +3987,48 @@ function renderPreview() {
     }
 }
 
+/* ============================================================
+   PHOTO HTML BUILDERS (INLINE STYLES)
+   ============================================================ */
 function buildPhotoHTMLInline() {
     if (!resumeData.photo) return '';
     const filter = PHOTO_FILTERS.find(f => f.id === resumeData.photoFilter) || PHOTO_FILTERS[0];
     const imgStyle = 
-        'width:100%;height:100%;object-fit:cover;' +
+        'width:100%;' +
+        'height:100%;' +
+        'object-fit:cover;' +
         'object-position:' + resumeData.photoPosX + '% ' + resumeData.photoPosY + '%;' +
         'transform:scale(' + resumeData.photoScale + ');' +
         'filter:' + filter.css + ';' +
-        'display:block;pointer-events:none;user-select:none;-webkit-user-drag:none;';
+        'display:block;' +
+        'pointer-events:none;' +
+        'user-select:none;' +
+        '-webkit-user-drag:none;';
     return '<img src="' + resumeData.photo + '" alt="Photo" style="' + imgStyle + '">';
 }
 
 function photoContainerStyle() {
+    const shapeClass = 'shape-' + resumeData.photoShape;
     return 'width:' + resumeData.photoWidth + 'px;' +
            'height:' + resumeData.photoHeight + 'px;' +
            'border-width:' + resumeData.photoBorderWidth + 'px;' +
            'border-style:' + resumeData.photoBorderStyle + ';' +
            'border-color:' + resumeData.photoBorderColor + ';' +
            'opacity:' + resumeData.photoOpacity + ';' +
-           'overflow:hidden;background:#f0f0f0;flex-shrink:0;position:relative;';
+           'overflow:hidden;' +
+           'background:#f0f0f0;' +
+           'flex-shrink:0;' +
+           'position:relative;';
 }
 
-/* Helpers */
+/* Add shape class to header container */
+function getPhotoContainerClass() {
+    return 'shape-' + resumeData.photoShape;
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
 function hexToRgb(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -3751,17 +4039,18 @@ function hexToRgb(hex) {
 function stripWrapper(html) {
     const temp = document.createElement('div');
     temp.innerHTML = html;
-    const s = temp.querySelector('.resume-section');
-    if (!s) return html;
-    const h2 = s.querySelector('h2');
-    return '<h2>' + h2.innerHTML + '</h2>' + s.innerHTML.replace(h2.outerHTML, '');
+    const sectionEl = temp.querySelector('.resume-section');
+    if (!sectionEl) return html;
+    const h2 = sectionEl.querySelector('h2');
+    const inner = sectionEl.innerHTML.replace(h2.outerHTML, '');
+    return '<h2>' + h2.innerHTML + '</h2>' + inner;
 }
 
 function esc(text) {
     if (!text) return '';
-    const d = document.createElement('div');
-    d.textContent = text;
-    return d.innerHTML;
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 /* ============================================================
@@ -3776,14 +4065,16 @@ function buildExperience() {
     const v = resumeData.experience.filter(e => e.title || e.company);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-briefcase"></i> Work Experience</h2>' +
-        v.map(e => '<div class="resume-item"><div class="resume-item-header"><h3>' + (esc(e.title) || 'Job Title') + '</h3><span class="date">' + (esc(e.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(e.company) || 'Company') + '</div>' + (e.desc ? '<ul>' + e.desc.split('\n').map(l => l.trim() ? '<li>' + esc(l) + '</li>' : '').join('') + '</ul>' : '') + '</div>').join('') + '</div>';
+        v.map(e => '<div class="resume-item"><div class="resume-item-header"><h3>' + (esc(e.title) || 'Job Title') + '</h3><span class="date">' + (esc(e.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(e.company) || 'Company') + '</div>' + (e.desc ? '<ul>' + e.desc.split('\n').map(l => l.trim() ? '<li>' + esc(l) + '</li>' : '').join('') + '</ul>' : '') + '</div>').join('') +
+        '</div>';
 }
 
 function buildEducation() {
     const v = resumeData.education.filter(e => e.degree || e.school);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-graduation-cap"></i> Education</h2>' +
-        v.map(e => '<div class="resume-item"><div class="resume-item-header"><h3>' + (esc(e.degree) || 'Degree') + '</h3><span class="date">' + (esc(e.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(e.school) || 'School') + '</div>' + (e.desc ? '<p>' + esc(e.desc) + '</p>' : '') + '</div>').join('') + '</div>';
+        v.map(e => '<div class="resume-item"><div class="resume-item-header"><h3>' + (esc(e.degree) || 'Degree') + '</h3><span class="date">' + (esc(e.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(e.school) || 'School') + '</div>' + (e.desc ? '<p>' + esc(e.desc) + '</p>' : '') + '</div>').join('') +
+        '</div>';
 }
 
 function buildSkills() {
@@ -3803,97 +4094,179 @@ function buildLanguages() {
     const v = resumeData.languages.filter(l => l.name);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-language"></i> Languages</h2>' +
-        v.map(l => '<div class="lang-item"><span class="lang-name">' + esc(l.name) + '</span><span class="lang-level">' + (esc(l.level) || '') + '</span></div>').join('') + '</div>';
+        v.map(l => '<div class="lang-item"><span class="lang-name">' + esc(l.name) + '</span><span class="lang-level">' + (esc(l.level) || '') + '</span></div>').join('') +
+        '</div>';
 }
 
 function buildProjects() {
     const v = resumeData.projects.filter(p => p.title);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-project-diagram"></i> Projects</h2>' +
-        v.map(p => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(p.title) + '</h3></div><div class="resume-item-sub">' + (esc(p.tech) || '') + '</div>' + (p.desc ? '<p>' + esc(p.desc) + '</p>' : '') + '</div>').join('') + '</div>';
+        v.map(p => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(p.title) + '</h3></div><div class="resume-item-sub">' + (esc(p.tech) || '') + '</div>' + (p.desc ? '<p>' + esc(p.desc) + '</p>' : '') + '</div>').join('') +
+        '</div>';
 }
 
 function buildCertifications() {
     const v = resumeData.certifications.filter(c => c.name);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-certificate"></i> Certifications</h2>' +
-        v.map(c => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(c.name) + '</h3><span class="date">' + (esc(c.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(c.issuer) || '') + '</div></div>').join('') + '</div>';
+        v.map(c => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(c.name) + '</h3><span class="date">' + (esc(c.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(c.issuer) || '') + '</div></div>').join('') +
+        '</div>';
 }
 
 function buildAwards() {
     const v = resumeData.awards.filter(a => a.title);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-trophy"></i> Awards</h2>' +
-        v.map(a => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(a.title) + '</h3><span class="date">' + (esc(a.date) || '') + '</span></div>' + (a.desc ? '<p>' + esc(a.desc) + '</p>' : '') + '</div>').join('') + '</div>';
+        v.map(a => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(a.title) + '</h3><span class="date">' + (esc(a.date) || '') + '</span></div>' + (a.desc ? '<p>' + esc(a.desc) + '</p>' : '') + '</div>').join('') +
+        '</div>';
 }
 
 function buildHobbies() {
     if (!resumeData.hobbies) return '';
     return '<div class="resume-section"><h2><i class="fas fa-heart"></i> Hobbies</h2><div class="skills-list">' +
-        resumeData.hobbies.split(',').map(h => '<span class="skill-tag">' + esc(h.trim()) + '</span>').join('') + '</div></div>';
+        resumeData.hobbies.split(',').map(h => '<span class="skill-tag">' + esc(h.trim()) + '</span>').join('') +
+        '</div></div>';
 }
 
 function buildReferences() {
     const v = resumeData.references.filter(r => r.name);
     if (!v.length) return '';
     return '<div class="resume-section"><h2><i class="fas fa-users"></i> References</h2>' +
-        v.map(r => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(r.name) + '</h3></div><div class="resume-item-sub">' + (esc(r.position) || '') + (r.company ? ' at ' + esc(r.company) : '') + '</div>' + (r.contact ? '<p><i class="fas fa-envelope"></i> ' + esc(r.contact) + '</p>' : '') + '</div>').join('') + '</div>';
+        v.map(r => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(r.name) + '</h3></div><div class="resume-item-sub">' + (esc(r.position) || '') + (r.company ? ' at ' + esc(r.company) : '') + '</div>' + (r.contact ? '<p><i class="fas fa-envelope"></i> ' + esc(r.contact) + '</p>' : '') + '</div>').join('') +
+        '</div>';
+}
+
+function buildVolunteer() {
+    const v = resumeData.volunteer.filter(x => x.role || x.org);
+    if (!v.length) return '';
+    return '<div class="resume-section"><h2><i class="fas fa-hands-helping"></i> Volunteer Work</h2>' +
+        v.map(x => '<div class="resume-item"><div class="resume-item-header"><h3>' + (esc(x.role) || 'Role') + '</h3><span class="date">' + (esc(x.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(x.org) || '') + '</div>' + (x.desc ? '<p>' + esc(x.desc) + '</p>' : '') + '</div>').join('') +
+        '</div>';
+}
+
+function buildPublications() {
+    const v = resumeData.publications.filter(p => p.title);
+    if (!v.length) return '';
+    return '<div class="resume-section"><h2><i class="fas fa-book"></i> Publications</h2>' +
+        v.map(p => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(p.title) + '</h3><span class="date">' + (esc(p.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(p.publisher) || '') + '</div>' + (p.desc ? '<p>' + esc(p.desc) + '</p>' : '') + '</div>').join('') +
+        '</div>';
+}
+
+function buildAchievements() {
+    const v = resumeData.achievements.filter(a => a.title);
+    if (!v.length) return '';
+    return '<div class="resume-section"><h2><i class="fas fa-medal"></i> Achievements</h2>' +
+        v.map(a => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(a.title) + '</h3><span class="date">' + (esc(a.date) || '') + '</span></div>' + (a.desc ? '<p>' + esc(a.desc) + '</p>' : '') + '</div>').join('') +
+        '</div>';
+}
+
+function buildCourses() {
+    const v = resumeData.courses.filter(c => c.name);
+    if (!v.length) return '';
+    return '<div class="resume-section"><h2><i class="fas fa-book-open"></i> Courses</h2>' +
+        v.map(c => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(c.name) + '</h3><span class="date">' + (esc(c.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(c.platform) || '') + '</div></div>').join('') +
+        '</div>';
+}
+
+function buildWorkshops() {
+    const v = resumeData.workshops.filter(w => w.name);
+    if (!v.length) return '';
+    return '<div class="resume-section"><h2><i class="fas fa-chalkboard-teacher"></i> Workshops</h2>' +
+        v.map(w => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(w.name) + '</h3><span class="date">' + (esc(w.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(w.organizer) || '') + '</div></div>').join('') +
+        '</div>';
+}
+
+function buildMemberships() {
+    const v = resumeData.memberships.filter(m => m.org);
+    if (!v.length) return '';
+    return '<div class="resume-section"><h2><i class="fas fa-id-card"></i> Memberships</h2>' +
+        v.map(m => '<div class="resume-item"><div class="resume-item-header"><h3>' + esc(m.org) + '</h3><span class="date">' + (esc(m.date) || '') + '</span></div><div class="resume-item-sub">' + (esc(m.role) || '') + '</div></div>').join('') +
+        '</div>';
 }
 
 function buildInterests() {
     if (!resumeData.interests) return '';
     return '<div class="resume-section"><h2><i class="fas fa-star"></i> Interests</h2><div class="skills-list">' +
-        resumeData.interests.split(',').map(i => '<span class="skill-tag">' + esc(i.trim()) + '</span>').join('') + '</div></div>';
+        resumeData.interests.split(',').map(i => '<span class="skill-tag">' + esc(i.trim()) + '</span>').join('') +
+        '</div></div>';
 }
 
 /* ============================================================
-   FORM BUILDERS
+   DYNAMIC FORMS
    ============================================================ */
-function addExperience() { resumeData.experience.push({ title: '', company: '', date: '', desc: '' }); renderExperienceForm(); renderPreview(); saveData(); history.snapshot(); }
+function addExperience() {
+    resumeData.experience.push({ title: '', company: '', date: '', desc: '' });
+    renderExperienceForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderExperienceForm() {
     const c = document.getElementById('experience-container');
     if (!c) return;
     c.innerHTML = resumeData.experience.map((e, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeExperience(' + i + ')"></i>' +
-        '<div class="form-group"><label>Job Title</label><input type="text" value="' + esc(e.title) + '" oninput="updateExperience(' + i + ',\'title\',this.value)"></div>' +
-        '<div class="form-group"><label>Company</label><input type="text" value="' + esc(e.company) + '" oninput="updateExperience(' + i + ',\'company\',this.value)"></div>' +
-        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(e.date) + '" oninput="updateExperience(' + i + ',\'date\',this.value)"></div>' +
-        '<div class="form-group"><label>Description</label><textarea oninput="updateExperience(' + i + ',\'desc\',this.value)">' + esc(e.desc) + '</textarea></div>' +
-        '</div>').join('');
+        '<div class="form-group"><label>Job Title</label><input type="text" value="' + esc(e.title) + '" oninput="updateExperience(' + i + ', \'title\', this.value)"></div>' +
+        '<div class="form-group"><label>Company</label><input type="text" value="' + esc(e.company) + '" oninput="updateExperience(' + i + ', \'company\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(e.date) + '" oninput="updateExperience(' + i + ', \'date\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updateExperience(' + i + ', \'desc\', this.value)">' + esc(e.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
 }
 function updateExperience(i, f, v) { resumeData.experience[i][f] = v; saveData(); renderPreview(); }
-function removeExperience(i) { resumeData.experience.splice(i, 1); if (!resumeData.experience.length) resumeData.experience.push({ title: '', company: '', date: '', desc: '' }); renderExperienceForm(); renderPreview(); saveData(); history.snapshot(); }
+function removeExperience(i) {
+    resumeData.experience.splice(i, 1);
+    if (!resumeData.experience.length) resumeData.experience.push({ title: '', company: '', date: '', desc: '' });
+    renderExperienceForm(); renderPreview(); saveData(); history.snapshot();
+}
 
-function addEducation() { resumeData.education.push({ degree: '', school: '', date: '', desc: '' }); renderEducationForm(); renderPreview(); saveData(); history.snapshot(); }
+function addEducation() {
+    resumeData.education.push({ degree: '', school: '', date: '', desc: '' });
+    renderEducationForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderEducationForm() {
     const c = document.getElementById('education-container');
     if (!c) return;
     c.innerHTML = resumeData.education.map((e, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeEducation(' + i + ')"></i>' +
-        '<div class="form-group"><label>Degree</label><input type="text" value="' + esc(e.degree) + '" oninput="updateEducation(' + i + ',\'degree\',this.value)"></div>' +
-        '<div class="form-group"><label>School</label><input type="text" value="' + esc(e.school) + '" oninput="updateEducation(' + i + ',\'school\',this.value)"></div>' +
-        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(e.date) + '" oninput="updateEducation(' + i + ',\'date\',this.value)"></div>' +
-        '<div class="form-group"><label>Description</label><textarea oninput="updateEducation(' + i + ',\'desc\',this.value)">' + esc(e.desc) + '</textarea></div>' +
-        '</div>').join('');
+        '<div class="form-group"><label>Degree</label><input type="text" value="' + esc(e.degree) + '" oninput="updateEducation(' + i + ', \'degree\', this.value)"></div>' +
+        '<div class="form-group"><label>School</label><input type="text" value="' + esc(e.school) + '" oninput="updateEducation(' + i + ', \'school\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(e.date) + '" oninput="updateEducation(' + i + ', \'date\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updateEducation(' + i + ', \'desc\', this.value)">' + esc(e.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
 }
 function updateEducation(i, f, v) { resumeData.education[i][f] = v; saveData(); renderPreview(); }
-function removeEducation(i) { resumeData.education.splice(i, 1); if (!resumeData.education.length) resumeData.education.push({ degree: '', school: '', date: '', desc: '' }); renderEducationForm(); renderPreview(); saveData(); history.snapshot(); }
+function removeEducation(i) {
+    resumeData.education.splice(i, 1);
+    if (!resumeData.education.length) resumeData.education.push({ degree: '', school: '', date: '', desc: '' });
+    renderEducationForm(); renderPreview(); saveData(); history.snapshot();
+}
 
-function addProject() { resumeData.projects.push({ title: '', tech: '', desc: '' }); renderProjectForm(); renderPreview(); saveData(); history.snapshot(); }
+function addProject() {
+    resumeData.projects.push({ title: '', tech: '', desc: '' });
+    renderProjectForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderProjectForm() {
     const c = document.getElementById('projects-container');
     if (!c) return;
     c.innerHTML = resumeData.projects.map((p, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeProject(' + i + ')"></i>' +
-        '<div class="form-group"><label>Title</label><input type="text" value="' + esc(p.title) + '" oninput="updateProject(' + i + ',\'title\',this.value)"></div>' +
-        '<div class="form-group"><label>Technologies</label><input type="text" value="' + esc(p.tech) + '" oninput="updateProject(' + i + ',\'tech\',this.value)"></div>' +
-        '<div class="form-group"><label>Description</label><textarea oninput="updateProject(' + i + ',\'desc\',this.value)">' + esc(p.desc) + '</textarea></div>' +
-        '</div>').join('');
+        '<div class="form-group"><label>Title</label><input type="text" value="' + esc(p.title) + '" oninput="updateProject(' + i + ', \'title\', this.value)"></div>' +
+        '<div class="form-group"><label>Technologies</label><input type="text" value="' + esc(p.tech) + '" oninput="updateProject(' + i + ', \'tech\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updateProject(' + i + ', \'desc\', this.value)">' + esc(p.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
 }
 function updateProject(i, f, v) { resumeData.projects[i][f] = v; saveData(); renderPreview(); }
-function removeProject(i) { resumeData.projects.splice(i, 1); if (!resumeData.projects.length) resumeData.projects.push({ title: '', tech: '', desc: '' }); renderProjectForm(); renderPreview(); saveData(); history.snapshot(); }
+function removeProject(i) {
+    resumeData.projects.splice(i, 1);
+    if (!resumeData.projects.length) resumeData.projects.push({ title: '', tech: '', desc: '' });
+    renderProjectForm(); renderPreview(); saveData(); history.snapshot();
+}
 
-function addLanguage() { resumeData.languages.push({ name: '', level: 'Fluent' }); renderLanguageForm(); renderPreview(); saveData(); history.snapshot(); }
+function addLanguage() {
+    resumeData.languages.push({ name: '', level: 'Fluent' });
+    renderLanguageForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderLanguageForm() {
     const c = document.getElementById('languages-container');
     if (!c) return;
@@ -3901,62 +4274,191 @@ function renderLanguageForm() {
     c.innerHTML = resumeData.languages.map((l, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeLanguage(' + i + ')"></i>' +
         '<div class="form-row">' +
-            '<div class="form-group"><label>Language</label><input type="text" value="' + esc(l.name) + '" oninput="updateLanguage(' + i + ',\'name\',this.value)"></div>' +
-            '<div class="form-group"><label>Level</label><select onchange="updateLanguage(' + i + ',\'level\',this.value)">' +
+            '<div class="form-group"><label>Language</label><input type="text" value="' + esc(l.name) + '" oninput="updateLanguage(' + i + ', \'name\', this.value)"></div>' +
+            '<div class="form-group"><label>Level</label><select onchange="updateLanguage(' + i + ', \'level\', this.value)">' +
                 ['Native', 'Fluent', 'Advanced', 'Intermediate', 'Basic'].map(lv => '<option value="' + lv + '"' + (l.level === lv ? ' selected' : '') + '>' + lv + '</option>').join('') +
             '</select></div>' +
-        '</div></div>').join('');
+        '</div></div>'
+    ).join('');
 }
 function updateLanguage(i, f, v) { resumeData.languages[i][f] = v; saveData(); renderPreview(); }
 function removeLanguage(i) { resumeData.languages.splice(i, 1); renderLanguageForm(); renderPreview(); saveData(); history.snapshot(); }
 
-function addCertification() { resumeData.certifications.push({ name: '', issuer: '', date: '' }); renderCertificationForm(); renderPreview(); saveData(); history.snapshot(); }
+function addCertification() {
+    resumeData.certifications.push({ name: '', issuer: '', date: '' });
+    renderCertificationForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderCertificationForm() {
     const c = document.getElementById('certifications-container');
     if (!c) return;
     if (!resumeData.certifications.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No certifications yet.</p>'; return; }
     c.innerHTML = resumeData.certifications.map((x, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeCertification(' + i + ')"></i>' +
-        '<div class="form-group"><label>Name</label><input type="text" value="' + esc(x.name) + '" oninput="updateCertification(' + i + ',\'name\',this.value)"></div>' +
-        '<div class="form-group"><label>Issuer</label><input type="text" value="' + esc(x.issuer) + '" oninput="updateCertification(' + i + ',\'issuer\',this.value)"></div>' +
-        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(x.date) + '" oninput="updateCertification(' + i + ',\'date\',this.value)"></div>' +
-        '</div>').join('');
+        '<div class="form-group"><label>Name</label><input type="text" value="' + esc(x.name) + '" oninput="updateCertification(' + i + ', \'name\', this.value)"></div>' +
+        '<div class="form-group"><label>Issuer</label><input type="text" value="' + esc(x.issuer) + '" oninput="updateCertification(' + i + ', \'issuer\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(x.date) + '" oninput="updateCertification(' + i + ', \'date\', this.value)"></div>' +
+        '</div>'
+    ).join('');
 }
 function updateCertification(i, f, v) { resumeData.certifications[i][f] = v; saveData(); renderPreview(); }
 function removeCertification(i) { resumeData.certifications.splice(i, 1); renderCertificationForm(); renderPreview(); saveData(); history.snapshot(); }
 
-function addAward() { resumeData.awards.push({ title: '', date: '', desc: '' }); renderAwardForm(); renderPreview(); saveData(); history.snapshot(); }
+function addAward() {
+    resumeData.awards.push({ title: '', date: '', desc: '' });
+    renderAwardForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderAwardForm() {
     const c = document.getElementById('awards-container');
     if (!c) return;
     if (!resumeData.awards.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No awards yet.</p>'; return; }
     c.innerHTML = resumeData.awards.map((a, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeAward(' + i + ')"></i>' +
-        '<div class="form-group"><label>Title</label><input type="text" value="' + esc(a.title) + '" oninput="updateAward(' + i + ',\'title\',this.value)"></div>' +
-        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(a.date) + '" oninput="updateAward(' + i + ',\'date\',this.value)"></div>' +
-        '<div class="form-group"><label>Description</label><textarea oninput="updateAward(' + i + ',\'desc\',this.value)">' + esc(a.desc) + '</textarea></div>' +
-        '</div>').join('');
+        '<div class="form-group"><label>Title</label><input type="text" value="' + esc(a.title) + '" oninput="updateAward(' + i + ', \'title\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(a.date) + '" oninput="updateAward(' + i + ', \'date\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updateAward(' + i + ', \'desc\', this.value)">' + esc(a.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
 }
 function updateAward(i, f, v) { resumeData.awards[i][f] = v; saveData(); renderPreview(); }
 function removeAward(i) { resumeData.awards.splice(i, 1); renderAwardForm(); renderPreview(); saveData(); history.snapshot(); }
 
-function addReference() { resumeData.references.push({ name: '', position: '', company: '', contact: '' }); renderReferenceForm(); renderPreview(); saveData(); history.snapshot(); }
+function addReference() {
+    resumeData.references.push({ name: '', position: '', company: '', contact: '' });
+    renderReferenceForm(); renderPreview(); saveData(); history.snapshot();
+}
 function renderReferenceForm() {
     const c = document.getElementById('references-container');
     if (!c) return;
     if (!resumeData.references.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No references yet.</p>'; return; }
     c.innerHTML = resumeData.references.map((r, i) =>
         '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeReference(' + i + ')"></i>' +
-        '<div class="form-group"><label>Name</label><input type="text" value="' + esc(r.name) + '" oninput="updateReference(' + i + ',\'name\',this.value)"></div>' +
+        '<div class="form-group"><label>Name</label><input type="text" value="' + esc(r.name) + '" oninput="updateReference(' + i + ', \'name\', this.value)"></div>' +
         '<div class="form-row">' +
-            '<div class="form-group"><label>Position</label><input type="text" value="' + esc(r.position) + '" oninput="updateReference(' + i + ',\'position\',this.value)"></div>' +
-            '<div class="form-group"><label>Company</label><input type="text" value="' + esc(r.company) + '" oninput="updateReference(' + i + ',\'company\',this.value)"></div>' +
+            '<div class="form-group"><label>Position</label><input type="text" value="' + esc(r.position) + '" oninput="updateReference(' + i + ', \'position\', this.value)"></div>' +
+            '<div class="form-group"><label>Company</label><input type="text" value="' + esc(r.company) + '" oninput="updateReference(' + i + ', \'company\', this.value)"></div>' +
         '</div>' +
-        '<div class="form-group"><label>Contact</label><input type="text" value="' + esc(r.contact) + '" oninput="updateReference(' + i + ',\'contact\',this.value)"></div>' +
-        '</div>').join('');
+        '<div class="form-group"><label>Contact</label><input type="text" value="' + esc(r.contact) + '" oninput="updateReference(' + i + ', \'contact\', this.value)"></div>' +
+        '</div>'
+    ).join('');
 }
 function updateReference(i, f, v) { resumeData.references[i][f] = v; saveData(); renderPreview(); }
 function removeReference(i) { resumeData.references.splice(i, 1); renderReferenceForm(); renderPreview(); saveData(); history.snapshot(); }
+
+function addVolunteer() {
+    resumeData.volunteer.push({ role: '', org: '', date: '', desc: '' });
+    renderVolunteerForm(); renderPreview(); saveData(); history.snapshot();
+}
+function renderVolunteerForm() {
+    const c = document.getElementById('volunteer-container');
+    if (!c) return;
+    if (!resumeData.volunteer.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No volunteer work yet.</p>'; return; }
+    c.innerHTML = resumeData.volunteer.map((v, i) =>
+        '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeVolunteer(' + i + ')"></i>' +
+        '<div class="form-group"><label>Role</label><input type="text" value="' + esc(v.role) + '" oninput="updateVolunteer(' + i + ', \'role\', this.value)"></div>' +
+        '<div class="form-group"><label>Organization</label><input type="text" value="' + esc(v.org) + '" oninput="updateVolunteer(' + i + ', \'org\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(v.date) + '" oninput="updateVolunteer(' + i + ', \'date\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updateVolunteer(' + i + ', \'desc\', this.value)">' + esc(v.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
+}
+function updateVolunteer(i, f, v) { resumeData.volunteer[i][f] = v; saveData(); renderPreview(); }
+function removeVolunteer(i) { resumeData.volunteer.splice(i, 1); renderVolunteerForm(); renderPreview(); saveData(); history.snapshot(); }
+
+function addPublication() {
+    resumeData.publications.push({ title: '', publisher: '', date: '', desc: '' });
+    renderPublicationForm(); renderPreview(); saveData(); history.snapshot();
+}
+function renderPublicationForm() {
+    const c = document.getElementById('publications-container');
+    if (!c) return;
+    if (!resumeData.publications.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No publications yet.</p>'; return; }
+    c.innerHTML = resumeData.publications.map((p, i) =>
+        '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removePublication(' + i + ')"></i>' +
+        '<div class="form-group"><label>Title</label><input type="text" value="' + esc(p.title) + '" oninput="updatePublication(' + i + ', \'title\', this.value)"></div>' +
+        '<div class="form-group"><label>Publisher</label><input type="text" value="' + esc(p.publisher) + '" oninput="updatePublication(' + i + ', \'publisher\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(p.date) + '" oninput="updatePublication(' + i + ', \'date\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updatePublication(' + i + ', \'desc\', this.value)">' + esc(p.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
+}
+function updatePublication(i, f, v) { resumeData.publications[i][f] = v; saveData(); renderPreview(); }
+function removePublication(i) { resumeData.publications.splice(i, 1); renderPublicationForm(); renderPreview(); saveData(); history.snapshot(); }
+
+function addAchievement() {
+    resumeData.achievements.push({ title: '', date: '', desc: '' });
+    renderAchievementForm(); renderPreview(); saveData(); history.snapshot();
+}
+function renderAchievementForm() {
+    const c = document.getElementById('achievements-container');
+    if (!c) return;
+    if (!resumeData.achievements.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No achievements yet.</p>'; return; }
+    c.innerHTML = resumeData.achievements.map((a, i) =>
+        '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeAchievement(' + i + ')"></i>' +
+        '<div class="form-group"><label>Title</label><input type="text" value="' + esc(a.title) + '" oninput="updateAchievement(' + i + ', \'title\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(a.date) + '" oninput="updateAchievement(' + i + ', \'date\', this.value)"></div>' +
+        '<div class="form-group"><label>Description</label><textarea oninput="updateAchievement(' + i + ', \'desc\', this.value)">' + esc(a.desc) + '</textarea></div>' +
+        '</div>'
+    ).join('');
+}
+function updateAchievement(i, f, v) { resumeData.achievements[i][f] = v; saveData(); renderPreview(); }
+function removeAchievement(i) { resumeData.achievements.splice(i, 1); renderAchievementForm(); renderPreview(); saveData(); history.snapshot(); }
+
+function addCourse() {
+    resumeData.courses.push({ name: '', platform: '', date: '' });
+    renderCourseForm(); renderPreview(); saveData(); history.snapshot();
+}
+function renderCourseForm() {
+    const c = document.getElementById('courses-container');
+    if (!c) return;
+    if (!resumeData.courses.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No courses yet.</p>'; return; }
+    c.innerHTML = resumeData.courses.map((x, i) =>
+        '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeCourse(' + i + ')"></i>' +
+        '<div class="form-group"><label>Course Name</label><input type="text" value="' + esc(x.name) + '" oninput="updateCourse(' + i + ', \'name\', this.value)"></div>' +
+        '<div class="form-group"><label>Platform</label><input type="text" value="' + esc(x.platform) + '" oninput="updateCourse(' + i + ', \'platform\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(x.date) + '" oninput="updateCourse(' + i + ', \'date\', this.value)"></div>' +
+        '</div>'
+    ).join('');
+}
+function updateCourse(i, f, v) { resumeData.courses[i][f] = v; saveData(); renderPreview(); }
+function removeCourse(i) { resumeData.courses.splice(i, 1); renderCourseForm(); renderPreview(); saveData(); history.snapshot(); }
+
+function addWorkshop() {
+    resumeData.workshops.push({ name: '', organizer: '', date: '' });
+    renderWorkshopForm(); renderPreview(); saveData(); history.snapshot();
+}
+function renderWorkshopForm() {
+    const c = document.getElementById('workshops-container');
+    if (!c) return;
+    if (!resumeData.workshops.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No workshops yet.</p>'; return; }
+    c.innerHTML = resumeData.workshops.map((w, i) =>
+        '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeWorkshop(' + i + ')"></i>' +
+        '<div class="form-group"><label>Name</label><input type="text" value="' + esc(w.name) + '" oninput="updateWorkshop(' + i + ', \'name\', this.value)"></div>' +
+        '<div class="form-group"><label>Organizer</label><input type="text" value="' + esc(w.organizer) + '" oninput="updateWorkshop(' + i + ', \'organizer\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(w.date) + '" oninput="updateWorkshop(' + i + ', \'date\', this.value)"></div>' +
+        '</div>'
+    ).join('');
+}
+function updateWorkshop(i, f, v) { resumeData.workshops[i][f] = v; saveData(); renderPreview(); }
+function removeWorkshop(i) { resumeData.workshops.splice(i, 1); renderWorkshopForm(); renderPreview(); saveData(); history.snapshot(); }
+
+function addMembership() {
+    resumeData.memberships.push({ org: '', role: '', date: '' });
+    renderMembershipForm(); renderPreview(); saveData(); history.snapshot();
+}
+function renderMembershipForm() {
+    const c = document.getElementById('memberships-container');
+    if (!c) return;
+    if (!resumeData.memberships.length) { c.innerHTML = '<p style="font-size:12px;color:#888;text-align:center;">No memberships yet.</p>'; return; }
+    c.innerHTML = resumeData.memberships.map((m, i) =>
+        '<div class="dynamic-item"><i class="fas fa-trash remove-btn" onclick="removeMembership(' + i + ')"></i>' +
+        '<div class="form-group"><label>Organization</label><input type="text" value="' + esc(m.org) + '" oninput="updateMembership(' + i + ', \'org\', this.value)"></div>' +
+        '<div class="form-group"><label>Role</label><input type="text" value="' + esc(m.role) + '" oninput="updateMembership(' + i + ', \'role\', this.value)"></div>' +
+        '<div class="form-group"><label>Date</label><input type="text" value="' + esc(m.date) + '" oninput="updateMembership(' + i + ', \'date\', this.value)"></div>' +
+        '</div>'
+    ).join('');
+}
+function updateMembership(i, f, v) { resumeData.memberships[i][f] = v; saveData(); renderPreview(); }
+function removeMembership(i) { resumeData.memberships.splice(i, 1); renderMembershipForm(); renderPreview(); saveData(); history.snapshot(); }
 
 /* ============================================================
    FONT / SIZE / COLOR
@@ -3967,19 +4469,25 @@ function changeFont(f) {
     const h = document.getElementById('fontSelect');
     if (r) r.value = f;
     if (h) h.value = f;
-    saveData(); renderPreview(); history.snapshot();
+    saveData();
+    renderPreview();
+    history.snapshot();
 }
 
 function changeFontSize(s) {
     currentFontSize = s;
     const n = parseFloat(s);
-    ['fontSizeSelect', 'ribbonFontSize', 'ribbonFontSizeSlider'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = id === 'fontSizeSelect' ? s : n;
-    });
-    const l = document.getElementById('fontSizeVal');
-    if (l) l.textContent = n;
-    saveData(); renderPreview(); history.snapshot();
+    const f1 = document.getElementById('fontSizeSelect');
+    const f2 = document.getElementById('ribbonFontSize');
+    const f3 = document.getElementById('ribbonFontSizeSlider');
+    const f4 = document.getElementById('fontSizeVal');
+    if (f1) f1.value = s;
+    if (f2) f2.value = n;
+    if (f3) f3.value = n;
+    if (f4) f4.textContent = n;
+    saveData();
+    renderPreview();
+    history.snapshot();
 }
 
 function changeColor(c) {
@@ -3988,18 +4496,22 @@ function changeColor(c) {
     const ra = document.getElementById('ribbonAccentColor');
     if (cp) cp.value = c;
     if (ra) ra.value = c;
-    saveData(); renderPreview(); history.snapshot();
+    saveData();
+    renderPreview();
+    history.snapshot();
 }
 
 function changeBackground(b) {
     currentBg = b;
     const bg = document.getElementById('bgSelect');
     if (bg) bg.value = b;
-    saveData(); renderPreview(); history.snapshot();
+    saveData();
+    renderPreview();
+    history.snapshot();
 }
 
 /* ============================================================
-   ZOOM
+   ZOOM / FULLSCREEN
    ============================================================ */
 function changeZoom(d) {
     currentZoom = Math.max(30, Math.min(200, currentZoom + d));
@@ -4028,9 +4540,17 @@ function toggleFullscreen() {
 /* ============================================================
    UNDO / REDO
    ============================================================ */
-function undoAction() { if (history.undo()) showToast('Undone', 'info'); else showToast('Nothing to undo', 'info'); }
-function redoAction() { if (history.redo()) showToast('Redone', 'info'); else showToast('Nothing to redo', 'info'); }
+function undoAction() {
+    if (history.undo()) showToast('Undone', 'info');
+    else showToast('Nothing to undo', 'info');
+}
 
+function redoAction() {
+    if (history.redo()) showToast('Redone', 'info');
+    else showToast('Nothing to redo', 'info');
+}
+
+/* Keyboard */
 document.addEventListener('keydown', e => {
     const ctrl = e.ctrlKey || e.metaKey;
     if (!ctrl) return;
@@ -4039,10 +4559,13 @@ document.addEventListener('keydown', e => {
     else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redoAction(); }
     else if (k === 's') { e.preventDefault(); saveData(); showToast('Saved'); }
     else if (k === 'p') { e.preventDefault(); window.print(); }
+    else if (k === 'b') { e.preventDefault(); toggleTextStyle('bold'); }
+    else if (k === 'i') { e.preventDefault(); toggleTextStyle('italic'); }
+    else if (k === 'u') { e.preventDefault(); toggleTextStyle('underline'); }
 });
 
 /* ============================================================
-   EXPORT / IMPORT
+   EXPORT / IMPORT — FIXED
    ============================================================ */
 function exportJSON() {
     try {
@@ -4053,10 +4576,11 @@ function exportJSON() {
             fontSize: currentFontSize,
             color: currentColor,
             bg: currentBg,
-            version: '5.0',
+            version: '4.0',
             exportedAt: new Date().toISOString()
         };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -4065,8 +4589,9 @@ function exportJSON() {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1500);
-        showToast('Exported successfully');
+        showToast('Resume exported successfully');
     } catch(e) {
+        console.error(e);
         showToast('Export failed: ' + e.message, 'error');
     }
 }
@@ -4092,9 +4617,10 @@ function importJSON(event) {
             showToast('Imported! Reloading...');
             setTimeout(() => location.reload(), 800);
         } catch(err) {
-            showToast('Could not read file', 'error');
+            showToast('Could not read file: ' + err.message, 'error');
         }
     };
+    reader.onerror = () => showToast('Failed to read file', 'error');
     reader.readAsText(file);
     event.target.value = '';
 }
@@ -4103,13 +4629,13 @@ function importJSON(event) {
    RESET
    ============================================================ */
 function resetResume() {
-    if (!confirm("Reset ALL data? Cannot be undone.")) return;
-    ['omniResumeV5','omniTplV5','omniFontV5','omniFontSizeV5','omniColorV5','omniBgV5'].forEach(k => localStorage.removeItem(k));
+    if (!confirm("Reset ALL data? This cannot be undone.")) return;
+    ['omniResumeV4','omniTplV4','omniFontV4','omniFontSizeV4','omniColorV4','omniBgV4'].forEach(k => localStorage.removeItem(k));
     location.reload();
 }
 
 function clearAllData() {
-    if (!confirm("Clear all data?")) return;
+    if (!confirm("Clear all resume data?")) return;
     resetResume();
 }
 
@@ -4117,7 +4643,8 @@ function clearAllData() {
    SAMPLE DATA
    ============================================================ */
 function loadSampleData() {
-    if (!confirm("Load sample data? Overwrites current.")) return;
+    if (!confirm("Load sample data? Current data will be overwritten.")) return;
+
     resumeData = JSON.parse(JSON.stringify(defaultData));
     resumeData.name = 'Alexandra Johnson';
     resumeData.jobTitle = 'Senior Product Designer';
@@ -4128,27 +4655,36 @@ function loadSampleData() {
     resumeData.website = 'alexjohnson.design';
     resumeData.github = 'github.com/alexjohnson';
     resumeData.twitter = '@alexdesigns';
-    resumeData.summary = 'Innovative Senior Product Designer with 8+ years of experience crafting user-centered digital products.';
-    resumeData.skills = 'Figma, Sketch, Adobe XD, User Research, Prototyping, Design Systems, HTML/CSS';
+    resumeData.summary = 'Innovative Senior Product Designer with 8+ years of experience crafting user-centered digital products. Proven track record of leading design teams, driving product strategy, and delivering pixel-perfect interfaces.';
+    resumeData.skills = 'Figma, Sketch, Adobe XD, User Research, Prototyping, Design Systems, HTML/CSS, JavaScript';
     resumeData.hobbies = 'Photography, Hiking, Coffee Brewing, Travel';
     resumeData.interests = 'Design Trends, AI/ML, Sustainable Tech';
     resumeData.experience = [
-        { title: 'Senior Product Designer', company: 'TechFlow Inc.', date: '2021 - Present', desc: 'Led design for flagship SaaS product with 500K+ users\nMentored 4 junior designers' },
-        { title: 'Product Designer', company: 'Creative Labs', date: '2018 - 2021', desc: 'Designed B2B analytics dashboard' }
+        { title: 'Senior Product Designer', company: 'TechFlow Inc.', date: '2021 - Present', desc: 'Led design for flagship SaaS product with 500K+ users\nMentored 4 junior designers\nIncreased user retention by 32%' },
+        { title: 'Product Designer', company: 'Creative Labs', date: '2018 - 2021', desc: 'Designed B2B analytics dashboard\nCollaborated with engineering to ship 20+ features' }
     ];
     resumeData.education = [
-        { degree: 'MFA in Interaction Design', school: 'California College of the Arts', date: '2016 - 2018', desc: 'Graduated with honors' }
+        { degree: 'MFA in Interaction Design', school: 'California College of the Arts', date: '2016 - 2018', desc: 'Graduated with honors' },
+        { degree: 'BFA in Graphic Design', school: 'Rhode Island School of Design', date: '2012 - 2016', desc: "Dean's List" }
     ];
     resumeData.projects = [
-        { title: 'Design System Library', tech: 'Figma, Storybook', desc: 'Built component library used across 15 products.' }
+        { title: 'Design System Library', tech: 'Figma, Storybook, React', desc: 'Built comprehensive component library used across 15 products.' }
     ];
     resumeData.languages = [
         { name: 'English', level: 'Native' },
-        { name: 'Spanish', level: 'Fluent' }
+        { name: 'Spanish', level: 'Fluent' },
+        { name: 'French', level: 'Intermediate' }
     ];
     resumeData.certifications = [
         { name: 'Google UX Design Professional', issuer: 'Google', date: '2022' }
     ];
+    resumeData.awards = [
+        { title: 'Design Excellence Award', date: '2023', desc: 'Outstanding contribution to product design.' }
+    ];
+    resumeData.references = [
+        { name: 'Sarah Chen', position: 'VP of Product', company: 'TechFlow Inc.', contact: 'sarah.chen@techflow.com' }
+    ];
+
     saveData();
     location.reload();
 }
@@ -4157,57 +4693,83 @@ function loadSampleData() {
    HELP
    ============================================================ */
 function showShortcuts() {
-    alert("KEYBOARD SHORTCUTS\n\nCtrl+Z — Undo\nCtrl+Y — Redo\nCtrl+S — Save\nCtrl+P — Print\n\nTIP: Use Crop feature to crop photo before placing!");
+    alert(
+        "KEYBOARD SHORTCUTS\n\n" +
+        "Ctrl+Z  —  Undo\n" +
+        "Ctrl+Y  —  Redo\n" +
+        "Ctrl+S  —  Save\n" +
+        "Ctrl+P  —  Print / Save PDF\n" +
+        "Ctrl+B  —  Bold\n" +
+        "Ctrl+I  —  Italic\n" +
+        "Ctrl+U  —  Underline\n\n" +
+        "TIP: Enable 'Edit / Drag' in Photo tab to drag your photo."
+    );
 }
 
 function showAbout() {
-    alert("Ultimate Resume Maker Pro v5.0\n\n• 100 Templates\n• 100 Fonts\n• 30 Photo Shapes\n• 10 Borders\n• 15 Filters\n• Crop Studio (NEW!)\n• Drag-and-drop photo\n• Full Undo/Redo");
+    alert(
+        "Ultimate Resume Maker Pro v4.0\n\n" +
+        "Client-side resume builder with MS Office-style interface.\n\n" +
+        "• 100 Templates\n" +
+        "• 100 Fonts\n" +
+        "• 30 Photo Shapes\n" +
+        "• 10 Border Styles\n" +
+        "• 15 Photo Filters\n" +
+        "• 20 Resume Sections\n" +
+        "• Drag-and-drop photo\n" +
+        "• Full Undo/Redo history\n\n" +
+        "100% Private — Data stays in your browser."
+    );
 }
 
 /* ============================================================
    INITIALIZATION
    ============================================================ */
 function init() {
-    // Templates
-    const tpl = document.getElementById('templateSelect');
-    if (tpl) {
-        let lastL = '', html = '';
+    // Populate templates
+    const tplSel = document.getElementById('templateSelect');
+    if (tplSel) {
+        let lastLayout = '', html = '';
         TEMPLATES.forEach(t => {
-            if (t.layoutName !== lastL) {
-                if (lastL !== '') html += '</optgroup>';
+            if (t.layoutName !== lastLayout) {
+                if (lastLayout !== '') html += '</optgroup>';
                 html += '<optgroup label="' + t.layoutName + '">';
-                lastL = t.layoutName;
+                lastLayout = t.layoutName;
             }
             html += '<option value="' + t.id + '"' + (t.id === currentTemplateId ? ' selected' : '') + '>' + t.id + '. ' + t.name + '</option>';
         });
         html += '</optgroup>';
-        tpl.innerHTML = html;
+        tplSel.innerHTML = html;
     }
 
-    // Fonts
+    // Populate fonts
     const cats = ['Sans', 'Serif', 'Display', 'Script', 'System'];
-    let fh = '';
+    let fontHtml = '';
     cats.forEach(cat => {
-        const list = FONTS.filter(f => f.cat === cat);
-        if (!list.length) return;
-        fh += '<optgroup label="' + cat + ' (' + list.length + ')">';
-        list.forEach(f => {
-            fh += '<option value="' + f.name + '"' + (f.name === currentFont ? ' selected' : '') + '>' + f.name + '</option>';
+        const fonts = FONTS.filter(f => f.cat === cat);
+        if (!fonts.length) return;
+        fontHtml += '<optgroup label="' + cat + ' (' + fonts.length + ')">';
+        fonts.forEach(f => {
+            fontHtml += '<option value="' + f.name + '"' + (f.name === currentFont ? ' selected' : '') + '>' + f.name + '</option>';
         });
-        fh += '</optgroup>';
+        fontHtml += '</optgroup>';
     });
 
-    const rF = document.getElementById('ribbonFontFamily');
-    const hF = document.getElementById('fontSelect');
-    if (rF) rF.innerHTML = fh;
-    if (hF) { hF.innerHTML = fh; hF.value = currentFont; }
+    const rFont = document.getElementById('ribbonFontFamily');
+    const hFont = document.getElementById('fontSelect');
+    if (rFont) rFont.innerHTML = fontHtml;
+    if (hFont) { hFont.innerHTML = fontHtml; hFont.value = currentFont; }
 
     // Restore UI
     const fs = parseFloat(currentFontSize);
-    ['fontSizeSelect'].forEach(id => { const e = document.getElementById(id); if (e) e.value = currentFontSize; });
-    ['ribbonFontSize', 'ribbonFontSizeSlider'].forEach(id => { const e = document.getElementById(id); if (e) e.value = fs; });
-    const fsl = document.getElementById('fontSizeVal');
-    if (fsl) fsl.textContent = fs;
+    const f1 = document.getElementById('fontSizeSelect');
+    const f2 = document.getElementById('ribbonFontSize');
+    const f3 = document.getElementById('ribbonFontSizeSlider');
+    const f4 = document.getElementById('fontSizeVal');
+    if (f1) f1.value = currentFontSize;
+    if (f2) f2.value = fs;
+    if (f3) f3.value = fs;
+    if (f4) f4.textContent = fs;
 
     const cp = document.getElementById('colorPicker');
     const ra = document.getElementById('ribbonAccentColor');
@@ -4242,23 +4804,29 @@ function init() {
     if (pd) pd.value = resumeData.padding || 35;
     if (pdl) pdl.textContent = resumeData.padding || 35;
 
+    // Text styles
     const ts = resumeData.textStyles || {};
     ['bold','italic','underline','uppercase'].forEach(s => {
-        const b = document.getElementById('btn' + s.charAt(0).toUpperCase() + s.slice(1));
-        if (b) b.classList.toggle('active', ts[s]);
+        const btnId = 'btn' + s.charAt(0).toUpperCase() + s.slice(1);
+        const btn = document.getElementById(btnId);
+        if (btn) btn.classList.toggle('active', ts[s]);
     });
 
+    // Alignment
     const align = resumeData.textAlign || 'center';
     ['Left', 'Center', 'Right', 'Justify'].forEach(a => {
-        const b = document.getElementById('btnAlign' + a);
-        if (b) b.classList.toggle('active', a.toLowerCase() === align);
+        const btn = document.getElementById('btnAlign' + a);
+        if (btn) btn.classList.toggle('active', a.toLowerCase() === align);
     });
 
+    // Photo controls
     syncPhotoControls();
 
+    // Filter index
     currentFilterIndex = PHOTO_FILTERS.findIndex(f => f.id === resumeData.photoFilter);
     if (currentFilterIndex < 0) currentFilterIndex = 0;
 
+    // Render all forms
     renderExperienceForm();
     renderEducationForm();
     renderProjectForm();
@@ -4266,10 +4834,20 @@ function init() {
     renderCertificationForm();
     renderAwardForm();
     renderReferenceForm();
+    renderVolunteerForm();
+    renderPublicationForm();
+    renderAchievementForm();
+    renderCourseForm();
+    renderWorkshopForm();
+    renderMembershipForm();
 
+    // Initial render
     renderPreview();
+
+    // Clear history
     history.clear();
 
+    // Sortable
     try {
         const p = document.getElementById('resumePreview');
         new Sortable(p, {
@@ -4281,17 +4859,20 @@ function init() {
         });
     } catch(e) {}
 
-    setTimeout(() => showToast('Resume Maker Pro loaded. Upload photo to crop!', 'info'), 600);
+    // Welcome
+    setTimeout(() => showToast('Resume Maker Pro loaded. Try "Photo > Edit / Drag"!', 'info'), 600);
 }
 
-let snapTimer;
+/* Debounced snapshot for inputs */
+let snapshotTimer;
 document.addEventListener('input', e => {
     if (e.target.matches('input[type="text"], input[type="email"], textarea')) {
-        clearTimeout(snapTimer);
-        snapTimer = setTimeout(() => history.snapshot(), 1200);
+        clearTimeout(snapshotTimer);
+        snapshotTimer = setTimeout(() => history.snapshot(), 1200);
     }
 });
 
+/* Start */
 window.addEventListener('load', init);
 </script>
 
