@@ -4069,59 +4069,348 @@ async function downloadPDF() {
 }
 
 /* ============================================================
-   EXPORT TO MS WORD (.doc)
-   Word opens HTML files natively and preserves:
-   - Colors, fonts, images (base64), tables, lists
-   - Auto page-breaks (no manual slicing needed!)
+   EXPORT TO MS WORD (.doc) — Clean build from resumeData
+   Word ko flex/grid nahi samajh aata, isliye hum HTML seedha
+   resumeData se banate hain — sirf tables, lists, basic colors.
    ============================================================ */
 function downloadWord() {
-    const element = document.getElementById('resumePreview');
-    if (!element) { showToast('Preview not found', 'error'); return; }
-
-    showToast('Generating Word file...', 'info');
-
     try {
-        // Save & reset preview transform so clone is clean
-        const oldTransform = element.style.transform;
-        const oldBoxShadow = element.style.boxShadow;
-        element.style.transform = 'none';
-        element.style.boxShadow = 'none';
+        showToast('Generating Word file...', 'info');
 
-        // Clone the preview
-        const clone = element.cloneNode(true);
-
-        // Restore preview
-        element.style.transform = oldTransform;
-        element.style.boxShadow = oldBoxShadow;
-
-        // 1) Inline all computed styles (so Word doesn't need external CSS)
-        inlineComputedStyles(element, clone);
-
-        // 2) Replace Font Awesome icons with Unicode symbols
-        replaceIconsForWord(clone);
-
-        // 3) Convert flex/grid layouts to table layouts (Word-friendly)
-        convertLayoutsForWord(clone);
-
-        // 4) Ensure outer container is clean
-        clone.style.width = '100%';
-        clone.style.maxWidth = '100%';
-        clone.style.minHeight = 'auto';
-        clone.style.boxShadow = 'none';
-        clone.style.margin = '0';
-        clone.style.transform = 'none';
-        clone.style.padding = '0';
-
-        // 5) Build the Word-compatible HTML document
+        const html = buildWordDocument();
         const fileName = ((resumeData.name || 'resume').trim().replace(/[^a-z0-9]/gi, '_') || 'resume') + '.doc';
 
-        const html = `
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
+        const blob = new Blob(['\ufeff', html], { type: 'application/msword;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+        showToast('✅ Word file downloaded!');
+    } catch (err) {
+        console.error(err);
+        showToast('Word export failed: ' + err.message, 'error');
+    }
+}
+
+
+/* ---------- Build clean Word-friendly HTML ---------- */
+function buildWordDocument() {
+    const d = resumeData;
+    const primary = currentColor || '#2563eb';
+    const name = esc(d.name) || 'Your Name';
+    const jobTitle = esc(d.jobTitle) || '';
+
+    // ---- Contact line ----
+    const contacts = [];
+    if (d.email)    contacts.push('✉ ' + esc(d.email));
+    if (d.phone)    contacts.push('☎ ' + esc(d.phone));
+    if (d.location) contacts.push('⌂ ' + esc(d.location));
+    if (d.linkedin) contacts.push('in ' + esc(d.linkedin));
+    if (d.website)  contacts.push('◉ ' + esc(d.website));
+    if (d.github)   contacts.push('◈ ' + esc(d.github));
+    if (d.twitter)  contacts.push('@ ' + esc(d.twitter));
+
+    const contactsHtml = contacts.map(c =>
+        `<span style="display:inline-block;margin:0 10px 4px 0;font-size:11pt;color:#555555;">${c}</span>`
+    ).join('');
+
+    // ---- Header (photo + name) using simple table ----
+    let headerHtml;
+    if (d.photo) {
+        headerHtml = `
+<table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
+  <tr>
+    <td style="width:140px;vertical-align:top;padding-right:20px;">
+      <img src="${d.photo}" width="120" height="120" alt="Photo"
+           style="width:120px;height:120px;border-radius:50%;border:3px solid ${primary};" />
+    </td>
+    <td style="vertical-align:top;">
+      <h1 style="color:${primary};font-family:Calibri,Arial,sans-serif;font-size:26pt;font-weight:bold;margin:0 0 6pt 0;text-transform:uppercase;letter-spacing:1pt;">${name}</h1>
+      ${jobTitle ? `<p style="font-family:Calibri,Arial,sans-serif;font-size:13pt;color:#555555;margin:0 0 10pt 0;">${jobTitle}</p>` : ''}
+      <div>${contactsHtml}</div>
+    </td>
+  </tr>
+</table>`;
+    } else {
+        headerHtml = `
+<h1 style="color:${primary};font-family:Calibri,Arial,sans-serif;font-size:28pt;font-weight:bold;margin:0 0 6pt 0;text-transform:uppercase;letter-spacing:1pt;text-align:center;">${name}</h1>
+${jobTitle ? `<p style="font-family:Calibri,Arial,sans-serif;font-size:13pt;color:#555555;margin:0 0 10pt 0;text-align:center;">${jobTitle}</p>` : ''}
+<div style="text-align:center;margin-bottom:20pt;">${contactsHtml}</div>`;
+    }
+
+    // ---- Section helper ----
+    const secHeader = (title) =>
+        `<h2 style="font-family:Calibri,Arial,sans-serif;font-size:13pt;font-weight:bold;color:${primary};text-transform:uppercase;letter-spacing:1pt;margin:16pt 0 8pt 0;padding-bottom:4pt;border-bottom:2pt solid ${primary};">${title}</h2>`;
+
+    // ---- Summary ----
+    let summaryHtml = '';
+    if (d.summary) {
+        summaryHtml = secHeader('Professional Summary') +
+            `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;margin:0 0 10pt 0;">${esc(d.summary)}</p>`;
+    }
+
+    // ---- Experience ----
+    let expHtml = '';
+    const expValid = d.experience.filter(e => e.title || e.company);
+    if (expValid.length) {
+        expHtml = secHeader('Work Experience');
+        expValid.forEach(e => {
+            expHtml += `
+<table style="width:100%;border-collapse:collapse;margin:0 0 8pt 0;">
+  <tr>
+    <td style="vertical-align:top;">
+      <strong style="font-family:Calibri,Arial,sans-serif;font-size:11.5pt;color:#222222;">${esc(e.title) || 'Job Title'}</strong>
+    </td>
+    <td style="vertical-align:top;text-align:right;width:150px;">
+      <em style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#666666;">${esc(e.date) || ''}</em>
+    </td>
+  </tr>
+</table>
+<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#444444;font-style:italic;margin:0 0 4pt 0;">${esc(e.company) || ''}</p>`;
+            if (e.desc) {
+                expHtml += '<ul style="margin:2pt 0 10pt 20pt;padding:0;">';
+                e.desc.split('\n').forEach(l => {
+                    if (l.trim()) expHtml += `<li style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;line-height:1.4;margin-bottom:2pt;">${esc(l)}</li>`;
+                });
+                expHtml += '</ul>';
+            }
+        });
+    }
+
+    // ---- Education ----
+    let eduHtml = '';
+    const eduValid = d.education.filter(e => e.degree || e.school);
+    if (eduValid.length) {
+        eduHtml = secHeader('Education');
+        eduValid.forEach(e => {
+            eduHtml += `
+<table style="width:100%;border-collapse:collapse;margin:0 0 8pt 0;">
+  <tr>
+    <td style="vertical-align:top;">
+      <strong style="font-family:Calibri,Arial,sans-serif;font-size:11.5pt;color:#222222;">${esc(e.degree) || 'Degree'}</strong>
+    </td>
+    <td style="vertical-align:top;text-align:right;width:150px;">
+      <em style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#666666;">${esc(e.date) || ''}</em>
+    </td>
+  </tr>
+</table>
+<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#444444;font-style:italic;margin:0 0 4pt 0;">${esc(e.school) || ''}</p>
+${e.desc ? `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555555;margin:0 0 10pt 0;">${esc(e.desc)}</p>` : ''}`;
+        });
+    }
+
+    // ---- Skills ----
+    let skillHtml = '';
+    if (d.skills) {
+        const skills = d.skills.split(',').map(s => s.trim()).filter(Boolean);
+        if (skills.length) {
+            skillHtml = secHeader('Skills');
+            if (d.skillStyle === 'bars') {
+                skills.forEach(s => {
+                    skillHtml += `
+<table style="width:100%;border-collapse:collapse;margin:0 0 6pt 0;">
+  <tr><td style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;font-weight:bold;">${esc(s)}</td>
+      <td style="text-align:right;font-family:Calibri,Arial,sans-serif;font-size:10pt;color:${primary};">85%</td></tr>
+</table>`;
+                });
+            } else {
+                skillHtml += '<p style="margin:0 0 10pt 0;font-family:Calibri,Arial,sans-serif;font-size:10.5pt;">';
+                skillHtml += skills.map(s => `<span style="display:inline-block;background:#eef3ff;color:${primary};padding:3pt 8pt;margin:0 4pt 4pt 0;border:1pt solid ${primary};border-radius:8pt;font-size:10pt;">${esc(s)}</span>`).join('');
+                skillHtml += '</p>';
+            }
+        }
+    }
+
+    // ---- Languages ----
+    let langHtml = '';
+    const langValid = d.languages.filter(l => l.name);
+    if (langValid.length) {
+        langHtml = secHeader('Languages');
+        langHtml += '<table style="width:100%;border-collapse:collapse;">';
+        langValid.forEach(l => {
+            langHtml += `<tr>
+              <td style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;font-weight:bold;padding:2pt 0;">${esc(l.name)}</td>
+              <td style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#666666;font-style:italic;text-align:right;padding:2pt 0;">${esc(l.level) || ''}</td>
+            </tr>`;
+        });
+        langHtml += '</table>';
+    }
+
+    // ---- Projects ----
+    let projHtml = '';
+    const projValid = d.projects.filter(p => p.title);
+    if (projValid.length) {
+        projHtml = secHeader('Projects');
+        projValid.forEach(p => {
+            projHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11.5pt;font-weight:bold;margin:0 0 2pt 0;">${esc(p.title)}</p>`;
+            if (p.tech) projHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#666666;font-style:italic;margin:0 0 2pt 0;">${esc(p.tech)}</p>`;
+            if (p.desc) projHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555555;margin:0 0 10pt 0;">${esc(p.desc)}</p>`;
+        });
+    }
+
+    // ---- Certifications ----
+    let certHtml = '';
+    const certValid = d.certifications.filter(c => c.name);
+    if (certValid.length) {
+        certHtml = secHeader('Certifications');
+        certValid.forEach(c => {
+            certHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(c.name)}</strong>${c.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(c.date) + '</em>' : ''}</p>`;
+            if (c.issuer) certHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#555;font-style:italic;margin:0 0 8pt 0;">${esc(c.issuer)}</p>`;
+        });
+    }
+
+    // ---- Awards ----
+    let awardsHtml = '';
+    const awardsValid = d.awards.filter(a => a.title);
+    if (awardsValid.length) {
+        awardsHtml = secHeader('Awards');
+        awardsValid.forEach(a => {
+            awardsHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(a.title)}</strong>${a.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(a.date) + '</em>' : ''}</p>`;
+            if (a.desc) awardsHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555;margin:0 0 8pt 0;">${esc(a.desc)}</p>`;
+        });
+    }
+
+    // ---- Hobbies ----
+    let hobHtml = '';
+    if (d.hobbies) {
+        const hobbies = d.hobbies.split(',').map(h => h.trim()).filter(Boolean);
+        if (hobbies.length) {
+            hobHtml = secHeader('Hobbies');
+            hobHtml += '<p style="margin:0 0 10pt 0;font-family:Calibri,Arial,sans-serif;font-size:10.5pt;">';
+            hobHtml += hobbies.map(h => `<span style="display:inline-block;background:#eef3ff;color:${primary};padding:3pt 8pt;margin:0 4pt 4pt 0;border:1pt solid ${primary};border-radius:8pt;font-size:10pt;">${esc(h)}</span>`).join('');
+            hobHtml += '</p>';
+        }
+    }
+
+    // ---- Interests ----
+    let intHtml = '';
+    if (d.interests) {
+        const ints = d.interests.split(',').map(i => i.trim()).filter(Boolean);
+        if (ints.length) {
+            intHtml = secHeader('Interests');
+            intHtml += '<p style="margin:0 0 10pt 0;font-family:Calibri,Arial,sans-serif;font-size:10.5pt;">';
+            intHtml += ints.map(i => `<span style="display:inline-block;background:#eef3ff;color:${primary};padding:3pt 8pt;margin:0 4pt 4pt 0;border:1pt solid ${primary};border-radius:8pt;font-size:10pt;">${esc(i)}</span>`).join('');
+            intHtml += '</p>';
+        }
+    }
+
+    // ---- References ----
+    let refHtml = '';
+    const refValid = d.references.filter(r => r.name);
+    if (refValid.length) {
+        refHtml = secHeader('References');
+        refValid.forEach(r => {
+            refHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(r.name)}</strong></p>`;
+            const sub = [r.position, r.company ? 'at ' + r.company : ''].filter(Boolean).join(' ');
+            if (sub) refHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555;font-style:italic;margin:0 0 2pt 0;">${esc(sub)}</p>`;
+            if (r.contact) refHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#555;margin:0 0 8pt 0;">✉ ${esc(r.contact)}</p>`;
+        });
+    }
+
+    // ---- Volunteer ----
+    let volHtml = '';
+    const volValid = d.volunteer.filter(v => v.role || v.org);
+    if (volValid.length) {
+        volHtml = secHeader('Volunteer Work');
+        volValid.forEach(v => {
+            volHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11.5pt;font-weight:bold;margin:0 0 2pt 0;">${esc(v.role) || 'Role'}${v.date ? ' — <em style="color:#666;font-size:10pt;font-weight:normal;">' + esc(v.date) + '</em>' : ''}</p>`;
+            if (v.org) volHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555;font-style:italic;margin:0 0 2pt 0;">${esc(v.org)}</p>`;
+            if (v.desc) volHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555;margin:0 0 8pt 0;">${esc(v.desc)}</p>`;
+        });
+    }
+
+    // ---- Publications ----
+    let pubHtml = '';
+    const pubValid = d.publications.filter(p => p.title);
+    if (pubValid.length) {
+        pubHtml = secHeader('Publications');
+        pubValid.forEach(p => {
+            pubHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(p.title)}</strong>${p.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(p.date) + '</em>' : ''}</p>`;
+            if (p.publisher) pubHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#555;font-style:italic;margin:0 0 2pt 0;">${esc(p.publisher)}</p>`;
+            if (p.desc) pubHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555;margin:0 0 8pt 0;">${esc(p.desc)}</p>`;
+        });
+    }
+
+    // ---- Achievements ----
+    let achHtml = '';
+    const achValid = d.achievements.filter(a => a.title);
+    if (achValid.length) {
+        achHtml = secHeader('Achievements');
+        achValid.forEach(a => {
+            achHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(a.title)}</strong>${a.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(a.date) + '</em>' : ''}</p>`;
+            if (a.desc) achHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#555;margin:0 0 8pt 0;">${esc(a.desc)}</p>`;
+        });
+    }
+
+    // ---- Courses ----
+    let courseHtml = '';
+    const courseValid = d.courses.filter(c => c.name);
+    if (courseValid.length) {
+        courseHtml = secHeader('Courses');
+        courseValid.forEach(c => {
+            courseHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(c.name)}</strong>${c.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(c.date) + '</em>' : ''}</p>`;
+            if (c.platform) courseHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#555;font-style:italic;margin:0 0 6pt 0;">${esc(c.platform)}</p>`;
+        });
+    }
+
+    // ---- Workshops ----
+    let workHtml = '';
+    const workValid = d.workshops.filter(w => w.name);
+    if (workValid.length) {
+        workHtml = secHeader('Workshops');
+        workValid.forEach(w => {
+            workHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(w.name)}</strong>${w.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(w.date) + '</em>' : ''}</p>`;
+            if (w.organizer) workHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#555;font-style:italic;margin:0 0 6pt 0;">${esc(w.organizer)}</p>`;
+        });
+    }
+
+    // ---- Memberships ----
+    let membHtml = '';
+    const membValid = d.memberships.filter(m => m.org);
+    if (membValid.length) {
+        membHtml = secHeader('Memberships');
+        membValid.forEach(m => {
+            membHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:11pt;margin:0 0 2pt 0;"><strong>${esc(m.org)}</strong>${m.date ? ' — <em style="color:#666;font-size:10pt;">' + esc(m.date) + '</em>' : ''}</p>`;
+            if (m.role) membHtml += `<p style="font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#555;font-style:italic;margin:0 0 6pt 0;">${esc(m.role)}</p>`;
+        });
+    }
+
+    // ---- Body assembly (single column, sequential) ----
+    const body = `
+${headerHtml}
+${summaryHtml}
+${expHtml}
+${eduHtml}
+${skillHtml}
+${langHtml}
+${projHtml}
+${certHtml}
+${awardsHtml}
+${volHtml}
+${pubHtml}
+${achHtml}
+${courseHtml}
+${workHtml}
+${membHtml}
+${hobHtml}
+${intHtml}
+${refHtml}
+`;
+
+    // ---- Wrap in Word-compatible document ----
+    return `<html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:w="urn:schemas-microsoft-com:office:word"
       xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta charset="UTF-8">
-<title>${escapeHtml(resumeData.name || 'Resume')}</title>
+<title>${name}</title>
 <!--[if gte mso 9]>
 <xml>
 <w:WordDocument>
@@ -4138,203 +4427,29 @@ function downloadWord() {
     mso-page-orientation: portrait;
 }
 body {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 11pt;
+    color: #333333;
+    line-height: 1.4;
     margin: 0;
     padding: 0;
-    background: #ffffff;
-    font-family: 'Calibri', Arial, sans-serif;
 }
-ul, ol { margin: 0; padding-left: 20px; }
-li { margin-bottom: 3px; }
-img { max-width: 100%; }
-table { border-collapse: collapse; }
+table { border-collapse: collapse; width: 100%; }
+ul { margin: 2pt 0 8pt 20pt; padding: 0; }
+li { margin-bottom: 2pt; font-size: 10.5pt; line-height: 1.4; }
+p { margin: 0 0 4pt 0; }
+img { display: block; }
+h1, h2, h3 { margin: 0; padding: 0; }
 </style>
 </head>
 <body>
-${clone.outerHTML}
+${body}
 </body>
 </html>`;
-
-        // 6) Download
-        const blob = new Blob(['\ufeff', html], { type: 'application/msword;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1500);
-
-        showToast('✅ Word file downloaded! Open in MS Word.');
-    } catch (err) {
-        console.error(err);
-        showToast('Word export failed: ' + err.message, 'error');
-    }
 }
 
 
-/* ---------- Inline all computed styles ---------- */
-function inlineComputedStyles(sourceEl, targetEl) {
-    const computed = window.getComputedStyle(sourceEl);
-
-    const props = [
-        'display',
-        'width', 'height', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight',
-        'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
-        'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
-        'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
-        'borderTopStyle', 'borderRightStyle', 'borderBottomStyle', 'borderLeftStyle',
-        'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
-        'borderTopLeftRadius', 'borderTopRightRadius',
-        'borderBottomLeftRadius', 'borderBottomRightRadius',
-        'backgroundColor', 'color',
-        'fontFamily', 'fontSize', 'fontWeight', 'fontStyle',
-        'textAlign', 'textDecoration', 'textTransform', 'letterSpacing',
-        'lineHeight', 'whiteSpace', 'wordBreak', 'overflowWrap',
-        'verticalAlign', 'flexDirection', 'justifyContent', 'alignItems',
-        'gap', 'gridTemplateColumns', 'gridColumn', 'gridRow',
-        'listStyleType', 'listStylePosition',
-        'objectFit', 'objectPosition', 'opacity'
-    ];
-
-    props.forEach(prop => {
-        const val = computed[prop];
-        if (
-            val &&
-            val !== 'none' &&
-            val !== 'normal' &&
-            val !== 'auto' &&
-            val !== '0px' &&
-            val !== 'rgba(0, 0, 0, 0)' &&
-            val !== 'rgb(0, 0, 0)' ||
-            prop === 'color' ||
-            prop === 'backgroundColor'
-        ) {
-            try { targetEl.style[prop] = val; } catch (e) {}
-        }
-    });
-
-    // Recurse through children (structure is identical because clone is 1:1)
-    const src = sourceEl.children;
-    const tgt = targetEl.children;
-    const len = Math.min(src.length, tgt.length);
-    for (let i = 0; i < len; i++) {
-        inlineComputedStyles(src[i], tgt[i]);
-    }
-}
-
-
-/* ---------- Replace Font Awesome icons with Unicode ---------- */
-function replaceIconsForWord(root) {
-    const map = {
-        'fa-envelope': '✉',
-        'fa-phone': '☎',
-        'fa-map-marker-alt': '⌂',
-        'fa-globe': '◉',
-        'fa-linkedin': 'in',
-        'fa-github': '⌨',
-        'fa-twitter': '@',
-        'fa-briefcase': '▪',
-        'fa-graduation-cap': '◆',
-        'fa-cogs': '⚙',
-        'fa-language': '◈',
-        'fa-project-diagram': '▣',
-        'fa-certificate': '★',
-        'fa-trophy': '♛',
-        'fa-heart': '♥',
-        'fa-users': '☺',
-        'fa-book': '▤',
-        'fa-medal': '✦',
-        'fa-book-open': '▥',
-        'fa-chalkboard-teacher': '✎',
-        'fa-id-card': '▦',
-        'fa-star': '★',
-        'fa-hands-helping': '❖',
-        'fa-align-left': '▪'
-    };
-
-    root.querySelectorAll('i').forEach(icon => {
-        let symbol = null;
-        for (const cls of Object.keys(map)) {
-            if (icon.classList.contains(cls)) {
-                symbol = map[cls];
-                break;
-            }
-        }
-        if (symbol) {
-            const span = document.createElement('span');
-            span.textContent = symbol + ' ';
-            span.style.fontWeight = 'normal';
-            span.style.fontStyle = 'normal';
-            span.style.color = 'inherit';
-            // Slight font-size tweak so symbol matches text height
-            span.style.fontSize = '1em';
-            icon.parentNode.replaceChild(span, icon);
-        } else {
-            icon.remove();
-        }
-    });
-}
-
-
-/* ---------- Convert flex/grid to table (better Word rendering) ---------- */
-function convertLayoutsForWord(root) {
-    // Word treats flex/grid poorly; tables work everywhere.
-    const all = root.querySelectorAll('*');
-    all.forEach(el => {
-        const display = el.style.display;
-        const computed = window.getComputedStyle(el);
-
-        // Skip elements that shouldn't be converted
-        if (
-            el.tagName === 'UL' ||
-            el.tagName === 'OL' ||
-            el.tagName === 'LI' ||
-            el.tagName === 'IMG' ||
-            el.tagName === 'TABLE'
-        ) return;
-
-        // Convert FLEX containers → table
-        if (computed.display === 'flex' && el.children.length > 0) {
-            const direction = computed.flexDirection || 'row';
-            // Only convert horizontal rows (rows with 2+ children in a row)
-            if (direction === 'row' && el.children.length >= 1) {
-                el.style.display = 'table';
-                el.style.width = '100%';
-
-                Array.from(el.children).forEach(child => {
-                    child.style.display = 'table-cell';
-                    child.style.verticalAlign = 'top';
-
-                    // Preserve some spacing
-                    const gap = parseFloat(computed.gap) || 10;
-                    child.style.paddingLeft = '0px';
-                    child.style.paddingRight = (gap / 2) + 'px';
-                });
-            } else if (direction === 'column') {
-                // Column flex → just block
-                el.style.display = 'block';
-            }
-        }
-
-        // Convert GRID containers → table
-        if (computed.display === 'grid' && el.children.length > 0) {
-            el.style.display = 'table';
-            el.style.width = '100%';
-
-            Array.from(el.children).forEach(child => {
-                child.style.display = 'table-cell';
-                child.style.verticalAlign = 'top';
-                child.style.padding = '4px 8px';
-            });
-        }
-    });
-}
-
-
-/* ---------- Small helper ---------- */
+/* ---------- HTML escape helper ---------- */
 function escapeHtml(text) {
     if (!text) return '';
     return String(text)
