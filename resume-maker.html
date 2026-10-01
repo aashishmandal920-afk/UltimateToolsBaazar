@@ -1502,10 +1502,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             <button class="qat-btn" onclick="downloadPDF()" title="Download PDF directly">
                 <i class="fas fa-file-pdf"></i>
                 <span>Save PDF</span>
-            </button>
-            <button class="qat-btn" onclick="window.print()" title="Open print dialog (Ctrl+P)">
-                <i class="fas fa-print"></i>
-                <span>Print</span>
             </button> 
 
             <span class="qat-divider"></span>
@@ -3882,13 +3878,16 @@ function toggleFullscreen() {
 /* ============================================================
    DIRECT PDF DOWNLOAD (html2canvas + jsPDF) — with page margins
    ============================================================ */
+/* ============================================================
+   DIRECT PDF DOWNLOAD (html2canvas + jsPDF)
+   Smart slicing: white-row detection so text NEVER gets cut
+   ============================================================ */
 async function downloadPDF() {
     const element = document.getElementById('resumePreview');
     if (!element) { showToast('Preview not found', 'error'); return; }
 
     if (typeof html2canvas === 'undefined' || !window.jspdf || !window.jspdf.jsPDF) {
-        showToast('Libraries not loaded. Trying print dialog...', 'warning');
-        setTimeout(() => window.print(), 500);
+        showToast('Libraries not loaded.', 'error');
         return;
     }
 
@@ -3921,23 +3920,23 @@ async function downloadPDF() {
             scrollY: 0
         });
 
+        // Restore UI
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
         element.style.margin = oldMargin;
         currentZoom = oldZoom;
         renderPreview();
 
-        // A4 page dimensions (mm)
         const PDF_W = 210;
         const PDF_H = 297;
-        const PAGE_MARGIN = 10;   // 10mm top AND bottom margin on every page
-        const SIDE_MARGIN = 0;    // resume already has internal padding
+        const PAGE_MARGIN = 10;                  // mm top AND bottom on every page
+        const SIDE_MARGIN = 0;
 
         const imgW = canvas.width;
         const imgH = canvas.height;
-        const drawW = PDF_W - (SIDE_MARGIN * 2);        // content width
-        const ratio = drawW / imgW;                      // mm per pixel
-        const scaledH = imgH * ratio;                    // total content height in mm
+        const drawW = PDF_W - (SIDE_MARGIN * 2);
+        const ratio = drawW / imgW;
+        const scaledH = imgH * ratio;
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({
@@ -3947,55 +3946,101 @@ async function downloadPDF() {
             compress: true
         });
 
-        // Usable height per page (A4 minus top and bottom margins)
         const usableH = PDF_H - (PAGE_MARGIN * 2);
 
-        // ---------- Single page: fits fully ----------
+        // ---------- Single page ----------
         if (scaledH <= usableH) {
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
             pdf.addImage(imgData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, scaledH);
+            pdf.save(fileName);
+            showToast('✅ PDF downloaded!');
+            return;
         }
-        // ---------- Multi-page: slice with margins on every page ----------
-        else {
-            const pageHeightPx = (usableH / scaledH) * imgH;
 
-            let yOffset = 0;
-            let pageIndex = 0;
+        // ---------- Multi-page with SMART BREAKS ----------
+        const sourceCtx = canvas.getContext('2d');
+        const srcData = sourceCtx.getImageData(0, 0, imgW, imgH).data;
 
-            while (yOffset < imgH) {
-                if (pageIndex > 0) pdf.addPage();
-
-                const sliceH = Math.min(pageHeightPx, imgH - yOffset);
-
-                const sliceCanvas = document.createElement('canvas');
-                sliceCanvas.width = imgW;
-                sliceCanvas.height = sliceH;
-                const ctx = sliceCanvas.getContext('2d');
-
-                // White background
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, imgW, sliceH);
-
-                // Draw slice
-                ctx.drawImage(
-                    canvas,
-                    0, yOffset, imgW, sliceH,
-                    0, 0, imgW, sliceH
-                );
-
-                const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
-                const sliceH_mm = sliceH * ratio;
-
-                // Draw at PAGE_MARGIN from top, so every page has breathing room
-                pdf.addImage(sliceData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, sliceH_mm);
-
-                yOffset += sliceH;
-                pageIndex++;
+        // Check if a row (y) is "white enough" — sampling every 4px for speed
+        const isRowWhite = (y) => {
+            const threshold = 248;
+            for (let x = 0; x < imgW; x += 4) {
+                const idx = (y * imgW + x) * 4;
+                if (srcData[idx]     < threshold ||
+                    srcData[idx + 1] < threshold ||
+                    srcData[idx + 2] < threshold) {
+                    return false;
+                }
             }
+            return true;
+        };
+
+        // Convert usable content area (mm) to pixels
+        const usablePx = usableH / ratio;
+
+        // Walk down the canvas, find "white rows" near each target break
+        const breaks = [0];   // pixel Y positions where each page starts
+        let cursor = 0;
+
+        while (cursor + usablePx < imgH) {
+            const target = cursor + usablePx;
+
+            // Search window: ±120 px around target
+            const WINDOW = 120;
+            const searchStart = Math.max(cursor + 50, target - WINDOW);
+            const searchEnd   = Math.min(imgH - 5, target + WINDOW);
+
+            let bestBreak = null;
+            let bestDist = Infinity;
+
+            for (let y = searchEnd; y >= searchStart; y--) {
+                if (isRowWhite(y)) {
+                    const dist = Math.abs(y - target);
+                    if (dist < bestDist) {
+                        bestDist = dist;
+                        bestBreak = y;
+                    }
+                }
+            }
+
+            // If we found a white row, use it. Otherwise, cut at target.
+            const breakY = (bestBreak !== null) ? bestBreak : target;
+            if (breakY <= cursor + 20) break;   // safety: no infinite loop
+            breaks.push(breakY);
+            cursor = breakY;
+        }
+        breaks.push(imgH);
+
+        // Render each page
+        for (let p = 0; p < breaks.length - 1; p++) {
+            if (p > 0) pdf.addPage();
+
+            const startY = breaks[p];
+            const endY   = breaks[p + 1];
+            const sliceH = endY - startY;
+            if (sliceH <= 0) continue;
+
+            const sliceCanvas = document.createElement('canvas');
+            sliceCanvas.width = imgW;
+            sliceCanvas.height = sliceH;
+            const sCtx = sliceCanvas.getContext('2d');
+
+            sCtx.fillStyle = '#ffffff';
+            sCtx.fillRect(0, 0, imgW, sliceH);
+            sCtx.drawImage(
+                canvas,
+                0, startY, imgW, sliceH,
+                0, 0,     imgW, sliceH
+            );
+
+            const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
+            const sliceH_mm = sliceH * ratio;
+
+            pdf.addImage(sliceData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, sliceH_mm);
         }
 
         pdf.save(fileName);
-        showToast('✅ PDF downloaded successfully!');
+        showToast('✅ PDF downloaded!');
 
     } catch (err) {
         console.error(err);
@@ -4004,8 +4049,7 @@ async function downloadPDF() {
         element.style.margin = oldMargin;
         currentZoom = oldZoom;
         renderPreview();
-        showToast('PDF failed — opening print dialog', 'error');
-        setTimeout(() => window.print(), 600);
+        showToast('PDF generation failed', 'error');
     }
 }
 
@@ -4019,7 +4063,7 @@ document.addEventListener('keydown', (e) => {
     if (key === 'z' && !e.shiftKey) { e.preventDefault(); undoAction(); }
     else if (key === 'y' || (key === 'z' && e.shiftKey)) { e.preventDefault(); redoAction(); }
     else if (key === 's') { e.preventDefault(); saveData(); showToast('Saved successfully'); }
-    else if (key === 'p') { e.preventDefault(); window.print(); }
+    else if (key === 'p') { e.preventDefault(); downloadPDF(); }
     else if (key === 'b') { e.preventDefault(); toggleTextStyle('bold'); }
     else if (key === 'i') { e.preventDefault(); toggleTextStyle('italic'); }
     else if (key === 'u') { e.preventDefault(); toggleTextStyle('underline'); }
