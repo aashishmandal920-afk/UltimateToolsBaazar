@@ -2270,7 +2270,8 @@ input:focus, textarea:focus, select:focus { outline: none; }
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 /* ============================================================
@@ -3857,12 +3858,20 @@ function toggleFullscreen() {
 /* ============================================================
    DIRECT PDF DOWNLOAD (html2pdf.js)
    ============================================================ */
-function downloadPDF() {
+/* ============================================================
+   DIRECT PDF DOWNLOAD (html2canvas + jsPDF) — Manual A4 slicing
+   ============================================================ */
+async function downloadPDF() {
     const element = document.getElementById('resumePreview');
     if (!element) { showToast('Preview not found', 'error'); return; }
 
-    if (typeof html2pdf === 'undefined') {
-        showToast('PDF library not loaded. Trying print dialog...', 'warning');
+    if (typeof html2canvas === 'undefined') {
+        showToast('Library not loaded. Trying print dialog...', 'warning');
+        setTimeout(() => window.print(), 500);
+        return;
+    }
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        showToast('jsPDF not loaded. Trying print dialog...', 'warning');
         setTimeout(() => window.print(), 500);
         return;
     }
@@ -3871,54 +3880,107 @@ function downloadPDF() {
 
     showToast('Generating PDF... please wait', 'info');
 
-    // Save and reset transform (zoom) so PDF is not cut
+    // Save original state
     const oldTransform = element.style.transform;
     const oldBoxShadow = element.style.boxShadow;
     const oldMargin = element.style.margin;
+    const oldZoom = currentZoom;
+
+    // Reset transform/zoom so we capture at 100%
     element.style.transform = 'none';
     element.style.boxShadow = 'none';
     element.style.margin = '0';
-
-    // Temporarily disable preview scaling for capture
-    const oldZoom = currentZoom;
     currentZoom = 100;
 
-    const opt = {
-        margin: 0,
-        filename: fileName,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
+    // Small delay to let layout settle
+    await new Promise(r => setTimeout(r, 200));
+
+    try {
+        // Capture at 2x resolution
+        const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
-            scrollX: 0,
-            scrollY: 0,
+            logging: false,
             windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight
-        },
-        jsPDF: {
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait',
-            compress: true
-        },
-        pagebreak: {
-            mode: ['css', 'legacy'],
-            avoid: ['.resume-item', '.resume-section', '.resume-header']
-        }
-    };
+            windowHeight: element.scrollHeight,
+            scrollX: 0,
+            scrollY: 0
+        });
 
-    html2pdf().set(opt).from(element).save().then(() => {
-        // Restore
+        // Restore UI immediately
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
         element.style.margin = oldMargin;
         currentZoom = oldZoom;
         renderPreview();
+
+        // A4 dimensions in mm
+        const PDF_W = 210;
+        const PDF_H = 297;
+
+        const imgW = canvas.width;
+        const imgH = canvas.height;
+        const ratio = PDF_W / imgW;      // mm per pixel
+        const scaledH = imgH * ratio;    // total height in mm when scaled to width
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait',
+            compress: true
+        });
+
+        // If fits in one page
+        if (scaledH <= PDF_H + 1) {
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            pdf.addImage(imgData, 'JPEG', 0, 0, PDF_W, scaledH);
+        } else {
+            // Multi-page: slice canvas into A4-sized chunks
+            const pageHeightPx = (PDF_H / scaledH) * imgH;
+
+            let yOffset = 0;
+            let pageIndex = 0;
+
+            while (yOffset < imgH) {
+                if (pageIndex > 0) pdf.addPage();
+
+                const sliceH = Math.min(pageHeightPx, imgH - yOffset);
+
+                const sliceCanvas = document.createElement('canvas');
+                sliceCanvas.width = imgW;
+                sliceCanvas.height = sliceH;
+                const ctx = sliceCanvas.getContext('2d');
+
+                // White background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, imgW, sliceH);
+
+                // Draw slice
+                ctx.drawImage(
+                    canvas,
+                    0, yOffset, imgW, sliceH,   // source
+                    0, 0, imgW, sliceH           // dest
+                );
+
+                const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
+                const sliceH_mm = sliceH * ratio;
+
+                pdf.addImage(sliceData, 'JPEG', 0, 0, PDF_W, sliceH_mm);
+
+                yOffset += sliceH;
+                pageIndex++;
+            }
+        }
+
+        pdf.save(fileName);
         showToast('✅ PDF downloaded successfully!');
-    }).catch(err => {
+
+    } catch (err) {
         console.error(err);
+        // Restore on error
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
         element.style.margin = oldMargin;
@@ -3926,7 +3988,7 @@ function downloadPDF() {
         renderPreview();
         showToast('PDF failed — opening print dialog', 'error');
         setTimeout(() => window.print(), 600);
-    });
+    }
 }
 
 function undoAction() { if (history.undo()) showToast('Undone', 'info'); else showToast('Nothing to undo', 'info'); }
