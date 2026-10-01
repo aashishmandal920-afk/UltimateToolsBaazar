@@ -1340,44 +1340,56 @@ input:focus, textarea:focus, select:focus { outline: none; }
 }
 
 @media print {
+    @page { size: A4; margin: 0; }
+
+    html, body {
+        overflow: visible !important;
+        height: auto !important;
+        width: auto !important;
+        background: white !important;
+    }
+
     body * { visibility: hidden; }
+
     .resume-preview-panel,
     .resume-preview-panel * { visibility: visible; }
-    .resume-preview-panel {
-        position: absolute;
-        left: 0; top: 0;
-        width: 100%;
-        height: auto;
-        background: white;
-        overflow: visible;
-        padding: 0;
-        margin: 0;
+
+    /* Break every wrapper that has overflow hidden */
+    .resume-app-container,
+    .resume-preview-panel,
+    .preview-scroll-area {
+        position: static !important;
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        width: 100% !important;
     }
+
     .office-ribbon,
     .resume-form-panel,
     .toast,
     .crop-modal { display: none !important; }
-    .preview-scroll-area {
-        padding: 0;
-        overflow: visible;
-        display: block;
-        width: 100%;
-        height: auto;
-    }
+
     .a4-page {
         width: 210mm !important;
-        min-height: 297mm !important;
+        min-height: 0 !important;      /* <-- fix: was forcing exact A4 height */
         max-height: none !important;
         box-shadow: none !important;
         margin: 0 !important;
-        padding: 15mm !important;
+        padding: 12mm 15mm !important; /* top/bottom 12mm, sides 15mm */
         transform: none !important;
         transform-origin: top left !important;
         page-break-after: auto !important;
         page-break-inside: auto !important;
         overflow: visible !important;
+        background: white !important;
     }
-    /* Content ko page ke beech se katne se rokta hai */
+
+    /* Prevent mid-item breaks */
     .resume-section {
         page-break-inside: avoid;
         break-inside: avoid;
@@ -1394,10 +1406,16 @@ input:focus, textarea:focus, select:focus { outline: none; }
     .resume-item-header {
         page-break-after: avoid;
     }
-    .header-photo-container { display: block !important; }
-    @page { size: A4; margin: 0; }
-}
 
+    .header-photo-container { display: block !important; }
+
+    /* Two-column and creative layouts need special handling */
+    .a4-page.layout-twocolumn,
+    .a4-page.layout-creative,
+    .a4-page.layout-sidebar-right {
+        display: block !important;
+    }
+}
 @media (max-width: 1100px) {
     .resume-app-container {
         flex-direction: column;
@@ -3861,17 +3879,15 @@ function toggleFullscreen() {
 /* ============================================================
    DIRECT PDF DOWNLOAD (html2canvas + jsPDF) — Manual A4 slicing
    ============================================================ */
+/* ============================================================
+   DIRECT PDF DOWNLOAD (html2canvas + jsPDF) — with page margins
+   ============================================================ */
 async function downloadPDF() {
     const element = document.getElementById('resumePreview');
     if (!element) { showToast('Preview not found', 'error'); return; }
 
-    if (typeof html2canvas === 'undefined') {
-        showToast('Library not loaded. Trying print dialog...', 'warning');
-        setTimeout(() => window.print(), 500);
-        return;
-    }
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-        showToast('jsPDF not loaded. Trying print dialog...', 'warning');
+    if (typeof html2canvas === 'undefined' || !window.jspdf || !window.jspdf.jsPDF) {
+        showToast('Libraries not loaded. Trying print dialog...', 'warning');
         setTimeout(() => window.print(), 500);
         return;
     }
@@ -3880,23 +3896,19 @@ async function downloadPDF() {
 
     showToast('Generating PDF... please wait', 'info');
 
-    // Save original state
     const oldTransform = element.style.transform;
     const oldBoxShadow = element.style.boxShadow;
     const oldMargin = element.style.margin;
     const oldZoom = currentZoom;
 
-    // Reset transform/zoom so we capture at 100%
     element.style.transform = 'none';
     element.style.boxShadow = 'none';
     element.style.margin = '0';
     currentZoom = 100;
 
-    // Small delay to let layout settle
     await new Promise(r => setTimeout(r, 200));
 
     try {
-        // Capture at 2x resolution
         const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
@@ -3909,21 +3921,23 @@ async function downloadPDF() {
             scrollY: 0
         });
 
-        // Restore UI immediately
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
         element.style.margin = oldMargin;
         currentZoom = oldZoom;
         renderPreview();
 
-        // A4 dimensions in mm
+        // A4 page dimensions (mm)
         const PDF_W = 210;
         const PDF_H = 297;
+        const PAGE_MARGIN = 10;   // 10mm top AND bottom margin on every page
+        const SIDE_MARGIN = 0;    // resume already has internal padding
 
         const imgW = canvas.width;
         const imgH = canvas.height;
-        const ratio = PDF_W / imgW;      // mm per pixel
-        const scaledH = imgH * ratio;    // total height in mm when scaled to width
+        const drawW = PDF_W - (SIDE_MARGIN * 2);        // content width
+        const ratio = drawW / imgW;                      // mm per pixel
+        const scaledH = imgH * ratio;                    // total content height in mm
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({
@@ -3933,13 +3947,17 @@ async function downloadPDF() {
             compress: true
         });
 
-        // If fits in one page
-        if (scaledH <= PDF_H + 1) {
+        // Usable height per page (A4 minus top and bottom margins)
+        const usableH = PDF_H - (PAGE_MARGIN * 2);
+
+        // ---------- Single page: fits fully ----------
+        if (scaledH <= usableH) {
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            pdf.addImage(imgData, 'JPEG', 0, 0, PDF_W, scaledH);
-        } else {
-            // Multi-page: slice canvas into A4-sized chunks
-            const pageHeightPx = (PDF_H / scaledH) * imgH;
+            pdf.addImage(imgData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, scaledH);
+        }
+        // ---------- Multi-page: slice with margins on every page ----------
+        else {
+            const pageHeightPx = (usableH / scaledH) * imgH;
 
             let yOffset = 0;
             let pageIndex = 0;
@@ -3961,14 +3979,15 @@ async function downloadPDF() {
                 // Draw slice
                 ctx.drawImage(
                     canvas,
-                    0, yOffset, imgW, sliceH,   // source
-                    0, 0, imgW, sliceH           // dest
+                    0, yOffset, imgW, sliceH,
+                    0, 0, imgW, sliceH
                 );
 
                 const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
                 const sliceH_mm = sliceH * ratio;
 
-                pdf.addImage(sliceData, 'JPEG', 0, 0, PDF_W, sliceH_mm);
+                // Draw at PAGE_MARGIN from top, so every page has breathing room
+                pdf.addImage(sliceData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, sliceH_mm);
 
                 yOffset += sliceH;
                 pageIndex++;
@@ -3980,7 +3999,6 @@ async function downloadPDF() {
 
     } catch (err) {
         console.error(err);
-        // Restore on error
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
         element.style.margin = oldMargin;
