@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ultimate Resume Maker Pro — MS Office Style Studio</title>
 
-<!-- ICON LIBRARY -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- GOOGLE FONTS — 100 Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -112,10 +110,6 @@
 </script>
 
 <style>
-/* ============================================================
-   ULTIMATE RESUME MAKER PRO — FULL STYLESHEET
-   ============================================================ */
-
 :root {
     --resume-primary: #2563eb;
     --resume-primary-rgb: 37, 99, 235;
@@ -199,31 +193,16 @@ body {
     transition: background 0.25s, color 0.25s;
 }
 
-button {
-    font-family: inherit;
-    font-size: inherit;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: inherit;
-}
-
-input, textarea, select {
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-}
-
+button { font-family: inherit; font-size: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+input, textarea, select { font-family: inherit; font-size: inherit; color: inherit; }
 input:focus, textarea:focus, select:focus { outline: none; }
 
-/* ========== CUSTOM LOGO ========== */
 .app-logo {
     flex-shrink: 0;
     filter: drop-shadow(0 1px 3px rgba(37,99,235,0.4));
     border-radius: 6px;
 }
 
-/* ========== RIBBON ========== */
 .office-ribbon {
     background: var(--ribbon-bg);
     border-bottom: 1px solid var(--ribbon-border);
@@ -541,7 +520,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     border: 2px solid white;
 }
 
-/* ========== APP CONTAINER ========== */
 .resume-app-container {
     display: flex;
     height: calc(100vh - 210px);
@@ -706,7 +684,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .add-btn:hover { background: var(--ribbon-accent); color: white; border-style: solid; }
 .add-btn:active { transform: scale(0.98); }
 
-/* ========== PREVIEW ========== */
 .resume-preview-panel {
     flex: 1;
     background: #3a3d42;
@@ -753,7 +730,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
 }
 .a4-page:hover { box-shadow: 0 0 40px rgba(0,0,0,0.5), 0 6px 12px rgba(0,0,0,0.2); }
 
-/* Backgrounds */
 .a4-page.bg-white { --resume-bg-color: #ffffff; }
 .a4-page.bg-cream { --resume-bg-color: #fdfaf3; }
 .a4-page.bg-gray { --resume-bg-color: #f5f5f5; }
@@ -852,7 +828,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     background-position: -10px 0, -10px 0, 0 0, 0 0;
 }
 
-/* ========== RESUME HEADER ========== */
 .resume-header {
     display: flex;
     align-items: center;
@@ -879,7 +854,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     transition: box-shadow 0.2s;
     box-shadow: var(--photo-shadow);
     transform: rotate(var(--photo-rotate));
-    pointer-events: auto;
 }
 
 .header-photo-container img {
@@ -896,34 +870,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     display: block;
 }
 
-.header-photo-container.photo-edit-mode {
-    box-shadow: 0 0 0 3px var(--ribbon-accent), 0 0 25px rgba(var(--ribbon-accent-rgb), 0.5);
-    cursor: move;
-    animation: photoPulse 1.5s infinite;
-}
-
-@keyframes photoPulse {
-    0%, 100% { box-shadow: 0 0 0 3px var(--ribbon-accent), 0 0 25px rgba(var(--ribbon-accent-rgb), 0.5); }
-    50% { box-shadow: 0 0 0 3px var(--ribbon-accent), 0 0 35px rgba(var(--ribbon-accent-rgb), 0.8); }
-}
-
-.header-photo-container.photo-edit-mode::after {
-    content: '✥ Drag to move';
-    position: absolute;
-    bottom: 4px; left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.8);
-    color: white;
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 10px;
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 10;
-    font-weight: 600;
-}
-
-/* Photo shapes */
 .header-photo-container.shape-circle { border-radius: 50%; }
 .header-photo-container.shape-square { border-radius: 0; }
 .header-photo-container.shape-rounded { border-radius: 16px; }
@@ -994,7 +940,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     text-align: center;
 }
 
-/* ========== SECTIONS ========== */
 .resume-section { margin-bottom: 18px; position: relative; }
 .resume-section h2 {
     font-size: 14px;
@@ -1029,7 +974,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .resume-item ul { margin: 4px 0 0 0; padding-left: 18px; font-size: 12.5px; color: #555555; }
 .resume-item ul li { margin-bottom: 3px; line-height: 1.5; }
 
-/* ========== SKILLS ========== */
 .skills-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .skill-tag {
     background: rgba(var(--resume-primary-rgb, 37, 99, 235), 0.1);
@@ -1052,7 +996,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
 .lang-name { font-weight: 600; }
 .lang-level { color: #666666; font-style: italic; font-size: 11.5px; }
 
-/* ========== LAYOUTS ========== */
 .a4-page.layout-modern .resume-header { border-bottom: 2px solid var(--resume-primary); }
 .a4-page.layout-modern .resume-header h1 { color: var(--resume-primary); }
 .a4-page.layout-modern .resume-section h2 { border-bottom: 2px solid var(--resume-primary); }
@@ -1224,122 +1167,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
 .sortable-ghost { opacity: 0.4; background: rgba(var(--ribbon-accent-rgb), 0.1); }
 
-.photo-edit-hint {
-    position: fixed;
-    top: 90px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--ribbon-accent);
-    color: white;
-    padding: 10px 24px;
-    border-radius: 25px;
-    font-size: 13px;
-    font-weight: 600;
-    z-index: 501;
-    display: none;
-    box-shadow: 0 8px 24px rgba(var(--ribbon-accent-rgb), 0.5);
-    align-items: center;
-    gap: 8px;
-}
-.photo-edit-hint.active { display: flex; }
-.photo-edit-hint i { animation: hintPulse 1.5s infinite; }
-@keyframes hintPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-
-.picker-popover {
-    position: absolute;
-    top: 100%; left: 0;
-    background: var(--office-panel);
-    border: 1px solid var(--ribbon-border);
-    border-radius: 6px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-    padding: 12px;
-    z-index: 200;
-    display: none;
-    min-width: 300px;
-    max-height: 400px;
-    overflow-y: auto;
-}
-.picker-popover.show { display: block; animation: popIn 0.15s ease-out; }
-@keyframes popIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
-.picker-popover::-webkit-scrollbar { width: 6px; }
-.picker-popover::-webkit-scrollbar-thumb { background: var(--ribbon-border); border-radius: 3px; }
-.picker-popover-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--ribbon-text-muted); margin-bottom: 10px; letter-spacing: 0.5px; }
-
-.shape-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-.shape-item {
-    width: 100%;
-    aspect-ratio: 1;
-    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
-    cursor: pointer;
-    border: 2px solid transparent;
-    border-radius: 6px;
-    transition: transform 0.15s, border-color 0.15s;
-    position: relative;
-}
-.shape-item:hover { border-color: var(--ribbon-accent); transform: scale(1.08); }
-.shape-item.active { border-color: var(--ribbon-accent); box-shadow: 0 0 0 3px rgba(var(--ribbon-accent-rgb), 0.25); }
-.shape-item.shape-circle { border-radius: 50%; }
-.shape-item.shape-square { border-radius: 0; }
-.shape-item.shape-rounded { border-radius: 8px; }
-.shape-item.shape-rounded-lg { border-radius: 12px; }
-.shape-item.shape-rounded-xl { border-radius: 16px; }
-.shape-item.shape-ellipse { border-radius: 50%; aspect-ratio: 1.4; }
-.shape-item.shape-ellipse-v { border-radius: 50%; aspect-ratio: 0.7; }
-.shape-item.shape-hexagon { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
-.shape-item.shape-hexagon-flat { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
-.shape-item.shape-octagon { clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); }
-.shape-item.shape-diamond { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
-.shape-item.shape-pentagon { clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
-.shape-item.shape-heptagon { clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%); }
-.shape-item.shape-triangle { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); }
-.shape-item.shape-triangle-down { clip-path: polygon(0% 0%, 100% 0%, 50% 100%); }
-.shape-item.shape-star { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
-.shape-item.shape-star-6 { clip-path: polygon(50% 0%, 61% 26%, 93% 25%, 68% 50%, 93% 75%, 61% 74%, 50% 100%, 39% 74%, 7% 75%, 32% 50%, 7% 25%, 39% 26%); }
-.shape-item.shape-shield { clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%); }
-.shape-item.shape-frame { clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 15% 100%, 0 85%); }
-.shape-item.shape-arch { border-radius: 50% 50% 0 0 / 60% 60% 0 0; }
-.shape-item.shape-arch-down { border-radius: 0 0 50% 50% / 0 0 60% 60%; }
-.shape-item.shape-blob { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-.shape-item.shape-blob-2 { border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%; }
-.shape-item.shape-blob-3 { border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%; }
-.shape-item.shape-blob-4 { border-radius: 67% 33% 47% 53% / 37% 20% 80% 63%; }
-.shape-item.shape-blob-5 { border-radius: 25% 75% 35% 65% / 55% 35% 65% 45%; }
-.shape-item.shape-blob-6 { border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%; }
-.shape-item.shape-heart { clip-path: path('M 50 88 C 20 65 5 45 5 30 C 5 15 15 5 30 5 C 40 5 47 12 50 20 C 53 12 60 5 70 5 C 85 5 95 15 95 30 C 95 45 80 65 50 88 Z'); }
-
-.border-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.border-item {
-    padding: 10px 6px;
-    background: var(--office-panel);
-    border: 2px solid var(--ribbon-border);
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--ribbon-text);
-    transition: transform 0.15s, border-color 0.15s;
-    line-height: 1;
-    min-height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 3px;
-}
-.border-item:hover { border-color: var(--ribbon-accent); transform: translateY(-2px); background: rgba(var(--ribbon-accent-rgb), 0.05); }
-.border-item.active { border-color: var(--ribbon-accent); background: rgba(var(--ribbon-accent-rgb), 0.1); color: var(--ribbon-accent); }
-.border-preview { width: 100%; height: 14px; margin-bottom: 3px; border-width: 3px; border-color: var(--ribbon-text); border-style: solid; border-radius: 3px; }
-.border-preview.solid { border-style: solid; }
-.border-preview.dashed { border-style: dashed; }
-.border-preview.dotted { border-style: dotted; }
-.border-preview.double { border-style: double; border-width: 6px; }
-.border-preview.groove { border-style: groove; border-width: 5px; }
-.border-preview.ridge { border-style: ridge; border-width: 5px; }
-.border-preview.inset { border-style: inset; border-width: 5px; }
-.border-preview.outset { border-style: outset; border-width: 5px; }
-.border-preview.hidden { border-style: hidden; }
-.border-preview.none { border: none; background: linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%); background-size: 6px 6px; }
-
 .toast {
     position: fixed;
     bottom: 30px; left: 50%;
@@ -1375,7 +1202,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
 ::-webkit-scrollbar-thumb { background: var(--ribbon-border); border-radius: 5px; border: 2px solid transparent; background-clip: content-box; }
 ::-webkit-scrollbar-thumb:hover { background: var(--ribbon-accent); background-clip: content-box; }
 
-/* ========== CROP MODAL ========== */
+/* CROP MODAL */
 .crop-modal {
     position: fixed;
     inset: 0;
@@ -1512,7 +1339,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     .crop-frame { width: 100%; max-width: 320px; }
 }
 
-/* ========== PRINT ========== */
 @media print {
     body * { visibility: hidden; }
     .resume-preview-panel,
@@ -1529,9 +1355,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     }
     .office-ribbon,
     .resume-form-panel,
-    .photo-edit-hint,
     .toast,
-    .picker-popover,
     .crop-modal { display: none !important; }
     .preview-scroll-area {
         padding: 0;
@@ -1553,7 +1377,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
     @page { size: A4; margin: 0; }
 }
 
-/* ========== RESPONSIVE ========== */
 @media (max-width: 1100px) {
     .resume-app-container {
         flex-direction: column;
@@ -1596,28 +1419,20 @@ input:focus, textarea:focus, select:focus { outline: none; }
     .accordion-content { padding: 15px; }
     .resume-form-panel { width: 100%; }
     .form-row { flex-direction: column; gap: 0; }
-    .shape-grid { grid-template-columns: repeat(4, 1fr); }
-    .border-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .hidden { display: none !important; }
 .no-select { user-select: none; -webkit-user-select: none; }
 .pointer { cursor: pointer; }
 .text-center { text-align: center; }
-.mt-1 { margin-top: 4px; } .mt-2 { margin-top: 8px; } .mt-3 { margin-top: 12px; } .mt-4 { margin-top: 16px; }
-.mb-1 { margin-bottom: 4px; } .mb-2 { margin-bottom: 8px; } .mb-3 { margin-bottom: 12px; } .mb-4 { margin-bottom: 16px; }
 </style>
 </head>
 <body>
 
-<!-- ============================================================
-     OFFICE RIBBON
-     ============================================================ -->
+<!-- RIBBON -->
 <div class="office-ribbon">
-
     <div class="ribbon-top">
         <div class="ribbon-title">
-            <!-- CUSTOM LOGO — MS Word icon hata diya -->
             <svg class="app-logo" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true">
                 <defs>
                     <linearGradient id="appLogoGrad" x1="0" y1="0" x2="1" y2="1">
@@ -1642,21 +1457,16 @@ input:focus, textarea:focus, select:focus { outline: none; }
                 <i class="fas fa-redo"></i>
                 <span>Redo</span>
             </button>
+
             <span class="qat-divider"></span>
+
             <button class="qat-btn" onclick="window.print()" title="Download / Print PDF (Ctrl+P)">
                 <i class="fas fa-file-pdf"></i>
                 <span>Save PDF</span>
             </button>
-            <button class="qat-btn" onclick="exportJSON()" title="Export Resume as JSON backup">
-                <i class="fas fa-download"></i>
-                <span>Export</span>
-            </button>
-            <button class="qat-btn" onclick="document.getElementById('importFileInput').click()" title="Import JSON backup">
-                <i class="fas fa-upload"></i>
-                <span>Import</span>
-            </button>
-            <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="importJSON(event)">
+
             <span class="qat-divider"></span>
+
             <button class="qat-btn" onclick="resetResume()" title="Reset everything">
                 <i class="fas fa-trash-alt"></i>
                 <span>Reset</span>
@@ -1754,16 +1564,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
                     </div>
                 </div>
                 <div class="ribbon-group-label">Spacing</div>
-            </div>
-
-            <div class="ribbon-group">
-                <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="togglePhotoEditMode()" id="btnQATPhotoEdit" title="Toggle Photo Edit Mode">
-                        <i class="fas fa-arrows-alt"></i>
-                        <span>Photo Edit</span>
-                    </button>
-                </div>
-                <div class="ribbon-group-label">Quick Photo</div>
             </div>
         </div>
 
@@ -1960,7 +1760,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- PHOTO -->
+        <!-- PHOTO (Clean - Edit/Drag aur Style group hata diye) -->
         <div class="ribbon-panel" data-panel="photo">
             <div class="ribbon-group">
                 <div class="ribbon-group-content">
@@ -1969,9 +1769,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
                     </button>
                     <button class="ribbon-btn ribbon-btn-sm" onclick="if(resumeData.photo) openCropModal(resumeData.photo); else showToast('Upload a photo first', 'info');" title="Re-crop current photo">
                         <i class="fas fa-crop-alt"></i> Re-Crop
-                    </button>
-                    <button class="ribbon-btn ribbon-btn-sm" onclick="togglePhotoEditMode()" id="btnPhotoEdit" title="Toggle Edit/Drag Mode">
-                        <i class="fas fa-arrows-alt"></i> Edit / Drag
                     </button>
                     <button class="ribbon-btn ribbon-btn-sm" onclick="removePhoto()" title="Remove Photo">
                         <i class="fas fa-trash"></i> Remove
@@ -2020,40 +1817,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
                     </div>
                 </div>
                 <div class="ribbon-group-label">Adjust</div>
-            </div>
-
-            <div class="ribbon-group">
-                <div class="ribbon-group-content">
-                    <button class="ribbon-btn" onclick="openShapePicker()" title="Change Photo Shape">
-                        <i class="fas fa-shapes"></i><span>Shape</span>
-                    </button>
-                    <button class="ribbon-btn" onclick="openBorderPicker()" title="Change Border Style">
-                        <i class="fas fa-border-all"></i><span>Border</span>
-                    </button>
-                    <button class="ribbon-btn" onclick="cyclePhotoFilter()" id="btnPhotoFilter" title="Cycle Photo Filter">
-                        <i class="fas fa-filter"></i><span>Filter</span>
-                    </button>
-                </div>
-                <div class="ribbon-group-label">Style</div>
-
-                <div class="picker-popover" id="shapePicker">
-                    <div class="picker-popover-title">Choose Shape (30 options)</div>
-                    <div class="shape-grid" id="shapeGrid"></div>
-                </div>
-
-                <div class="picker-popover" id="borderPicker">
-                    <div class="picker-popover-title">Border Style</div>
-                    <div class="border-grid" id="borderGrid"></div>
-                    <div style="display:flex;gap:8px;margin-top:12px;align-items:center;">
-                        <label style="font-size:11px;font-weight:600;">Width</label>
-                        <input type="range" class="ribbon-slider" id="borderWidthSlider" min="0" max="12" value="3" style="flex:1;" oninput="changeBorderWidth(this.value)">
-                        <span id="borderWidthVal" style="font-size:11px;font-weight:700;color:var(--ribbon-accent);min-width:36px;text-align:right;">3px</span>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
-                        <label style="font-size:11px;font-weight:600;">Color</label>
-                        <input type="color" class="ribbon-color" id="borderColorPicker" value="#2563eb" onchange="changeBorderColor(this.value)" style="flex:1;">
-                    </div>
-                </div>
             </div>
 
             <div class="ribbon-group">
@@ -2135,13 +1898,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
     </div>
 </div>
 
-<!-- ============================================================
-     MAIN APP CONTAINER
-     ============================================================ -->
+<!-- MAIN APP -->
 <div class="resume-app-container">
-
     <div class="resume-form-panel">
-
         <div class="form-header">
             <h2><i class="fas fa-pen-fancy"></i> Resume Editor</h2>
             <button onclick="resetResume()" class="btn-sm btn-danger">
@@ -2149,7 +1908,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </button>
         </div>
 
-        <!-- Personal Info -->
         <div class="accordion-item" data-accordion="personal">
             <div class="accordion-header active" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-user"></i> Personal Information</span>
@@ -2158,7 +1916,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
             <div class="accordion-content active">
                 <div class="form-group">
                     <label>Profile Photo</label>
-                    <input type="file" id="input-photo" accept="image/*" onchange="handlePhotoUpload(event)">
+                    <input type="file" id="input-photo" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg,.heic,.heif,.avif,.tiff,.tif,.ico" onchange="handlePhotoUpload(event)">
                 </div>
                 <div class="form-group">
                     <label>Full Name</label>
@@ -2205,7 +1963,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Summary -->
         <div class="accordion-item" data-accordion="summary">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-align-left"></i> Professional Summary</span>
@@ -2218,7 +1975,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Experience -->
         <div class="accordion-item" data-accordion="experience">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-briefcase"></i> Work Experience</span>
@@ -2232,7 +1988,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Education -->
         <div class="accordion-item" data-accordion="education">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-graduation-cap"></i> Education</span>
@@ -2246,7 +2001,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Skills -->
         <div class="accordion-item" data-accordion="skills">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-cogs"></i> Skills</span>
@@ -2267,7 +2021,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Languages -->
         <div class="accordion-item" data-accordion="languages">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-language"></i> Languages</span>
@@ -2281,7 +2034,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Projects -->
         <div class="accordion-item" data-accordion="projects">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-project-diagram"></i> Projects</span>
@@ -2295,7 +2047,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Certifications -->
         <div class="accordion-item" data-accordion="certifications">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-certificate"></i> Certifications</span>
@@ -2309,7 +2060,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Awards -->
         <div class="accordion-item" data-accordion="awards">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-trophy"></i> Awards</span>
@@ -2323,7 +2073,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Hobbies -->
         <div class="accordion-item" data-accordion="hobbies">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-heart"></i> Hobbies &amp; Interests</span>
@@ -2337,7 +2086,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- References -->
         <div class="accordion-item" data-accordion="references">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-users"></i> References</span>
@@ -2351,7 +2099,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Volunteer -->
         <div class="accordion-item" data-accordion="volunteer">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-hands-helping"></i> Volunteer Work</span>
@@ -2365,7 +2112,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Publications -->
         <div class="accordion-item" data-accordion="publications">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-book"></i> Publications</span>
@@ -2379,7 +2125,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Achievements -->
         <div class="accordion-item" data-accordion="achievements">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-medal"></i> Achievements</span>
@@ -2393,7 +2138,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Courses -->
         <div class="accordion-item" data-accordion="courses">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-book-open"></i> Courses</span>
@@ -2407,7 +2151,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Workshops -->
         <div class="accordion-item" data-accordion="workshops">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-chalkboard-teacher"></i> Workshops</span>
@@ -2421,7 +2164,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Memberships -->
         <div class="accordion-item" data-accordion="memberships">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-id-card"></i> Memberships</span>
@@ -2435,7 +2177,6 @@ input:focus, textarea:focus, select:focus { outline: none; }
             </div>
         </div>
 
-        <!-- Interests -->
         <div class="accordion-item" data-accordion="interests">
             <div class="accordion-header" onclick="toggleAccordion(this)">
                 <span><i class="fas fa-star"></i> Interests</span>
@@ -2451,19 +2192,11 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
     </div>
 
-    <!-- PREVIEW -->
     <div class="resume-preview-panel">
         <div class="preview-scroll-area" id="previewScrollArea">
             <div class="a4-page layout-modern bg-white" id="resumePreview"></div>
         </div>
     </div>
-
-</div>
-
-<!-- Photo Edit Hint -->
-<div class="photo-edit-hint" id="photoEditHint">
-    <i class="fas fa-arrows-alt"></i>
-    Drag the photo to reposition · Click "Edit / Drag" again to stop
 </div>
 
 <!-- Toast -->
@@ -2472,9 +2205,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
     <span id="toastMsg">Success</span>
 </div>
 
-<!-- ============================================================
-     CROP MODAL
-     ============================================================ -->
+<!-- CROP MODAL -->
 <div class="crop-modal" id="cropModal">
     <div class="crop-dialog">
         <div class="crop-header">
@@ -2517,10 +2248,9 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
 <script>
 /* ============================================================
-   ULTIMATE RESUME MAKER PRO — v3.1
+   ULTIMATE RESUME MAKER PRO — v3.2
    ============================================================ */
 
-/* SECTION 1: FONT CATALOG */
 const FONTS = [
     { name: 'Inter', stack: "'Inter', sans-serif", cat: 'Sans' },
     { name: 'Roboto', stack: "'Roboto', sans-serif", cat: 'Sans' },
@@ -2626,7 +2356,6 @@ const FONTS = [
     { name: 'Courier New', stack: "'Courier New', monospace", cat: 'System' }
 ];
 
-/* SECTION 2: TEMPLATE DEFINITIONS */
 const LAYOUTS = [
     { id: 'modern', name: 'Modern' },
     { id: 'classic', name: 'Classic' },
@@ -2670,76 +2399,6 @@ LAYOUTS.forEach(layout => {
     });
 });
 
-/* SECTION 3: PHOTO SHAPES */
-const PHOTO_SHAPES = [
-    { id: 'circle', label: 'Circle' },
-    { id: 'square', label: 'Square' },
-    { id: 'rounded', label: 'Rounded' },
-    { id: 'rounded-lg', label: 'Large Round' },
-    { id: 'rounded-xl', label: 'Extra Round' },
-    { id: 'ellipse', label: 'Ellipse H' },
-    { id: 'ellipse-v', label: 'Ellipse V' },
-    { id: 'hexagon', label: 'Hexagon' },
-    { id: 'hexagon-flat', label: 'Hex Flat' },
-    { id: 'octagon', label: 'Octagon' },
-    { id: 'diamond', label: 'Diamond' },
-    { id: 'pentagon', label: 'Pentagon' },
-    { id: 'heptagon', label: 'Heptagon' },
-    { id: 'triangle', label: 'Triangle' },
-    { id: 'triangle-down', label: 'Triangle ▼' },
-    { id: 'star', label: 'Star' },
-    { id: 'star-6', label: 'Star 6' },
-    { id: 'heart', label: 'Heart' },
-    { id: 'shield', label: 'Shield' },
-    { id: 'frame', label: 'Frame' },
-    { id: 'arch', label: 'Arch' },
-    { id: 'arch-down', label: 'Arch ▼' },
-    { id: 'blob', label: 'Blob 1' },
-    { id: 'blob-2', label: 'Blob 2' },
-    { id: 'blob-3', label: 'Blob 3' },
-    { id: 'blob-4', label: 'Blob 4' },
-    { id: 'blob-5', label: 'Blob 5' },
-    { id: 'blob-6', label: 'Blob 6' },
-    { id: 'diamond-rounded', label: 'Rotate Diamond' },
-    { id: 'circle', label: 'Circle (Alt)' }
-];
-
-/* SECTION 4: BORDER STYLES */
-const BORDER_STYLES = [
-    { id: 'none', label: 'None' },
-    { id: 'solid', label: 'Solid' },
-    { id: 'dashed', label: 'Dashed' },
-    { id: 'dotted', label: 'Dotted' },
-    { id: 'double', label: 'Double' },
-    { id: 'groove', label: 'Groove' },
-    { id: 'ridge', label: 'Ridge' },
-    { id: 'inset', label: 'Inset' },
-    { id: 'outset', label: 'Outset' },
-    { id: 'hidden', label: 'Hidden' }
-];
-
-/* SECTION 5: PHOTO FILTERS */
-const PHOTO_FILTERS = [
-    { id: 'none', label: 'None', css: 'none' },
-    { id: 'grayscale', label: 'Grayscale', css: 'grayscale(1)' },
-    { id: 'sepia', label: 'Sepia', css: 'sepia(0.8)' },
-    { id: 'blur', label: 'Soft Blur', css: 'blur(1px)' },
-    { id: 'bright', label: 'Brighten', css: 'brightness(1.15)' },
-    { id: 'contrast', label: 'High Contrast', css: 'contrast(1.25)' },
-    { id: 'vintage', label: 'Vintage', css: 'sepia(0.4) contrast(1.1) brightness(0.95)' },
-    { id: 'cool', label: 'Cool Tone', css: 'hue-rotate(-15deg) saturate(1.1)' },
-    { id: 'warm', label: 'Warm Tone', css: 'hue-rotate(15deg) saturate(1.1)' },
-    { id: 'dramatic', label: 'Dramatic', css: 'contrast(1.3) brightness(0.9) saturate(1.2)' },
-    { id: 'faded', label: 'Faded', css: 'opacity(0.85) contrast(0.9)' },
-    { id: 'dreamy', label: 'Dreamy', css: 'blur(0.5px) brightness(1.1) saturate(1.15)' },
-    { id: 'noir', label: 'Noir', css: 'grayscale(1) contrast(1.4) brightness(0.9)' },
-    { id: 'vivid', label: 'Vivid', css: 'saturate(1.4) contrast(1.1)' },
-    { id: 'retro', label: 'Retro', css: 'sepia(0.6) hue-rotate(-20deg) saturate(1.2)' }
-];
-
-let currentFilterIndex = 0;
-
-/* SECTION 6: DEFAULT DATA */
 const defaultData = {
     photo: '',
     name: '', jobTitle: '', email: '', phone: '', location: '',
@@ -2766,7 +2425,6 @@ const defaultData = {
     textStyles: { bold: false, italic: false, underline: false, uppercase: false }
 };
 
-/* SECTION 7: LOAD STATE */
 let resumeData = JSON.parse(localStorage.getItem('omniUltimateResumeV4') || 'null');
 
 if (!resumeData) {
@@ -2800,16 +2458,13 @@ if (!resumeData.workshops) resumeData.workshops = [];
 if (!resumeData.memberships) resumeData.memberships = [];
 if (!resumeData.skillStyle) resumeData.skillStyle = 'tags';
 
-/* SECTION 8: UI STATE */
 let currentTemplateId = parseInt(localStorage.getItem('omniTplIdV4')) || 1;
 let currentFont = localStorage.getItem('omniFontV4') || 'Inter';
 let currentFontSize = localStorage.getItem('omniFontSizeV4') || '13.5px';
 let currentColor = localStorage.getItem('omniColorV4') || '#2563eb';
 let currentBg = localStorage.getItem('omniBgV4') || 'bg-white';
 let currentZoom = 100;
-let photoEditMode = false;
 
-/* SECTION 9: HISTORY */
 class HistoryManager {
     constructor(maxSize) {
         this.undoStack = [];
@@ -2878,7 +2533,6 @@ class HistoryManager {
 
 const history = new HistoryManager(100);
 
-/* SECTION 10: UI SYNC */
 function syncUIWithState() {
     const fontSel = document.getElementById('fontSelect');
     const ribbonFont = document.getElementById('ribbonFontFamily');
@@ -2930,7 +2584,6 @@ function syncUIWithState() {
     renderPreview();
 }
 
-/* SECTION 11: TOAST */
 let toastTimer;
 function showToast(message, type) {
     type = type || 'success';
@@ -2947,7 +2600,6 @@ function showToast(message, type) {
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-/* SECTION 12: SAVING INDICATOR */
 let savingTimer;
 function showSaving() {
     const indicator = document.getElementById('savingIndicator');
@@ -2963,17 +2615,14 @@ function showSaving() {
     }, 400);
 }
 
-/* SECTION 13: RIBBON TABS */
 function switchRibbonTab(tabName, btn) {
     document.querySelectorAll('.ribbon-tab').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.ribbon-panel').forEach(panel => panel.classList.remove('active'));
     btn.classList.add('active');
     const panel = document.querySelector(`.ribbon-panel[data-panel="${tabName}"]`);
     if (panel) panel.classList.add('active');
-    document.querySelectorAll('.picker-popover').forEach(p => p.classList.remove('show'));
 }
 
-/* SECTION 14: ACCORDION */
 function toggleAccordion(header) {
     header.classList.toggle('active');
     const content = header.nextElementSibling;
@@ -2992,7 +2641,6 @@ function openAccordion(name) {
     item.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* SECTION 15: THEME */
 function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
@@ -3001,23 +2649,36 @@ function toggleTheme() {
     showToast('Theme: ' + next);
 }
 
-/* SECTION 16: PHOTO UPLOAD — ab crop modal me jaega */
+/* ============================================================
+   FIXED: handlePhotoUpload — accepts any image (MIME OR extension)
+   ============================================================ */
 function handlePhotoUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
     event.target.value = '';
 
-    if (!file.type.startsWith('image/')) {
+    // Robust check — MIME type ho ya na ho, extension se pakdo
+    const hasImageMime = file.type && file.type.toLowerCase().startsWith('image/');
+    const hasImageExt = /\.(jpe?g|png|gif|webp|bmp|svg|heic|heif|avif|tiff?|ico|jfif)$/i.test(file.name);
+
+    if (!hasImageMime && !hasImageExt) {
         showToast('Please select an image file', 'error');
         return;
     }
-    if (file.size > 15 * 1024 * 1024) {
-        showToast('Photo must be under 15 MB', 'error');
+
+    if (file.size > 25 * 1024 * 1024) {
+        showToast('Photo must be under 25 MB', 'error');
         return;
     }
 
     const reader = new FileReader();
-    reader.onload = e => openCropModal(e.target.result);
+    reader.onload = e => {
+        // Verify it's actually a valid image by trying to load it
+        const testImg = new Image();
+        testImg.onload = () => openCropModal(e.target.result);
+        testImg.onerror = () => showToast('File is not a valid image', 'error');
+        testImg.src = e.target.result;
+    };
     reader.onerror = () => showToast('Could not read file', 'error');
     reader.readAsDataURL(file);
 }
@@ -3034,7 +2695,6 @@ function removePhoto() {
     showToast('Photo removed', 'info');
 }
 
-/* SECTION 17: PHOTO SIZE */
 function changePhotoWidth(value) {
     resumeData.photoWidth = parseInt(value);
     const label = document.getElementById('photoWidthVal');
@@ -3052,7 +2712,6 @@ function changePhotoHeight(value) {
     saveData();
 }
 
-/* SECTION 18: PHOTO POSITION */
 function changePhotoPosX(value) {
     resumeData.photoPosX = parseInt(value);
     const label = document.getElementById('photoPosXVal');
@@ -3070,7 +2729,6 @@ function changePhotoPosY(value) {
     saveData();
 }
 
-/* SECTION 19: PHOTO ZOOM & OPACITY */
 function changePhotoScale(value) {
     resumeData.photoScale = parseFloat(value);
     const label = document.getElementById('photoScaleVal');
@@ -3088,23 +2746,6 @@ function changePhotoOpacity(value) {
     saveData();
 }
 
-/* SECTION 20: PHOTO BORDER */
-function changeBorderWidth(value) {
-    resumeData.photoBorderWidth = parseInt(value);
-    const label = document.getElementById('borderWidthVal');
-    if (label) label.textContent = value + 'px';
-    applyPhotoSettings();
-    renderPreview();
-    saveData();
-}
-function changeBorderColor(value) {
-    resumeData.photoBorderColor = value;
-    applyPhotoSettings();
-    renderPreview();
-    saveData();
-}
-
-/* SECTION 21: APPLY PHOTO SETTINGS */
 function applyPhotoSettings() {
     const root = document.documentElement.style;
     root.setProperty('--photo-width', resumeData.photoWidth + 'px');
@@ -3117,11 +2758,8 @@ function applyPhotoSettings() {
     root.setProperty('--photo-border-style', resumeData.photoBorderStyle);
     root.setProperty('--photo-border-color', resumeData.photoBorderColor);
     root.setProperty('--photo-rotate', (resumeData.photoRotate || 0) + 'deg');
-    const filter = PHOTO_FILTERS.find(f => f.id === resumeData.photoFilter) || PHOTO_FILTERS[0];
-    root.setProperty('--photo-filter', filter.css);
 }
 
-/* SECTION 22: SYNC PHOTO CONTROLS */
 function syncPhotoControls() {
     const setVal = (id, value) => { const el = document.getElementById(id); if (el) el.value = value; };
     const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
@@ -3138,13 +2776,9 @@ function syncPhotoControls() {
     setText('photoScaleVal', resumeData.photoScale.toFixed(2));
     setVal('ribbonPhotoOpacity', resumeData.photoOpacity);
     setText('photoOpacityVal', resumeData.photoOpacity.toFixed(2));
-    setVal('borderWidthSlider', resumeData.photoBorderWidth);
-    setText('borderWidthVal', resumeData.photoBorderWidth + 'px');
-    setVal('borderColorPicker', resumeData.photoBorderColor);
     applyPhotoSettings();
 }
 
-/* SECTION 23: RESET PHOTO SETTINGS */
 function resetPhotoSettings() {
     resumeData.photoWidth = 110;
     resumeData.photoHeight = 110;
@@ -3158,7 +2792,6 @@ function resetPhotoSettings() {
     resumeData.photoBorderColor = currentColor;
     resumeData.photoFilter = 'none';
     resumeData.photoRotate = 0;
-    currentFilterIndex = 0;
     syncPhotoControls();
     renderPreview();
     history.snapshot();
@@ -3166,177 +2799,6 @@ function resetPhotoSettings() {
     showToast('Photo settings reset');
 }
 
-/* SECTION 24: CYCLE PHOTO FILTER */
-function cyclePhotoFilter() {
-    currentFilterIndex = (currentFilterIndex + 1) % PHOTO_FILTERS.length;
-    const filter = PHOTO_FILTERS[currentFilterIndex];
-    resumeData.photoFilter = filter.id;
-    applyPhotoSettings();
-    saveData();
-    renderPreview();
-    history.snapshot();
-    showToast('Filter: ' + filter.label, 'info');
-}
-
-/* SECTION 25: SHAPE PICKER */
-function openShapePicker() {
-    const picker = document.getElementById('shapePicker');
-    const borderPicker = document.getElementById('borderPicker');
-    if (borderPicker) borderPicker.classList.remove('show');
-    picker.classList.toggle('show');
-    const grid = document.getElementById('shapeGrid');
-    grid.innerHTML = PHOTO_SHAPES.map(shape => {
-        const active = shape.id === resumeData.photoShape ? 'active' : '';
-        return `<div class="shape-item shape-${shape.id} ${active}"
-                     title="${shape.label}"
-                     onclick="setPhotoShape('${shape.id}')"></div>`;
-    }).join('');
-}
-
-function setPhotoShape(shapeId) {
-    resumeData.photoShape = shapeId;
-    saveData();
-    renderPreview();
-    history.snapshot();
-    const picker = document.getElementById('shapePicker');
-    if (picker) picker.classList.remove('show');
-    showToast('Shape: ' + shapeId);
-}
-
-/* SECTION 26: BORDER PICKER */
-function openBorderPicker() {
-    const picker = document.getElementById('borderPicker');
-    const shapePicker = document.getElementById('shapePicker');
-    if (shapePicker) shapePicker.classList.remove('show');
-    picker.classList.toggle('show');
-    const grid = document.getElementById('borderGrid');
-    grid.innerHTML = BORDER_STYLES.map(border => {
-        const active = border.id === resumeData.photoBorderStyle ? 'active' : '';
-        return `<div class="border-item ${active}" onclick="setPhotoBorder('${border.id}')">
-                    <div class="border-preview ${border.id}"></div>
-                    <span>${border.label}</span>
-                </div>`;
-    }).join('');
-}
-
-function setPhotoBorder(borderId) {
-    resumeData.photoBorderStyle = borderId;
-    applyPhotoSettings();
-    saveData();
-    renderPreview();
-    history.snapshot();
-    const picker = document.getElementById('borderPicker');
-    if (picker) picker.classList.remove('show');
-    showToast('Border: ' + borderId);
-}
-
-/* SECTION 27: CLOSE PICKERS ON OUTSIDE CLICK */
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.ribbon-group')) {
-        document.querySelectorAll('.picker-popover').forEach(p => p.classList.remove('show'));
-    }
-});
-
-/* SECTION 28: PHOTO EDIT MODE (Drag) */
-function togglePhotoEditMode() {
-    photoEditMode = !photoEditMode;
-    const btn = document.getElementById('btnPhotoEdit');
-    const btnQAT = document.getElementById('btnQATPhotoEdit');
-    const hint = document.getElementById('photoEditHint');
-    const containers = document.querySelectorAll('.header-photo-container, .sidebar-photo');
-
-    if (photoEditMode) {
-        if (btn) btn.classList.add('active');
-        if (btnQAT) btnQAT.classList.add('active');
-        if (hint) hint.classList.add('active');
-        containers.forEach(c => {
-            c.classList.add('photo-edit-mode');
-            c.addEventListener('mousedown', startPhotoDrag);
-            c.addEventListener('touchstart', startPhotoDrag, { passive: false });
-        });
-    } else {
-        if (btn) btn.classList.remove('active');
-        if (btnQAT) btnQAT.classList.remove('active');
-        if (hint) hint.classList.remove('active');
-        containers.forEach(c => {
-            c.classList.remove('photo-edit-mode');
-            c.removeEventListener('mousedown', startPhotoDrag);
-            c.removeEventListener('touchstart', startPhotoDrag);
-        });
-    }
-}
-
-let dragState = null;
-
-function startPhotoDrag(e) {
-    if (!photoEditMode) return;
-    e.preventDefault();
-    const container = e.currentTarget;
-    const rect = container.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-
-    dragState = {
-        container: container,
-        rect: rect,
-        startX: clientX,
-        startY: clientY,
-        startPosX: resumeData.photoPosX,
-        startPosY: resumeData.photoPosY
-    };
-
-    document.addEventListener('mousemove', onPhotoDrag);
-    document.addEventListener('mouseup', endPhotoDrag);
-    document.addEventListener('touchmove', onPhotoDrag, { passive: false });
-    document.addEventListener('touchend', endPhotoDrag);
-    document.body.style.cursor = 'grabbing';
-}
-
-function onPhotoDrag(e) {
-    if (!dragState) return;
-    e.preventDefault();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const deltaX = ((clientX - dragState.startX) / dragState.rect.width) * 100;
-    const deltaY = ((clientY - dragState.startY) / dragState.rect.height) * 100;
-
-    let newPosX = Math.max(0, Math.min(100, dragState.startPosX - deltaX));
-    let newPosY = Math.max(0, Math.min(100, dragState.startPosY - deltaY));
-
-    resumeData.photoPosX = Math.round(newPosX);
-    resumeData.photoPosY = Math.round(newPosY);
-
-    // Live update preview img directly (no re-render)
-    const img = dragState.container.querySelector('img');
-    if (img) {
-        img.style.objectPosition = `${resumeData.photoPosX}% ${resumeData.photoPosY}%`;
-    }
-
-    const posXSlider = document.getElementById('ribbonPhotoPosX');
-    const posXLabel = document.getElementById('photoPosXVal');
-    if (posXSlider) posXSlider.value = resumeData.photoPosX;
-    if (posXLabel) posXLabel.textContent = resumeData.photoPosX;
-
-    const posYSlider = document.getElementById('ribbonPhotoPosY');
-    const posYLabel = document.getElementById('photoPosYVal');
-    if (posYSlider) posYSlider.value = resumeData.photoPosY;
-    if (posYLabel) posYLabel.textContent = resumeData.photoPosY;
-}
-
-function endPhotoDrag() {
-    if (!dragState) return;
-    dragState = null;
-    document.removeEventListener('mousemove', onPhotoDrag);
-    document.removeEventListener('mouseup', endPhotoDrag);
-    document.removeEventListener('touchmove', onPhotoDrag);
-    document.removeEventListener('touchend', endPhotoDrag);
-    document.body.style.cursor = '';
-    saveData();
-    history.snapshot();
-    // NOTE: NO renderPreview() here — it would detach listeners during drag
-}
-
-/* SECTION 29: SAVE / LOAD DATA — wrapped in try/catch */
 function saveData() {
     try {
         localStorage.setItem('omniUltimateResumeV4', JSON.stringify(resumeData));
@@ -3364,7 +2826,6 @@ function updateData(field, value) {
     }
 }
 
-/* SECTION 30: TEXT STYLES */
 function toggleTextStyle(style) {
     if (!resumeData.textStyles) resumeData.textStyles = {};
     resumeData.textStyles[style] = !resumeData.textStyles[style];
@@ -3413,7 +2874,6 @@ function changePadding(value) {
     history.snapshot();
 }
 
-/* SECTION 31: TEMPLATE MANAGEMENT */
 function applyTemplate(id) {
     const template = TEMPLATES.find(x => x.id === parseInt(id));
     if (!template) return;
@@ -3447,7 +2907,9 @@ function applyRandomTemplate() {
     applyTemplate(random.id);
 }
 
-/* SECTION 32: RENDER PREVIEW — CORE */
+/* ============================================================
+   RENDER PREVIEW — Robust inline styles for photo
+   ============================================================ */
 function renderPreview() {
     const template = TEMPLATES.find(x => x.id === currentTemplateId) || TEMPLATES[0];
     const preview = document.getElementById('resumePreview');
@@ -3465,7 +2927,6 @@ function renderPreview() {
     root.setProperty('--resume-line-height', resumeData.lineHeight || 1.5);
     root.setProperty('--resume-padding', (resumeData.padding || 35) + 'px');
 
-    // Photo shape class
     const shapeClass = 'shape-' + (resumeData.photoShape || 'circle');
 
     preview.className = `a4-page layout-${template.layout} ${currentBg}`;
@@ -3503,19 +2964,13 @@ function renderPreview() {
     const membHtml = buildMemberships();
     const intHtml = buildInterests();
 
-    /* ============================================================
-       ROBUST PHOTO HTML — inline styles (no CSS var dependency)
-       Yeh fix karta hai "photo white circle" issue.
-       ============================================================ */
-    const filterObj = PHOTO_FILTERS.find(f => f.id === resumeData.photoFilter) || { css: 'none' };
-
+    /* Robust photo HTML — inline styles */
     const photoImgStyle = [
         'width:100%',
         'height:100%',
         'object-fit:cover',
         `object-position:${resumeData.photoPosX || 50}% ${resumeData.photoPosY || 50}%`,
         `transform:scale(${resumeData.photoScale || 1}) rotate(${resumeData.photoRotate || 0}deg)`,
-        `filter:${filterObj.css}`,
         'display:block',
         'pointer-events:none',
         '-webkit-user-drag:none',
@@ -3633,39 +3088,8 @@ function renderPreview() {
     }
 
     preview.style.transform = `scale(${currentZoom / 100})`;
-
-    // Re-attach photo drag listeners if edit mode is active
-    if (photoEditMode) {
-        const containers = preview.querySelectorAll('.header-photo-container, .sidebar-photo');
-        containers.forEach(c => {
-            c.classList.add('photo-edit-mode');
-            c.addEventListener('mousedown', startPhotoDrag);
-            c.addEventListener('touchstart', startPhotoDrag, { passive: false });
-        });
-    }
-
-    // Sortable sections
-    if (window.Sortable) {
-        const hasSections = preview.querySelector('.resume-section');
-        if (hasSections && preview._sortable) {
-            try { preview._sortable.destroy(); } catch(e) {}
-            preview._sortable = null;
-        }
-        if (hasSections) {
-            try {
-                preview._sortable = new Sortable(preview, {
-                    animation: 150,
-                    handle: '.resume-section',
-                    ghostClass: 'sortable-ghost',
-                    filter: '.resume-header',
-                    onEnd: () => history.snapshot()
-                });
-            } catch(e) {}
-        }
-    }
 }
 
-/* SECTION 33: Strip wrapper */
 function stripWrapper(html) {
     const temp = document.createElement('div');
     temp.innerHTML = html;
@@ -3676,7 +3100,6 @@ function stripWrapper(html) {
     return `<h2>${h2.innerHTML}</h2>${inner}`;
 }
 
-/* SECTION 34: Escape HTML */
 function esc(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -3684,7 +3107,6 @@ function esc(text) {
     return div.innerHTML;
 }
 
-/* SECTION 35: SECTION BUILDERS */
 function buildSummary() {
     if (!resumeData.summary) return '';
     return `<div class="resume-section">
@@ -3952,7 +3374,7 @@ function buildInterests() {
     </div>`;
 }
 
-/* SECTION 36: EXPERIENCE FORM */
+/* Dynamic forms */
 function addExperience() {
     resumeData.experience.push({ title: '', company: '', date: '', desc: '' });
     renderExperienceForm(); renderPreview(); saveData(); history.snapshot();
@@ -3985,7 +3407,6 @@ function removeExperience(i) {
     renderExperienceForm(); renderPreview(); saveData(); history.snapshot();
 }
 
-/* SECTION 37: EDUCATION FORM */
 function addEducation() {
     resumeData.education.push({ degree: '', school: '', date: '', desc: '' });
     renderEducationForm(); renderPreview(); saveData(); history.snapshot();
@@ -4018,7 +3439,6 @@ function removeEducation(i) {
     renderEducationForm(); renderPreview(); saveData(); history.snapshot();
 }
 
-/* SECTION 38: PROJECTS FORM */
 function addProject() {
     resumeData.projects.push({ title: '', tech: '', desc: '' });
     renderProjectForm(); renderPreview(); saveData(); history.snapshot();
@@ -4048,7 +3468,6 @@ function removeProject(i) {
     renderProjectForm(); renderPreview(); saveData(); history.snapshot();
 }
 
-/* SECTION 39: LANGUAGES FORM */
 function addLanguage() {
     resumeData.languages.push({ name: '', level: 'Fluent' });
     renderLanguageForm(); renderPreview(); saveData(); history.snapshot();
@@ -4079,7 +3498,6 @@ function renderLanguageForm() {
 function updateLanguage(i, f, v) { resumeData.languages[i][f] = v; saveData(); renderPreview(); }
 function removeLanguage(i) { resumeData.languages.splice(i, 1); renderLanguageForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 40: CERTIFICATIONS FORM */
 function addCertification() {
     resumeData.certifications.push({ name: '', issuer: '', date: '' });
     renderCertificationForm(); renderPreview(); saveData(); history.snapshot();
@@ -4109,7 +3527,6 @@ function renderCertificationForm() {
 function updateCertification(i, f, v) { resumeData.certifications[i][f] = v; saveData(); renderPreview(); }
 function removeCertification(i) { resumeData.certifications.splice(i, 1); renderCertificationForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 41: AWARDS FORM */
 function addAward() {
     resumeData.awards.push({ title: '', date: '', desc: '' });
     renderAwardForm(); renderPreview(); saveData(); history.snapshot();
@@ -4139,7 +3556,6 @@ function renderAwardForm() {
 function updateAward(i, f, v) { resumeData.awards[i][f] = v; saveData(); renderPreview(); }
 function removeAward(i) { resumeData.awards.splice(i, 1); renderAwardForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 42: REFERENCES FORM */
 function addReference() {
     resumeData.references.push({ name: '', position: '', company: '', contact: '' });
     renderReferenceForm(); renderPreview(); saveData(); history.snapshot();
@@ -4174,7 +3590,6 @@ function renderReferenceForm() {
 function updateReference(i, f, v) { resumeData.references[i][f] = v; saveData(); renderPreview(); }
 function removeReference(i) { resumeData.references.splice(i, 1); renderReferenceForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 43: VOLUNTEER FORM */
 function addVolunteer() {
     resumeData.volunteer.push({ role: '', org: '', date: '', desc: '' });
     renderVolunteerForm(); renderPreview(); saveData(); history.snapshot();
@@ -4207,7 +3622,6 @@ function renderVolunteerForm() {
 function updateVolunteer(i, f, v) { resumeData.volunteer[i][f] = v; saveData(); renderPreview(); }
 function removeVolunteer(i) { resumeData.volunteer.splice(i, 1); renderVolunteerForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 44: PUBLICATIONS FORM */
 function addPublication() {
     resumeData.publications.push({ title: '', publisher: '', date: '', desc: '' });
     renderPublicationForm(); renderPreview(); saveData(); history.snapshot();
@@ -4240,7 +3654,6 @@ function renderPublicationForm() {
 function updatePublication(i, f, v) { resumeData.publications[i][f] = v; saveData(); renderPreview(); }
 function removePublication(i) { resumeData.publications.splice(i, 1); renderPublicationForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 45: ACHIEVEMENTS FORM */
 function addAchievement() {
     resumeData.achievements.push({ title: '', date: '', desc: '' });
     renderAchievementForm(); renderPreview(); saveData(); history.snapshot();
@@ -4270,7 +3683,6 @@ function renderAchievementForm() {
 function updateAchievement(i, f, v) { resumeData.achievements[i][f] = v; saveData(); renderPreview(); }
 function removeAchievement(i) { resumeData.achievements.splice(i, 1); renderAchievementForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 46: COURSES FORM */
 function addCourse() {
     resumeData.courses.push({ name: '', platform: '', date: '' });
     renderCourseForm(); renderPreview(); saveData(); history.snapshot();
@@ -4300,7 +3712,6 @@ function renderCourseForm() {
 function updateCourse(i, f, v) { resumeData.courses[i][f] = v; saveData(); renderPreview(); }
 function removeCourse(i) { resumeData.courses.splice(i, 1); renderCourseForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 47: WORKSHOPS FORM */
 function addWorkshop() {
     resumeData.workshops.push({ name: '', organizer: '', date: '' });
     renderWorkshopForm(); renderPreview(); saveData(); history.snapshot();
@@ -4330,7 +3741,6 @@ function renderWorkshopForm() {
 function updateWorkshop(i, f, v) { resumeData.workshops[i][f] = v; saveData(); renderPreview(); }
 function removeWorkshop(i) { resumeData.workshops.splice(i, 1); renderWorkshopForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 48: MEMBERSHIPS FORM */
 function addMembership() {
     resumeData.memberships.push({ org: '', role: '', date: '' });
     renderMembershipForm(); renderPreview(); saveData(); history.snapshot();
@@ -4360,7 +3770,6 @@ function renderMembershipForm() {
 function updateMembership(i, f, v) { resumeData.memberships[i][f] = v; saveData(); renderPreview(); }
 function removeMembership(i) { resumeData.memberships.splice(i, 1); renderMembershipForm(); renderPreview(); saveData(); history.snapshot(); }
 
-/* SECTION 49: FONT/SIZE/COLOR */
 function changeFont(fontName) {
     currentFont = fontName;
     const fontSelect = document.getElementById('fontSelect');
@@ -4397,7 +3806,6 @@ function changeBackground(bg) {
     saveData(); renderPreview(); history.snapshot();
 }
 
-/* SECTION 50: ZOOM & FULLSCREEN */
 function changeZoom(delta) {
     currentZoom = Math.max(30, Math.min(200, currentZoom + delta));
     const zoomLabel = document.getElementById('zoomLevel');
@@ -4420,11 +3828,9 @@ function toggleFullscreen() {
     }
 }
 
-/* SECTION 51: UNDO / REDO */
 function undoAction() { if (history.undo()) showToast('Undone', 'info'); else showToast('Nothing to undo', 'info'); }
 function redoAction() { if (history.redo()) showToast('Redone', 'info'); else showToast('Nothing to redo', 'info'); }
 
-/* SECTION 52: KEYBOARD SHORTCUTS */
 document.addEventListener('keydown', (e) => {
     const ctrl = e.ctrlKey || e.metaKey;
     if (!ctrl) return;
@@ -4438,73 +3844,6 @@ document.addEventListener('keydown', (e) => {
     else if (key === 'u') { e.preventDefault(); toggleTextStyle('underline'); }
 });
 
-/* SECTION 53: EXPORT / IMPORT — FIXED */
-function exportJSON() {
-    try {
-        const data = {
-            resume: resumeData,
-            templateId: currentTemplateId,
-            font: currentFont,
-            fontSize: currentFontSize,
-            color: currentColor,
-            bg: currentBg,
-            version: '3.1',
-            exportedAt: new Date().toISOString()
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'resume-backup-' + Date.now() + '.json';
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1500);
-        showToast('Resume exported');
-    } catch (err) {
-        console.error(err);
-        showToast('Export failed: ' + err.message, 'error');
-    }
-}
-
-function importJSON(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    event.target.value = '';
-
-    if (!file.name.toLowerCase().endsWith('.json')) {
-        showToast('Please select a .json backup file', 'error');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = e => {
-        try {
-            const parsed = JSON.parse(e.target.result);
-            const newData = parsed.resume || parsed;
-            if (!newData || typeof newData !== 'object') {
-                showToast('Invalid backup file', 'error');
-                return;
-            }
-            localStorage.setItem('omniUltimateResumeV4', JSON.stringify(newData));
-            localStorage.setItem('omniTplIdV4', parsed.templateId || currentTemplateId || 1);
-            localStorage.setItem('omniFontV4', parsed.font || 'Inter');
-            localStorage.setItem('omniFontSizeV4', parsed.fontSize || '13.5px');
-            localStorage.setItem('omniColorV4', parsed.color || '#2563eb');
-            localStorage.setItem('omniBgV4', parsed.bg || 'bg-white');
-            showToast('Imported! Reloading…');
-            setTimeout(() => location.reload(), 500);
-        } catch (err) {
-            console.error(err);
-            showToast('Could not read file: ' + err.message, 'error');
-        }
-    };
-    reader.onerror = () => showToast('File read error', 'error');
-    reader.readAsText(file);
-}
-
-/* SECTION 54: RESET */
 function resetResume() {
     if (!confirm("Are you sure you want to reset ALL data? This cannot be undone.")) return;
     ['omniUltimateResumeV4','omniTplIdV4','omniFontV4','omniFontSizeV4','omniColorV4','omniBgV4'].forEach(k => localStorage.removeItem(k));
@@ -4515,10 +3854,8 @@ function clearAllData() {
     resetResume();
 }
 
-/* SECTION 55: SAMPLE DATA */
 function loadSampleData() {
     if (!confirm("Load sample resume data? Current data will be overwritten.")) return;
-
     resumeData = {
         ...JSON.parse(JSON.stringify(defaultData)),
         name: 'Alexandra Johnson',
@@ -4560,20 +3897,20 @@ function loadSampleData() {
             { name: 'Sarah Chen', position: 'VP of Product', company: 'TechFlow Inc.', contact: 'sarah.chen@techflow.com' }
         ]
     };
-
     saveData();
     location.reload();
 }
 
-/* SECTION 56: HELP */
 function showShortcuts() {
-    alert("⌨️ KEYBOARD SHORTCUTS\n\nCtrl+Z — Undo\nCtrl+Y — Redo\nCtrl+S — Save\nCtrl+P — Print / Save PDF\nCtrl+B — Bold\nCtrl+I — Italic\nCtrl+U — Underline\n\n💡 TIP: Photo tab me 'Edit / Drag' enable karke photo drag kar sakte hain.");
+    alert("⌨️ KEYBOARD SHORTCUTS\n\nCtrl+Z — Undo\nCtrl+Y — Redo\nCtrl+S — Save\nCtrl+P — Print / Save PDF\nCtrl+B — Bold\nCtrl+I — Italic\nCtrl+U — Underline\n\n💡 TIP: Photo tab se crop aur size adjust kar sakte hain.");
 }
 function showAbout() {
-    alert("📄 Ultimate Resume Maker Pro v3.1\n\nA powerful, client-side resume builder with MS Office-style ribbon.\n\n✅ 100 Templates\n✅ 100 Fonts\n✅ 30 Photo Shapes\n✅ Crop Modal (Circle/Shape)\n✅ Undo / Redo (100 steps)\n✅ Drag-and-drop photo\n✅ 20 Resume Sections\n\n100% Private — All data stays in your browser.");
+    alert("📄 Ultimate Resume Maker Pro v3.2\n\nA powerful, client-side resume builder with MS Office-style ribbon.\n\n✅ 100 Templates\n✅ 100 Fonts\n✅ Photo Crop (10 shapes)\n✅ Undo / Redo (100 steps)\n✅ 20 Resume Sections\n\n100% Private — All data stays in your browser.");
 }
 
-/* SECTION 57: CROP MODAL — NAYA FEATURE */
+/* ============================================================
+   CROP MODAL
+   ============================================================ */
 let cropState = {
     imageSrc: '',
     image: null,
@@ -4766,9 +4103,8 @@ function applyCrop() {
     showToast('Photo cropped & applied');
 }
 
-/* SECTION 58: INIT */
+/* INIT */
 function init() {
-    // Populate Templates
     const tplSelect = document.getElementById('templateSelect');
     if (tplSelect) {
         let lastLayout = '';
@@ -4786,7 +4122,6 @@ function init() {
         tplSelect.innerHTML = html;
     }
 
-    // Populate Fonts
     const categories = ['Sans', 'Serif', 'Display', 'Script', 'System'];
     let fontHtml = '';
     categories.forEach(cat => {
@@ -4807,7 +4142,6 @@ function init() {
         hiddenFont.innerHTML = fontHtml;
         hiddenFont.value = currentFont;
     }
-
     if (hiddenFont) hiddenFont.value = currentFont;
 
     const fontSizeSelect = document.getElementById('fontSizeSelect');
@@ -4869,9 +4203,6 @@ function init() {
 
     syncPhotoControls();
 
-    currentFilterIndex = PHOTO_FILTERS.findIndex(f => f.id === resumeData.photoFilter);
-    if (currentFilterIndex < 0) currentFilterIndex = 0;
-
     renderExperienceForm();
     renderEducationForm();
     renderProjectForm();
@@ -4889,10 +4220,9 @@ function init() {
     renderPreview();
     history.clear();
 
-    setTimeout(() => showToast('✨ Resume Maker Pro loaded. Photo tab me crop try karein!', 'info'), 600);
+    setTimeout(() => showToast('✨ Ready! Photo tab se crop aur adjust karein.', 'info'), 600);
 }
 
-/* SECTION 59: DEBOUNCED SNAPSHOT */
 let snapshotTimer;
 document.addEventListener('input', (e) => {
     const el = e.target;
@@ -4902,7 +4232,6 @@ document.addEventListener('input', (e) => {
     }
 });
 
-/* SECTION 60: START */
 window.addEventListener('load', init);
 </script>
 
