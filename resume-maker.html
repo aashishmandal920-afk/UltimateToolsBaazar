@@ -1502,9 +1502,13 @@ input:focus, textarea:focus, select:focus { outline: none; }
             <button class="qat-btn" onclick="downloadPDF()" title="Download PDF directly">
                 <i class="fas fa-file-pdf"></i>
                 <span>Save PDF</span>
-            </button> 
+            </button>
+            <button class="qat-btn" onclick="downloadWord()" title="Download MS Word (.doc)">
+                <i class="fas fa-file-word"></i>
+                <span>Save Word</span>
+                </button>
 
-            <span class="qat-divider"></span>
+<span class="qat-divider"></span>
 
             <button class="qat-btn" onclick="resetResume()" title="Reset everything">
                 <i class="fas fa-trash-alt"></i>
@@ -4064,6 +4068,282 @@ async function downloadPDF() {
     }
 }
 
+/* ============================================================
+   EXPORT TO MS WORD (.doc)
+   Word opens HTML files natively and preserves:
+   - Colors, fonts, images (base64), tables, lists
+   - Auto page-breaks (no manual slicing needed!)
+   ============================================================ */
+function downloadWord() {
+    const element = document.getElementById('resumePreview');
+    if (!element) { showToast('Preview not found', 'error'); return; }
+
+    showToast('Generating Word file...', 'info');
+
+    try {
+        // Save & reset preview transform so clone is clean
+        const oldTransform = element.style.transform;
+        const oldBoxShadow = element.style.boxShadow;
+        element.style.transform = 'none';
+        element.style.boxShadow = 'none';
+
+        // Clone the preview
+        const clone = element.cloneNode(true);
+
+        // Restore preview
+        element.style.transform = oldTransform;
+        element.style.boxShadow = oldBoxShadow;
+
+        // 1) Inline all computed styles (so Word doesn't need external CSS)
+        inlineComputedStyles(element, clone);
+
+        // 2) Replace Font Awesome icons with Unicode symbols
+        replaceIconsForWord(clone);
+
+        // 3) Convert flex/grid layouts to table layouts (Word-friendly)
+        convertLayoutsForWord(clone);
+
+        // 4) Ensure outer container is clean
+        clone.style.width = '100%';
+        clone.style.maxWidth = '100%';
+        clone.style.minHeight = 'auto';
+        clone.style.boxShadow = 'none';
+        clone.style.margin = '0';
+        clone.style.transform = 'none';
+        clone.style.padding = '0';
+
+        // 5) Build the Word-compatible HTML document
+        const fileName = ((resumeData.name || 'resume').trim().replace(/[^a-z0-9]/gi, '_') || 'resume') + '.doc';
+
+        const html = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<title>${escapeHtml(resumeData.name || 'Resume')}</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+@page {
+    size: 21cm 29.7cm;
+    margin: 1.5cm 1.5cm 1.5cm 1.5cm;
+    mso-page-orientation: portrait;
+}
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    font-family: 'Calibri', Arial, sans-serif;
+}
+ul, ol { margin: 0; padding-left: 20px; }
+li { margin-bottom: 3px; }
+img { max-width: 100%; }
+table { border-collapse: collapse; }
+</style>
+</head>
+<body>
+${clone.outerHTML}
+</body>
+</html>`;
+
+        // 6) Download
+        const blob = new Blob(['\ufeff', html], { type: 'application/msword;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+        showToast('✅ Word file downloaded! Open in MS Word.');
+    } catch (err) {
+        console.error(err);
+        showToast('Word export failed: ' + err.message, 'error');
+    }
+}
+
+
+/* ---------- Inline all computed styles ---------- */
+function inlineComputedStyles(sourceEl, targetEl) {
+    const computed = window.getComputedStyle(sourceEl);
+
+    const props = [
+        'display',
+        'width', 'height', 'minWidth', 'maxWidth', 'minHeight', 'maxHeight',
+        'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+        'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+        'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth',
+        'borderTopStyle', 'borderRightStyle', 'borderBottomStyle', 'borderLeftStyle',
+        'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor',
+        'borderTopLeftRadius', 'borderTopRightRadius',
+        'borderBottomLeftRadius', 'borderBottomRightRadius',
+        'backgroundColor', 'color',
+        'fontFamily', 'fontSize', 'fontWeight', 'fontStyle',
+        'textAlign', 'textDecoration', 'textTransform', 'letterSpacing',
+        'lineHeight', 'whiteSpace', 'wordBreak', 'overflowWrap',
+        'verticalAlign', 'flexDirection', 'justifyContent', 'alignItems',
+        'gap', 'gridTemplateColumns', 'gridColumn', 'gridRow',
+        'listStyleType', 'listStylePosition',
+        'objectFit', 'objectPosition', 'opacity'
+    ];
+
+    props.forEach(prop => {
+        const val = computed[prop];
+        if (
+            val &&
+            val !== 'none' &&
+            val !== 'normal' &&
+            val !== 'auto' &&
+            val !== '0px' &&
+            val !== 'rgba(0, 0, 0, 0)' &&
+            val !== 'rgb(0, 0, 0)' ||
+            prop === 'color' ||
+            prop === 'backgroundColor'
+        ) {
+            try { targetEl.style[prop] = val; } catch (e) {}
+        }
+    });
+
+    // Recurse through children (structure is identical because clone is 1:1)
+    const src = sourceEl.children;
+    const tgt = targetEl.children;
+    const len = Math.min(src.length, tgt.length);
+    for (let i = 0; i < len; i++) {
+        inlineComputedStyles(src[i], tgt[i]);
+    }
+}
+
+
+/* ---------- Replace Font Awesome icons with Unicode ---------- */
+function replaceIconsForWord(root) {
+    const map = {
+        'fa-envelope': '✉',
+        'fa-phone': '☎',
+        'fa-map-marker-alt': '⌂',
+        'fa-globe': '◉',
+        'fa-linkedin': 'in',
+        'fa-github': '⌨',
+        'fa-twitter': '@',
+        'fa-briefcase': '▪',
+        'fa-graduation-cap': '◆',
+        'fa-cogs': '⚙',
+        'fa-language': '◈',
+        'fa-project-diagram': '▣',
+        'fa-certificate': '★',
+        'fa-trophy': '♛',
+        'fa-heart': '♥',
+        'fa-users': '☺',
+        'fa-book': '▤',
+        'fa-medal': '✦',
+        'fa-book-open': '▥',
+        'fa-chalkboard-teacher': '✎',
+        'fa-id-card': '▦',
+        'fa-star': '★',
+        'fa-hands-helping': '❖',
+        'fa-align-left': '▪'
+    };
+
+    root.querySelectorAll('i').forEach(icon => {
+        let symbol = null;
+        for (const cls of Object.keys(map)) {
+            if (icon.classList.contains(cls)) {
+                symbol = map[cls];
+                break;
+            }
+        }
+        if (symbol) {
+            const span = document.createElement('span');
+            span.textContent = symbol + ' ';
+            span.style.fontWeight = 'normal';
+            span.style.fontStyle = 'normal';
+            span.style.color = 'inherit';
+            // Slight font-size tweak so symbol matches text height
+            span.style.fontSize = '1em';
+            icon.parentNode.replaceChild(span, icon);
+        } else {
+            icon.remove();
+        }
+    });
+}
+
+
+/* ---------- Convert flex/grid to table (better Word rendering) ---------- */
+function convertLayoutsForWord(root) {
+    // Word treats flex/grid poorly; tables work everywhere.
+    const all = root.querySelectorAll('*');
+    all.forEach(el => {
+        const display = el.style.display;
+        const computed = window.getComputedStyle(el);
+
+        // Skip elements that shouldn't be converted
+        if (
+            el.tagName === 'UL' ||
+            el.tagName === 'OL' ||
+            el.tagName === 'LI' ||
+            el.tagName === 'IMG' ||
+            el.tagName === 'TABLE'
+        ) return;
+
+        // Convert FLEX containers → table
+        if (computed.display === 'flex' && el.children.length > 0) {
+            const direction = computed.flexDirection || 'row';
+            // Only convert horizontal rows (rows with 2+ children in a row)
+            if (direction === 'row' && el.children.length >= 1) {
+                el.style.display = 'table';
+                el.style.width = '100%';
+
+                Array.from(el.children).forEach(child => {
+                    child.style.display = 'table-cell';
+                    child.style.verticalAlign = 'top';
+
+                    // Preserve some spacing
+                    const gap = parseFloat(computed.gap) || 10;
+                    child.style.paddingLeft = '0px';
+                    child.style.paddingRight = (gap / 2) + 'px';
+                });
+            } else if (direction === 'column') {
+                // Column flex → just block
+                el.style.display = 'block';
+            }
+        }
+
+        // Convert GRID containers → table
+        if (computed.display === 'grid' && el.children.length > 0) {
+            el.style.display = 'table';
+            el.style.width = '100%';
+
+            Array.from(el.children).forEach(child => {
+                child.style.display = 'table-cell';
+                child.style.verticalAlign = 'top';
+                child.style.padding = '4px 8px';
+            });
+        }
+    });
+}
+
+
+/* ---------- Small helper ---------- */
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}    
+    
 function undoAction() { if (history.undo()) showToast('Undone', 'info'); else showToast('Nothing to undo', 'info'); }
 function redoAction() { if (history.redo()) showToast('Redone', 'info'); else showToast('Nothing to redo', 'info'); }
 
@@ -4074,7 +4354,8 @@ document.addEventListener('keydown', (e) => {
     if (key === 'z' && !e.shiftKey) { e.preventDefault(); undoAction(); }
     else if (key === 'y' || (key === 'z' && e.shiftKey)) { e.preventDefault(); redoAction(); }
     else if (key === 's') { e.preventDefault(); saveData(); showToast('Saved successfully'); }
-    else if (key === 'p') { e.preventDefault(); downloadPDF(); }
+    else if (key === 'p') { e.preventDefault(); downloadPDF(); } 
+    else if (key === 'w' && e.shiftKey) { e.preventDefault(); downloadWord(); }
     else if (key === 'b') { e.preventDefault(); toggleTextStyle('bold'); }
     else if (key === 'i') { e.preventDefault(); toggleTextStyle('italic'); }
     else if (key === 'u') { e.preventDefault(); toggleTextStyle('underline'); }
