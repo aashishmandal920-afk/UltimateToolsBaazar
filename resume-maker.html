@@ -1365,13 +1365,34 @@ input:focus, textarea:focus, select:focus { outline: none; }
         height: auto;
     }
     .a4-page {
-        width: 100%;
-        min-height: auto;
-        box-shadow: none;
-        margin: 0;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        max-height: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
         padding: 15mm !important;
         transform: none !important;
-        page-break-after: always;
+        transform-origin: top left !important;
+        page-break-after: auto !important;
+        page-break-inside: auto !important;
+        overflow: visible !important;
+    }
+    /* Content ko page ke beech se katne se rokta hai */
+    .resume-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .resume-item {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .resume-header {
+        page-break-inside: avoid;
+        page-break-after: avoid;
+        break-inside: avoid;
+    }
+    .resume-item-header {
+        page-break-after: avoid;
     }
     .header-photo-container { display: block !important; }
     @page { size: A4; margin: 0; }
@@ -1460,10 +1481,14 @@ input:focus, textarea:focus, select:focus { outline: none; }
 
             <span class="qat-divider"></span>
 
-            <button class="qat-btn" onclick="window.print()" title="Download / Print PDF (Ctrl+P)">
+            <button class="qat-btn" onclick="downloadPDF()" title="Download PDF directly">
                 <i class="fas fa-file-pdf"></i>
                 <span>Save PDF</span>
             </button>
+            <button class="qat-btn" onclick="window.print()" title="Open print dialog (Ctrl+P)">
+                <i class="fas fa-print"></i>
+                <span>Print</span>
+            </button> 
 
             <span class="qat-divider"></span>
 
@@ -2245,6 +2270,7 @@ input:focus, textarea:focus, select:focus { outline: none; }
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 /* ============================================================
@@ -3826,6 +3852,81 @@ function toggleFullscreen() {
     } else {
         document.exitFullscreen();
     }
+}
+
+/* ============================================================
+   DIRECT PDF DOWNLOAD (html2pdf.js)
+   ============================================================ */
+function downloadPDF() {
+    const element = document.getElementById('resumePreview');
+    if (!element) { showToast('Preview not found', 'error'); return; }
+
+    if (typeof html2pdf === 'undefined') {
+        showToast('PDF library not loaded. Trying print dialog...', 'warning');
+        setTimeout(() => window.print(), 500);
+        return;
+    }
+
+    const fileName = ((resumeData.name || 'resume').trim().replace(/[^a-z0-9]/gi, '_') || 'resume') + '.pdf';
+
+    showToast('Generating PDF... please wait', 'info');
+
+    // Save and reset transform (zoom) so PDF is not cut
+    const oldTransform = element.style.transform;
+    const oldBoxShadow = element.style.boxShadow;
+    const oldMargin = element.style.margin;
+    element.style.transform = 'none';
+    element.style.boxShadow = 'none';
+    element.style.margin = '0';
+
+    // Temporarily disable preview scaling for capture
+    const oldZoom = currentZoom;
+    currentZoom = 100;
+
+    const opt = {
+        margin: 0,
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait',
+            compress: true
+        },
+        pagebreak: {
+            mode: ['css', 'legacy'],
+            avoid: ['.resume-item', '.resume-section', '.resume-header']
+        }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Restore
+        element.style.transform = oldTransform;
+        element.style.boxShadow = oldBoxShadow;
+        element.style.margin = oldMargin;
+        currentZoom = oldZoom;
+        renderPreview();
+        showToast('✅ PDF downloaded successfully!');
+    }).catch(err => {
+        console.error(err);
+        element.style.transform = oldTransform;
+        element.style.boxShadow = oldBoxShadow;
+        element.style.margin = oldMargin;
+        currentZoom = oldZoom;
+        renderPreview();
+        showToast('PDF failed — opening print dialog', 'error');
+        setTimeout(() => window.print(), 600);
+    });
 }
 
 function undoAction() { if (history.undo()) showToast('Undone', 'info'); else showToast('Nothing to undo', 'info'); }
