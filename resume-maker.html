@@ -3870,17 +3870,9 @@ function toggleFullscreen() {
 }
 
 /* ============================================================
-   DIRECT PDF DOWNLOAD (html2pdf.js)
-   ============================================================ */
-/* ============================================================
-   DIRECT PDF DOWNLOAD (html2canvas + jsPDF) — Manual A4 slicing
-   ============================================================ */
-/* ============================================================
-   DIRECT PDF DOWNLOAD (html2canvas + jsPDF) — with page margins
-   ============================================================ */
-/* ============================================================
    DIRECT PDF DOWNLOAD (html2canvas + jsPDF)
-   Smart slicing: white-row detection so text NEVER gets cut
+   Row-darkness scoring: finds the LIGHTEST row near target,
+   so text NEVER gets cut — even with colored backgrounds
    ============================================================ */
 async function downloadPDF() {
     const element = document.getElementById('resumePreview');
@@ -3897,15 +3889,13 @@ async function downloadPDF() {
 
     const oldTransform = element.style.transform;
     const oldBoxShadow = element.style.boxShadow;
-    const oldMargin = element.style.margin;
     const oldZoom = currentZoom;
 
     element.style.transform = 'none';
     element.style.boxShadow = 'none';
-    element.style.margin = '0';
     currentZoom = 100;
 
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise(r => setTimeout(r, 250));
 
     try {
         const canvas = await html2canvas(element, {
@@ -3914,29 +3904,27 @@ async function downloadPDF() {
             allowTaint: true,
             backgroundColor: '#ffffff',
             logging: false,
-            windowWidth: element.scrollWidth,
-            windowHeight: element.scrollHeight,
             scrollX: 0,
-            scrollY: 0
+            scrollY: 0,
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight
         });
 
-        // Restore UI
+        // Restore UI immediately
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
-        element.style.margin = oldMargin;
         currentZoom = oldZoom;
         renderPreview();
 
         const PDF_W = 210;
         const PDF_H = 297;
-        const PAGE_MARGIN = 10;                  // mm top AND bottom on every page
-        const SIDE_MARGIN = 0;
+        const PAGE_MARGIN = 10;                  // 10mm top+bottom+side on every page
 
         const imgW = canvas.width;
         const imgH = canvas.height;
-        const drawW = PDF_W - (SIDE_MARGIN * 2);
-        const ratio = drawW / imgW;
-        const scaledH = imgH * ratio;
+        const usableW = PDF_W - (PAGE_MARGIN * 2);
+        const ratio = usableW / imgW;
+        const contentH = imgH * ratio;
 
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF({
@@ -3948,75 +3936,92 @@ async function downloadPDF() {
 
         const usableH = PDF_H - (PAGE_MARGIN * 2);
 
-        // ---------- Single page ----------
-        if (scaledH <= usableH) {
+        // ---------- CASE 1: Content fits on single page ----------
+        if (contentH <= usableH + 1) {
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            pdf.addImage(imgData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, scaledH);
+            pdf.addImage(imgData, 'JPEG', PAGE_MARGIN, PAGE_MARGIN, usableW, contentH);
             pdf.save(fileName);
             showToast('✅ PDF downloaded!');
             return;
         }
 
-        // ---------- Multi-page with SMART BREAKS ----------
+        // ---------- CASE 2: Multi-page with row-darkness scoring ----------
         const sourceCtx = canvas.getContext('2d');
         const srcData = sourceCtx.getImageData(0, 0, imgW, imgH).data;
 
-        // Check if a row (y) is "white enough" — sampling every 4px for speed
-        const isRowWhite = (y) => {
-            const threshold = 248;
-            for (let x = 0; x < imgW; x += 4) {
-                const idx = (y * imgW + x) * 4;
-                if (srcData[idx]     < threshold ||
-                    srcData[idx + 1] < threshold ||
-                    srcData[idx + 2] < threshold) {
-                    return false;
-                }
+        // Compute per-row "ink" score (higher = darker = more content)
+        // We sample horizontally to keep it fast
+        const stepX = Math.max(2, Math.floor(imgW / 500));
+        const rowDark = new Float32Array(imgH);
+
+        for (let y = 0; y < imgH; y++) {
+            let dark = 0;
+            const rowOffset = y * imgW * 4;
+            for (let x = 0; x < imgW; x += stepX) {
+                const idx = rowOffset + x * 4;
+                const r = srcData[idx];
+                const g = srcData[idx + 1];
+                const b = srcData[idx + 2];
+                // Luminance
+                const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                dark += (255 - lum);
             }
-            return true;
-        };
+            rowDark[y] = dark;
+        }
 
-        // Convert usable content area (mm) to pixels
+        // ----- SMART BREAK FINDER -----
+        // For each target break, look at a window around it, find the row with
+        // LOWEST ink density. That's naturally a whitespace between elements.
         const usablePx = usableH / ratio;
-
-        // Walk down the canvas, find "white rows" near each target break
-        const breaks = [0];   // pixel Y positions where each page starts
+        const breaks = [0];
         let cursor = 0;
 
-        while (cursor + usablePx < imgH) {
-            const target = cursor + usablePx;
+        // We search ±WINDOW px around target
+        const WINDOW = 180;
 
-            // Search window: ±120 px around target
-            const WINDOW = 120;
-            const searchStart = Math.max(cursor + 50, target - WINDOW);
-            const searchEnd   = Math.min(imgH - 5, target + WINDOW);
+        while (cursor + usablePx < imgH - 30) {
+            const target = Math.round(cursor + usablePx);
 
-            let bestBreak = null;
-            let bestDist = Infinity;
+            const searchStart = Math.max(cursor + 40, target - WINDOW);
+            const searchEnd = Math.min(imgH - 15, target + WINDOW);
 
-            for (let y = searchEnd; y >= searchStart; y--) {
-                if (isRowWhite(y)) {
-                    const dist = Math.abs(y - target);
-                    if (dist < bestDist) {
-                        bestDist = dist;
-                        bestBreak = y;
-                    }
+            let bestY = target;
+            let bestScore = Infinity;
+
+            for (let y = searchStart; y <= searchEnd; y++) {
+                // Sum darkness of y, y+2, y+4 (checks a small band, not just single row)
+                const d1 = rowDark[y] || 0;
+                const d2 = rowDark[Math.min(imgH - 1, y + 2)] || 0;
+                const d3 = rowDark[Math.min(imgH - 1, y + 4)] || 0;
+                const totalDark = d1 + d2 + d3;
+
+                // Slight bias to rows closer to target so we don't drift too far
+                const distBias = Math.abs(y - target) / WINDOW * 500;
+
+                const score = totalDark + distBias;
+
+                if (score < bestScore) {
+                    bestScore = score;
+                    bestY = y;
                 }
             }
 
-            // If we found a white row, use it. Otherwise, cut at target.
-            const breakY = (bestBreak !== null) ? bestBreak : target;
-            if (breakY <= cursor + 20) break;   // safety: no infinite loop
-            breaks.push(breakY);
-            cursor = breakY;
+            // Safety: don't get stuck
+            if (bestY <= cursor + 30) {
+                bestY = target;
+            }
+
+            breaks.push(bestY);
+            cursor = bestY;
         }
         breaks.push(imgH);
 
-        // Render each page
+        // ----- Render each page -----
         for (let p = 0; p < breaks.length - 1; p++) {
             if (p > 0) pdf.addPage();
 
             const startY = breaks[p];
-            const endY   = breaks[p + 1];
+            const endY = breaks[p + 1];
             const sliceH = endY - startY;
             if (sliceH <= 0) continue;
 
@@ -4036,7 +4041,14 @@ async function downloadPDF() {
             const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
             const sliceH_mm = sliceH * ratio;
 
-            pdf.addImage(sliceData, 'JPEG', SIDE_MARGIN, PAGE_MARGIN, drawW, sliceH_mm);
+            pdf.addImage(
+                sliceData,
+                'JPEG',
+                PAGE_MARGIN,
+                PAGE_MARGIN,
+                usableW,
+                sliceH_mm
+            );
         }
 
         pdf.save(fileName);
@@ -4046,7 +4058,6 @@ async function downloadPDF() {
         console.error(err);
         element.style.transform = oldTransform;
         element.style.boxShadow = oldBoxShadow;
-        element.style.margin = oldMargin;
         currentZoom = oldZoom;
         renderPreview();
         showToast('PDF generation failed', 'error');
