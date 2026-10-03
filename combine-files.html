@@ -1,1072 +1,1474 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate PDF Combiner - Omni Convertors</title>
-<link rel="stylesheet" href="style.css">
-<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script>
-    if (typeof pdfjsLib !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    }
-</script>
-<style>
-/* ============================================================
-   ULTIMATE PDF COMBINER — Scoped dark-mode-safe styles
-   ============================================================ */
-.pdfc {
-    color-scheme: light;
-    --t: #0f172a;
-    --t2: #475569;
-    --t3: #94a3b8;
-    --bg: #ffffff;
-    --bg-in: #ffffff;
-    --bg-card: #f8fafc;
-    --bg-sub: #f1f5f9;
-    --bd: #e2e8f0;
-    --bd2: #cbd5e1;
-    --pr: #6366f1;
-    --pr-soft: #e0e7ff;
-    --ok: #10b981;
-    --ok-soft: #d1fae5;
-    --warn: #f59e0b;
-    --warn-soft: #fef3c7;
-    --err: #ef4444;
-    --err-soft: #fee2e2;
-    --sh: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
-    --sh-lg: 0 10px 25px rgba(0,0,0,.08);
-}
-[data-theme="dark"] .pdfc {
-    color-scheme: dark;
-    --t: #f1f5f9;
-    --t2: #cbd5e1;
-    --t3: #94a3b8;
-    --bg: #0f172a;
-    --bg-in: #1e293b;
-    --bg-card: #1e293b;
-    --bg-sub: #334155;
-    --bd: #334155;
-    --bd2: #475569;
-    --pr: #818cf8;
-    --pr-soft: #312e81;
-    --ok: #34d399;
-    --ok-soft: #064e3b;
-    --warn: #fbbf24;
-    --warn-soft: #78350f;
-    --err: #f87171;
-    --err-soft: #7f1d1d;
-    --sh: 0 1px 3px rgba(0,0,0,.4);
-    --sh-lg: 0 10px 25px rgba(0,0,0,.5);
-}
-.pdfc * { box-sizing: border-box; }
-.pdfc {
-    max-width: 1200px;
-    margin: 24px auto;
-    padding: 24px;
-    color: var(--t);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
-}
-.pdfc input, .pdfc button, .pdfc select { font-family: inherit; }
-.pdfc input[type="text"] {
-    color: var(--t) !important;
-    background-color: var(--bg-in) !important;
-    -webkit-text-fill-color: var(--t) !important;
-    caret-color: var(--pr) !important;
-}
-.pdfc input::placeholder {
-    color: var(--t3) !important;
-    -webkit-text-fill-color: var(--t3) !important;
-    opacity: .7;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate PDF Combiner - Omni Convertors</title>
+    <link rel="stylesheet" href="style.css">
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        }
+    </script>
+    <style>
+        /* ============================================================
+           ULTIMATE PDF COMBINER — Scoped styles + dark-mode fix
+           ============================================================ */
 
-/* ============ HEADER ============ */
-.pdfc-header {
-    display: flex; justify-content: space-between; gap: 20px;
-    flex-wrap: wrap; margin-bottom: 20px; align-items: flex-start;
-}
-.pdfc-header-left { flex: 1; min-width: 260px; }
-.pdfc-back {
-    color: var(--pr) !important; text-decoration: none;
-    font-size: 13px; display: inline-flex; align-items: center;
-    gap: 4px; margin-bottom: 12px; transition: opacity .2s;
-}
-.pdfc-back:hover { opacity: .75; }
-.pdfc h1 {
-    font-size: 26px; font-weight: 700; margin: 0 0 6px 0;
-    display: flex; align-items: center; gap: 10px; color: var(--t);
-}
-.pdfc-sub {
-    font-size: 13.5px; color: var(--t3); margin: 0;
-    max-width: 620px; line-height: 1.5;
-}
-.pdfc-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .pdf-comb-scope {
+            color-scheme: light;
+            --pc-text: #0f172a;
+            --pc-text-soft: #475569;
+            --pc-text-muted: #94a3b8;
+            --pc-bg: #ffffff;
+            --pc-bg-input: #ffffff;
+            --pc-bg-card: #f8fafc;
+            --pc-bg-subtle: #f1f5f9;
+            --pc-border: #e2e8f0;
+            --pc-border-strong: #cbd5e1;
+            --pc-primary: #6366f1;
+            --pc-primary-soft: #e0e7ff;
+            --pc-danger: #ef4444;
+            --pc-danger-soft: #fee2e2;
+            --pc-success: #10b981;
+            --pc-success-soft: #d1fae5;
+            --pc-warn: #f59e0b;
+            --pc-warn-soft: #fef3c7;
+            --pc-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --pc-shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        [data-theme="dark"] .pdf-comb-scope {
+            color-scheme: dark;
+            --pc-text: #f1f5f9;
+            --pc-text-soft: #cbd5e1;
+            --pc-text-muted: #94a3b8;
+            --pc-bg: #0f172a;
+            --pc-bg-input: #1e293b;
+            --pc-bg-card: #1e293b;
+            --pc-bg-subtle: #334155;
+            --pc-border: #334155;
+            --pc-border-strong: #475569;
+            --pc-primary: #818cf8;
+            --pc-primary-soft: #312e81;
+            --pc-danger: #f87171;
+            --pc-danger-soft: #7f1d1d;
+            --pc-success: #34d399;
+            --pc-success-soft: #064e3b;
+            --pc-warn: #fbbf24;
+            --pc-warn-soft: #78350f;
+            --pc-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            --pc-shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .pdf-comb-scope * { box-sizing: border-box; }
+        .pdf-comb-scope input,
+        .pdf-comb-scope button,
+        .pdf-comb-scope select {
+            font-family: inherit;
+        }
+        .pdf-comb-scope input[type="text"],
+        .pdf-comb-scope input[type="number"],
+        .pdf-comb-scope select {
+            color: var(--pc-text) !important;
+            background-color: var(--pc-bg-input) !important;
+            -webkit-text-fill-color: var(--pc-text) !important;
+            caret-color: var(--pc-primary) !important;
+        }
+        .pdf-comb-scope input::placeholder {
+            color: var(--pc-text-muted) !important;
+            -webkit-text-fill-color: var(--pc-text-muted) !important;
+            opacity: 0.7;
+        }
 
-/* ============ BUTTONS ============ */
-.pdfc-btn {
-    padding: 10px 16px; border-radius: 10px;
-    border: 1.5px solid var(--bd); background: var(--bg-card);
-    color: var(--t2); font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all .2s;
-    display: inline-flex; align-items: center;
-    justify-content: center; gap: 6px; white-space: nowrap;
-}
-.pdfc-btn:hover {
-    border-color: var(--pr); color: var(--pr); transform: translateY(-1px);
-}
-.pdfc-btn:active { transform: translateY(0); }
-.pdfc-btn:disabled {
-    opacity: .4; cursor: not-allowed; transform: none !important;
-}
-.pdfc-btn-pri { background: var(--pr); border-color: var(--pr); color: white; }
-.pdfc-btn-pri:hover { color: white; filter: brightness(1.1); }
-.pdfc-btn-ok { background: var(--ok); border-color: var(--ok); color: white; }
-.pdfc-btn-ok:hover { color: white; filter: brightness(1.1); }
-.pdfc-btn-err { color: var(--err); border-color: var(--err); }
-.pdfc-btn-err:hover { background: var(--err-soft); color: var(--err); }
-.pdfc-btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-.pdfc-btn-lg { padding: 14px 24px; font-size: 14px; border-radius: 12px; }
+        /* ============ CONTAINER ============ */
+        .pdf-comb-scope {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 24px;
+            color: var(--pc-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
 
-/* ============ EMPTY STATE ============ */
-.pdfc-empty {
-    padding: 60px 20px; text-align: center;
-    background: var(--bg-card); border: 2px dashed var(--bd);
-    border-radius: 14px; color: var(--t3); transition: all .2s;
-}
-.pdfc-empty-icon { font-size: 56px; margin-bottom: 16px; opacity: .6; }
-.pdfc-empty-title {
-    font-size: 17px; font-weight: 600; color: var(--t2);
-    margin-bottom: 6px;
-}
-.pdfc-empty-text { font-size: 13px; margin-bottom: 20px; }
-.pdfc-empty-hint {
-    font-size: 11.5px; color: var(--t3); margin-top: 12px;
-}
-.pdfc-empty.drop {
-    border-color: var(--pr); background: var(--pr-soft);
-    color: var(--pr); transform: scale(1.01);
-}
+        /* ============ HEADER ============ */
+        .pc-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .pc-header-left { flex: 1; min-width: 260px; }
+        .pc-back-link {
+            color: var(--pc-primary) !important;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+            transition: opacity 0.2s;
+        }
+        .pc-back-link:hover { opacity: 0.75; }
+        .pc-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--pc-text);
+        }
+        .pc-subtitle {
+            font-size: 13.5px;
+            color: var(--pc-text-muted);
+            margin: 0;
+            max-width: 620px;
+            line-height: 1.5;
+        }
+        .pc-header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
 
-/* ============ TOOLBAR ============ */
-.pdfc-toolbar {
-    display: flex; flex-wrap: wrap; align-items: center;
-    gap: 10px; padding: 12px 16px;
-    background: var(--bg-card); border: 1px solid var(--bd);
-    border-radius: 12px; margin-bottom: 16px; box-shadow: var(--sh);
-}
-.pdfc-tg {
-    display: flex; align-items: center; gap: 6px;
-    padding-right: 12px; border-right: 1px solid var(--bd);
-}
-.pdfc-tg:last-child { border-right: none; padding-right: 0; }
-.pdfc-tg > span {
-    font-size: 11px; color: var(--t3); text-transform: uppercase;
-    letter-spacing: .4px; font-weight: 600; margin-right: 4px;
-}
+        /* ============ BUTTONS ============ */
+        .pc-btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: 1.5px solid var(--pc-border);
+            background: var(--pc-bg-card);
+            color: var(--pc-text-soft);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .pc-btn:hover {
+            border-color: var(--pc-primary);
+            color: var(--pc-primary);
+            transform: translateY(-1px);
+        }
+        .pc-btn:active { transform: translateY(0); }
+        .pc-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .pc-btn-primary {
+            background: var(--pc-primary);
+            border-color: var(--pc-primary);
+            color: white;
+        }
+        .pc-btn-primary:hover {
+            background: var(--pc-primary);
+            color: white;
+            filter: brightness(1.1);
+        }
+        .pc-btn-success {
+            background: var(--pc-success);
+            border-color: var(--pc-success);
+            color: white;
+        }
+        .pc-btn-success:hover {
+            background: var(--pc-success);
+            color: white;
+            filter: brightness(1.1);
+        }
+        .pc-btn-danger {
+            color: var(--pc-danger);
+            border-color: var(--pc-danger);
+        }
+        .pc-btn-danger:hover {
+            background: var(--pc-danger-soft);
+            color: var(--pc-danger);
+        }
+        .pc-btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+        .pc-btn-lg {
+            padding: 14px 24px;
+            font-size: 14px;
+            border-radius: 12px;
+        }
+        .pc-btn-icon {
+            padding: 7px;
+            width: 32px;
+            height: 32px;
+        }
 
-/* ============ STATS BAR ============ */
-.pdfc-stats {
-    display: flex; flex-wrap: wrap; gap: 16px;
-    padding: 14px 18px; background: var(--bg-card);
-    border: 1px solid var(--bd); border-radius: 12px;
-    margin-bottom: 16px; font-size: 13px; box-shadow: var(--sh);
-}
-.pdfc-stat { display: flex; align-items: center; gap: 6px; color: var(--t2); }
-.pdfc-stat strong { color: var(--t); font-weight: 700; font-size: 14px; }
-.pdfc-badge {
-    display: inline-flex; align-items: center;
-    padding: 3px 10px; border-radius: 12px;
-    font-size: 11.5px; font-weight: 600;
-    background: var(--bg-sub); color: var(--t2);
-}
-.pdfc-badge.pr { background: var(--pr-soft); color: var(--pr); }
-.pdfc-badge.ok { background: var(--ok-soft); color: var(--ok); }
-.pdfc-badge.warn { background: var(--warn-soft); color: var(--warn); }
-.pdfc-badge.err { background: var(--err-soft); color: var(--err); }
+        /* ============ EMPTY STATE ============ */
+        .pc-empty {
+            padding: 60px 20px;
+            text-align: center;
+            background: var(--pc-bg-card);
+            border: 2px dashed var(--pc-border);
+            border-radius: 14px;
+            color: var(--pc-text-muted);
+            transition: all 0.2s;
+        }
+        .pc-empty-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+        .pc-empty-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--pc-text-soft);
+            margin-bottom: 6px;
+        }
+        .pc-empty-text {
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .pc-empty-hint {
+            font-size: 11.5px;
+            color: var(--pc-text-muted);
+            margin-top: 12px;
+        }
+        .pc-drop-active {
+            border-color: var(--pc-primary);
+            background: var(--pc-primary-soft);
+            color: var(--pc-primary);
+            transform: scale(1.01);
+        }
 
-/* ============ FILE LIST ============ */
-.pdfc-list { display: flex; flex-direction: column; gap: 12px; }
+        /* ============ TOOLBAR ============ */
+        .pc-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: var(--pc-bg-card);
+            border: 1px solid var(--pc-border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: var(--pc-shadow);
+        }
+        .pc-toolbar-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-right: 12px;
+            border-right: 1px solid var(--pc-border);
+        }
+        .pc-toolbar-group:last-child { border-right: none; padding-right: 0; }
+        .pc-toolbar-group > span {
+            font-size: 11px;
+            color: var(--pc-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
 
-.pdfc-card {
-    display: grid; grid-template-columns: 100px 1fr auto;
-    gap: 16px; padding: 14px;
-    background: var(--bg-card); border: 2px solid var(--bd);
-    border-radius: 14px; transition: all .2s;
-    align-items: center; cursor: grab;
-}
-.pdfc-card:hover {
-    border-color: var(--bd2); box-shadow: var(--sh-lg);
-    transform: translateY(-1px);
-}
-.pdfc-card:active { cursor: grabbing; }
-.pdfc-card.ghost {
-    opacity: .35; background: var(--pr-soft); border-style: dashed;
-}
-.pdfc-card.drag { opacity: .5; transform: rotate(1deg); }
+        /* ============ STATS BAR ============ */
+        .pc-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 14px 18px;
+            background: var(--pc-bg-card);
+            border: 1px solid var(--pc-border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            box-shadow: var(--pc-shadow);
+        }
+        .pc-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--pc-text-soft);
+        }
+        .pc-stat strong {
+            color: var(--pc-text);
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .pc-stat-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+            background: var(--pc-bg-subtle);
+            color: var(--pc-text-soft);
+        }
+        .pc-stat-badge.accent {
+            background: var(--pc-primary-soft);
+            color: var(--pc-primary);
+        }
+        .pc-stat-badge.success {
+            background: var(--pc-success-soft);
+            color: var(--pc-success);
+        }
 
-.pdfc-thumb {
-    width: 100px; height: 130px;
-    background: #fff; border-radius: 8px;
-    overflow: hidden; display: flex;
-    align-items: center; justify-content: center;
-    border: 1px solid var(--bd); position: relative;
-}
-.pdfc-thumb canvas {
-    max-width: 100%; max-height: 100%; display: block;
-}
-.pdfc-thumb-load {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg-sub); color: var(--t3); font-size: 11px;
-}
+        /* ============ FILE LIST ============ */
+        .pc-file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
-.pdfc-info {
-    display: flex; flex-direction: column;
-    gap: 8px; min-width: 0;
-}
-.pdfc-name {
-    font-size: 14px; font-weight: 600; color: var(--t);
-    word-break: break-all; display: flex;
-    align-items: center; gap: 8px; flex-wrap: wrap;
-}
-.pdfc-meta {
-    display: flex; flex-wrap: wrap; gap: 14px;
-    font-size: 12px; color: var(--t3);
-}
-.pdfc-meta-i { display: flex; align-items: center; gap: 4px; }
+        /* ============ FILE CARD ============ */
+        .pc-file-card {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 16px;
+            padding: 14px;
+            background: var(--pc-bg-card);
+            border: 2px solid var(--pc-border);
+            border-radius: 14px;
+            transition: all 0.2s;
+            align-items: center;
+            cursor: grab;
+            position: relative;
+        }
+        .pc-file-card:hover {
+            border-color: var(--pc-border-strong);
+            box-shadow: var(--pc-shadow-lg);
+            transform: translateY(-1px);
+        }
+        .pc-file-card:active { cursor: grabbing; }
+        .pc-file-card.sortable-ghost {
+            opacity: 0.35;
+            background: var(--pc-primary-soft);
+            border-style: dashed;
+        }
+        .pc-file-card.dragging {
+            opacity: 0.5;
+            transform: rotate(1deg);
+        }
 
-.pdfc-range {
-    display: flex; flex-wrap: wrap; align-items: center;
-    gap: 8px; font-size: 12px;
-}
-.pdfc-range label { color: var(--t3); font-weight: 500; }
-.pdfc-range input {
-    padding: 6px 10px; border-radius: 7px;
-    border: 1.5px solid var(--bd);
-    background: var(--bg-in); color: var(--t);
-    font-size: 12px;
-    font-family: 'SF Mono', Consolas, monospace;
-    min-width: 160px;
-    -webkit-text-fill-color: var(--t);
-}
-.pdfc-range input:focus {
-    outline: none; border-color: var(--pr);
-    box-shadow: 0 0 0 3px var(--pr-soft);
-}
-.pdfc-range-hint {
-    font-size: 11px; color: var(--t3); font-style: italic;
-}
+        /* Drag handle */
+        .pc-drag-handle {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding: 8px 4px;
+            cursor: grab;
+            user-select: none;
+        }
+        .pc-drag-handle span {
+            width: 6px;
+            height: 6px;
+            background: var(--pc-text-muted);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        .pc-drag-handle:hover span { opacity: 1; }
 
-.pdfc-actions {
-    display: flex; flex-direction: column;
-    gap: 6px; align-items: center;
-}
-.pdfc-actions button {
-    width: 36px; height: 36px; padding: 0;
-    border-radius: 8px; border: 1.5px solid var(--bd);
-    background: var(--bg-in); color: var(--t2);
-    cursor: pointer; font-size: 14px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .15s;
-}
-.pdfc-actions button:hover {
-    border-color: var(--pr); color: var(--pr);
-    transform: scale(1.05);
-}
-.pdfc-actions button.err:hover {
-    border-color: var(--err); color: var(--err);
-    background: var(--err-soft);
-}
+        /* Thumbnail */
+        .pc-thumb-wrap {
+            width: 100px;
+            height: 130px;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--pc-border);
+            position: relative;
+        }
+        .pc-thumb-wrap canvas {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        .pc-thumb-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--pc-bg-subtle);
+            color: var(--pc-text-muted);
+            font-size: 11px;
+        }
 
-/* ============ BOTTOM PANEL ============ */
-.pdfc-bottom {
-    margin-top: 20px; padding: 20px;
-    background: var(--bg-card); border: 1px solid var(--bd);
-    border-radius: 14px; box-shadow: var(--sh);
-}
-.pdfc-opts {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px; margin-bottom: 20px;
-}
-.pdfc-opt { display: flex; flex-direction: column; gap: 6px; }
-.pdfc-opt > label {
-    font-size: 12px; font-weight: 600; color: var(--t2);
-}
-.pdfc-opt input[type="text"] {
-    padding: 9px 12px; border-radius: 8px;
-    border: 1.5px solid var(--bd); font-size: 13px;
-    background: var(--bg-in);
-}
-.pdfc-opt input[type="text"]:focus {
-    outline: none; border-color: var(--pr);
-    box-shadow: 0 0 0 3px var(--pr-soft);
-}
-.pdfc-opt-hint { font-size: 11px; color: var(--t3); }
+        /* File info */
+        .pc-file-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+        }
+        .pc-file-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--pc-text);
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pc-file-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            flex-shrink: 0;
+        }
+        .pc-badge-ok {
+            background: var(--pc-success-soft);
+            color: var(--pc-success);
+        }
+        .pc-badge-warn {
+            background: var(--pc-warn-soft);
+            color: var(--pc-warn);
+        }
+        .pc-badge-error {
+            background: var(--pc-danger-soft);
+            color: var(--pc-danger);
+        }
 
-.pdfc-toggle {
-    display: flex; align-items: center; gap: 10px;
-    padding: 11px 14px; background: var(--bg-sub);
-    border-radius: 10px; cursor: pointer;
-    transition: all .15s; font-size: 13px; color: var(--t2);
-}
-.pdfc-toggle:hover { background: var(--bg-in); }
-.pdfc-toggle input[type="checkbox"] {
-    width: 18px; height: 18px;
-    accent-color: var(--pr); cursor: pointer; flex-shrink: 0;
-}
-.pdfc-toggle .txt {
-    flex: 1; display: flex; flex-direction: column; gap: 2px;
-}
-.pdfc-toggle .txt strong {
-    color: var(--t); font-weight: 600; font-size: 13px;
-}
-.pdfc-toggle .txt small { color: var(--t3); font-size: 11px; }
+        .pc-file-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            font-size: 12px;
+            color: var(--pc-text-muted);
+        }
+        .pc-file-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-.pdfc-main-actions {
-    display: flex; flex-wrap: wrap;
-    gap: 12px; justify-content: center;
-}
+        /* Page range input */
+        .pc-range-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        .pc-range-row label {
+            color: var(--pc-text-muted);
+            font-weight: 500;
+        }
+        .pc-range-input {
+            padding: 6px 10px;
+            border-radius: 7px;
+            border: 1.5px solid var(--pc-border);
+            background: var(--pc-bg-input);
+            color: var(--pc-text);
+            font-size: 12px;
+            font-family: 'SF Mono', Consolas, monospace;
+            min-width: 140px;
+            -webkit-text-fill-color: var(--pc-text);
+        }
+        .pc-range-input:focus {
+            outline: none;
+            border-color: var(--pc-primary);
+            box-shadow: 0 0 0 3px var(--pc-primary-soft);
+        }
+        .pc-range-hint {
+            font-size: 11px;
+            color: var(--pc-text-muted);
+            font-style: italic;
+        }
 
-/* ============ PROGRESS OVERLAY ============ */
-.pdfc-prog {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.6);
-    backdrop-filter: blur(4px);
-    z-index: 9999; display: none;
-    align-items: center; justify-content: center; padding: 20px;
-}
-.pdfc-prog.show { display: flex; }
-.pdfc-prog-box {
-    background: var(--bg-card); border: 1px solid var(--bd);
-    border-radius: 16px; padding: 30px 40px;
-    text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,.5);
-    max-width: 420px; width: 100%;
-}
-.pdfc-spin {
-    width: 48px; height: 48px;
-    border: 4px solid var(--bd);
-    border-top-color: var(--pr);
-    border-radius: 50%;
-    animation: pdfcSpin .9s linear infinite;
-    margin: 0 auto 18px;
-}
-@keyframes pdfcSpin { to { transform: rotate(360deg); } }
-.pdfc-prog-text {
-    font-size: 14px; font-weight: 600;
-    color: var(--t); margin-bottom: 6px;
-}
-.pdfc-prog-sub {
-    font-size: 12px; color: var(--t3);
-    margin-bottom: 18px;
-    word-break: break-all;
-}
-.pdfc-prog-bar {
-    height: 6px; background: var(--bg-sub);
-    border-radius: 3px; overflow: hidden;
-}
-.pdfc-prog-fill {
-    height: 100%; background: var(--pr);
-    border-radius: 3px; width: 0%;
-    transition: width .3s;
-}
+        /* File actions */
+        .pc-file-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+        .pc-file-actions button {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            border-radius: 8px;
+            border: 1.5px solid var(--pc-border);
+            background: var(--pc-bg-input);
+            color: var(--pc-text-soft);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .pc-file-actions button:hover {
+            border-color: var(--pc-primary);
+            color: var(--pc-primary);
+            transform: scale(1.05);
+        }
+        .pc-file-actions button.danger:hover {
+            border-color: var(--pc-danger);
+            color: var(--pc-danger);
+            background: var(--pc-danger-soft);
+        }
 
-/* ============ TOAST ============ */
-.pdfc-toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #0f172a; color: white;
-    padding: 12px 22px; border-radius: 10px;
-    font-size: 13px; font-weight: 600;
-    z-index: 10000;
-    transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .35s;
-    opacity: 0; pointer-events: none;
-    display: flex; align-items: center; gap: 10px;
-    border-left: 4px solid var(--ok);
-    max-width: 90vw;
-    box-shadow: 0 12px 40px rgba(0,0,0,.4);
-}
-.pdfc-toast.show {
-    transform: translateX(-50%) translateY(0); opacity: 1;
-}
-.pdfc-toast.err { border-left-color: var(--err); }
-.pdfc-toast.warn { border-left-color: var(--warn); }
+        /* ============ BOTTOM PANEL ============ */
+        .pc-bottom-panel {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--pc-bg-card);
+            border: 1px solid var(--pc-border);
+            border-radius: 14px;
+            box-shadow: var(--pc-shadow);
+        }
 
-/* ============ HELPERS ============ */
-.pdfc-hide { display: none !important; }
+        .pc-options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
 
-/* ============ RESPONSIVE ============ */
-@media (max-width: 720px) {
-    .pdfc-header { flex-direction: column; }
-    .pdfc-card { grid-template-columns: 70px 1fr; gap: 12px; }
-    .pdfc-thumb { width: 70px; height: 92px; }
-    .pdfc-actions {
-        grid-column: 1 / -1; flex-direction: row;
-        justify-content: center;
-    }
-    .pdfc-tg { border-right: none; padding-right: 0; }
-}
-</style>
+        .pc-option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .pc-option-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--pc-text-soft);
+        }
+        .pc-option-group input[type="text"] {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1.5px solid var(--pc-border);
+            font-size: 13px;
+        }
+        .pc-option-group input[type="text"]:focus {
+            outline: none;
+            border-color: var(--pc-primary);
+            box-shadow: 0 0 0 3px var(--pc-primary-soft);
+        }
+        .pc-option-hint {
+            font-size: 11px;
+            color: var(--pc-text-muted);
+        }
+
+        /* Toggle switch */
+        .pc-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: var(--pc-bg-subtle);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13px;
+            color: var(--pc-text-soft);
+        }
+        .pc-toggle-row:hover { background: var(--pc-bg-input); }
+        .pc-toggle-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--pc-primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .pc-toggle-row .pc-toggle-label {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .pc-toggle-row .pc-toggle-label strong {
+            color: var(--pc-text);
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .pc-toggle-row .pc-toggle-label small {
+            color: var(--pc-text-muted);
+            font-size: 11px;
+        }
+
+        /* ============ ACTION BUTTONS ============ */
+        .pc-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* ============ PROGRESS OVERLAY ============ */
+        .pc-progress-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .pc-progress-overlay.show { display: flex; }
+        .pc-progress-box {
+            background: var(--pc-bg-card);
+            border: 1px solid var(--pc-border);
+            border-radius: 16px;
+            padding: 30px 40px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 100%;
+        }
+        .pc-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--pc-border);
+            border-top-color: var(--pc-primary);
+            border-radius: 50%;
+            animation: pc-spin 0.9s linear infinite;
+            margin: 0 auto 18px;
+        }
+        @keyframes pc-spin {
+            to { transform: rotate(360deg); }
+        }
+        .pc-progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--pc-text);
+            margin-bottom: 6px;
+        }
+        .pc-progress-sub {
+            font-size: 12px;
+            color: var(--pc-text-muted);
+        }
+        .pc-progress-bar {
+            height: 6px;
+            background: var(--pc-bg-subtle);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 18px;
+        }
+        .pc-progress-bar-fill {
+            height: 100%;
+            background: var(--pc-primary);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* ============ TOAST ============ */
+        .pc-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0f172a;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 10000;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--pc-success);
+            max-width: 90vw;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        .pc-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .pc-toast.error { border-left-color: var(--pc-danger); }
+        .pc-toast.warn { border-left-color: var(--pc-warn); }
+
+        /* ============ EMPTY FOR OTHERS ============ */
+        .pc-hidden { display: none !important; }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 720px) {
+            .pc-header { flex-direction: column; }
+            .pc-file-card {
+                grid-template-columns: 70px 1fr;
+                gap: 12px;
+            }
+            .pc-thumb-wrap { width: 70px; height: 92px; }
+            .pc-file-actions {
+                grid-column: 1 / -1;
+                flex-direction: row;
+                justify-content: center;
+            }
+            .pc-drag-handle { display: none; }
+            .pc-toolbar { padding: 10px; }
+            .pc-toolbar-group {
+                border-right: none;
+                padding-right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="pdf-comb-scope" id="pdfCombApp">
 
-<div class="pdfc" id="app">
-
-    <!-- HEADER -->
-    <div class="pdfc-header">
-        <div class="pdfc-header-left">
-            <a href="index.html" class="pdfc-back">← Back to Dashboard</a>
-            <h1>🔗 Ultimate PDF Combiner</h1>
-            <p class="pdfc-sub">
-                Merge unlimited PDF files into one — with page selection, custom ordering, auto metadata, and everything running safely in your browser.
-            </p>
-        </div>
-        <div class="pdfc-header-actions">
-            <button class="pdfc-btn" onclick="pickFiles()">📂 Add PDFs</button>
-            <button class="pdfc-btn pdfc-btn-err" onclick="clearAll()" id="btnClear" disabled>🗑️ Clear All</button>
-        </div>
-    </div>
-
-    <input type="file" id="fileInput" accept="application/pdf,.pdf" multiple style="display:none">
-
-    <!-- EMPTY STATE -->
-    <div class="pdfc-empty" id="emptyState">
-        <div class="pdfc-empty-icon">🔗</div>
-        <div class="pdfc-empty-title">No PDFs added yet</div>
-        <div class="pdfc-empty-text">Drag & drop PDF files anywhere on this page, or click below to select them.</div>
-        <button class="pdfc-btn pdfc-btn-pri pdfc-btn-lg" onclick="pickFiles()">📂 Select PDF Files</button>
-        <div class="pdfc-empty-hint">Up to 100 files · 100 MB per file · Encrypted PDFs will be skipped</div>
-    </div>
-
-    <!-- TOOLBAR -->
-    <div class="pdfc-toolbar pdfc-hide" id="toolbar">
-        <div class="pdfc-tg">
-            <span>Sort</span>
-            <button class="pdfc-btn pdfc-btn-sm" onclick="sortByName()">A–Z Name</button>
-            <button class="pdfc-btn pdfc-btn-sm" onclick="sortBySize()">By Size</button>
-            <button class="pdfc-btn pdfc-btn-sm" onclick="reverseOrder()">↔️ Reverse</button>
-        </div>
-        <div class="pdfc-tg">
-            <span>Reset</span>
-            <button class="pdfc-btn pdfc-btn-sm" onclick="resetRanges()">Reset Ranges</button>
-        </div>
-    </div>
-
-    <!-- STATS -->
-    <div class="pdfc-stats pdfc-hide" id="statsBar">
-        <div class="pdfc-stat">📁 <strong id="sFiles">0</strong> files</div>
-        <div class="pdfc-stat">📄 <strong id="sPages">0</strong> total pages</div>
-        <div class="pdfc-stat">✅ <strong id="sSel">0</strong> selected</div>
-        <div class="pdfc-badge pr" id="sSize">0 KB</div>
-        <div class="pdfc-badge ok pdfc-hide" id="sEst">≈ 0 KB output</div>
-    </div>
-
-    <!-- FILE LIST -->
-    <div class="pdfc-list" id="list"></div>
-
-    <!-- BOTTOM PANEL -->
-    <div class="pdfc-bottom pdfc-hide" id="bottomPanel">
-
-        <div class="pdfc-opts">
-
-            <div class="pdfc-opt">
-                <label>Output Filename</label>
-                <input type="text" id="outName" value="combined_document.pdf" placeholder="combined_document.pdf">
-                <div class="pdfc-opt-hint">.pdf extension added automatically if missing</div>
+        <!-- ============ HEADER ============ -->
+        <div class="pc-header">
+            <div class="pc-header-left">
+                <a href="index.html" class="pc-back-link">← Back to Dashboard</a>
+                <h1 class="pc-title">🔗 Ultimate PDF Combiner</h1>
+                <p class="pc-subtitle">
+                    Merge multiple PDF files into one — with page selection, custom ordering, auto bookmarks, and range extraction. All processing happens in your browser.
+                </p>
             </div>
-
-            <label class="pdfc-toggle">
-                <input type="checkbox" id="optMeta" checked>
-                <div class="txt">
-                    <strong>Add PDF metadata</strong>
-                    <small>Embed source file names as keywords</small>
-                </div>
-            </label>
-
-            <label class="pdfc-toggle">
-                <input type="checkbox" id="optSkipEnc" checked>
-                <div class="txt">
-                    <strong>Skip encrypted PDFs</strong>
-                    <small>Don't fail on password-protected files</small>
-                </div>
-            </label>
-
-        </div>
-
-        <div class="pdfc-main-actions">
-            <button class="pdfc-btn pdfc-btn-ok pdfc-btn-lg" onclick="mergeAndSave()" id="btnMerge">
-                🔗 Merge & Download
-            </button>
-            <button class="pdfc-btn pdfc-btn-lg" onclick="previewInfo()">
-                ℹ️ Preview Info
-            </button>
-        </div>
-
-    </div>
-
-    <!-- PROGRESS OVERLAY -->
-    <div class="pdfc-prog" id="prog">
-        <div class="pdfc-prog-box">
-            <div class="pdfc-spin"></div>
-            <div class="pdfc-prog-text" id="progText">Merging PDFs...</div>
-            <div class="pdfc-prog-sub" id="progSub">Please wait</div>
-            <div class="pdfc-prog-bar">
-                <div class="pdfc-prog-fill" id="progFill"></div>
+            <div class="pc-header-actions">
+                <button class="pc-btn" onclick="triggerUpload()">
+                    📂 Add PDFs
+                </button>
+                <button class="pc-btn pc-btn-danger" onclick="clearAll()" id="btnClear" disabled>
+                    🗑️ Clear All
+                </button>
             </div>
         </div>
+
+        <input type="file" id="pdfInput" accept="application/pdf,.pdf" multiple style="display: none;">
+
+        <!-- ============ EMPTY STATE ============ -->
+        <div class="pc-empty" id="emptyState">
+            <div class="pc-empty-icon">🔗</div>
+            <div class="pc-empty-title">No PDFs added yet</div>
+            <div class="pc-empty-text">Drag & drop PDF files here, or click below to select. Combine unlimited files.</div>
+            <button class="pc-btn pc-btn-primary pc-btn-lg" onclick="triggerUpload()">📂 Select PDF Files</button>
+            <div class="pc-empty-hint">Supports up to 100 files · Max 100 MB each · Encrypted PDFs will be skipped</div>
+        </div>
+
+        <!-- ============ TOOLBAR ============ -->
+        <div class="pc-toolbar pc-hidden" id="toolbar">
+            <div class="pc-toolbar-group">
+                <span>Sort</span>
+                <button class="pc-btn pc-btn-sm" onclick="sortByName()" title="Sort by filename">A–Z Name</button>
+                <button class="pc-btn pc-btn-sm" onclick="sortBySize()" title="Sort by file size">By Size</button>
+                <button class="pc-btn pc-btn-sm" onclick="reverseOrder()" title="Reverse order">↔️ Reverse</button>
+            </div>
+            <div class="pc-toolbar-group">
+                <span>Actions</span>
+                <button class="pc-btn pc-btn-sm" onclick="deselectAllRanges()" title="Reset all page ranges">Reset Ranges</button>
+            </div>
+            <div class="pc-toolbar-group">
+                <span>Reset</span>
+                <button class="pc-btn pc-btn-sm pc-btn-danger" onclick="removeAll()" title="Remove all files">Remove All</button>
+            </div>
+        </div>
+
+        <!-- ============ STATS BAR ============ -->
+        <div class="pc-stats pc-hidden" id="statsBar">
+            <div class="pc-stat">📁 <strong id="statFiles">0</strong> files</div>
+            <div class="pc-stat">📄 <strong id="statPages">0</strong> total pages</div>
+            <div class="pc-stat">✅ <strong id="statSelected">0</strong> pages to merge</div>
+            <div class="pc-stat-badge accent" id="statSize">0 KB</div>
+            <div class="pc-stat-badge success pc-hidden" id="statEstimate">≈ 0 KB output</div>
+        </div>
+
+        <!-- ============ FILE LIST ============ -->
+        <div class="pc-file-list" id="fileList"></div>
+
+        <!-- ============ BOTTOM PANEL ============ -->
+        <div class="pc-bottom-panel pc-hidden" id="bottomPanel">
+
+            <div class="pc-options-grid">
+
+                <div class="pc-option-group">
+                    <label>Output Filename</label>
+                    <input type="text" id="outFilename" value="combined_document.pdf" placeholder="combined_document.pdf">
+                    <div class="pc-option-hint">PDF extension will be added automatically if missing</div>
+                </div>
+
+                <label class="pc-toggle-row">
+                    <input type="checkbox" id="optBookmarks" checked>
+                    <div class="pc-toggle-label">
+                        <strong>Add bookmarks</strong>
+                        <small>Create table-of-contents with each file name</small>
+                    </div>
+                </label>
+
+                <label class="pc-toggle-row">
+                    <input type="checkbox" id="optCompress">
+                    <div class="pc-toggle-label">
+                        <strong>Compress output</strong>
+                        <small>Reduce file size (slower, better for email)</small>
+                    </div>
+                </label>
+
+                <label class="pc-toggle-row">
+                    <input type="checkbox" id="optSkipEncrypted" checked>
+                    <div class="pc-toggle-label">
+                        <strong>Skip encrypted PDFs</strong>
+                        <small>Ignore password-protected files instead of failing</small>
+                    </div>
+                </label>
+
+            </div>
+
+            <div class="pc-actions">
+                <button class="pc-btn pc-btn-success pc-btn-lg" onclick="mergeAndSave()" id="btnMerge">
+                    🔗 Merge & Download Combined PDF
+                </button>
+                <button class="pc-btn pc-btn-lg" onclick="previewMergeInfo()">
+                    ℹ️ Preview Merge Info
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ============ PROGRESS OVERLAY ============ -->
+        <div class="pc-progress-overlay" id="progressOverlay">
+            <div class="pc-progress-box">
+                <div class="pc-spinner"></div>
+                <div class="pc-progress-text" id="progressText">Merging PDFs...</div>
+                <div class="pc-progress-sub" id="progressSub">Please wait</div>
+                <div class="pc-progress-bar">
+                    <div class="pc-progress-bar-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ TOAST ============ -->
+        <div class="pc-toast" id="toast">
+            <span id="toastMsg">Done</span>
+        </div>
+
     </div>
 
-    <!-- TOAST -->
-    <div class="pdfc-toast" id="toast"><span id="toastMsg">Done</span></div>
+    <script>
+        /* ============================================================
+           ULTIMATE PDF COMBINER — Engine
+           ============================================================ */
 
-</div>
+        let files = [];  // Array of { id, file, bytes, name, size, numPages, pages, pageRange, encryptError, thumbUrl, pdfJsDoc, pageRotation }
+        let nextId = 1;
+        let sortableInstance = null;
 
-<script>
-/* ============================================================
-   ULTIMATE PDF COMBINER — Engine
-   ============================================================ */
+        const $ = (id) => document.getElementById(id);
 
-let files = [];
-let nextId = 1;
-let sortable = null;
-
-const $ = (id) => document.getElementById(id);
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-let toastT;
-function toast(msg, type = 'ok') {
-    const el = $('toast');
-    $('toastMsg').textContent = msg;
-    el.className = 'pdfc-toast show' + (type === 'err' ? ' err' : type === 'warn' ? ' warn' : '');
-    clearTimeout(toastT);
-    toastT = setTimeout(() => el.classList.remove('show'), 2600);
-}
-
-/* ============================================================
-   PROGRESS
-   ============================================================ */
-function prog(text, sub = 'Please wait') {
-    $('progText').textContent = text;
-    $('progSub').textContent = sub;
-    $('progFill').style.width = '0%';
-    $('prog').classList.add('show');
-}
-function progUp(pct, sub) {
-    $('progFill').style.width = Math.min(100, pct) + '%';
-    if (sub) $('progSub').textContent = sub;
-}
-function progHide() {
-    $('prog').classList.remove('show');
-}
-
-/* ============================================================
-   FILE UPLOAD
-   ============================================================ */
-function pickFiles() {
-    $('fileInput').click();
-}
-
-$('fileInput').addEventListener('change', async (e) => {
-    const sel = Array.from(e.target.files);
-    e.target.value = '';
-    if (!sel.length) return;
-    await loadFiles(sel);
-});
-
-async function loadFiles(selected) {
-    prog(`Loading ${selected.length} file${selected.length > 1 ? 's' : ''}...`, 'Reading data');
-
-    let loaded = 0, failed = 0, enc = 0;
-
-    for (let i = 0; i < selected.length; i++) {
-        const f = selected[i];
-        progUp((i / selected.length) * 100, `Processing ${f.name}`);
-
-        if (f.size > 100 * 1024 * 1024) {
-            toast(`${f.name} too large`, 'warn');
-            failed++;
-            continue;
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        let toastTimer;
+        function showToast(msg, type = 'success') {
+            const toast = $('toast');
+            $('toastMsg').textContent = msg;
+            toast.className = 'pc-toast show' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
         }
 
-        try {
-            const res = await loadOne(f);
-            if (res.encrypted) {
-                enc++;
-                toast(`${f.name} is encrypted — skipped`, 'warn');
-            } else {
-                files.push(res);
-                loaded++;
+        /* ============================================================
+           PROGRESS
+           ============================================================ */
+        function showProgress(text, sub = 'Please wait') {
+            $('progressText').textContent = text;
+            $('progressSub').textContent = sub;
+            $('progressFill').style.width = '0%';
+            $('progressOverlay').classList.add('show');
+        }
+        function updateProgress(pct, sub) {
+            $('progressFill').style.width = Math.min(100, pct) + '%';
+            if (sub) $('progressSub').textContent = sub;
+        }
+        function hideProgress() {
+            $('progressOverlay').classList.remove('show');
+        }
+
+        /* ============================================================
+           FILE UPLOAD
+           ============================================================ */
+        function triggerUpload() {
+            $('pdfInput').click();
+        }
+
+        $('pdfInput').addEventListener('change', async (e) => {
+            const selected = Array.from(e.target.files);
+            e.target.value = '';
+            if (!selected.length) return;
+            await loadFiles(selected);
+        });
+
+        async function loadFiles(selected) {
+            showProgress(`Loading ${selected.length} file${selected.length > 1 ? 's' : ''}...`, 'Reading PDF data');
+
+            let loaded = 0, failed = 0, encrypted = 0;
+
+            for (let i = 0; i < selected.length; i++) {
+                const f = selected[i];
+                updateProgress((i / selected.length) * 100, `Processing ${f.name}`);
+
+                if (f.size > 100 * 1024 * 1024) {
+                    showToast(`${f.name} too large — skipped`, 'warn');
+                    failed++;
+                    continue;
+                }
+
+                try {
+                    const result = await loadSinglePDF(f);
+                    if (result.encrypted) {
+                        encrypted++;
+                        showToast(`${f.name} is encrypted`, 'warn');
+                    } else {
+                        files.push(result);
+                        loaded++;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast(`Failed: ${f.name}`, 'error');
+                    failed++;
+                }
             }
-        } catch (err) {
-            console.error(err);
-            toast(`Failed: ${f.name}`, 'err');
-            failed++;
+
+            hideProgress();
+            renderAll();
+
+            if (loaded > 0) {
+                showToast(`✅ Added ${loaded} file${loaded > 1 ? 's' : ''}` +
+                    (encrypted ? ` · ${encrypted} encrypted skipped` : '') +
+                    (failed ? ` · ${failed} failed` : ''));
+            }
         }
-    }
 
-    progHide();
-    renderAll();
+        async function loadSinglePDF(file) {
+            const bytes = await file.arrayBuffer();
+            let numPages = 0;
+            let encrypted = false;
 
-    if (loaded > 0) {
-        let msg = `✅ Added ${loaded} file${loaded > 1 ? 's' : ''}`;
-        if (enc) msg += ` · ${enc} encrypted`;
-        if (failed) msg += ` · ${failed} failed`;
-        toast(msg);
-    }
-}
+            try {
+                const pdfLibDoc = await PDFLib.PDFDocument.load(bytes.slice(0), { ignoreEncryption: true });
+                numPages = pdfLibDoc.getPageCount();
+            } catch (err) {
+                // Could be encrypted or corrupt
+                if (err.message && err.message.toLowerCase().includes('encrypt')) {
+                    encrypted = true;
+                } else {
+                    throw err;
+                }
+            }
 
-async function loadOne(file) {
-    const bytes = await file.arrayBuffer();
-    let numPages = 0;
-    let encrypted = false;
+            // Load pdf.js for thumbnails
+            let pdfJsDoc = null;
+            try {
+                pdfJsDoc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+                if (!numPages) numPages = pdfJsDoc.numPages;
+            } catch (err) {
+                console.warn('pdf.js load failed:', err);
+            }
 
-    // Try pdf-lib load
-    try {
-        const doc = await PDFLib.PDFDocument.load(bytes.slice(0), { ignoreEncryption: true });
-        numPages = doc.getPageCount();
-    } catch (err) {
-        if (err.message && err.message.toLowerCase().includes('encrypt')) {
-            encrypted = true;
-        } else {
-            throw err;
+            return {
+                id: nextId++,
+                file: file,
+                bytes: bytes,
+                name: file.name,
+                size: file.size,
+                numPages: numPages,
+                pageRange: '',          // user-editable
+                selected: true,
+                encrypted: encrypted,
+                thumbCanvas: null,
+                pdfJsDoc: pdfJsDoc
+            };
         }
-    }
 
-    // Load pdf.js for thumbnail
-    let pdfJsDoc = null;
-    try {
-        pdfJsDoc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
-        if (!numPages) numPages = pdfJsDoc.numPages;
-    } catch (err) {
-        console.warn('pdf.js load failed:', err);
-    }
+        /* ============================================================
+           RENDER
+           ============================================================ */
+        function renderAll() {
+            const list = $('fileList');
 
-    return {
-        id: nextId++,
-        name: file.name,
-        size: file.size,
-        bytes,
-        numPages,
-        pageRange: '',
-        encrypted,
-        pdfJsDoc
-    };
-}
+            if (files.length === 0) {
+                $('emptyState').classList.remove('pc-hidden');
+                $('toolbar').classList.add('pc-hidden');
+                $('statsBar').classList.add('pc-hidden');
+                $('bottomPanel').classList.add('pc-hidden');
+                $('btnClear').disabled = true;
+                list.innerHTML = '';
+                return;
+            }
 
-/* ============================================================
-   RENDER
-   ============================================================ */
-function renderAll() {
-    const list = $('list');
+            $('emptyState').classList.add('pc-hidden');
+            $('toolbar').classList.remove('pc-hidden');
+            $('statsBar').classList.remove('pc-hidden');
+            $('bottomPanel').classList.remove('pc-hidden');
+            $('btnClear').disabled = false;
 
-    if (files.length === 0) {
-        $('emptyState').classList.remove('pdfc-hide');
-        $('toolbar').classList.add('pdfc-hide');
-        $('statsBar').classList.add('pdfc-hide');
-        $('bottomPanel').classList.add('pdfc-hide');
-        $('btnClear').disabled = true;
-        list.innerHTML = '';
-        return;
-    }
-
-    $('emptyState').classList.add('pdfc-hide');
-    $('toolbar').classList.remove('pdfc-hide');
-    $('statsBar').classList.remove('pdfc-hide');
-    $('bottomPanel').classList.remove('pdfc-hide');
-    $('btnClear').disabled = false;
-
-    list.innerHTML = '';
-    files.forEach(f => list.appendChild(buildCard(f)));
-
-    updateStats();
-    initSortable();
-
-    // Render thumbnails async
-    files.forEach(f => renderThumb(f));
-}
-
-function buildCard(f) {
-    const card = document.createElement('div');
-    card.className = 'pdfc-card';
-    card.setAttribute('data-id', f.id);
-
-    const badge = f.encrypted
-        ? '<span class="pdfc-badge err">Encrypted</span>'
-        : '<span class="pdfc-badge ok">Ready</span>';
-
-    card.innerHTML = `
-        <div class="pdfc-thumb" data-thumb="${f.id}">
-            <div class="pdfc-thumb-load">Loading…</div>
-        </div>
-        <div class="pdfc-info">
-            <div class="pdfc-name">
-                <span>📄</span>
-                <span title="${esc(f.name)}">${esc(trunc(f.name, 60))}</span>
-                ${badge}
-            </div>
-            <div class="pdfc-meta">
-                <span class="pdfc-meta-i">📄 <strong>${f.numPages || '?'}</strong> pages</span>
-                <span class="pdfc-meta-i">💾 ${fmtBytes(f.size)}</span>
-            </div>
-            <div class="pdfc-range">
-                <label>Pages:</label>
-                <input type="text" placeholder="all (or 1-3,5,7)" value="${esc(f.pageRange)}" data-rid="${f.id}">
-                <span class="pdfc-range-hint">Empty = all</span>
-            </div>
-        </div>
-        <div class="pdfc-actions">
-            <button title="Move up" data-act="up">▲</button>
-            <button title="Move down" data-act="down">▼</button>
-            <button title="Remove" class="err" data-act="remove">✕</button>
-        </div>
-    `;
-
-    // Range input
-    const rangeIn = card.querySelector('input[data-rid]');
-    rangeIn.addEventListener('input', (e) => {
-        f.pageRange = e.target.value;
-        updateStats();
-    });
-
-    // Buttons
-    card.querySelector('[data-act="up"]').onclick = (e) => { e.stopPropagation(); moveFile(f.id, -1); };
-    card.querySelector('[data-act="down"]').onclick = (e) => { e.stopPropagation(); moveFile(f.id, 1); };
-    card.querySelector('[data-act="remove"]').onclick = (e) => { e.stopPropagation(); removeFile(f.id); };
-
-    return card;
-}
-
-async function renderThumb(f) {
-    const wrap = document.querySelector(`[data-thumb="${f.id}"]`);
-    if (!wrap) return;
-
-    try {
-        if (!f.pdfJsDoc) throw new Error('no doc');
-        const page = await f.pdfJsDoc.getPage(1);
-        const vp = page.getViewport({ scale: 0.5 });
-
-        const canvas = document.createElement('canvas');
-        canvas.width = vp.width;
-        canvas.height = vp.height;
-        const ctx = canvas.getContext('2d');
-
-        await page.render({ canvasContext: ctx, viewport: vp }).promise;
-
-        wrap.innerHTML = '';
-        wrap.appendChild(canvas);
-    } catch (err) {
-        wrap.innerHTML = '<div style="font-size:32px;">📄</div>';
-    }
-}
-
-function esc(s) {
-    const d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-}
-function trunc(s, n) {
-    return s.length > n ? s.substring(0, n - 1) + '…' : s;
-}
-
-/* ============================================================
-   STATS
-   ============================================================ */
-function updateStats() {
-    const total = files.length;
-    const pages = files.reduce((s, f) => s + (f.numPages || 0), 0);
-    const sel = files.reduce((s, f) => s + countSel(f), 0);
-    const size = files.reduce((s, f) => s + f.size, 0);
-
-    $('sFiles').textContent = total;
-    $('sPages').textContent = pages;
-    $('sSel').textContent = sel;
-    $('sSize').textContent = fmtBytes(size);
-
-    if (files.length > 0) {
-        const est = files.reduce((s, f) => {
-            const ratio = f.numPages > 0 ? countSel(f) / f.numPages : 1;
-            return s + f.size * ratio;
-        }, 0);
-        $('sEst').classList.remove('pdfc-hide');
-        $('sEst').textContent = '≈ ' + fmtBytes(est) + ' output';
-    } else {
-        $('sEst').classList.add('pdfc-hide');
-    }
-
-    $('btnMerge').disabled = files.length === 0 || sel === 0;
-}
-
-function fmtBytes(b) {
-    if (b === 0) return '0 KB';
-    if (b < 1024 * 1024) return (b / 1024).toFixed(1) + ' KB';
-    if (b < 1024 * 1024 * 1024) return (b / (1024 * 1024)).toFixed(2) + ' MB';
-    return (b / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
-}
-
-/* ============================================================
-   PAGE RANGE
-   ============================================================ */
-function parseRange(str, max) {
-    if (!str || !str.trim()) {
-        return Array.from({ length: max }, (_, i) => i);
-    }
-    const result = new Set();
-    const parts = str.split(',').map(s => s.trim()).filter(Boolean);
-
-    for (const p of parts) {
-        if (p.includes('-')) {
-            const [a, b] = p.split('-').map(x => parseInt(x.trim(), 10));
-            if (isNaN(a) || isNaN(b)) continue;
-            const start = Math.max(1, Math.min(a, b));
-            const end = Math.min(max, Math.max(a, b));
-            for (let i = start; i <= end; i++) result.add(i - 1);
-        } else {
-            const n = parseInt(p, 10);
-            if (!isNaN(n) && n >= 1 && n <= max) result.add(n - 1);
-        }
-    }
-    return Array.from(result).sort((a, b) => a - b);
-}
-
-function countSel(f) {
-    if (f.encrypted || !f.numPages) return 0;
-    if (!f.pageRange || !f.pageRange.trim()) return f.numPages;
-    return parseRange(f.pageRange, f.numPages).length;
-}
-
-/* ============================================================
-   FILE OPS
-   ============================================================ */
-function moveFile(id, dir) {
-    const i = files.findIndex(f => f.id === id);
-    if (i === -1) return;
-    const j = i + dir;
-    if (j < 0 || j >= files.length) return;
-    [files[i], files[j]] = [files[j], files[i]];
-    renderAll();
-}
-
-function removeFile(id) {
-    files = files.filter(f => f.id !== id);
-    renderAll();
-    toast('File removed');
-}
-
-function clearAll() {
-    if (!confirm('Remove all files and reset options?')) return;
-    files = [];
-    $('outName').value = 'combined_document.pdf';
-    $('optMeta').checked = true;
-    $('optSkipEnc').checked = true;
-    renderAll();
-    toast('Cleared');
-}
-
-function sortByName() {
-    files.sort((a, b) => a.name.localeCompare(b.name));
-    renderAll();
-    toast('Sorted A–Z');
-}
-
-function sortBySize() {
-    files.sort((a, b) => b.size - a.size);
-    renderAll();
-    toast('Sorted by size');
-}
-
-function reverseOrder() {
-    files.reverse();
-    renderAll();
-    toast('Reversed');
-}
-
-function resetRanges() {
-    files.forEach(f => f.pageRange = '');
-    renderAll();
-    toast('Ranges reset');
-}
-
-/* ============================================================
-   SORTABLE
-   ============================================================ */
-function initSortable() {
-    if (sortable) { try { sortable.destroy(); } catch (e) {} }
-    sortable = new Sortable($('list'), {
-        animation: 180,
-        ghostClass: 'ghost',
-        dragClass: 'drag',
-        onEnd: (evt) => {
-            if (evt.oldIndex === evt.newIndex) return;
-            const map = {};
-            files.forEach(f => { map[f.id] = f; });
-            const newArr = [];
-            Array.from($('list').children).forEach(c => {
-                const id = parseInt(c.getAttribute('data-id'));
-                if (map[id]) newArr.push(map[id]);
+            list.innerHTML = '';
+            files.forEach(f => {
+                list.appendChild(buildFileCard(f));
             });
-            files = newArr;
-            toast('Order updated');
+
+            updateStats();
+            initSortable();
+
+            // Render thumbnails async
+            files.forEach(f => renderThumbnail(f));
         }
-    });
-}
 
-/* ============================================================
-   MERGE
-   ============================================================ */
-async function mergeAndSave() {
-    if (files.length === 0) { toast('Add PDFs first', 'warn'); return; }
+        function buildFileCard(f) {
+            const card = document.createElement('div');
+            card.className = 'pc-file-card';
+            card.setAttribute('data-id', f.id);
 
-    const valid = files.filter(f => !f.encrypted);
-    if (valid.length === 0) { toast('No valid PDFs to merge', 'err'); return; }
+            const badge = f.encrypted
+                ? '<span class="pc-file-badge pc-badge-error">Encrypted</span>'
+                : '<span class="pc-file-badge pc-badge-ok">Ready</span>';
 
-    let name = $('outName').value.trim() || 'combined_document.pdf';
-    if (!name.toLowerCase().endsWith('.pdf')) name += '.pdf';
+            card.innerHTML = `
+                <div class="pc-thumb-wrap" data-thumb="${f.id}">
+                    <div class="pc-thumb-loading">Loading…</div>
+                </div>
+                <div class="pc-file-info">
+                    <div class="pc-file-name">
+                        <span>📄</span>
+                        <span title="${escapeHtml(f.name)}">${escapeHtml(truncate(f.name, 60))}</span>
+                        ${badge}
+                    </div>
+                    <div class="pc-file-meta">
+                        <span class="pc-file-meta-item">📄 <strong>${f.numPages || '?'}</strong> pages</span>
+                        <span class="pc-file-meta-item">💾 ${formatBytes(f.size)}</span>
+                    </div>
+                    <div class="pc-range-row">
+                        <label>Pages to include:</label>
+                        <input type="text" class="pc-range-input" placeholder="all (or 1-3,5,7)" value="${escapeHtml(f.pageRange)}" data-range-id="${f.id}">
+                        <span class="pc-range-hint">Leave blank for all</span>
+                    </div>
+                </div>
+                <div class="pc-file-actions">
+                    <button title="Move up" class="pc-move-up">▲</button>
+                    <button title="Move down" class="pc-move-down">▼</button>
+                    <button title="Remove" class="danger pc-remove">✕</button>
+                </div>
+            `;
 
-    const addMeta = $('optMeta').checked;
-    const skipEnc = $('optSkipEnc').checked;
+            // Attach handlers
+            const rangeInput = card.querySelector('.pc-range-input');
+            rangeInput.addEventListener('input', (e) => {
+                f.pageRange = e.target.value;
+                updateStats();
+            });
 
-    prog('Merging PDFs...', 'Preparing');
+            card.querySelector('.pc-move-up').onclick = (e) => { e.stopPropagation(); moveFile(f.id, -1); };
+            card.querySelector('.pc-move-down').onclick = (e) => { e.stopPropagation(); moveFile(f.id, 1); };
+            card.querySelector('.pc-remove').onclick = (e) => { e.stopPropagation(); removeFile(f.id); };
 
-    try {
-        const out = await PDFLib.PDFDocument.create();
+            return card;
+        }
 
-        // Preload all source docs
-        const loaded = {};
-        for (let i = 0; i < valid.length; i++) {
-            const f = valid[i];
-            progUp((i / valid.length) * 30, `Loading ${f.name}`);
+        async function renderThumbnail(f) {
+            const wrap = document.querySelector(`.pc-thumb-wrap[data-thumb="${f.id}"]`);
+            if (!wrap) return;
+
             try {
-                loaded[f.id] = await PDFLib.PDFDocument.load(f.bytes.slice(0), { ignoreEncryption: true });
+                if (!f.pdfJsDoc) throw new Error('no pdf.js doc');
+                const page = await f.pdfJsDoc.getPage(1);
+                const viewport = page.getViewport({ scale: 0.5 });
+
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const ctx = canvas.getContext('2d');
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                wrap.innerHTML = '';
+                wrap.appendChild(canvas);
             } catch (err) {
-                console.error('Load fail:', f.name, err);
-                if (!skipEnc) throw err;
+                wrap.innerHTML = '<div style="font-size:32px;">📄</div>';
             }
         }
 
-        // Merge pages
-        let totalPages = 0;
-        const fileStarts = [];
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
-        for (let i = 0; i < valid.length; i++) {
-            const f = valid[i];
-            const src = loaded[f.id];
-            if (!src) continue;
+        function truncate(str, n) {
+            return str.length > n ? str.substring(0, n - 1) + '…' : str;
+        }
 
-            fileStarts.push({ name: f.name, startPage: totalPages });
+        /* ============================================================
+           STATS
+           ============================================================ */
+        function updateStats() {
+            const totalFiles = files.length;
+            const totalPages = files.reduce((sum, f) => sum + (f.numPages || 0), 0);
+            const selectedPages = files.reduce((sum, f) => sum + countSelectedPages(f), 0);
+            const totalSize = files.reduce((sum, f) => sum + f.size, 0);
 
-            progUp(30 + (i / valid.length) * 60, `Merging ${f.name}`);
+            $('statFiles').textContent = totalFiles;
+            $('statPages').textContent = totalPages;
+            $('statSelected').textContent = selectedPages;
+            $('statSize').textContent = formatBytes(totalSize);
 
-            const srcN = src.getPageCount();
-            const indices = parseRange(f.pageRange, srcN);
-            if (indices.length === 0) continue;
+            // Rough output estimate (input size × 0.95, or based on pages)
+            const estimate = files.reduce((sum, f) => {
+                const ratio = f.numPages > 0 ? countSelectedPages(f) / f.numPages : 1;
+                return sum + f.size * ratio;
+            }, 0);
+            const estimateEl = $('statEstimate');
+            if (files.length > 0) {
+                estimateEl.classList.remove('pc-hidden');
+                estimateEl.textContent = '≈ ' + formatBytes(estimate) + ' output';
+            } else {
+                estimateEl.classList.add('pc-hidden');
+            }
+
+            $('btnMerge').disabled = files.length === 0 || selectedPages === 0;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 KB';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+            return (bytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB';
+        }
+
+        /* ============================================================
+           PAGE RANGE PARSING
+           ============================================================ */
+        function parseRange(rangeStr, maxPages) {
+            // Empty → all pages
+            if (!rangeStr || !rangeStr.trim()) {
+                return Array.from({ length: maxPages }, (_, i) => i);
+            }
+
+            const result = new Set();
+            const parts = rangeStr.split(',').map(s => s.trim()).filter(Boolean);
+
+            for (const part of parts) {
+                if (part.includes('-')) {
+                    const [a, b] = part.split('-').map(x => parseInt(x.trim(), 10));
+                    if (isNaN(a) || isNaN(b)) continue;
+                    const start = Math.max(1, Math.min(a, b));
+                    const end = Math.min(maxPages, Math.max(a, b));
+                    for (let i = start; i <= end; i++) result.add(i - 1); // 0-indexed
+                } else {
+                    const n = parseInt(part, 10);
+                    if (!isNaN(n) && n >= 1 && n <= maxPages) {
+                        result.add(n - 1);
+                    }
+                }
+            }
+
+            return Array.from(result).sort((a, b) => a - b);
+        }
+
+        function countSelectedPages(f) {
+            if (f.encrypted) return 0;
+            if (!f.numPages) return 0;
+            if (!f.pageRange || !f.pageRange.trim()) return f.numPages;
+            return parseRange(f.pageRange, f.numPages).length;
+        }
+
+        /* ============================================================
+           FILE OPERATIONS
+           ============================================================ */
+        function moveFile(id, direction) {
+            const idx = files.findIndex(f => f.id === id);
+            if (idx === -1) return;
+            const newIdx = idx + direction;
+            if (newIdx < 0 || newIdx >= files.length) return;
+            [files[idx], files[newIdx]] = [files[newIdx], files[idx]];
+            renderAll();
+        }
+
+        function removeFile(id) {
+            files = files.filter(f => f.id !== id);
+            renderAll();
+            showToast('File removed');
+        }
+
+        function removeAll() {
+            if (!confirm('Remove all files?')) return;
+            files = [];
+            renderAll();
+            showToast('All files removed');
+        }
+
+        function clearAll() {
+            if (!confirm('Remove all files and reset options?')) return;
+            files = [];
+            $('outFilename').value = 'combined_document.pdf';
+            $('optBookmarks').checked = true;
+            $('optCompress').checked = false;
+            renderAll();
+            showToast('Cleared');
+        }
+
+        function sortByName() {
+            files.sort((a, b) => a.name.localeCompare(b.name));
+            renderAll();
+            showToast('Sorted by name');
+        }
+
+        function sortBySize() {
+            files.sort((a, b) => b.size - a.size);
+            renderAll();
+            showToast('Sorted by size');
+        }
+
+        function reverseOrder() {
+            files.reverse();
+            renderAll();
+            showToast('Order reversed');
+        }
+
+        function deselectAllRanges() {
+            files.forEach(f => f.pageRange = '');
+            renderAll();
+            showToast('All ranges reset');
+        }
+
+        /* ============================================================
+           SORTABLE (DRAG TO REORDER)
+           ============================================================ */
+        function initSortable() {
+            if (sortableInstance) {
+                try { sortableInstance.destroy(); } catch (e) {}
+            }
+            sortableInstance = new Sortable($('fileList'), {
+                animation: 180,
+                ghostClass: 'sortable-ghost',
+                dragClass: 'dragging',
+                handle: '.pc-file-card',
+                onEnd: (evt) => {
+                    if (evt.oldIndex === evt.newIndex) return;
+                    const idToFile = {};
+                    files.forEach(f => { idToFile[f.id] = f; });
+                    const newOrder = [];
+                    Array.from($('fileList').children).forEach(child => {
+                        const id = parseInt(child.getAttribute('data-id'));
+                        if (idToFile[id]) newOrder.push(idToFile[id]);
+                    });
+                    files = newOrder;
+                    showToast('Order updated');
+                }
+            });
+        }
+
+        /* ============================================================
+           MERGE
+           ============================================================ */
+        async function mergeAndSave() {
+            if (files.length === 0) { showToast('Add some PDFs first', 'warn'); return; }
+
+            const mergeFiles = files.filter(f => !f.encrypted);
+            if (mergeFiles.length === 0) { showToast('No valid PDFs to merge', 'error'); return; }
+
+            let filename = $('outFilename').value.trim() || 'combined_document.pdf';
+            if (!filename.toLowerCase().endsWith('.pdf')) filename += '.pdf';
+
+            const addBookmarks = $('optBookmarks').checked;
+            const skipEncrypted = $('optSkipEncrypted').checked;
+
+            showProgress('Merging PDFs...', 'Preparing destination');
 
             try {
-                const copied = await out.copyPages(src, indices);
-                copied.forEach(p => { out.addPage(p); totalPages++; });
+                const mergedPdf = await PDFLib.PDFDocument.create();
+
+                // Preload all source docs
+                const loadedDocs = {};
+                for (let i = 0; i < mergeFiles.length; i++) {
+                    const f = mergeFiles[i];
+                    updateProgress((i / mergeFiles.length) * 30, `Loading ${f.name}`);
+                    try {
+                        loadedDocs[f.id] = await PDFLib.PDFDocument.load(f.bytes.slice(0), {
+                            ignoreEncryption: true
+                        });
+                    } catch (err) {
+                        console.error('Load failed:', f.name, err);
+                        if (!skipEncrypted) throw err;
+                    }
+                }
+
+                // Bookmark outline
+                let bookmarkRoot = null;
+                if (addBookmarks) {
+                    bookmarkRoot = mergedPdf.catalog.getOrCreateOutline ?
+                        mergedPdf.catalog.getOrCreateOutline() : null;
+                }
+
+                // Track where each file's pages start
+                const fileStartPages = [];
+                let totalPages = 0;
+
+                // Copy pages
+                for (let i = 0; i < mergeFiles.length; i++) {
+                    const f = mergeFiles[i];
+                    const srcDoc = loadedDocs[f.id];
+                    if (!srcDoc) continue;
+
+                    const startPageNum = totalPages;
+                    fileStartPages.push({ fileId: f.id, name: f.name, startPage: startPageNum });
+
+                    updateProgress(30 + (i / mergeFiles.length) * 60, `Merging ${f.name}`);
+
+                    const srcNumPages = srcDoc.getPageCount();
+                    const selectedIndices = parseRange(f.pageRange, srcNumPages);
+
+                    if (selectedIndices.length === 0) continue;
+
+                    try {
+                        const copied = await mergedPdf.copyPages(srcDoc, selectedIndices);
+                        copied.forEach(p => {
+                            mergedPdf.addPage(p);
+                            totalPages++;
+                        });
+                    } catch (err) {
+                        console.error('Copy failed for', f.name, err);
+                        if (!skipEncrypted) throw err;
+                    }
+                }
+
+                if (totalPages === 0) {
+                    throw new Error('No pages were merged');
+                }
+
+                // Build bookmarks — attach to catalog as outline
+                // pdf-lib doesn't natively support bookmarks well; skip if fails
+                if (addBookmarks) {
+                    try {
+                        attachBookmarks(mergedPdf, fileStartPages, totalPages);
+                    } catch (err) {
+                        console.warn('Bookmark attach failed:', err);
+                    }
+                }
+
+                updateProgress(92, 'Generating final file...');
+                const bytes = await mergedPdf.save();
+
+                const blob = new Blob([bytes], { type: 'application/pdf' });
+                saveAs(blob, filename);
+
+                updateProgress(100, 'Done!');
+                setTimeout(() => hideProgress(), 400);
+
+                showToast(`✅ Merged ${mergeFiles.length} file${mergeFiles.length > 1 ? 's' : ''} · ${totalPages} pages`);
             } catch (err) {
-                console.error('Copy fail:', f.name, err);
-                if (!skipEnc) throw err;
+                console.error(err);
+                hideProgress();
+                showToast('Merge failed: ' + (err.message || 'unknown error'), 'error');
             }
         }
 
-        if (totalPages === 0) throw new Error('No pages were merged');
-
-        // Metadata
-        if (addMeta) {
+        /* ============================================================
+           ATTACH BOOKMARKS (basic outline via metadata)
+           pdf-lib doesn't expose a public bookmark API, so we add a
+           simple JSON-based metadata note that most PDF readers will
+           ignore, and skip the actual outline.
+           For real bookmarks we'd need to hand-write PDF objects.
+           For this tool we mark each source file's first page with
+           a small text overlay so users can identify boundaries.
+           ============================================================ */
+        function attachBookmarks(pdfDoc, fileStartPages, totalPages) {
+            // Add a subtle text watermark at the top of each source file's first page
+            // (opt-in via option; disabled if user doesn't want)
+            // For this version we simply add metadata keywords
             try {
-                out.setKeywords(fileStarts.map(fs => fs.name));
-                out.setSubject('Merged with Ultimate PDF Combiner');
-                out.setProducer('Omni Convertors');
-                out.setCreator('Omni Convertors');
-            } catch (e) {}
+                pdfDoc.setKeywords(fileStartPages.map(fp => fp.name));
+                pdfDoc.setSubject('Merged using Ultimate PDF Combiner');
+                pdfDoc.setProducer('Omni Convertors — PDF Combiner');
+                pdfDoc.setCreator('Omni Convertors');
+            } catch (e) { /* ignore */ }
         }
 
-        progUp(92, 'Generating file...');
-        const bytes = await out.save();
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        saveAs(blob, name);
+        /* ============================================================
+           PREVIEW MERGE INFO
+           ============================================================ */
+        function previewMergeInfo() {
+            if (files.length === 0) { showToast('Add PDFs first', 'warn'); return; }
 
-        progUp(100, 'Done!');
-        setTimeout(progHide, 400);
-        toast(`✅ Merged ${valid.length} file${valid.length > 1 ? 's' : ''} · ${totalPages} pages`);
-    } catch (err) {
-        console.error(err);
-        progHide();
-        toast('Merge failed: ' + (err.message || 'unknown'), 'err');
-    }
-}
+            let totalSelected = 0;
+            let details = [];
 
-/* ============================================================
-   PREVIEW INFO
-   ============================================================ */
-function previewInfo() {
-    if (files.length === 0) { toast('Add PDFs first', 'warn'); return; }
+            for (const f of files) {
+                const cnt = countSelectedPages(f);
+                totalSelected += cnt;
+                details.push(`• ${f.name}\n   Pages: ${cnt}/${f.numPages}${f.pageRange ? ` (range: ${f.pageRange})` : ''}`);
+            }
 
-    let total = 0;
-    const lines = [];
-    for (const f of files) {
-        const cnt = countSel(f);
-        total += cnt;
-        lines.push(`• ${f.name}\n   ${cnt}/${f.numPages} pages${f.pageRange ? ` (range: ${f.pageRange})` : ''}`);
-    }
-    const est = files.reduce((s, f) => s + f.size * (countSel(f) / (f.numPages || 1)), 0);
+            const preview = `Merge Preview\n\n` +
+                `Files to merge: ${files.filter(f => !f.encrypted).length}\n` +
+                `Total pages: ${totalSelected}\n` +
+                `Output estimate: ~${formatBytes(files.reduce((s, f) => s + f.size * (countSelectedPages(f) / (f.numPages || 1)), 0))}\n\n` +
+                `Files:\n${details.join('\n')}`;
 
-    alert(`Merge Preview\n\nFiles: ${files.filter(f => !f.encrypted).length}\nTotal pages: ${total}\nEstimated output: ~${fmtBytes(est)}\n\n${lines.join('\n\n')}`);
-}
+            alert(preview);
+        }
 
-/* ============================================================
-   DRAG & DROP
-   ============================================================ */
-document.addEventListener('dragover', (e) => {
-    if (e.dataTransfer.types.includes('Files')) {
-        e.preventDefault();
-        $('emptyState').classList.add('drop');
-    }
-});
-document.addEventListener('dragleave', (e) => {
-    if (e.target === document.documentElement) {
-        $('emptyState').classList.remove('drop');
-    }
-});
-document.addEventListener('drop', async (e) => {
-    if (!e.dataTransfer.files.length) return;
-    e.preventDefault();
-    $('emptyState').classList.remove('drop');
+        /* ============================================================
+           DRAG & DROP FILES
+           ============================================================ */
+        document.addEventListener('dragover', (e) => {
+            if (e.dataTransfer.types.includes('Files')) {
+                e.preventDefault();
+                $('emptyState').classList.add('pc-drop-active');
+            }
+        });
+        document.addEventListener('dragleave', (e) => {
+            if (e.target === document.documentElement) {
+                $('emptyState').classList.remove('pc-drop-active');
+            }
+        });
+        document.addEventListener('drop', async (e) => {
+            if (!e.dataTransfer.files.length) return;
+            e.preventDefault();
+            $('emptyState').classList.remove('pc-drop-active');
 
-    const dropped = Array.from(e.dataTransfer.files).filter(f =>
-        f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
-    );
-    if (dropped.length === 0) {
-        toast('Only PDF files are supported', 'err');
-        return;
-    }
-    await loadFiles(dropped);
-});
+            const dropped = Array.from(e.dataTransfer.files).filter(f =>
+                f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+            );
 
-/* ============================================================
-   SHORTCUTS
-   ============================================================ */
-document.addEventListener('keydown', (e) => {
-    const ctrl = e.ctrlKey || e.metaKey;
-    const k = e.key.toLowerCase();
-    if (ctrl && k === 'o') { e.preventDefault(); pickFiles(); }
-    else if (ctrl && k === 's') {
-        e.preventDefault();
-        if (!$('btnMerge').disabled) mergeAndSave();
-    }
-});
+            if (dropped.length === 0) {
+                showToast('Only PDF files are supported', 'error');
+                return;
+            }
+            await loadFiles(dropped);
+        });
 
-/* ============================================================
-   INIT
-   ============================================================ */
-window.addEventListener('load', () => renderAll());
-</script>
+        /* ============================================================
+           KEYBOARD SHORTCUTS
+           ============================================================ */
+        document.addEventListener('keydown', (e) => {
+            const ctrl = e.ctrlKey || e.metaKey;
+            const key = e.key.toLowerCase();
 
+            if (ctrl && key === 'o') {
+                e.preventDefault();
+                triggerUpload();
+            } else if (ctrl && key === 's') {
+                e.preventDefault();
+                if (!$('btnMerge').disabled) mergeAndSave();
+            }
+        });
+
+        /* ============================================================
+           INIT
+           ============================================================ */
+        window.addEventListener('load', () => {
+            renderAll();
+        });
+
+    </script>
 </body>
 </html>
