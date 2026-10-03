@@ -7,844 +7,1357 @@
     <link rel="stylesheet" href="style.css">
     <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');</script>
     <style>
-        /* ============ FORCE READABLE INPUTS IN BOTH THEMES ============ */
-        .tool-container input,
-        .tool-container select,
-        .tool-container textarea {
-            color: var(--text-color, #1e293b) !important;
-            background: var(--bg-input, #ffffff) !important;
-            -webkit-text-fill-color: var(--text-color, #1e293b);
+        /* ============================================================
+           SIP CALCULATOR PRO — Scoped styles with hard overrides
+           ============================================================ */
+
+        /* ---- Scoped color tokens (won't leak) ---- */
+        .sip-pro-scope {
+            color-scheme: light;
+            --sip-text: #0f172a;
+            --sip-text-soft: #475569;
+            --sip-text-muted: #94a3b8;
+            --sip-bg-input: #ffffff;
+            --sip-bg-card: #f8fafc;
+            --sip-bg-subtle: #f1f5f9;
+            --sip-border: #e2e8f0;
+            --sip-primary: #2563eb;
+            --sip-primary-soft: #dbeafe;
+            --sip-invested: #f59e0b;
+            --sip-returns: #10b981;
+            --sip-real: #8b5cf6;
+            --sip-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
         }
-        [data-theme="dark"] .tool-container input,
-        [data-theme="dark"] .tool-container select,
-        [data-theme="dark"] .tool-container textarea {
-            color: #e5e7eb !important;
-            background: #1e293b !important;
-            -webkit-text-fill-color: #e5e7eb;
+        [data-theme="dark"] .sip-pro-scope {
+            color-scheme: dark;
+            --sip-text: #f1f5f9;
+            --sip-text-soft: #cbd5e1;
+            --sip-text-muted: #94a3b8;
+            --sip-bg-input: #1e293b;
+            --sip-bg-card: #1e293b;
+            --sip-bg-subtle: #334155;
+            --sip-border: #334155;
+            --sip-primary: #3b82f6;
+            --sip-primary-soft: #1e3a8a;
+            --sip-shadow: 0 1px 3px rgba(0,0,0,0.4);
         }
-        .tool-container input::placeholder {
-            color: var(--text-muted, #94a3b8) !important;
+
+        .sip-pro-scope * {
+            box-sizing: border-box;
+        }
+
+        /* ---- Hard override for inputs (this fixes dark mode text) ---- */
+        .sip-pro-scope input[type="text"],
+        .sip-pro-scope input[type="number"],
+        .sip-pro-scope select {
+            color: var(--sip-text) !important;
+            background-color: var(--sip-bg-input) !important;
+            -webkit-text-fill-color: var(--sip-text) !important;
+            caret-color: var(--sip-primary) !important;
+            font-family: inherit;
+        }
+        .sip-pro-scope input::placeholder {
+            color: var(--sip-text-muted) !important;
+            -webkit-text-fill-color: var(--sip-text-muted) !important;
             opacity: 0.7;
         }
 
-        /* ============ LAYOUT ============ */
-        .sip-grid {
-            display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            gap: 30px;
-            align-items: start;
-        }
-        @media(max-width: 900px) {
-            .sip-grid { grid-template-columns: 1fr; }
+        /* ---- Container ---- */
+        .sip-pro-scope {
+            max-width: 1150px;
+            margin: 24px auto;
+            padding: 24px;
+            color: var(--sip-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* ============ SIP TYPE TABS ============ */
-        .sip-tabs {
+        .sip-pro-header {
+            margin-bottom: 24px;
+        }
+        .sip-pro-header a.back-link {
+            color: var(--sip-primary) !important;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 14px;
+            transition: opacity 0.2s;
+        }
+        .sip-pro-header a.back-link:hover { opacity: 0.75; }
+        .sip-pro-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--sip-text);
+            margin: 0 0 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sip-pro-subtitle {
+            font-size: 13.5px;
+            color: var(--sip-text-muted);
+            margin: 0;
+        }
+
+        /* ============ MODE TABS ============ */
+        .sip-mode-tabs {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 22px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            margin-bottom: 20px;
+            padding: 6px;
+            background: var(--sip-bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--sip-border);
         }
-        .sip-tab {
-            padding: 8px 14px;
+        .sip-mode-tab {
+            flex: 1;
+            min-width: 130px;
+            padding: 11px 16px;
             font-size: 13px;
             font-weight: 600;
             border-radius: 8px;
-            border: 1.5px solid var(--border-color, #e2e8f0);
+            border: none;
             background: transparent;
-            color: var(--text-color, #334155);
+            color: var(--sip-text-soft);
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
-        }
-        .sip-tab:hover { border-color: #3b82f6; color: #3b82f6; }
-        .sip-tab.active {
-            background: #3b82f6;
-            color: #fff;
-            border-color: #3b82f6;
-        }
-
-        /* ============ INPUTS ============ */
-        .input-group { margin-bottom: 20px; }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            font-size: 14px;
-            color: var(--text-color, #334155);
-        }
-        .input-with-slider {
             display: flex;
             align-items: center;
-            border: 1.5px solid var(--border-color, #cbd5e1);
-            border-radius: 8px;
-            overflow: hidden;
-            background: var(--bg-input, #fff);
-            transition: border-color 0.2s;
+            justify-content: center;
+            gap: 6px;
+            font-family: inherit;
         }
-        .input-with-slider:focus-within { border-color: #3b82f6; }
-        .input-with-slider .prefix,
-        .input-with-slider .suffix {
-            padding: 10px 15px;
-            color: var(--text-muted, #64748b);
+        .sip-mode-tab:hover {
+            background: var(--sip-bg-subtle);
+            color: var(--sip-text);
+        }
+        .sip-mode-tab.active {
+            background: var(--sip-primary);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.35);
+        }
+
+        /* ============ SUB-TYPE CHIPS ============ */
+        .sip-subtypes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .sip-subtype-chip {
+            padding: 7px 14px;
+            font-size: 12.5px;
+            font-weight: 500;
+            border-radius: 20px;
+            border: 1.5px solid var(--sip-border);
+            background: transparent;
+            color: var(--sip-text-soft);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .sip-subtype-chip:hover {
+            border-color: var(--sip-primary);
+            color: var(--sip-primary);
+        }
+        .sip-subtype-chip.active {
+            background: var(--sip-primary-soft);
+            border-color: var(--sip-primary);
+            color: var(--sip-primary);
+            font-weight: 600;
+        }
+        [data-theme="dark"] .sip-subtype-chip.active {
+            background: rgba(59,130,246,0.2);
+        }
+
+        /* ============ MAIN LAYOUT ============ */
+        .sip-main-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 950px) {
+            .sip-main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ============ INPUT PANEL ============ */
+        .sip-input-panel {
+            background: var(--sip-bg-card);
+            border: 1px solid var(--sip-border);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: var(--sip-shadow);
+        }
+
+        .sip-input-group {
+            margin-bottom: 20px;
+        }
+        .sip-input-group:last-child { margin-bottom: 0; }
+
+        .sip-input-group > label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sip-text-soft);
+        }
+        .sip-input-group > label .sip-hint {
+            font-size: 11px;
+            color: var(--sip-text-muted);
+            font-weight: 400;
+        }
+
+        /* ============ INPUT WITH SLIDER ============ */
+        .sip-input-field {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid var(--sip-border);
+            border-radius: 10px;
+            background: var(--sip-bg-input);
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .sip-input-field:focus-within {
+            border-color: var(--sip-primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        .sip-input-field .sip-prefix,
+        .sip-input-field .sip-suffix {
+            padding: 11px 14px;
+            color: var(--sip-text-soft);
             font-size: 15px;
             font-weight: 600;
             user-select: none;
+            background: transparent;
         }
-        .input-with-slider input[type="text"] {
+        .sip-input-field input[type="text"] {
             flex: 1;
-            padding: 10px 15px;
+            padding: 11px 8px;
             border: none !important;
             background: transparent !important;
-            color: var(--text-color, #1e293b) !important;
-            -webkit-text-fill-color: var(--text-color, #1e293b);
             font-size: 16px;
-            font-weight: bold;
-            outline: none;
+            font-weight: 600;
+            outline: none !important;
             text-align: right;
             min-width: 0;
         }
-        [data-theme="dark"] .input-with-slider input[type="text"] {
-            color: #f1f5f9 !important;
-            -webkit-text-fill-color: #f1f5f9;
+        .sip-input-field input[type="text"]:focus {
+            outline: none !important;
+            box-shadow: none !important;
         }
 
-        input[type="range"] {
+        /* ============ RANGE SLIDER ============ */
+        .sip-pro-scope input[type="range"] {
             width: 100%;
-            margin-top: 8px;
-            accent-color: #3b82f6;
+            margin-top: 10px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--sip-border);
+            border-radius: 2px;
+            outline: none;
             cursor: pointer;
-            height: 6px;
+            accent-color: var(--sip-primary);
+        }
+        .sip-pro-scope input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--sip-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--sip-bg-card);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            transition: transform 0.15s;
+        }
+        .sip-pro-scope input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        .sip-pro-scope input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--sip-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--sip-bg-card);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
         }
 
-        /* ============ FREQUENCY SELECTOR ============ */
-        .frequency-selector {
+        /* ============ FREQUENCY CHIPS ============ */
+        .sip-freq-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            font-size: 14px;
+            gap: 8px;
         }
-        .frequency-selector label {
-            cursor: pointer;
+        .sip-freq-item {
+            flex: 1;
+            min-width: 90px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
-            padding: 6px 12px;
-            border: 1.5px solid var(--border-color, #cbd5e1);
+            padding: 9px 12px;
+            border: 1.5px solid var(--sip-border);
             border-radius: 8px;
-            transition: all 0.2s;
-            font-weight: normal;
-            margin: 0;
-        }
-        .frequency-selector label:has(input:checked) {
-            border-color: #3b82f6;
-            background: rgba(59, 130, 246, 0.08);
-            color: #3b82f6;
-        }
-        .frequency-selector input[type="radio"] {
-            accent-color: #3b82f6;
             cursor: pointer;
-            width: auto;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sip-text-soft);
+            background: transparent;
+            font-family: inherit;
+        }
+        .sip-freq-item:hover {
+            border-color: var(--sip-primary);
+        }
+        .sip-freq-item.active {
+            background: var(--sip-primary-soft);
+            border-color: var(--sip-primary);
+            color: var(--sip-primary);
+            font-weight: 600;
+        }
+        [data-theme="dark"] .sip-freq-item.active {
+            background: rgba(59,130,246,0.2);
+        }
+        .sip-freq-item input[type="radio"] {
+            display: none;
         }
 
-        /* ============ RESULT SUMMARY ============ */
-        .result-summary {
-            background: var(--bg-card, #f8fafc);
+        /* ============ CHECKBOX ROW ============ */
+        .sip-checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--sip-bg-subtle);
+            border-radius: 10px;
+            border: 1.5px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            color: var(--sip-text-soft);
+        }
+        .sip-checkbox-row:hover {
+            border-color: var(--sip-border);
+        }
+        .sip-checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--sip-primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ============ RESULT PANEL ============ */
+        .sip-result-panel {
+            background: var(--sip-bg-card);
+            border: 1px solid var(--sip-border);
+            border-radius: 14px;
             padding: 22px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color, #e2e8f0);
+            box-shadow: var(--sip-shadow);
             position: sticky;
             top: 20px;
         }
-        [data-theme="dark"] .result-summary {
-            background: rgba(255,255,255,0.03);
-        }
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: var(--text-color, #334155);
-        }
-        .result-row span:last-child {
-            font-weight: bold;
-            font-size: 15px;
-        }
-        .result-row.total {
-            border-top: 2px solid var(--border-color, #e2e8f0);
-            padding-top: 14px;
-            margin-top: 8px;
-            font-size: 15px;
-        }
-        .result-row.total span:last-child {
-            font-size: 18px;
-            color: #3b82f6;
-        }
 
-        /* ============ GRAPHS ============ */
-        .graphs-wrapper {
-            margin-top: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-        .donut-chart {
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            background: conic-gradient(#f59e0b 0% 100%, #10b981 100% 100%);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.4s ease;
-        }
-        .donut-hole {
-            width: 105px;
-            height: 105px;
-            background: var(--bg-card, #fff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            font-size: 10px;
-            color: var(--text-muted, #64748b);
-            text-align: center;
-            line-height: 1.2;
-        }
-        [data-theme="dark"] .donut-hole { background: #1e293b; }
-        .donut-hole .donut-center-label {
-            font-size: 9px;
+        .sip-result-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--sip-text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 2px;
-        }
-        .donut-hole .donut-center-value {
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--text-color, #334155);
-        }
-        .chart-legend {
-            display: flex;
-            gap: 15px;
-            font-size: 12px;
-            color: var(--text-muted, #64748b);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .legend-color {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
+            margin: 0 0 16px 0;
         }
 
-        .bar-container { width: 100%; }
-        .bar-label {
-            font-size: 12px;
-            color: var(--text-muted, #64748b);
-            margin-bottom: 5px;
+        .sip-result-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .sip-result-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            font-size: 13.5px;
+            color: var(--sip-text-soft);
         }
-        .bar-label strong { color: var(--text-color, #334155); }
-        .bar-track {
-            background: var(--border-color, #e2e8f0);
-            height: 12px;
-            border-radius: 6px;
-            overflow: hidden;
-            margin-bottom: 14px;
+        .sip-result-row .sip-result-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        [data-theme="dark"] .bar-track { background: rgba(255,255,255,0.08); }
-        .bar-fill-invested {
-            background: #f59e0b;
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 6px;
+        .sip-result-row .sip-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
-        .bar-fill-total {
-            background: #10b981;
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 6px;
+        .sip-result-row .sip-result-value {
+            font-weight: 700;
+            color: var(--sip-text);
+            font-size: 14.5px;
         }
 
-        /* ============ YEARLY BREAKDOWN TABLE ============ */
-        .yearly-table {
+        .sip-result-row.sip-divider {
+            padding-top: 14px;
+            border-top: 2px dashed var(--sip-border);
+            margin-top: 4px;
+        }
+        .sip-result-row.sip-divider .sip-result-value {
+            font-size: 20px;
+            color: var(--sip-primary);
+        }
+
+        /* ============ SVG DONUT CHART ============ */
+        .sip-chart-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .sip-donut-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        .sip-donut-wrap svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+        .sip-donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+        .sip-donut-center .sip-donut-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--sip-text-muted);
+            margin-bottom: 2px;
+        }
+        .sip-donut-center .sip-donut-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--sip-text);
+        }
+
+        /* ============ BARS ============ */
+        .sip-bars {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 8px;
+        }
+        .sip-bar-row { width: 100%; }
+        .sip-bar-head {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: var(--sip-text-muted);
+        }
+        .sip-bar-head strong {
+            color: var(--sip-text-soft);
+            font-weight: 600;
+        }
+        .sip-bar-track {
+            background: var(--sip-bg-subtle);
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .sip-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sip-bar-fill.invested { background: var(--sip-invested); }
+        .sip-bar-fill.returns { background: var(--sip-returns); }
+
+        /* ============ YEAR-WISE TABLE ============ */
+        .sip-breakdown-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 18px;
+            border-radius: 10px;
+            border: 1.5px solid var(--sip-border);
+            background: transparent;
+            color: var(--sip-text-soft);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+        .sip-breakdown-btn:hover {
+            border-color: var(--sip-primary);
+            color: var(--sip-primary);
+        }
+        .sip-breakdown-wrap {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        .sip-breakdown-wrap.open {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 12px;
+        }
+        .sip-breakdown-wrap::-webkit-scrollbar { width: 6px; }
+        .sip-breakdown-wrap::-webkit-scrollbar-thumb {
+            background: var(--sip-border);
+            border-radius: 3px;
+        }
+        .sip-breakdown-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 12px;
-            margin-top: 12px;
         }
-        .yearly-table th,
-        .yearly-table td {
+        .sip-breakdown-table th,
+        .sip-breakdown-table td {
             padding: 8px 6px;
             text-align: right;
-            border-bottom: 1px solid var(--border-color, #e2e8f0);
-            color: var(--text-color, #334155);
+            border-bottom: 1px solid var(--sip-border);
+            color: var(--sip-text-soft);
         }
-        .yearly-table th {
+        .sip-breakdown-table th {
             font-weight: 600;
-            color: var(--text-muted, #64748b);
-            font-size: 11px;
+            color: var(--sip-text-muted);
+            font-size: 10.5px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.4px;
+            position: sticky;
+            top: 0;
+            background: var(--sip-bg-card);
+            z-index: 2;
         }
-        .yearly-table th:first-child,
-        .yearly-table td:first-child { text-align: left; }
-        .yearly-table tbody tr:hover {
-            background: rgba(59, 130, 246, 0.05);
+        .sip-breakdown-table th:first-child,
+        .sip-breakdown-table td:first-child { text-align: left; }
+        .sip-breakdown-table tbody tr:hover {
+            background: var(--sip-bg-subtle);
         }
-        .breakdown-toggle {
-            background: transparent;
-            border: 1.5px solid var(--border-color, #cbd5e1);
-            color: var(--text-color, #334155);
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            width: 100%;
-            margin-top: 6px;
-            transition: all 0.2s;
+        .sip-breakdown-table td strong {
+            color: var(--sip-text);
         }
-        .breakdown-toggle:hover {
-            border-color: #3b82f6;
-            color: #3b82f6;
-        }
-        .breakdown-table-wrap {
-            max-height: 260px;
-            overflow-y: auto;
-            margin-top: 10px;
-            display: none;
-        }
-        .breakdown-table-wrap.show { display: block; }
 
         /* ============ INFO BOX ============ */
-        .info-box {
+        .sip-info-box {
+            padding: 12px 16px;
             background: rgba(59, 130, 246, 0.08);
-            border-left: 3px solid #3b82f6;
-            padding: 10px 14px;
-            border-radius: 6px;
+            border-left: 3px solid var(--sip-primary);
+            border-radius: 8px;
             font-size: 12.5px;
-            color: var(--text-muted, #64748b);
-            margin-bottom: 16px;
-            line-height: 1.5;
+            color: var(--sip-text-soft);
+            margin-bottom: 20px;
+            line-height: 1.55;
         }
-        .info-box strong { color: #3b82f6; }
+        [data-theme="dark"] .sip-info-box {
+            background: rgba(59, 130, 246, 0.12);
+        }
+        .sip-info-box strong { color: var(--sip-primary); }
+
+        /* ============ FOOTER DISCLAIMER ============ */
+        .sip-pro-disclaimer {
+            margin-top: 30px;
+            padding-top: 18px;
+            border-top: 1px solid var(--sip-border);
+            font-size: 11.5px;
+            color: var(--sip-text-muted);
+            line-height: 1.6;
+        }
+        .sip-pro-disclaimer strong {
+            color: var(--sip-text-soft);
+            display: block;
+            margin-bottom: 4px;
+        }
 
         /* ============ HIDDEN HELPER ============ */
-        .hidden { display: none !important; }
+        .sip-hidden { display: none !important; }
+
+        /* ============ ANIMATION ============ */
+        @keyframes sipPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .sip-updating {
+            animation: sipPulse 0.3s ease;
+        }
     </style>
 </head>
 <body>
-    <div class="tool-container" style="max-width: 1050px; margin: 30px auto; padding: 30px;">
-        <a href="index.html" class="back-link" style="display:inline-block; margin-bottom:15px; color:var(--primary); text-decoration:none;">← Back to Dashboard</a>
-        <h2 style="color: var(--primary-blue); margin-bottom: 5px;">📈 SIP Calculator Pro</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">Calculate returns for all types of SIP — Regular, Step-up, Fixed, Reducing, and Hybrid.</p>
+    <div class="sip-pro-scope">
 
-        <!-- ============ SIP TYPE TABS ============ -->
-        <div class="sip-tabs">
-            <button class="sip-tab active" data-type="regular" onclick="switchSipType('regular', this)">📊 Regular SIP</button>
-            <button class="sip-tab" data-type="stepup" onclick="switchSipType('stepup', this)">📈 Step-up SIP</button>
-            <button class="sip-tab" data-type="fixed" onclick="switchSipType('fixed', this)">🔒 Fixed SIP</button>
-            <button class="sip-tab" data-type="reducing" onclick="switchSipType('reducing', this)">📉 Reducing SIP</button>
-            <button class="sip-tab" data-type="hybrid" onclick="switchSipType('hybrid', this)">💎 Lump + SIP</button>
+        <!-- ============ HEADER ============ -->
+        <div class="sip-pro-header">
+            <a href="index.html" class="back-link">← Back to Dashboard</a>
+            <h1 class="sip-pro-title">📈 SIP Calculator Pro</h1>
+            <p class="sip-pro-subtitle">Plan your wealth with India's most advanced SIP calculator — 5 modes, real returns, and detailed projections.</p>
         </div>
 
-        <div class="info-box" id="typeInfo">
-            <strong>Regular SIP:</strong> Fixed amount invested every month/quarter at a fixed rate.
+        <!-- ============ MODE TABS ============ -->
+        <div class="sip-mode-tabs">
+            <button class="sip-mode-tab active" data-mode="sip" onclick="switchMode('sip', this)">
+                📊 SIP
+            </button>
+            <button class="sip-mode-tab" data-mode="lumpsum" onclick="switchMode('lumpsum', this)">
+                💰 Lumpsum
+            </button>
+            <button class="sip-mode-tab" data-mode="swp" onclick="switchMode('swp', this)">
+                💸 SWP
+            </button>
+            <button class="sip-mode-tab" data-mode="goal" onclick="switchMode('goal', this)">
+                🎯 Goal-based
+            </button>
+            <button class="sip-mode-tab" data-mode="compare" onclick="switchMode('compare', this)">
+                ⚖️ Compare
+            </button>
         </div>
 
-        <div class="sip-grid">
-            <!-- ============ LEFT COLUMN — INPUTS ============ -->
-            <div>
+        <!-- ============ SUB-TYPES ============ -->
+        <div class="sip-subtypes" id="subtypeRow">
+            <button class="sip-subtype-chip active" data-sub="regular" onclick="switchSubtype('regular', this)">Regular</button>
+            <button class="sip-subtype-chip" data-sub="stepup" onclick="switchSubtype('stepup', this)">Step-up</button>
+            <button class="sip-subtype-chip" data-sub="reducing" onclick="switchSubtype('reducing', this)">Reducing</button>
+        </div>
 
-                <!-- SIP Amount -->
-                <div class="input-group">
-                    <label id="amountLabel">SIP Amount (per installment)</label>
-                    <div class="input-with-slider">
-                        <span class="prefix">₹</span>
-                        <input type="text" id="sipAmountText" value="25,000" oninput="updateFromText('amount')">
+        <!-- ============ INFO BOX ============ -->
+        <div class="sip-info-box" id="modeInfo">
+            <strong>Regular SIP:</strong> Fixed amount invested every period at a fixed rate.
+        </div>
+
+        <!-- ============ MAIN GRID ============ -->
+        <div class="sip-main-grid">
+
+            <!-- ============ INPUT PANEL ============ -->
+            <div class="sip-input-panel">
+
+                <!-- SIP Amount / Lumpsum / Withdrawal / Goal -->
+                <div class="sip-input-group">
+                    <label>
+                        <span id="amountLabelText">SIP Amount (per installment)</span>
+                        <span class="sip-hint" id="amountHintText">Min ₹500</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <span class="sip-prefix">₹</span>
+                        <input type="text" id="inpAmount" value="25,000" oninput="onTextChange('amount')" inputmode="numeric">
                     </div>
-                    <input type="range" id="sipAmountRange" min="500" max="200000" step="500" value="25000" oninput="updateFromRange('amount')">
+                    <input type="range" id="rngAmount" min="500" max="200000" step="500" value="25000" oninput="onRangeChange('amount')">
                 </div>
 
-                <!-- Step-up % (only for stepup) -->
-                <div class="input-group hidden" id="stepupGroup">
-                    <label>Annual Step-up / Top-up %</label>
-                    <div class="input-with-slider">
-                        <input type="text" id="sipStepupText" value="10" oninput="updateFromText('stepup')">
-                        <span class="suffix">%</span>
+                <!-- Step-up % -->
+                <div class="sip-input-group sip-hidden" id="groupStepup">
+                    <label>
+                        <span>Annual Step-up %</span>
+                        <span class="sip-hint">Increase your SIP yearly</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <input type="text" id="inpStepup" value="10" oninput="onTextChange('stepup')" inputmode="decimal">
+                        <span class="sip-suffix">%</span>
                     </div>
-                    <input type="range" id="sipStepupRange" min="0" max="30" step="1" value="10" oninput="updateFromRange('stepup')">
+                    <input type="range" id="rngStepup" min="0" max="30" step="1" value="10" oninput="onRangeChange('stepup')">
                 </div>
 
-                <!-- Reducing % (only for reducing) -->
-                <div class="input-group hidden" id="reducingGroup">
-                    <label>Annual Reduction %</label>
-                    <div class="input-with-slider">
-                        <input type="text" id="sipReduceText" value="5" oninput="updateFromText('reduce')">
-                        <span class="suffix">%</span>
+                <!-- Reducing % -->
+                <div class="sip-input-group sip-hidden" id="groupReduce">
+                    <label>
+                        <span>Annual Reduction %</span>
+                        <span class="sip-hint">Decrease your SIP yearly</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <input type="text" id="inpReduce" value="5" oninput="onTextChange('reduce')" inputmode="decimal">
+                        <span class="sip-suffix">%</span>
                     </div>
-                    <input type="range" id="sipReduceRange" min="0" max="20" step="1" value="5" oninput="updateFromRange('reduce')">
+                    <input type="range" id="rngReduce" min="0" max="20" step="1" value="5" oninput="onRangeChange('reduce')">
                 </div>
 
-                <!-- Lump sum (only for fixed/hybrid) -->
-                <div class="input-group hidden" id="lumpGroup">
-                    <label>Initial Lump Sum Investment</label>
-                    <div class="input-with-slider">
-                        <span class="prefix">₹</span>
-                        <input type="text" id="sipLumpText" value="1,00,000" oninput="updateFromText('lump')">
+                <!-- Lump Sum -->
+                <div class="sip-input-group sip-hidden" id="groupLump">
+                    <label>
+                        <span id="lumpLabelText">Initial Lump Sum</span>
+                        <span class="sip-hint">One-time investment</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <span class="sip-prefix">₹</span>
+                        <input type="text" id="inpLump" value="1,00,000" oninput="onTextChange('lump')" inputmode="numeric">
                     </div>
-                    <input type="range" id="sipLumpRange" min="0" max="1000000" step="10000" value="100000" oninput="updateFromRange('lump')">
+                    <input type="range" id="rngLump" min="0" max="1000000" step="10000" value="100000" oninput="onRangeChange('lump')">
+                </div>
+
+                <!-- Goal Target Amount -->
+                <div class="sip-input-group sip-hidden" id="groupGoal">
+                    <label>
+                        <span>Goal Amount (Target)</span>
+                        <span class="sip-hint">What you want to achieve</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <span class="sip-prefix">₹</span>
+                        <input type="text" id="inpGoal" value="1,00,00,000" oninput="onTextChange('goal')" inputmode="numeric">
+                    </div>
+                    <input type="range" id="rngGoal" min="100000" max="50000000" step="100000" value="10000000" oninput="onRangeChange('goal')">
                 </div>
 
                 <!-- Frequency -->
-                <div class="input-group">
-                    <label>Investment Frequency</label>
-                    <div class="frequency-selector">
-                        <label><input type="radio" name="freq" value="12" checked onchange="calculateSIP()"> Monthly</label>
-                        <label><input type="radio" name="freq" value="4" onchange="calculateSIP()"> Quarterly</label>
-                        <label><input type="radio" name="freq" value="2" onchange="calculateSIP()"> Half-Yearly</label>
-                        <label><input type="radio" name="freq" value="1" onchange="calculateSIP()"> Yearly</label>
+                <div class="sip-input-group">
+                    <label><span>Investment Frequency</span></label>
+                    <div class="sip-freq-list">
+                        <label class="sip-freq-item active">
+                            <input type="radio" name="freq" value="12" checked onchange="onFreqChange()">
+                            Monthly
+                        </label>
+                        <label class="sip-freq-item">
+                            <input type="radio" name="freq" value="4" onchange="onFreqChange()">
+                            Quarterly
+                        </label>
+                        <label class="sip-freq-item">
+                            <input type="radio" name="freq" value="2" onchange="onFreqChange()">
+                            Half-Yearly
+                        </label>
+                        <label class="sip-freq-item">
+                            <input type="radio" name="freq" value="1" onchange="onFreqChange()">
+                            Yearly
+                        </label>
                     </div>
                 </div>
 
-                <!-- Rate -->
-                <div class="input-group">
-                    <label>Expected Rate of Return (p.a.) %</label>
-                    <div class="input-with-slider">
-                        <input type="text" id="sipRateText" value="12" oninput="updateFromText('rate')">
-                        <span class="suffix">%</span>
-                    </div>
-                    <input type="range" id="sipRateRange" min="1" max="30" step="0.5" value="12" oninput="updateFromRange('rate')">
-                </div>
-
-                <!-- Years -->
-                <div class="input-group">
-                    <label>Investment Duration (Years)</label>
-                    <div class="input-with-slider">
-                        <input type="text" id="sipYearsText" value="15" oninput="updateFromText('years')">
-                        <span class="suffix">Y</span>
-                    </div>
-                    <input type="range" id="sipYearsRange" min="1" max="40" step="1" value="15" oninput="updateFromRange('years')">
-                </div>
-
-                <!-- Inflation Adjust -->
-                <div class="input-group">
-                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                        <input type="checkbox" id="inflationToggle" onchange="calculateSIP()" style="width:auto;accent-color:#3b82f6;">
-                        Adjust for Inflation (Real Value)
+                <!-- Rate of Return -->
+                <div class="sip-input-group">
+                    <label>
+                        <span>Expected Rate of Return (p.a.)</span>
+                        <span class="sip-hint">Historical: 12-15% equity</span>
                     </label>
-                    <div class="input-with-slider hidden" id="inflationRateWrap" style="margin-top:8px;">
-                        <input type="text" id="sipInflationText" value="6" oninput="updateFromText('inflation')">
-                        <span class="suffix">%</span>
+                    <div class="sip-input-field">
+                        <input type="text" id="inpRate" value="12" oninput="onTextChange('rate')" inputmode="decimal">
+                        <span class="sip-suffix">%</span>
                     </div>
-                    <input type="range" class="hidden" id="sipInflationRange" min="1" max="15" step="0.5" value="6" oninput="updateFromRange('inflation')">
+                    <input type="range" id="rngRate" min="1" max="30" step="0.5" value="12" oninput="onRangeChange('rate')">
+                </div>
+
+                <!-- Duration -->
+                <div class="sip-input-group" id="groupYears">
+                    <label>
+                        <span id="yearsLabelText">Investment Duration</span>
+                        <span class="sip-hint">Years</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <input type="text" id="inpYears" value="15" oninput="onTextChange('years')" inputmode="numeric">
+                        <span class="sip-suffix">Y</span>
+                    </div>
+                    <input type="range" id="rngYears" min="1" max="40" step="1" value="15" oninput="onRangeChange('years')">
+                </div>
+
+                <!-- Inflation Toggle -->
+                <label class="sip-checkbox-row">
+                    <input type="checkbox" id="chkInflation" onchange="toggleInflation()">
+                    <span>Adjust for Inflation (Real Value)</span>
+                </label>
+
+                <div class="sip-input-group sip-hidden" id="groupInflation" style="margin-top:14px;">
+                    <label>
+                        <span>Expected Inflation Rate</span>
+                        <span class="sip-hint">India avg: 6%</span>
+                    </label>
+                    <div class="sip-input-field">
+                        <input type="text" id="inpInflation" value="6" oninput="onTextChange('inflation')" inputmode="decimal">
+                        <span class="sip-suffix">%</span>
+                    </div>
+                    <input type="range" id="rngInflation" min="1" max="15" step="0.5" value="6" oninput="onRangeChange('inflation')">
                 </div>
 
             </div>
 
-            <!-- ============ RIGHT COLUMN — RESULTS ============ -->
-            <div>
-                <div class="result-summary">
+            <!-- ============ RESULT PANEL ============ -->
+            <div class="sip-result-panel">
+                <h3 class="sip-result-title" id="resultTitle">Investment Projection</h3>
 
-                    <div class="result-row">
-                        <span>Total Investment:</span>
-                        <span id="resInvested" style="color: #f59e0b;">₹ 45.0 L</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Est. Returns:</span>
-                        <span id="resReturns" style="color: #10b981;">₹ 1.20 Cr</span>
-                    </div>
-                    <div class="result-row total">
-                        <span>Future Value:</span>
-                        <span id="resTotal">₹ 1.65 Cr</span>
+                <div class="sip-result-rows">
+                    <div class="sip-result-row">
+                        <span class="sip-result-label">
+                            <span class="sip-dot" style="background: var(--sip-invested);"></span>
+                            <span id="lblInvested">Total Invested</span>
+                        </span>
+                        <span class="sip-result-value" id="resInvested" style="color: var(--sip-invested);">₹ 45.00 L</span>
                     </div>
 
-                    <!-- Real value row (only when inflation on) -->
-                    <div class="result-row hidden" id="realValueRow" style="border-top: 1px dashed var(--border-color); padding-top: 10px; margin-top: 6px;">
-                        <span>Real Value (inflation adj.):</span>
-                        <span id="resReal" style="color: #8b5cf6;">₹ 68.8 L</span>
+                    <div class="sip-result-row" id="rowReturns">
+                        <span class="sip-result-label">
+                            <span class="sip-dot" style="background: var(--sip-returns);"></span>
+                            <span id="lblReturns">Estimated Returns</span>
+                        </span>
+                        <span class="sip-result-value" id="resReturns" style="color: var(--sip-returns);">₹ 81.14 L</span>
                     </div>
 
-                    <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 12px; line-height: 1.4;">
-                        Values update automatically as you change inputs.
-                    </p>
-
-                    <!-- Charts -->
-                    <div class="graphs-wrapper">
-                        <div>
-                            <div class="chart-legend" style="margin-bottom: 10px;">
-                                <div class="legend-item"><div class="legend-color" style="background: #f59e0b;"></div>Invested</div>
-                                <div class="legend-item"><div class="legend-color" style="background: #10b981;"></div>Returns</div>
-                            </div>
-                            <div class="donut-chart" id="donutChart">
-                                <div class="donut-hole">
-                                    <div class="donut-center-label">Total</div>
-                                    <div class="donut-center-value" id="donutCenterVal">₹1.65 Cr</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bar-container">
-                            <div class="bar-label">
-                                <span>Your Investments</span>
-                                <strong id="barInvestedVal">₹ 45.0 L</strong>
-                            </div>
-                            <div class="bar-track">
-                                <div class="bar-fill-invested" id="barInvested"></div>
-                            </div>
-
-                            <div class="bar-label">
-                                <span>Total Value</span>
-                                <strong id="barTotalVal">₹ 1.65 Cr</strong>
-                            </div>
-                            <div class="bar-track">
-                                <div class="bar-fill-total" id="barTotal"></div>
-                            </div>
-                        </div>
+                    <div class="sip-result-row sip-divider">
+                        <span class="sip-result-label">
+                            <span id="lblTotal">Future Value</span>
+                        </span>
+                        <span class="sip-result-value" id="resTotal">₹ 1.26 Cr</span>
                     </div>
 
-                    <!-- Yearly Breakdown -->
-                    <button class="breakdown-toggle" onclick="toggleBreakdown()">
-                        📅 <span id="breakdownBtnText">Show Year-by-Year Breakdown</span>
-                    </button>
-                    <div class="breakdown-table-wrap" id="breakdownWrap">
-                        <table class="yearly-table">
-                            <thead>
-                                <tr>
-                                    <th>Year</th>
-                                    <th>Invested</th>
-                                    <th>Returns</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="breakdownBody"></tbody>
-                        </table>
+                    <div class="sip-result-row sip-hidden" id="rowReal">
+                        <span class="sip-result-label">
+                            <span class="sip-dot" style="background: var(--sip-real);"></span>
+                            <span>Real Value (Inflation Adjusted)</span>
+                        </span>
+                        <span class="sip-result-value" id="resReal" style="color: var(--sip-real);">₹ 52.60 L</span>
                     </div>
 
+                    <div class="sip-result-row sip-hidden" id="rowRequiredSIP">
+                        <span class="sip-result-label">
+                            <span class="sip-dot" style="background: var(--sip-primary);"></span>
+                            <span>Required Monthly SIP</span>
+                        </span>
+                        <span class="sip-result-value" id="resRequiredSIP" style="color: var(--sip-primary);">₹ 25,000</span>
+                    </div>
                 </div>
+
+                <!-- Charts -->
+                <div class="sip-chart-section">
+                    <div class="sip-donut-wrap">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="none"
+                                    stroke="var(--sip-bg-subtle)" stroke-width="14"/>
+                            <circle id="donutInvested" cx="50" cy="50" r="40" fill="none"
+                                    stroke="var(--sip-invested)" stroke-width="14"
+                                    stroke-dasharray="0 251.2" stroke-linecap="round"/>
+                            <circle id="donutReturns" cx="50" cy="50" r="40" fill="none"
+                                    stroke="var(--sip-returns)" stroke-width="14"
+                                    stroke-dasharray="0 251.2" stroke-linecap="round"/>
+                        </svg>
+                        <div class="sip-donut-center">
+                            <div class="sip-donut-label">Total Value</div>
+                            <div class="sip-donut-value" id="donutValue">₹1.26 Cr</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bars -->
+                <div class="sip-bars">
+                    <div class="sip-bar-row">
+                        <div class="sip-bar-head">
+                            <span>Invested vs Total</span>
+                            <strong id="barPctText">36% / 100%</strong>
+                        </div>
+                        <div class="sip-bar-track" style="margin-bottom:6px;">
+                            <div class="sip-bar-fill invested" id="barInvested" style="width: 0%;"></div>
+                        </div>
+                        <div class="sip-bar-track">
+                            <div class="sip-bar-fill returns" id="barReturns" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breakdown -->
+                <button class="sip-breakdown-btn" onclick="toggleBreakdown()">
+                    📅 <span id="breakdownBtnText">Show Year-by-Year Breakdown</span>
+                </button>
+                <div class="sip-breakdown-wrap" id="breakdownWrap">
+                    <table class="sip-breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Invested</th>
+                                <th>Returns</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdownBody"></tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
 
-        <div style="margin-top: 30px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 15px; line-height: 1.5;">
-            <strong>Disclaimer:</strong><br>
-            These calculators are for illustration only and do not represent actual returns.<br>
-            Stock market does not have a fixed rate of return and it is not possible to predict it.
+        <!-- ============ DISCLAIMER ============ -->
+        <div class="sip-pro-disclaimer">
+            <strong>Disclaimer</strong>
+            These calculations are for illustration only and do not represent actual returns. Stock markets do not have a fixed rate of return and future performance cannot be predicted. Please consult a SEBI-registered financial advisor before investing.
         </div>
+
     </div>
 
     <script>
         /* ============================================================
-           SIP CALCULATOR PRO — Multi-type engine
+           SIP CALCULATOR PRO — Engine
            ============================================================ */
-        let currentSipType = 'regular';
 
-        const TYPE_INFO = {
-            regular: '<strong>Regular SIP:</strong> Fixed amount invested every period at a fixed rate of return.',
-            stepup:  '<strong>Step-up SIP:</strong> Your SIP amount increases every year by a fixed %. Great for growing income.',
-            fixed:   '<strong>Fixed SIP:</strong> A one-time lump sum upfront + regular SIP instalments. Best for bonus/windfall investment.',
-            reducing:'<strong>Reducing SIP:</strong> Your SIP amount decreases every year by a fixed %. Useful for planned withdrawals.',
-            hybrid:  '<strong>Lump + SIP:</strong> Initial lump sum invested once, plus regular monthly SIP on top.'
+        let state = {
+            mode: 'sip',            // sip | lumpsum | swp | goal | compare
+            subtype: 'regular',     // regular | stepup | reducing
+            freq: 12,
+            inflationOn: false
         };
 
-        /* ---------- Utility: format Indian currency ---------- */
-        function formatIndianCurrency(num) {
-            if (isNaN(num) || num === 0) return '₹ 0';
+        const MODE_INFO = {
+            sip: {
+                regular: '<strong>Regular SIP:</strong> Fixed amount invested every period at a fixed rate of return. Perfect for disciplined wealth creation.',
+                stepup:  '<strong>Step-up SIP:</strong> Your SIP amount increases every year by a fixed %. Great when your income grows.',
+                reducing:'<strong>Reducing SIP:</strong> Your SIP amount decreases every year. Useful when planning phased withdrawals.'
+            },
+            lumpsum: '<strong>Lumpsum:</strong> Invest a one-time amount and let it compound over time.',
+            swp:     '<strong>SWP (Systematic Withdrawal Plan):</strong> Withdraw a fixed amount regularly from your corpus. Ideal for retirement income.',
+            goal:    '<strong>Goal-based SIP:</strong> Tell us your target amount and we\'ll calculate the monthly SIP required to reach it.',
+            compare: '<strong>Compare:</strong> See how step-up SIP outperforms regular SIP over the long term.'
+        };
+
+        /* ---------- Currency formatting ---------- */
+        function formatCurrency(num) {
+            if (!isFinite(num) || isNaN(num) || num === 0) return '₹ 0';
             const abs = Math.abs(num);
-            if (abs >= 10000000) return '₹ ' + (num / 10000000).toFixed(2) + ' Cr';
-            if (abs >= 100000)   return '₹ ' + (num / 100000).toFixed(2) + ' L';
-            if (abs >= 1000)     return '₹ ' + Number(num.toFixed(0)).toLocaleString('en-IN');
-            return '₹ ' + num.toFixed(0);
+            if (abs >= 1e7) return '₹ ' + (num / 1e7).toFixed(2) + ' Cr';
+            if (abs >= 1e5) return '₹ ' + (num / 1e5).toFixed(2) + ' L';
+            return '₹ ' + Math.round(num).toLocaleString('en-IN');
         }
 
-        /* ---------- Utility: parse Indian formatted number ---------- */
-        function parseIndianNumber(str) {
-            if (!str) return 0;
-            const cleaned = String(str).replace(/[^0-9.\-]/g, '');
-            return parseFloat(cleaned) || 0;
+        function parseNum(str) {
+            return parseFloat(String(str).replace(/[^0-9.\-]/g, '')) || 0;
         }
 
-        /* ---------- Get input values ---------- */
-        function getInputs() {
-            const p = parseFloat(document.getElementById('sipAmountRange').value) || 0;
-            const rate = parseFloat(document.getElementById('sipRateRange').value) || 0;
-            const years = parseFloat(document.getElementById('sipYearsRange').value) || 0;
-            const stepup = parseFloat(document.getElementById('sipStepupRange').value) || 0;
-            const reduce = parseFloat(document.getElementById('sipReduceRange').value) || 0;
-            const lump = parseFloat(document.getElementById('sipLumpRange').value) || 0;
-            const inflationOn = document.getElementById('inflationToggle').checked;
-            const inflationRate = parseFloat(document.getElementById('sipInflationRange').value) || 0;
-
-            let freq = 12;
-            document.getElementsByName('freq').forEach(r => { if (r.checked) freq = parseInt(r.value); });
-
-            return { p, rate, years, stepup, reduce, lump, freq, inflationOn, inflationRate, type: currentSipType };
+        function toIndian(str) {
+            return Math.round(parseNum(str)).toLocaleString('en-IN');
         }
 
-        /* ---------- CORE CALCULATION ---------- */
-        function calculateSIP() {
-            const inp = getInputs();
-            const { p, rate, years, stepup, reduce, lump, freq, type } = inp;
+        /* ---------- Get current values ---------- */
+        function vals() {
+            return {
+                amount: parseNum(document.getElementById('inpAmount').value),
+                stepup: parseFloat(document.getElementById('inpStepup').value) || 0,
+                reduce: parseFloat(document.getElementById('inpReduce').value) || 0,
+                lump: parseNum(document.getElementById('inpLump').value),
+                goal: parseNum(document.getElementById('inpGoal').value),
+                rate: parseFloat(document.getElementById('inpRate').value) || 0,
+                years: parseFloat(document.getElementById('inpYears').value) || 0,
+                inflation: parseFloat(document.getElementById('inpInflation').value) || 0
+            };
+        }
 
-            const periodsPerYear = freq;
-            const totalYears = Math.max(1, years);
-            const annualRate = rate / 100;
-            const ratePerPeriod = annualRate / periodsPerYear;
+        /* ---------- Core SIP calculation ---------- */
+        function calculateSIP(v, freq, subtype) {
+            const p = v.amount;
+            const rate = v.rate / 100;
+            const years = Math.max(1, v.years);
+            const n = freq;
+            const i = rate / n;
+            const totalPeriods = years * n;
 
             let totalInvested = 0;
             let currentInstalment = p;
             let futureValue = 0;
+            const yearlyRows = [];
 
-            // Breakdown rows
-            const breakdown = [];
-
-            // Lump sum grows for full duration
-            let lumpFutureValue = 0;
-            if (lump > 0 && (type === 'fixed' || type === 'hybrid')) {
-                lumpFutureValue = lump * Math.pow(1 + annualRate, totalYears);
-                totalInvested += lump;
-            }
-
-            // Year-by-year simulation
-            for (let y = 1; y <= totalYears; y++) {
+            for (let y = 1; y <= years; y++) {
                 let yearInvested = 0;
-                let yearFVContribution = 0;
-
-                // For each period in this year
-                for (let m = 1; m <= periodsPerYear; m++) {
-                    // Number of periods remaining (including this one) until end
-                    const periodsRemaining = (totalYears - y) * periodsPerYear + (periodsPerYear - m + 1);
-
-                    // Future value of this single instalment
-                    const fv = currentInstalment * Math.pow(1 + ratePerPeriod, periodsRemaining);
-                    yearFVContribution += fv;
-
+                let yearFV = 0;
+                for (let m = 1; m <= n; m++) {
+                    const remaining = (years - y) * n + (n - m + 1);
+                    yearFV += currentInstalment * Math.pow(1 + i, remaining);
                     yearInvested += currentInstalment;
                 }
-
                 totalInvested += yearInvested;
-                futureValue += yearFVContribution;
+                futureValue += yearFV;
 
-                // Step-up / reduce for NEXT year
-                if (type === 'stepup' && y < totalYears) {
-                    currentInstalment = currentInstalment * (1 + stepup / 100);
-                }
-                if (type === 'reducing' && y < totalYears) {
-                    currentInstalment = Math.max(0, currentInstalment * (1 - reduce / 100));
-                }
-
-                breakdown.push({
+                yearlyRows.push({
                     year: y,
-                    invested: totalInvested + lumpFutureValue * 0, // will recompute below
                     investedSoFar: totalInvested,
-                    totalSoFar: futureValue + lumpFutureValue
+                    totalSoFar: futureValue
+                });
+
+                if (subtype === 'stepup' && y < years) {
+                    currentInstalment *= (1 + v.stepup / 100);
+                }
+                if (subtype === 'reducing' && y < years) {
+                    currentInstalment = Math.max(0, currentInstalment * (1 - v.reduce / 100));
+                }
+            }
+
+            return {
+                invested: totalInvested,
+                futureValue: futureValue,
+                returns: futureValue - totalInvested,
+                yearlyRows: yearlyRows
+            };
+        }
+
+        /* ---------- Lumpsum calculation ---------- */
+        function calculateLumpsum(v) {
+            const invested = v.lump;
+            const fv = invested * Math.pow(1 + v.rate / 100, v.years);
+            return {
+                invested: invested,
+                futureValue: fv,
+                returns: fv - invested,
+                yearlyRows: buildLumpsumRows(invested, v.rate / 100, v.years)
+            };
+        }
+
+        function buildLumpsumRows(principal, rate, years) {
+            const rows = [];
+            for (let y = 1; y <= years; y++) {
+                const fv = principal * Math.pow(1 + rate, y);
+                rows.push({ year: y, investedSoFar: principal, totalSoFar: fv });
+            }
+            return rows;
+        }
+
+        /* ---------- SWP calculation ---------- */
+        function calculateSWP(v, freq) {
+            // Corpus = lump, withdraw = amount per period, rate = rate
+            let corpus = v.lump;
+            const rate = v.rate / 100;
+            const n = freq;
+            const i = rate / n;
+            const years = Math.max(1, v.years);
+            const totalPeriods = years * n;
+            let totalWithdrawn = 0;
+            const yearlyRows = [];
+
+            for (let y = 1; y <= years; y++) {
+                for (let m = 1; m <= n; m++) {
+                    corpus = corpus * (1 + i) - v.amount;
+                    if (corpus < 0) corpus = 0;
+                    totalWithdrawn += Math.min(v.amount, corpus + v.amount);
+                }
+                yearlyRows.push({
+                    year: y,
+                    investedSoFar: totalWithdrawn,
+                    totalSoFar: corpus
                 });
             }
 
-            // Add lump sum FV (already includes full compounding)
-            futureValue += lumpFutureValue;
-
-            const estReturns = futureValue - totalInvested;
-
-            // Real (inflation-adjusted) value
-            let realValue = futureValue;
-            if (inp.inflationOn) {
-                realValue = futureValue / Math.pow(1 + inp.inflationRate / 100, totalYears);
-            }
-
-            // ---- Update UI ----
-            document.getElementById('resInvested').innerText = formatIndianCurrency(totalInvested);
-            document.getElementById('resReturns').innerText = formatIndianCurrency(estReturns);
-            document.getElementById('resTotal').innerText = formatIndianCurrency(futureValue);
-
-            const realRow = document.getElementById('realValueRow');
-            if (inp.inflationOn) {
-                realRow.classList.remove('hidden');
-                document.getElementById('resReal').innerText = formatIndianCurrency(realValue);
-            } else {
-                realRow.classList.add('hidden');
-            }
-
-            // Donut
-            const investedPercent = futureValue > 0 ? (totalInvested / futureValue) * 100 : 100;
-            const chart = document.getElementById('donutChart');
-            chart.style.background = `conic-gradient(#f59e0b 0% ${investedPercent}%, #10b981 ${investedPercent}% 100%)`;
-            document.getElementById('donutCenterVal').innerText = formatIndianCurrency(futureValue);
-
-            // Bars (relative to future value)
-            const maxVal = futureValue > 0 ? futureValue : 1;
-            document.getElementById('barInvested').style.width = ((totalInvested / maxVal) * 100) + '%';
-            document.getElementById('barTotal').style.width = '100%';
-            document.getElementById('barInvestedVal').innerText = formatIndianCurrency(totalInvested);
-            document.getElementById('barTotalVal').innerText = formatIndianCurrency(futureValue);
-
-            // Yearly breakdown
-            renderBreakdown(breakdown, lumpFutureValue);
+            return {
+                invested: totalWithdrawn,           // total withdrawn
+                futureValue: corpus,                // remaining corpus
+                returns: corpus - (v.lump - totalWithdrawn),
+                yearlyRows: yearlyRows,
+                isSWP: true
+            };
         }
 
-        /* ---------- YEAR-BY-YEAR TABLE ---------- */
-        function renderBreakdown(rows, lumpFV) {
+        /* ---------- Goal-based calculation ---------- */
+        function calculateGoal(v, freq) {
+            const target = v.goal;
+            const rate = v.rate / 100;
+            const n = freq;
+            const i = rate / n;
+            const totalPeriods = v.years * n;
+
+            // FV = P * ((1+i)^n - 1) / i * (1 + i)
+            const factor = ((Math.pow(1 + i, totalPeriods) - 1) / i) * (1 + i);
+            const requiredSIP = factor > 0 ? target / factor : 0;
+
+            const invested = requiredSIP * totalPeriods;
+            const rows = [];
+            let cumInv = 0;
+            let fv = 0;
+            for (let y = 1; y <= v.years; y++) {
+                for (let m = 1; m <= n; m++) {
+                    const remaining = (v.years - y) * n + (n - m + 1);
+                    fv += requiredSIP * Math.pow(1 + i, remaining);
+                    cumInv += requiredSIP;
+                }
+                rows.push({ year: y, investedSoFar: cumInv, totalSoFar: fv });
+            }
+
+            return {
+                requiredSIP: requiredSIP,
+                invested: invested,
+                futureValue: target,
+                returns: target - invested,
+                yearlyRows: rows,
+                isGoal: true
+            };
+        }
+
+        /* ---------- Main recalc ---------- */
+        function recalc() {
+            const v = vals();
+            let res;
+
+            if (state.mode === 'sip') {
+                res = calculateSIP(v, state.freq, state.subtype);
+                document.getElementById('lblInvested').innerText = 'Total Invested';
+                document.getElementById('lblReturns').innerText = 'Estimated Returns';
+                document.getElementById('lblTotal').innerText = 'Future Value';
+                document.getElementById('rowReturns').classList.remove('sip-hidden');
+                document.getElementById('rowRequiredSIP').classList.add('sip-hidden');
+
+            } else if (state.mode === 'lumpsum') {
+                res = calculateLumpsum(v);
+                document.getElementById('lblInvested').innerText = 'Principal';
+                document.getElementById('lblReturns').innerText = 'Estimated Returns';
+                document.getElementById('lblTotal').innerText = 'Future Value';
+                document.getElementById('rowReturns').classList.remove('sip-hidden');
+                document.getElementById('rowRequiredSIP').classList.add('sip-hidden');
+
+            } else if (state.mode === 'swp') {
+                res = calculateSWP(v, state.freq);
+                document.getElementById('lblInvested').innerText = 'Total Withdrawn';
+                document.getElementById('lblReturns').innerText = 'Remaining Corpus';
+                document.getElementById('lblTotal').innerText = 'Remaining Corpus';
+                document.getElementById('rowReturns').classList.add('sip-hidden');
+                document.getElementById('rowRequiredSIP').classList.add('sip-hidden');
+
+            } else if (state.mode === 'goal') {
+                res = calculateGoal(v, state.freq);
+                document.getElementById('lblInvested').innerText = 'Total You Invest';
+                document.getElementById('lblReturns').innerText = 'Wealth Gained';
+                document.getElementById('lblTotal').innerText = 'Goal Amount';
+                document.getElementById('rowReturns').classList.remove('sip-hidden');
+                document.getElementById('rowRequiredSIP').classList.remove('sip-hidden');
+                document.getElementById('resRequiredSIP').innerText = formatCurrency(res.requiredSIP);
+
+            } else if (state.mode === 'compare') {
+                // Show step-up vs regular
+                const regular = calculateSIP({...v, stepup: 0}, state.freq, 'regular');
+                const stepup = calculateSIP(v, state.freq, 'stepup');
+                res = stepup;
+                document.getElementById('lblInvested').innerText = 'Step-up Invested';
+                document.getElementById('lblReturns').innerText = 'Step-up Returns';
+                document.getElementById('lblTotal').innerText = 'Step-up Total';
+                document.getElementById('rowReturns').classList.remove('sip-hidden');
+                document.getElementById('rowRequiredSIP').classList.remove('sip-hidden');
+                document.getElementById('resRequiredSIP').innerText =
+                    'Regular: ' + formatCurrency(regular.futureValue);
+            }
+
+            // Real value
+            let realValue = res.futureValue;
+            if (state.inflationOn && v.inflation > 0 && state.mode !== 'goal') {
+                realValue = res.futureValue / Math.pow(1 + v.inflation / 100, v.years);
+                document.getElementById('rowReal').classList.remove('sip-hidden');
+                document.getElementById('resReal').innerText = formatCurrency(realValue);
+            } else {
+                document.getElementById('rowReal').classList.add('sip-hidden');
+            }
+
+            // Update numeric displays
+            document.getElementById('resInvested').innerText = formatCurrency(res.invested);
+            document.getElementById('resReturns').innerText = formatCurrency(res.returns);
+            document.getElementById('resTotal').innerText = formatCurrency(res.futureValue);
+            document.getElementById('donutValue').innerText = formatCurrency(res.futureValue);
+
+            // Donut chart
+            const circumference = 2 * Math.PI * 40; // 251.32
+            const investedPct = res.futureValue > 0 ? Math.min(1, res.invested / res.futureValue) : 0;
+            const investedDash = investedPct * circumference;
+            const returnsDash = circumference - investedDash;
+
+            const donutInv = document.getElementById('donutInvested');
+            const donutRet = document.getElementById('donutReturns');
+
+            donutInv.setAttribute('stroke-dasharray', `${investedDash} ${circumference}`);
+            donutInv.setAttribute('stroke-dashoffset', '0');
+            donutRet.setAttribute('stroke-dasharray', `${returnsDash} ${circumference}`);
+            donutRet.setAttribute('stroke-dashoffset', `${-investedDash}`);
+
+            // Bars
+            const barInvPct = res.futureValue > 0 ? (res.invested / res.futureValue) * 100 : 0;
+            document.getElementById('barInvested').style.width = Math.min(100, barInvPct) + '%';
+            document.getElementById('barReturns').style.width = Math.min(100, 100 - barInvPct) + '%';
+            document.getElementById('barPctText').innerText =
+                Math.round(barInvPct) + '% / 100%';
+
+            // Breakdown
+            renderBreakdown(res.yearlyRows, res.futureValue);
+        }
+
+        /* ---------- Breakdown table ---------- */
+        function renderBreakdown(rows, fv) {
             const tbody = document.getElementById('breakdownBody');
-            if (!tbody) return;
+            if (!tbody || !rows) return;
 
-            // Recompute invested-so-far including lump
-            let cumInvested = 0;
-            tbody.innerHTML = rows.map((r, idx) => {
-                const yearInvested = r.investedSoFar - cumInvested;
-                cumInvested = r.investedSoFar;
-
-                // For lump, add it only in the first row display (as initial)
-                const displayInvested = r.investedSoFar;
-
+            tbody.innerHTML = rows.map(r => {
+                const returns = r.totalSoFar - r.investedSoFar;
                 return `<tr>
                     <td>Year ${r.year}</td>
-                    <td>${formatIndianCurrency(displayInvested)}</td>
-                    <td style="color:#10b981;">${formatIndianCurrency(r.totalSoFar - displayInvested)}</td>
-                    <td><strong>${formatIndianCurrency(r.totalSoFar)}</strong></td>
+                    <td>${formatCurrency(r.investedSoFar)}</td>
+                    <td style="color:var(--sip-returns);">${formatCurrency(returns)}</td>
+                    <td><strong>${formatCurrency(r.totalSoFar)}</strong></td>
                 </tr>`;
             }).join('');
         }
 
         function toggleBreakdown() {
             const wrap = document.getElementById('breakdownWrap');
-            const btn = document.getElementById('breakdownBtnText');
-            wrap.classList.toggle('show');
-            btn.innerText = wrap.classList.contains('show')
+            const btnText = document.getElementById('breakdownBtnText');
+            wrap.classList.toggle('open');
+            btnText.innerText = wrap.classList.contains('open')
                 ? 'Hide Year-by-Year Breakdown'
                 : 'Show Year-by-Year Breakdown';
         }
 
-        /* ---------- UPDATE FROM RANGE ---------- */
-        function updateFromRange(type) {
-            if (type === 'amount') {
-                const val = document.getElementById('sipAmountRange').value;
-                document.getElementById('sipAmountText').value = Number(val).toLocaleString('en-IN');
-            } else if (type === 'rate') {
-                document.getElementById('sipRateText').value = document.getElementById('sipRateRange').value;
-            } else if (type === 'years') {
-                document.getElementById('sipYearsText').value = document.getElementById('sipYearsRange').value;
-            } else if (type === 'stepup') {
-                document.getElementById('sipStepupText').value = document.getElementById('sipStepupRange').value;
-            } else if (type === 'reduce') {
-                document.getElementById('sipReduceText').value = document.getElementById('sipReduceRange').value;
-            } else if (type === 'lump') {
-                const val = document.getElementById('sipLumpRange').value;
-                document.getElementById('sipLumpText').value = Number(val).toLocaleString('en-IN');
-            } else if (type === 'inflation') {
-                document.getElementById('sipInflationText').value = document.getElementById('sipInflationRange').value;
+        /* ---------- Input handlers ---------- */
+        function onRangeChange(type) {
+            const r = document.getElementById('rng' + cap(type));
+            const t = document.getElementById('inp' + cap(type));
+            if (!r || !t) return;
+
+            if (type === 'amount' || type === 'lump' || type === 'goal') {
+                t.value = Number(r.value).toLocaleString('en-IN');
+            } else {
+                t.value = r.value;
             }
-            calculateSIP();
+            recalc();
         }
 
-        /* ---------- UPDATE FROM TEXT ---------- */
-        function updateFromText(type) {
-            if (type === 'amount') {
-                const val = parseIndianNumber(document.getElementById('sipAmountText').value);
-                document.getElementById('sipAmountRange').value = Math.max(500, Math.min(200000, val));
-                document.getElementById('sipAmountText').value = Number(Math.max(500, Math.min(200000, val))).toLocaleString('en-IN');
-            } else if (type === 'rate') {
-                const val = parseFloat(document.getElementById('sipRateText').value) || 0;
-                document.getElementById('sipRateRange').value = Math.max(1, Math.min(30, val));
-            } else if (type === 'years') {
-                const val = parseFloat(document.getElementById('sipYearsText').value) || 0;
-                document.getElementById('sipYearsRange').value = Math.max(1, Math.min(40, val));
-            } else if (type === 'stepup') {
-                const val = parseFloat(document.getElementById('sipStepupText').value) || 0;
-                document.getElementById('sipStepupRange').value = Math.max(0, Math.min(30, val));
-            } else if (type === 'reduce') {
-                const val = parseFloat(document.getElementById('sipReduceText').value) || 0;
-                document.getElementById('sipReduceRange').value = Math.max(0, Math.min(20, val));
-            } else if (type === 'lump') {
-                const val = parseIndianNumber(document.getElementById('sipLumpText').value);
-                document.getElementById('sipLumpRange').value = Math.max(0, Math.min(1000000, val));
-                document.getElementById('sipLumpText').value = Number(Math.max(0, Math.min(1000000, val))).toLocaleString('en-IN');
-            } else if (type === 'inflation') {
-                const val = parseFloat(document.getElementById('sipInflationText').value) || 0;
-                document.getElementById('sipInflationRange').value = Math.max(1, Math.min(15, val));
+        function onTextChange(type) {
+            const r = document.getElementById('rng' + cap(type));
+            const t = document.getElementById('inp' + cap(type));
+            if (!r || !t) return;
+
+            const val = parseNum(t.value);
+
+            // Clamp within range
+            const min = parseFloat(r.min), max = parseFloat(r.max);
+            const clamped = Math.max(min, Math.min(max, val));
+            r.value = clamped;
+
+            // Reformat on blur (not during typing) for amount/lump/goal
+            if (type === 'amount' || type === 'lump' || type === 'goal') {
+                // don't reformat while typing
+            } else {
+                // don't reformat numeric
             }
-            calculateSIP();
+            recalc();
         }
 
-        /* ---------- SWITCH SIP TYPE ---------- */
-        function switchSipType(type, btn) {
-            currentSipType = type;
+        function onFreqChange() {
+            const radios = document.getElementsByName('freq');
+            for (const r of radios) {
+                if (r.checked) state.freq = parseInt(r.value);
+                r.parentElement.classList.toggle('active', r.checked);
+            }
+            recalc();
+        }
 
-            // Tabs
-            document.querySelectorAll('.sip-tab').forEach(t => t.classList.remove('active'));
+        function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        /* ---------- Inflation toggle ---------- */
+        function toggleInflation() {
+            state.inflationOn = document.getElementById('chkInflation').checked;
+            const g = document.getElementById('groupInflation');
+            g.classList.toggle('sip-hidden', !state.inflationOn);
+            recalc();
+        }
+
+        /* ---------- Mode switch ---------- */
+        function switchMode(mode, btn) {
+            state.mode = mode;
+
+            document.querySelectorAll('.sip-mode-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
 
+            // Sub-types visibility
+            const subtypeRow = document.getElementById('subtypeRow');
+            if (mode === 'sip') subtypeRow.classList.remove('sip-hidden');
+            else subtypeRow.classList.add('sip-hidden');
+
             // Info text
-            document.getElementById('typeInfo').innerHTML = TYPE_INFO[type];
-
-            // Show/hide groups
-            const stepupGroup = document.getElementById('stepupGroup');
-            const reducingGroup = document.getElementById('reducingGroup');
-            const lumpGroup = document.getElementById('lumpGroup');
-            const amountLabel = document.getElementById('amountLabel');
-
-            stepupGroup.classList.add('hidden');
-            reducingGroup.classList.add('hidden');
-            lumpGroup.classList.add('hidden');
-
-            if (type === 'regular') {
-                amountLabel.textContent = 'SIP Amount (per installment)';
-            } else if (type === 'stepup') {
-                stepupGroup.classList.remove('hidden');
-                amountLabel.textContent = 'Starting SIP Amount';
-            } else if (type === 'fixed') {
-                lumpGroup.classList.remove('hidden');
-                amountLabel.textContent = 'Monthly SIP Amount (optional)';
-            } else if (type === 'reducing') {
-                reducingGroup.classList.remove('hidden');
-                amountLabel.textContent = 'Starting SIP Amount';
-            } else if (type === 'hybrid') {
-                lumpGroup.classList.remove('hidden');
-                amountLabel.textContent = 'Monthly SIP Amount';
+            if (mode === 'sip') {
+                document.getElementById('modeInfo').innerHTML = MODE_INFO.sip[state.subtype];
+            } else {
+                document.getElementById('modeInfo').innerHTML = MODE_INFO[mode];
             }
 
-            calculateSIP();
+            // Show/hide input groups
+            document.getElementById('groupStepup').classList.toggle('sip-hidden',
+                !(mode === 'sip' && state.subtype === 'stepup') && !(mode === 'compare'));
+            document.getElementById('groupReduce').classList.toggle('sip-hidden',
+                !(mode === 'sip' && state.subtype === 'reducing'));
+            document.getElementById('groupLump').classList.toggle('sip-hidden',
+                !(mode === 'lumpsum' || mode === 'swp'));
+            document.getElementById('groupGoal').classList.toggle('sip-hidden', mode !== 'goal');
+            document.getElementById('groupYears').classList.remove('sip-hidden');
+
+            // Amount group visibility
+            const amountGroup = document.getElementById('inpAmount').closest('.sip-input-group');
+            if (mode === 'lumpsum' || mode === 'goal') {
+                amountGroup.classList.add('sip-hidden');
+            } else {
+                amountGroup.classList.remove('sip-hidden');
+            }
+
+            // Labels
+            const amountLabelText = document.getElementById('amountLabelText');
+            const lumpLabelText = document.getElementById('lumpLabelText');
+            const yearsLabelText = document.getElementById('yearsLabelText');
+
+            if (mode === 'swp') {
+                amountLabelText.innerText = 'Withdrawal Amount (per period)';
+                document.getElementById('amountHintText').innerText = 'Regular withdrawal';
+                lumpLabelText.innerText = 'Initial Corpus';
+                yearsLabelText.innerText = 'Withdrawal Duration';
+            } else if (mode === 'lumpsum') {
+                lumpLabelText.innerText = 'Lumpsum Amount';
+                yearsLabelText.innerText = 'Investment Duration';
+            } else if (mode === 'goal') {
+                yearsLabelText.innerText = 'Time to Goal';
+            } else if (mode === 'compare') {
+                amountLabelText.innerText = 'Starting SIP Amount';
+                yearsLabelText.innerText = 'Investment Duration';
+            } else {
+                amountLabelText.innerText = state.subtype === 'regular'
+                    ? 'SIP Amount (per installment)'
+                    : 'Starting SIP Amount';
+                yearsLabelText.innerText = 'Investment Duration';
+                document.getElementById('amountHintText').innerText = 'Min ₹500';
+            }
+
+            recalc();
         }
 
-        /* ---------- INFLATION TOGGLE ---------- */
-        document.addEventListener('change', (e) => {
-            if (e.target.id === 'inflationToggle') {
-                const wrap = document.getElementById('inflationRateWrap');
-                const range = document.getElementById('sipInflationRange');
-                if (e.target.checked) {
-                    wrap.classList.remove('hidden');
-                    range.classList.remove('hidden');
-                } else {
-                    wrap.classList.add('hidden');
-                    range.classList.add('hidden');
-                }
-            }
+        /* ---------- Sub-type switch ---------- */
+        function switchSubtype(sub, btn) {
+            state.subtype = sub;
+            document.querySelectorAll('.sip-subtype-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.getElementById('groupStepup').classList.toggle('sip-hidden', sub !== 'stepup');
+            document.getElementById('groupReduce').classList.toggle('sip-hidden', sub !== 'reducing');
+
+            document.getElementById('modeInfo').innerHTML = MODE_INFO.sip[sub];
+
+            const label = document.getElementById('amountLabelText');
+            label.innerText = sub === 'regular'
+                ? 'SIP Amount (per installment)'
+                : 'Starting SIP Amount';
+
+            recalc();
+        }
+
+        /* ---------- Init ---------- */
+        window.addEventListener('load', () => {
+            // Format all initial text values
+            document.getElementById('inpAmount').value = (25000).toLocaleString('en-IN');
+            document.getElementById('inpLump').value = (100000).toLocaleString('en-IN');
+            document.getElementById('inpGoal').value = (10000000).toLocaleString('en-IN');
+
+            // Attach freq chip active state
+            document.querySelectorAll('.sip-freq-item').forEach(item => {
+                const r = item.querySelector('input[type="radio"]');
+                item.classList.toggle('active', r.checked);
+            });
+
+            recalc();
         });
 
-        /* ---------- INIT ---------- */
-        window.addEventListener('load', () => {
-            // Sync initial text inputs from ranges
-            updateFromRange('amount');
-            updateFromRange('rate');
-            updateFromRange('years');
-            updateFromRange('stepup');
-            updateFromRange('reduce');
-            updateFromRange('lump');
-            updateFromRange('inflation');
-        });
     </script>
 </body>
 </html>
